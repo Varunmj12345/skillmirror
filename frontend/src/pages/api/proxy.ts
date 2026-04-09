@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-const API_URL = process.env.BACKEND_API_URL || 'http://localhost:8000';
+const API_URL = process.env.BACKEND_API_URL || 'https://skillmirror-api.onrender.com';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { method } = req;
