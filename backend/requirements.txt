@@ -6,7 +6,6 @@ djangorestframework-simplejwt==5.2.2
 numpy>=1.26.0
 pandas>=2.1.0
 scikit-learn>=1.3.0
-tensorflow>=2.15.0
 gunicorn==21.2.0
 django-environ==0.8.1
 dj-database-url>=1.0.0
@@ -14,7 +13,7 @@ python-dotenv>=1.0.0
 requests
 groq
 python-docx
-pypdf
+PyPDF2
 Pillow
 librosa
 SpeechRecognition

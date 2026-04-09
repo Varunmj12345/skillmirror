@@ -44,14 +44,14 @@ cd /d "%BACKEND_DIR%"
 call "%VENV_ACTIVATE%"
 
 REM Fix setuptools version to ensure pkg_resources availability
-pip install "setuptools<70" --upgrade pip
+python -m pip install "setuptools<70" --upgrade pip
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Failed to setup python environment.
     pause
     exit /b 1
 )
 
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Failed to install backend dependencies.
     pause
