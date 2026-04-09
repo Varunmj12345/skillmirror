@@ -29,7 +29,7 @@ SECRET_KEY = os.getenv('JWT_SECRET', os.getenv('DJANGO_SECRET_KEY', 'your-defaul
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "0.0.0.0", "*"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "0.0.0.0", "skillmirror-api.onrender.com", "skillmirror-puce.vercel.app", "*"]
 
 # Application definition
 INSTALLED_APPS = [
@@ -70,6 +70,9 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    "https://skillmirror-puce.vercel.app",
+]
 CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'skillmirror.urls'
