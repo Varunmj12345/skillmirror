@@ -75,6 +75,12 @@ CORS_ALLOWED_ORIGINS = [
 ]
 CORS_ALLOW_CREDENTIALS = True
 
+# CSRF Trusted Origins (Required for Django 4.0+)
+CSRF_TRUSTED_ORIGINS = [
+    "https://skillmirror-puce.vercel.app",
+    "https://skillmirror-api.onrender.com",
+]
+
 ROOT_URLCONF = 'skillmirror.urls'
 
 TEMPLATES = [
