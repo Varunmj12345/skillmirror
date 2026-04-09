@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000';
+const API_URL = 'https://skillmirror-api.onrender.com';
 
 const getAuthHeader = () => {
     const token = localStorage.getItem('access_token');
