@@ -13,7 +13,7 @@ python-dotenv>=1.0.0
 requests
 groq
 python-docx
-PyPDF2
+pypdf
 Pillow
 librosa
 SpeechRecognition

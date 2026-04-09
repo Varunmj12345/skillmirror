@@ -1,6 +1,6 @@
 import re
 import io
-import PyPDF2
+import pypdf
 import docx
 
 def extract_text_from_file(file_obj):
@@ -12,7 +12,7 @@ def extract_text_from_file(file_obj):
     
     try:
         if filename.endswith('.pdf'):
-            reader = PyPDF2.PdfReader(file_obj)
+            reader = pypdf.PdfReader(file_obj)
             for page in reader.pages:
                 content += page.extract_text() + "\n"
         elif filename.endswith('.docx'):
