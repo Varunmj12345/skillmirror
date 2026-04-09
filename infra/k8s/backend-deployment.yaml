@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skillmirror-backend
+  labels:
+    app: skillmirror
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: skillmirror
+  template:
+    metadata:
+      labels:
+        app: skillmirror
+    spec:
+      containers:
+        - name: backend
+          image: skillmirror-backend:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: skillmirror-db-secret
+                  key: database_url
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: skillmirror-secret
+                  key: secret_key
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "500m"
+            limits:
+              memory: "512Mi"
+              cpu: "1"
+      imagePullSecrets:
+        - name: regcred

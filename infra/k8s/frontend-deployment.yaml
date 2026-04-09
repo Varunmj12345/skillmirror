@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skillmirror-frontend
+  labels:
+    app: skillmirror
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: skillmirror
+  template:
+    metadata:
+      labels:
+        app: skillmirror
+    spec:
+      containers:
+      - name: frontend
+        image: skillmirror-frontend:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: NEXT_PUBLIC_API_URL
+          value: "http://backend:8000/api"  # Adjust according to your backend service URL
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "500m"
+          limits:
+            memory: "512Mi"
+            cpu: "1"
+      imagePullSecrets:
+      - name: regcred  # If using a private Docker registry
