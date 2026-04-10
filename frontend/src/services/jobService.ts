@@ -1,25 +1,15 @@
-import axios from 'axios';
-
-const API_URL = 'https://skillmirror-api.onrender.com';
-
-const getAuthHeader = () => {
-    const token = localStorage.getItem('access_token');
-    return token ? { Authorization: `Bearer ${token}` } : {};
-};
+import apiClient from './apiClient';
 
 export const jobService = {
     fetchLiveJobs: async (role: string) => {
-        const response = await axios.get(`${API_URL}/api/jobs/fetch-live-jobs/`, {
-            params: { role },
-            headers: getAuthHeader()
+        const response = await apiClient.get('/api/jobs/fetch-live-jobs/', {
+            params: { role }
         });
-        return response.data;
+        return response;
     },
 
     getJobMatch: async (role: string) => {
-        const response = await axios.post(`${API_URL}/api/jobs/job-match/`, { role }, {
-            headers: getAuthHeader()
-        });
-        return response.data;
+        const response = await apiClient.post('/api/jobs/job-match/', { role });
+        return response;
     }
 };

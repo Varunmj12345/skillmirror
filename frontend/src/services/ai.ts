@@ -1,11 +1,9 @@
-import axios from 'axios';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://skillmirror-api.onrender.com/api';
+import apiClient from './apiClient';
 
 export const fetchSkillAnalysis = async (skills: string[]) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/skills/analyze/`, { skills });
-        return response.data;
+        const response = await apiClient.post('/api/skills/analyze/', { skills });
+        return response;
     } catch (error) {
         console.error('Error fetching skill analysis:', error);
         throw error;
@@ -14,8 +12,8 @@ export const fetchSkillAnalysis = async (skills: string[]) => {
 
 export const generateCareerRoadmap = async (userId: string | number) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/roadmaps/generate/${userId}/`);
-        return response.data;
+        const response = await apiClient.get(`/api/roadmaps/generate/${userId}/`);
+        return response;
     } catch (error) {
         console.error('Error generating career roadmap:', error);
         throw error;
@@ -24,8 +22,10 @@ export const generateCareerRoadmap = async (userId: string | number) => {
 
 export const getJobIntelligence = async (jobTitle: string) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/jobs/intelligence/?title=${jobTitle}`);
-        return response.data;
+        const response = await apiClient.get(`/api/jobs/intelligence/`, {
+            params: { title: jobTitle }
+        });
+        return response;
     } catch (error) {
         console.error('Error fetching job intelligence:', error);
         throw error;

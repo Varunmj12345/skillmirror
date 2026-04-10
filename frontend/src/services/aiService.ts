@@ -1,18 +1,10 @@
-import axios from 'axios';
-
-const API_URL = 'https://skillmirror-api.onrender.com';
-
-const getAuthHeader = () => {
-    const token = localStorage.getItem('access_token');
-    return token ? { Authorization: `Bearer ${token}` } : {};
-};
+import apiClient from './apiClient';
 
 export const aiService = {
     predictDemand: async (role: string) => {
-        const response = await axios.get(`${API_URL}/api/ai/predict-demand/`, {
-            params: { role },
-            headers: getAuthHeader()
+        const response = await apiClient.get('/api/ai/predict-demand/', {
+            params: { role }
         });
-        return response.data;
+        return response;
     }
 };
