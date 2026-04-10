@@ -82,6 +82,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://skillmirror-7uzro8erv-varunmj12345s-projects.vercel.app",
     "https://skillmirror-puce.vercel.app",
     "https://skillmirror-api.onrender.com",
+    "https://skillmirror-api-judc.onrender.com",
 ]
 
 ROOT_URLCONF = 'skillmirror.urls'

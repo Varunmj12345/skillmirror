@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://skillmirror-api.onrender.com',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://skillmirror-api-judc.onrender.com',
   timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
