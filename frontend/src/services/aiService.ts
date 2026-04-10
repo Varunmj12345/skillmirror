@@ -5,6 +5,6 @@ export const aiService = {
         const response = await apiClient.get('/api/ai/predict-demand/', {
             params: { role }
         });
-        return response;
+        return response as any;
     }
 };

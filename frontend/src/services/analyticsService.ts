@@ -5,13 +5,13 @@ export const analyticsService = {
         const response = await apiClient.get('/api/analytics/job-trend/', {
             params: { role }
         });
-        return response;
+        return response as any;
     },
 
     getSalaryInsights: async (role: string, location?: string) => {
         const response = await apiClient.get('/api/analytics/salary-insights/', {
             params: { role, location }
         });
-        return response;
+        return response as any;
     }
 };

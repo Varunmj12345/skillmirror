@@ -5,11 +5,11 @@ export const jobService = {
         const response = await apiClient.get('/api/jobs/fetch-live-jobs/', {
             params: { role }
         });
-        return response;
+        return response as any;
     },
 
     getJobMatch: async (role: string) => {
         const response = await apiClient.post('/api/jobs/job-match/', { role });
-        return response;
+        return response as any;
     }
 };
