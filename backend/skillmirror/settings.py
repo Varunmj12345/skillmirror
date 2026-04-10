@@ -71,12 +71,15 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
+    "https://skillmirror-7uzro8erv-varunmj12345s-projects.vercel.app",
     "https://skillmirror-puce.vercel.app",
+    "http://localhost:3000",
 ]
 CORS_ALLOW_CREDENTIALS = True
 
 # CSRF Trusted Origins (Required for Django 4.0+)
 CSRF_TRUSTED_ORIGINS = [
+    "https://skillmirror-7uzro8erv-varunmj12345s-projects.vercel.app",
     "https://skillmirror-puce.vercel.app",
     "https://skillmirror-api.onrender.com",
 ]
