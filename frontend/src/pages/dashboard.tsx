@@ -42,9 +42,17 @@ const Dashboard: React.FC = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="flex flex-col items-center justify-center min-h-[70vh] gap-6">
-          <div className="w-16 h-16 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin" />
-          <p className="text-xs font-black uppercase tracking-[0.3em] text-indigo-500 animate-pulse">Syncing Career Intelligence Hub...</p>
+        <div className="flex flex-col items-center justify-center min-h-[75vh] gap-8">
+          <div className="relative">
+            <div className="w-20 h-20 border-[3px] border-indigo-500/10 border-t-indigo-500 rounded-full animate-spin" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-10 h-10 border-[3px] border-violet-500/10 border-b-violet-500 rounded-full animate-[spin_1.5s_linear_infinite_reverse]" />
+            </div>
+          </div>
+          <div className="text-center">
+            <p className="text-[11px] font-black uppercase tracking-[0.4em] text-indigo-400 mb-2">Intelligence Hub</p>
+            <p className="text-xs font-bold text-slate-500 animate-pulse tracking-widest">Synchronizing career neural pathways...</p>
+          </div>
         </div>
       </Layout>
     );
@@ -53,11 +61,20 @@ const Dashboard: React.FC = () => {
   if (error || !data) {
     return (
       <Layout>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="px-8 py-6 rounded-3xl bg-red-500/5 border border-red-500/10 text-center shadow-2xl">
-            <i className="fa-solid fa-triangle-exclamation text-red-400 text-3xl mb-4" />
-            <p className="text-sm font-bold text-red-200">{error || 'Intelligence Hub Offline'}</p>
-            <button onClick={loadData} className="mt-6 px-6 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 text-xs font-black uppercase rounded-xl transition-all">Retry Synchronization</button>
+        <div className="flex items-center justify-center min-h-[60vh] px-6">
+          <div className="max-w-md w-full px-10 py-12 rounded-[2.5rem] bg-[#0F172A] border border-red-500/20 text-center shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-500/50 to-transparent" />
+            <div className="w-20 h-20 rounded-3xl bg-red-500/10 flex items-center justify-center mx-auto mb-8 border border-red-500/20">
+              <i className="fa-solid fa-triangle-exclamation text-red-500 text-3xl" />
+            </div>
+            <h2 className="text-xl font-black text-white mb-3">Intelligence Hub Offline</h2>
+            <p className="text-sm text-slate-400 leading-relaxed mb-10">{error || 'Unable to establish secure connection with career logic engine.'}</p>
+            <button 
+              onClick={loadData} 
+              className="w-full py-4 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl border border-red-500/20 transition-all active:scale-95"
+            >
+              Retry Synchronization
+            </button>
           </div>
         </div>
       </Layout>
@@ -71,29 +88,39 @@ const Dashboard: React.FC = () => {
       </Head>
 
       {/* Header Section */}
-      <div className="flex flex-col gap-4 mb-10 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-[10px] uppercase tracking-[0.4em] text-indigo-500 font-black mb-1.5 flex items-center gap-2">
-            <span className="w-8 h-[1px] bg-indigo-500/30" />
-            Intelligence Summary
+      <div className="flex flex-col gap-6 mb-12 sm:flex-row sm:items-end sm:justify-between sm-page-enter">
+        <div className="relative">
+          {/* Spotlight background behind text */}
+          <div className="absolute -top-10 -left-10 w-40 h-40 bg-indigo-500/5 blur-[80px] pointer-events-none" />
+          
+          <p className="text-[10px] uppercase tracking-[0.3em] text-indigo-400 font-black mb-3 flex items-center gap-3">
+            <span className="w-10 h-px bg-gradient-to-r from-indigo-500/50 to-transparent" />
+            Career Intelligence Summary
           </p>
-          <h1 className="text-4xl font-black text-white tracking-tight">Executive Dashboard</h1>
+          <h1 className="text-4xl sm:text-5xl font-black text-white tracking-tight leading-none">
+            Executive <span className="text-indigo-500">Dashboard</span>
+          </h1>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="text-right hidden md:block mr-2 border-r border-slate-800 pr-4">
-            <p className="text-[9px] font-black uppercase text-slate-500 tracking-widest">Global Ranking</p>
-            <p className="text-sm font-bold text-white">Top 12% Worldwide</p>
+        
+        <div className="flex items-center gap-4">
+          <div className="text-right hidden lg:block mr-4 border-r border-white/5 pr-6">
+            <p className="text-[9px] font-black uppercase text-slate-500 tracking-[0.2em] mb-1">Global IQ Ranking</p>
+            <div className="flex items-center justify-end gap-2">
+              <p className="text-sm font-black text-white">Top 12%</p>
+              <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+            </div>
           </div>
           <Link href="/profile">
-            <button className="px-5 py-3 rounded-xl bg-slate-900 border border-slate-800 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white hover:border-indigo-500/50 transition-all shadow-xl">
-              Manage Identity
+            <button className="group flex items-center gap-2.5 px-6 py-3.5 rounded-2xl bg-white/[0.03] border border-white/5 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white hover:bg-white/[0.08] hover:border-indigo-500/30 transition-all shadow-2xl active:scale-95">
+              <span>Manage Identity</span>
+              <i className="fa-solid fa-arrow-right text-[8px] group-hover:translate-x-0.5 transition-transform" />
             </button>
           </Link>
         </div>
       </div>
 
-      {/* 1. Metric Cards Row (Career Risk, Readiness, etc.) */}
-      <section className="grid gap-6 mb-10 md:grid-cols-2 lg:grid-cols-5">
+      {/* 1. Metric Cards Grid */}
+      <section className="grid gap-6 mb-12 lg:grid-cols-5 sm-page-enter [animation-delay:100ms]">
         <MetricCard
           label="Career Readiness"
           value={data.job_readiness_score}
@@ -115,25 +142,25 @@ const Dashboard: React.FC = () => {
           suffix="%"
         />
         <MetricCard
-          label="Learning Consistency"
+          label="Learning Volume"
           value={data.learning_consistency}
           icon="fa-bolt-lightning"
           color="amber"
           suffix="%"
         />
         <MetricCard
-          label="Roadmap Progress"
+          label="Platform Progress"
           value={data.profile_completion}
           icon="fa-stairs"
           color="sky"
         />
       </section>
 
-      {/* 2. Intelligence Layer & Primary Content */}
-      <div className="grid gap-8 lg:grid-cols-3 mb-10">
-        <div className="lg:col-span-2 space-y-8">
-          {/* XP System & AI Strategy Top Row */}
-          <div className="grid md:grid-cols-2 gap-8">
+      {/* 2. Main Content Layout */}
+      <div className="grid gap-10 lg:grid-cols-3 mb-16 sm-page-enter [animation-delay:200ms]">
+        <div className="lg:col-span-2 space-y-10">
+          {/* XP & Consistency Row */}
+          <div className="grid md:grid-cols-2 gap-10">
             <XPSystem
               level={data.xp_system.level}
               totalXp={data.xp_system.total_xp}
@@ -146,18 +173,18 @@ const Dashboard: React.FC = () => {
 
           <AIStrategy strategy={data.ai_strategy} />
 
-          {/* Module Summary Widgets Grid */}
-          <div className="space-y-4">
+          {/* Module Grid Header */}
+          <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-xs font-black uppercase tracking-[0.2em] text-slate-500">Integrated Intelligence Modules</h2>
-              <div className="h-[1px] flex-1 bg-slate-800/60 mx-4" />
+              <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-500">Integrated Neural Modules</h2>
+              <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent mx-6" />
             </div>
             <ModuleSummaries summaries={data.summaries} />
           </div>
         </div>
 
-        {/* 3. Right Sidebar Highlights */}
-        <div className="space-y-8">
+        {/* 3. Sidebar Highlights */}
+        <div className="space-y-10">
           <GrowthForecast data={data.growth_forecast} />
 
           <Benchmarking
@@ -172,18 +199,23 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Market Intelligence / Recommendations Footer */}
-      <div className="glass-panel p-8 bg-slate-900/30 border-slate-800/40">
-        <div className="flex flex-col md:flex-row gap-8 items-center justify-between">
-          <div className="max-w-md">
-            <h3 className="text-lg font-bold text-white mb-2">Market Volatility Warning</h3>
-            <p className="text-xs text-slate-400 leading-relaxed italic">
-              The demand for <span className="text-indigo-400 font-bold">{data.dream_job}</span> roles is projected to shift by 18% due to emerging AI paradigms. Advancing your {data.career_recommendations?.[0] || 'core technical'} proficiency is now a strategic priority.
+      {/* Market Warning Banner */}
+      <div className="glass-panel p-10 bg-[#0F172A]/40 border-white/5 sm-page-enter [animation-delay:300ms] sm-card">
+        <div className="flex flex-col lg:flex-row gap-10 items-center justify-between relative overflow-hidden">
+          {/* Subtle amber pulse in background */}
+          <div className="absolute top-1/2 left-0 w-32 h-32 bg-amber-500/5 blur-[80px] -translate-y-1/2 -ml-16 pointer-events-none" />
+          
+          <div className="max-w-xl">
+            <h3 className="text-xl font-black text-white mb-3 tracking-tight">Market Volatility Warning</h3>
+            <p className="text-sm text-slate-400 leading-relaxed italic">
+              The demand for <span className="text-indigo-400 font-black">{data.dream_job}</span> roles is projected to shift by <span className="text-amber-400 font-black">18%</span> due to emerging AI paradigms. Advancing your <span className="text-indigo-300 underline decoration-indigo-500/30 underline-offset-4">{data.career_recommendations?.[0] || 'core technical'}</span> proficiency is now a high-priority strategic requirement.
             </p>
           </div>
-          <div className="flex flex-wrap gap-2 justify-center">
+          <div className="flex flex-wrap gap-2.5 justify-center">
             {data.career_recommendations.map((skill: string) => (
-              <span key={skill} className="px-4 py-2 bg-indigo-500/5 border border-indigo-500/20 text-indigo-300 rounded-xl text-[10px] font-black uppercase tracking-widest">{skill}</span>
+              <span key={skill} className="px-5 py-2.5 bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-500/20 transition-all cursor-default">
+                {skill}
+              </span>
             ))}
           </div>
         </div>
@@ -193,3 +225,4 @@ const Dashboard: React.FC = () => {
 };
 
 export default withAuth(Dashboard);
+
