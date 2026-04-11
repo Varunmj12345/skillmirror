@@ -36,15 +36,15 @@ const Header: React.FC = () => {
       title: 'AI Intelligence',
       items: [
         { href: '/roadmap', label: 'Career Roadmap', icon: 'fa-compass' },
-        { href: '/skill-gap', label: 'Gap Analyzer', icon: 'fa-brain' },
-        { href: '/resume', label: 'ATS Optimizer', icon: 'fa-file-shield' },
-        { href: '/mock-interview', label: 'Interview Shadow', icon: 'fa-headset' },
+        { href: '/skill-gap', label: 'Skill Gap Analysis', icon: 'fa-brain' },
+        { href: '/resume', label: 'Resume Builder', icon: 'fa-file-shield' },
+        { href: '/mock-interview', label: 'Mock Interview', icon: 'fa-headset' },
       ],
     },
     {
       title: 'Market Intelligence',
       items: [
-        { href: '/job-intelligence', label: 'Demand Streams', icon: 'fa-network-wired' },
+        { href: '/job-intelligence', label: 'Job Intelligence', icon: 'fa-network-wired' },
         { href: '/smart-alerts', label: 'Smart Alerts', icon: 'fa-bolt-lightning' },
       ],
     },

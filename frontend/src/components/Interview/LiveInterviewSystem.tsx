@@ -103,25 +103,24 @@ const LiveInterviewSystem: React.FC<Props> = ({ interviewId, roomId, onComplete 
         try {
             const currentQ = questions[currentQIndex];
 
-            // 1. Fire background tasks (Don't await them yet, they can run while we get the next question)
-            const evaluationPromise = interviewService.evaluateAnswer(currentQ.id, transcript);
-            const audioPromise = interviewService.processAudio(currentQ.id, audioBlob);
+            // 1. Fire background tasks (Don't hold up UI)
+            if (currentQ?.id && transcript) {
+                interviewService.evaluateAnswer(currentQ.id, transcript).catch(e => console.error("Eval Error", e));
+                // interviewService.processAudio(currentQ.id, audioBlob).catch(e => console.error("Audio Error", e));
+            }
 
-            // 2. Prioritize getting the NEXT question (This is what the user is waiting for)
-            const nextRes = await interviewService.getLiveNextQuestion(interviewId, transcript);
-
-            const nextQ = (nextRes as any).question;
-            const nextIdx = questions.length;
-            setQuestions(prev => [...prev, { id: (nextRes as any).id, question_text: nextQ }]);
-            setCurrentQIndex(nextIdx);
-
-            speak(nextQ);
-
-            // Background tasks will complete on their own
-            Promise.all([evaluationPromise, audioPromise]).catch(e => console.error("Sync Error", e));
+            // 2. Move to the next pre-generated question
+            const nextIdx = currentQIndex + 1;
+            if (nextIdx < questions.length) {
+                setCurrentQIndex(nextIdx);
+                speak(questions[nextIdx].question_text);
+            } else {
+                // Interview complete!
+                setStatus('idle');
+                onComplete();
+            }
         } catch (err) {
             console.error('Processing failed', err);
-            // Fallback: If everything fails, try to at least get a basic next question or recover
             setStatus('idle');
         }
     };

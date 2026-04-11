@@ -194,34 +194,8 @@ const MockInterviewSetup: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="mt-12 grid md:grid-cols-2 gap-8">
-                    <div className="glass-panel p-8 border-indigo-500/20 bg-indigo-500/5">
-                        <h3 className="text-white font-bold mb-4 flex items-center gap-2">
-                            <i className="fa-solid fa-briefcase text-indigo-400"></i> Corporate / Company Mode
-                        </h3>
-                        <p className="text-xs text-slate-400 mb-6 uppercase font-bold tracking-widest">Host a live interview for a candidate. AI will assist with questions and real-time evaluation.</p>
+                <div className="mt-12 flex justify-center">
 
-                        <div className="space-y-4">
-                            <input
-                                type="email"
-                                placeholder="Candidate Email"
-                                className="form-input"
-                                id="candidate_invite_email"
-                            />
-                            <button
-                                onClick={async () => {
-                                    const email = (document.getElementById('candidate_invite_email') as HTMLInputElement).value;
-                                    if (!email) return alert('Enter email');
-                                    const res = await interviewService.createLiveSession(email, setup.role || 'Senior Developer');
-                                    const data = res as any;
-                                    alert(`Interview Created! Room ID: ${data.room_id}\nInvite Link: ${window.location.origin}${data.invite_link}`);
-                                }}
-                                className="w-full py-3 bg-white/5 border border-white/10 text-white rounded-xl font-bold hover:bg-white/10 transition-all text-xs uppercase tracking-widest"
-                            >
-                                Generate Invite Link
-                            </button>
-                        </div>
-                    </div>
 
                     <div className="flex flex-col justify-center">
                         <button

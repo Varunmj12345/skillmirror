@@ -46,6 +46,17 @@ const ExportPanel: React.FC = () => {
                 setExporting(null);
                 setTimeout(() => setToast(''), 3000);
             }
+        } else if (key === 'txt') {
+            const dataRaw = document.getElementById('resume-export-container')?.innerText || "Failed to extract text.";
+            const blob = new Blob([dataRaw], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'SkillMirror_Resume.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+            setToast('TXT exported successfully!');
+            setTimeout(() => setToast(''), 3000);
         } else {
             // Document/TXT fallbacks in future iterations
             setExporting(key);

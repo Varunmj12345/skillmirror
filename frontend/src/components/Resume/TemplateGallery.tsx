@@ -66,7 +66,13 @@ const TemplateGallery: React.FC<Props> = ({ selected, onSelect }) => {
     const filtered = filter === 'All' ? TEMPLATES : TEMPLATES.filter(t => t.category === filter);
 
     const selectTemplate = (t: typeof TEMPLATES[0]) => {
-        onSelect({ ...t, color: globalColor, font: globalFont, layout: globalLayout } as TemplateConfig);
+        const newLayout = (t.category === 'Creative' || t.category === 'Tech') ? '2-col' : '1-col';
+        const newColor = t.accent;
+        const newFont = t.category === 'Corporate' ? 'Merriweather' : (t.category === 'Modern' ? 'Inter' : 'Roboto');
+        setGlobalLayout(newLayout);
+        setGlobalColor(newColor);
+        setGlobalFont(newFont);
+        onSelect({ id: t.id, name: t.name, category: t.category, accent: t.accent, color: newColor, font: newFont, layout: newLayout } as TemplateConfig);
     };
 
     return (
