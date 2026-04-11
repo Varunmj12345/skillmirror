@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { sendCareerMessage } from '../services/aiChat';
 import ModeSelector from './ModeSelector';
+import ChatUI from './ChatUI';
 
 const AICareerWidget: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -69,30 +70,8 @@ const AICareerWidget: React.FC = () => {
             <ModeSelector selectedMode={selectedMode} onModeChange={setSelectedMode} />
           </div>
 
-          <div className="flex-1 overflow-y-auto h-80 p-4 space-y-4 bg-gray-50 dark:bg-slate-950/50">
-            {messages.map((m, i) => (
-              <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : ''}`}>
-                <div
-                  className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-sm shadow-sm ${m.role === 'user'
-                    ? 'bg-indigo-600 text-white rounded-tr-none'
-                    : 'bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-800 dark:text-slate-200 rounded-tl-none'
-                    }`}
-                >
-                  {m.text}
-                </div>
-              </div>
-            ))}
-            {loading && (
-              <div className="flex">
-                <div className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 px-4 py-2 rounded-2xl rounded-tl-none text-sm text-gray-500 dark:text-slate-400">
-                  <span className="flex gap-1">
-                    <span className="w-1 h-1 bg-gray-400 dark:bg-slate-500 rounded-full animate-bounce" />
-                    <span className="w-1 h-1 bg-gray-400 dark:bg-slate-500 rounded-full animate-bounce [animation-delay:0.2s]" />
-                    <span className="w-1 h-1 bg-gray-400 dark:bg-slate-500 rounded-full animate-bounce [animation-delay:0.4s]" />
-                  </span>
-                </div>
-              </div>
-            )}
+          <div className="h-80">
+            <ChatUI messages={messages} loading={loading} />
           </div>
           <div className="p-3 border-t border-gray-200 dark:border-slate-800 dark:bg-slate-900 bg-white flex gap-2">
             <input
