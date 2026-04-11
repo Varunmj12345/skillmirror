@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import useAuth from '../hooks/useAuth';
 import NotificationBell from './NotificationBell';
+import { motion } from 'framer-motion';
 
 interface NavItem {
   href: string;
@@ -18,198 +19,123 @@ interface NavSection {
 const Header: React.FC = () => {
   const { user, loading, logout } = useAuth() as any;
   const [mounted, setMounted] = useState(false);
-  const [isDark, setIsDark] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
     setMounted(true);
-    setIsDark(document.documentElement.classList.contains('dark'));
   }, []);
 
   const navSections: NavSection[] = [
     {
-      title: 'Main',
+      title: 'Command Center',
       items: [
-        { href: '/dashboard', label: 'Dashboard', icon: 'fa-table-columns' },
+        { href: '/dashboard', label: 'Intelligence Hub', icon: 'fa-gauge-high' },
       ],
     },
     {
-      title: 'Career Development',
+      title: 'AI Intelligence',
       items: [
-        { href: '/roadmap', label: 'Career Roadmap', icon: 'fa-route' },
-        { href: '/skill-gap', label: 'Skill Gap Analyzer', icon: 'fa-chart-pie' },
-        { href: '/resume', label: 'Resume Analyzer', icon: 'fa-file-invoice' },
-        { href: '/mock-interview', label: 'Mock Interview Engine', icon: 'fa-microphone' },
+        { href: '/roadmap', label: 'Career Roadmap', icon: 'fa-compass' },
+        { href: '/skill-gap', label: 'Gap Analyzer', icon: 'fa-brain-circuit' },
+        { href: '/resume', label: 'ATS Optimizer', icon: 'fa-file-shield' },
+        { href: '/mock-interview', label: 'Interview Shadow', icon: 'fa-headset' },
       ],
     },
     {
-      title: 'Opportunities',
+      title: 'Market Intelligence',
       items: [
-        { href: '/job-intelligence', label: 'Job Intelligence', icon: 'fa-briefcase' },
-        { href: '/smart-alerts', label: 'Smart Alerts', icon: 'fa-wand-magic-sparkles' },
+        { href: '/job-intelligence', label: 'Demand Streams', icon: 'fa-chart-network' },
+        { href: '/smart-alerts', label: 'Smart Alerts', icon: 'fa-bolt-lightning' },
       ],
     },
   ];
 
-  const accountItems: NavItem[] = [
-    { href: '/profile', label: 'Profile', icon: 'fa-circle-user' },
-    { href: '/settings', label: 'Settings', icon: 'fa-sliders' },
-  ];
-
-  const toggleTheme = () => {
-    const root = document.documentElement;
-    const currentlyDark = root.classList.contains('dark');
-    const newTheme = currentlyDark ? 'light' : 'dark';
-
-    if (newTheme === 'dark') {
-      root.classList.add('dark');
-      root.style.colorScheme = 'dark';
-      setIsDark(true);
-    } else {
-      root.classList.remove('dark');
-      root.style.colorScheme = 'light';
-      setIsDark(false);
-    }
-
-    localStorage.setItem('sm_settings_prefs', JSON.stringify({
-      ...JSON.parse(localStorage.getItem('sm_settings_prefs') || '{}'),
-      appearanceTheme: newTheme
-    }));
-  };
+  if (!mounted) return null;
 
   return (
-    <aside
-      className="app-sidebar sm-scrollbar hidden sm:flex shadow-xl"
-      data-app-sidebar
-    >
-      <div className="flex-1 flex flex-col px-4 py-6 gap-6 overflow-y-auto">
-        {/* Brand */}
-        <div className="flex items-center justify-between px-2">
-          <Link href="/">
-            <div className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-400 flex items-center justify-center shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-300">
-                <i className="fa-solid fa-bolt-lightning text-white text-lg" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm font-black dark:text-slate-50 text-slate-900 tracking-tight">
-                  SkillMirror
-                </span>
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">
-                  AI Career Mentor
-                </span>
-              </div>
-            </div>
-          </Link>
-          {!loading && user && <NotificationBell />}
-        </div>
-
-        {/* Navigation Sections */}
-        <div className="flex-1 space-y-8">
-          {navSections.map((section) => (
-            <div key={section.title} className="space-y-2">
-              <h3 className="px-3 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
-                {section.title}
-              </h3>
-              <nav className="space-y-1">
-                {section.items.map((item) => {
-                  const isActive = router.pathname === item.href;
-                  return (
-                    <Link key={item.href} href={item.href}>
-                      <div
-                        className={`group relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-300 pointer-events-auto cursor-pointer
-                          ${isActive
-                            ? 'bg-indigo-500/10 text-indigo-400'
-                            : 'text-slate-400 hover:bg-slate-900 hover:text-slate-100'}`}
-                      >
-                        {isActive && (
-                          <div className="absolute left-0 w-1 h-5 bg-indigo-500 rounded-r-full" />
-                        )}
-                        <i className={`fa-solid ${item.icon} w-5 text-center text-[14px] transition-transform duration-300 group-hover:scale-110`} />
-                        <span className="truncate">{item.label}</span>
-                        {item.label === 'Smart Alerts' && (
-                          <div className="ml-auto w-1.5 h-1.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)] animate-pulse" />
-                        )}
-                      </div>
-                    </Link>
-                  );
-                })}
-              </nav>
-            </div>
-          ))}
-        </div>
-
-        {/* Account Section */}
-        <div className="mt-auto pt-6 space-y-4">
-          <div className="h-px bg-gradient-to-r from-transparent via-slate-800 to-transparent" />
-
-          <div className="space-y-1">
-            <h3 className="px-3 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2">
-              Account
-            </h3>
-            {accountItems.map((item) => {
-              const isActive = router.pathname === item.href;
-              return (
-                <Link key={item.href} href={item.href}>
-                  <div
-                    className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-300 cursor-pointer
-                      ${isActive
-                        ? 'bg-indigo-500/10 text-indigo-400'
-                        : 'text-slate-400 hover:bg-slate-900 hover:text-slate-100'}`}
-                  >
-                    <i className={`fa-solid ${item.icon} w-5 text-center text-[14px]`} />
-                    <span className="truncate">{item.label}</span>
-                  </div>
-                </Link>
-              );
-            })}
+    <aside className="fixed inset-y-0 left-0 w-72 h-full z-50 bg-brand-obsidian border-r border-white/5 hidden lg:flex flex-col group transition-all duration-500 hover:w-[290px]">
+      {/* Brand Section */}
+      <div className="p-8 pb-10 flex items-center gap-4">
+        <Link href="/">
+          <div className="flex items-center gap-4 cursor-pointer group/logo">
+             <div className="w-11 h-11 rounded-[14px] bg-brand-neural relative flex items-center justify-center shadow-glass-glow shadow-brand-neural/30 transition-all group-hover/logo:scale-105">
+                <i className="fa-solid fa-mirror text-white text-xl" />
+                <div className="absolute inset-0 bg-white/20 rounded-inherit opacity-0 group-hover/logo:opacity-100 transition-opacity" />
+             </div>
+             <div className="flex flex-col">
+                <span className="text-sm font-black text-white tracking-ultra-tight">SKILLMIRROR</span>
+                <span className="sm-nano text-brand-neural">Enterprise AI</span>
+             </div>
           </div>
+        </Link>
+      </div>
 
-          <button
-            type="button"
-            onClick={toggleTheme}
-            className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-950 hover:bg-slate-200 dark:hover:bg-slate-900 transition-all text-[11px] text-slate-500 hover:text-slate-200 border border-slate-200 dark:border-slate-900 group"
-          >
-            <span className="flex items-center gap-3 font-bold uppercase tracking-wider">
-              <i className={`fa-solid ${isDark ? 'fa-moon' : 'fa-sun'} text-[14px] ${isDark ? 'text-slate-600' : 'text-amber-500'} group-hover:text-indigo-400 transition-colors`} />
-              {isDark ? 'Dark Mode' : 'Light Mode'}
-            </span>
-            <div className={`w-8 h-4 rounded-full border transition-all relative flex items-center ${isDark ? 'bg-slate-800 border-slate-700' : 'bg-amber-100 border-amber-200'}`}>
-              <div className={`absolute w-2.5 h-2.5 rounded-full transition-all duration-300 ${isDark ? 'right-1 bg-slate-500' : 'left-1 bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]'}`} />
-            </div>
-          </button>
+      {/* Navigation */}
+      <div className="flex-1 px-4 space-y-9 overflow-y-auto sm-scrollbar">
+        {navSections.map((section) => (
+          <div key={section.title} className="space-y-4">
+            <h3 className="sm-nano px-4 opacity-50">{section.title}</h3>
+            <nav className="space-y-1.5">
+              {section.items.map((item) => {
+                const isActive = router.pathname === item.href;
+                return (
+                  <Link key={item.href} href={item.href}>
+                    <div className={`
+                      group relative px-4 py-3 rounded-2xl flex items-center gap-4 transition-all duration-300 cursor-pointer
+                      ${isActive 
+                        ? 'bg-brand-neural/10 text-brand-neural' 
+                        : 'text-slate-400 hover:bg-white/5 hover:text-white hover:translate-x-1'}
+                    `}>
+                      {isActive && <motion.div layoutId="activeNav" className="absolute left-0 w-1 h-2/3 bg-brand-neural rounded-r-full shadow-glass-glow" />}
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${isActive ? 'bg-brand-neural/20 shadow-inner' : 'bg-slate-900/50 group-hover:bg-slate-800'}`}>
+                        <i className={`fa-solid ${item.icon} text-lg`} />
+                      </div>
+                      <span className="font-bold text-sm tracking-tight">{item.label}</span>
+                    </div>
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+        ))}
+      </div>
 
-          {mounted && !loading && (
-            <div className="p-3 rounded-2xl bg-white dark:bg-gradient-to-b dark:from-slate-900 dark:to-slate-950 border border-slate-200 dark:border-slate-800 shadow-xl">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-sm font-black text-indigo-400 shadow-inner">
-                  {(user?.username || user?.email || 'U').charAt(0).toUpperCase()}
-                </div>
-                <div className="flex flex-col overflow-hidden">
-                  <span className="text-xs font-black text-slate-100 truncate">
-                    {user?.username || user?.email || 'Guest user'}
-                  </span>
-                  <span className="text-[10px] text-emerald-500 font-bold flex items-center gap-1">
-                    <span className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
-                    Elite Tier
-                  </span>
-                </div>
-              </div>
-              {user ? (
-                <button
-                  type="button"
-                  onClick={logout}
-                  className="w-full py-2 rounded-xl bg-slate-800 hover:bg-rose-950/30 text-slate-400 hover:text-rose-400 text-[10px] font-black uppercase tracking-[0.2em] border border-slate-700 hover:border-rose-900/50 transition-all duration-300"
-                >
-                  Sign Out
-                </button>
-              ) : (
-                <Link href="/login" className="block w-full text-center py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-indigo-600/20 transition-all duration-300">
-                  Join Project
-                </Link>
-              )}
+      {/* Account / Footer */}
+      <div className="p-6 mt-auto">
+         {!loading && user && (
+            <div className="sm-glass p-5 rounded-[22px] border-white/10 group-hover:border-brand-neural/20 transition-all">
+               <div className="flex items-center gap-4 mb-5">
+                  <div className="w-12 h-12 rounded-2xl bg-brand-neural/10 border border-brand-neural/20 flex items-center justify-center border-dashed font-black text-brand-neural text-xl">
+                    {user?.username?.charAt(0).toUpperCase() || 'U'}
+                  </div>
+                  <div className="flex flex-col min-w-0">
+                     <span className="text-sm font-bold text-white truncate">{user?.username || 'Elite User'}</span>
+                     <div className="flex items-center gap-1.5 mt-0.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-brand-emerald animate-pulse" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-brand-emerald">Pro Active</span>
+                     </div>
+                  </div>
+                  <div className="ml-auto">
+                     <NotificationBell />
+                  </div>
+               </div>
+               
+               <button 
+                 onClick={logout}
+                 className="w-full py-3 rounded-xl bg-slate-900 border border-white/5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-rose-400 hover:border-rose-500/30 hover:bg-rose-500/5 transition-all"
+               >
+                 Terminate Session
+               </button>
             </div>
-          )}
-        </div>
+         )}
+         
+         {!user && !loading && (
+           <Link href="/login">
+             <button className="sm-btn-primary w-full py-3.5 !rounded-xl !text-xs !px-0">
+               Access Intelligence
+             </button>
+           </Link>
+         )}
       </div>
     </aside>
   );

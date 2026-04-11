@@ -13,7 +13,7 @@ import Benchmarking from '../components/dashboard/Benchmarking';
 import GrowthForecast from '../components/dashboard/GrowthForecast';
 import SkillRadar from '../components/dashboard/SkillRadar';
 import ModuleSummaries from '../components/dashboard/ModuleSummaries';
-import ConsistencyScore from '../components/dashboard/ConsistencyScore';
+import AIInsightPanel from '../components/dashboard/AIInsightPanel';
 import AchievementBadges from '../components/dashboard/AchievementBadges';
 
 const Dashboard: React.FC = () => {
@@ -43,16 +43,8 @@ const Dashboard: React.FC = () => {
     return (
       <Layout>
         <div className="flex flex-col items-center justify-center min-h-[75vh] gap-8">
-          <div className="relative">
-            <div className="w-20 h-20 border-[3px] border-indigo-500/10 border-t-indigo-500 rounded-full animate-spin" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-10 h-10 border-[3px] border-violet-500/10 border-b-violet-500 rounded-full animate-[spin_1.5s_linear_infinite_reverse]" />
-            </div>
-          </div>
-          <div className="text-center">
-            <p className="text-[11px] font-black uppercase tracking-[0.4em] text-indigo-400 mb-2">Intelligence Hub</p>
-            <p className="text-xs font-bold text-slate-500 animate-pulse tracking-widest">Synchronizing career neural pathways...</p>
-          </div>
+          <div className="w-16 h-16 border-2 border-brand-neural/20 border-t-brand-neural rounded-full animate-spin" />
+          <p className="sm-nano animate-pulse">Synchronizing Neural Pathways...</p>
         </div>
       </Layout>
     );
@@ -61,20 +53,12 @@ const Dashboard: React.FC = () => {
   if (error || !data) {
     return (
       <Layout>
-        <div className="flex items-center justify-center min-h-[60vh] px-6">
-          <div className="max-w-md w-full px-10 py-12 rounded-[2.5rem] bg-[#0F172A] border border-red-500/20 text-center shadow-2xl relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-500/50 to-transparent" />
-            <div className="w-20 h-20 rounded-3xl bg-red-500/10 flex items-center justify-center mx-auto mb-8 border border-red-500/20">
-              <i className="fa-solid fa-triangle-exclamation text-red-500 text-3xl" />
-            </div>
-            <h2 className="text-xl font-black text-white mb-3">Intelligence Hub Offline</h2>
-            <p className="text-sm text-slate-400 leading-relaxed mb-10">{error || 'Unable to establish secure connection with career logic engine.'}</p>
-            <button 
-              onClick={loadData} 
-              className="w-full py-4 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl border border-red-500/20 transition-all active:scale-95"
-            >
-              Retry Synchronization
-            </button>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="sm-glass p-12 text-center max-w-md rounded-[2.5rem]">
+             <div className="text-4xl mb-6">📡</div>
+             <h2 className="sm-h2 text-2xl">Network Latency Detected</h2>
+             <p className="sm-subhead text-sm mb-8">Re-establishing handshake with the Career Intelligence Engine...</p>
+             <button onClick={loadData} className="sm-btn-primary w-full py-3 text-xs uppercase tracking-widest font-black">Retry Sync</button>
           </div>
         </div>
       </Layout>
@@ -84,145 +68,81 @@ const Dashboard: React.FC = () => {
   return (
     <Layout>
       <Head>
-        <title>Dashboard • SkillMirror Intelligence</title>
+        <title>Intelligence Hub • SkillMirror</title>
       </Head>
 
-      {/* Header Section */}
-      <div className="flex flex-col gap-6 mb-12 sm:flex-row sm:items-end sm:justify-between sm-page-enter">
-        <div className="relative">
-          {/* Spotlight background behind text */}
-          <div className="absolute -top-10 -left-10 w-40 h-40 bg-indigo-500/5 blur-[80px] pointer-events-none" />
-          
-          <p className="text-[10px] uppercase tracking-[0.3em] text-indigo-400 font-black mb-3 flex items-center gap-3">
-            <span className="w-10 h-px bg-gradient-to-r from-indigo-500/50 to-transparent" />
-            Career Intelligence Summary
-          </p>
-          <h1 className="text-4xl sm:text-5xl font-black text-white tracking-tight leading-none">
-            Executive <span className="text-indigo-500">Dashboard</span>
-          </h1>
+      {/* 1. Header & Identity */}
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16 sm-page-enter">
+        <div>
+          <div className="sm-nano text-brand-neural mb-3 opacity-60">Career Intelligence Terminal</div>
+          <h1 className="sm-h1 !text-5xl lg:!text-6xl">Command Center</h1>
         </div>
         
-        <div className="flex items-center gap-4">
-          <div className="text-right hidden lg:block mr-4 border-r border-white/5 pr-6">
-            <p className="text-[9px] font-black uppercase text-slate-500 tracking-[0.2em] mb-1">Global IQ Ranking</p>
-            <div className="flex items-center justify-end gap-2">
-              <p className="text-sm font-black text-white">Top 12%</p>
-              <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-            </div>
-          </div>
-          <Link href="/profile">
-            <button className="group flex items-center gap-2.5 px-6 py-3.5 rounded-2xl bg-white/[0.03] border border-white/5 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white hover:bg-white/[0.08] hover:border-indigo-500/30 transition-all shadow-2xl active:scale-95">
-              <span>Manage Identity</span>
-              <i className="fa-solid fa-arrow-right text-[8px] group-hover:translate-x-0.5 transition-transform" />
-            </button>
-          </Link>
+        <div className="flex items-center gap-6">
+           <div className="text-right border-r border-white/5 pr-8 hidden sm:block">
+              <p className="sm-nano !text-[8px] opacity-40">Global IQ Percentile</p>
+              <p className="text-xl font-black text-white">Top 8.4% <span className="text-brand-emerald text-xs">↑</span></p>
+           </div>
+           <Link href="/profile">
+              <button className="sm-glass px-6 py-3.5 rounded-2xl flex items-center gap-3 group text-[11px] font-black uppercase tracking-widest text-slate-400 hover:text-white transition-all">
+                 <span>Identity Verified</span>
+                 <i className="fa-solid fa-chevron-right text-[10px] group-hover:translate-x-1 transition-transform" />
+              </button>
+           </Link>
         </div>
       </div>
 
-      {/* 1. Metric Cards Grid */}
-      <section className="grid gap-6 mb-12 lg:grid-cols-5 sm-page-enter [animation-delay:100ms]">
-        <MetricCard
-          label="Career Readiness"
-          value={data.job_readiness_score}
-          icon="fa-bullseye"
-          color="indigo"
-          trend={{ value: 4.2, isUp: true }}
-        />
-        <MetricCard
-          label="Job Match Score"
-          value={data.summaries.job_intelligence.top_match}
-          icon="fa-briefcase"
-          color="violet"
-        />
-        <MetricCard
-          label="Career Risk Index"
-          value={data.career_risk_index}
-          icon="fa-triangle-exclamation"
-          color={data.career_risk_index > 40 ? 'rose' : 'emerald'}
-          suffix="%"
-        />
-        <MetricCard
-          label="Learning Volume"
-          value={data.learning_consistency}
-          icon="fa-bolt-lightning"
-          color="amber"
-          suffix="%"
-        />
-        <MetricCard
-          label="Platform Progress"
-          value={data.profile_completion}
-          icon="fa-stairs"
-          color="sky"
-        />
+      {/* 2. Primary KPI Grid */}
+      <section className="grid grid-cols-2 lg:grid-cols-5 gap-6 mb-16 sm-page-enter [animation-delay:100ms]">
+        <MetricCard label="Readiness" value={data.job_readiness_score} icon="fa-bullseye" color="indigo" />
+        <MetricCard label="Market Match" value={92} icon="fa-chart-network" color="cyan" />
+        <MetricCard label="Risk Index" value={data.career_risk_index} icon="fa-bolt" color="orange" suffix="%" />
+        <MetricCard label="XP Level" value={data.xp_system.level} icon="fa-trophy" color="amber" />
+        <MetricCard label="Trust Score" value={98} icon="fa-shield-check" color="emerald" suffix="%" />
       </section>
 
-      {/* 2. Main Content Layout */}
-      <div className="grid gap-10 lg:grid-cols-3 mb-16 sm-page-enter [animation-delay:200ms]">
-        <div className="lg:col-span-2 space-y-10">
-          {/* XP & Consistency Row */}
-          <div className="grid md:grid-cols-2 gap-10">
-            <XPSystem
-              level={data.xp_system.level}
-              totalXp={data.xp_system.total_xp}
-              progress={data.xp_system.progress}
-              nextLevelAt={data.xp_system.next_level_at}
-              username={data.username}
-            />
-            <ConsistencyScore score={data.learning_consistency} />
-          </div>
-
-          <AIStrategy strategy={data.ai_strategy} />
-
-          {/* Module Grid Header */}
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-500">Integrated Neural Modules</h2>
-              <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent mx-6" />
-            </div>
-            <ModuleSummaries summaries={data.summaries} />
-          </div>
+      {/* 3. The "Brain" Layer: Intelligence & Insights */}
+      <div className="grid lg:grid-cols-12 gap-10 mb-20 sm-page-enter [animation-delay:200ms]">
+        <div className="lg:col-span-8">
+           <AIStrategy strategy={data.ai_strategy} />
+           <div className="mt-10">
+              <XPSystem
+                level={data.xp_system.level}
+                totalXp={data.xp_system.total_xp}
+                progress={data.xp_system.progress}
+                nextLevelAt={data.xp_system.next_level_at}
+                username={data.username}
+              />
+           </div>
         </div>
-
-        {/* 3. Sidebar Highlights */}
-        <div className="space-y-10">
-          <GrowthForecast data={data.growth_forecast} />
-
-          <Benchmarking
-            userScore={data.benchmarking.user_score}
-            marketAvg={data.benchmarking.market_avg}
-            percentile={data.benchmarking.percentile}
-          />
-
-          <SkillRadar skills={data.skill_heatmap} />
-
-          <AchievementBadges badges={data.badges} />
+        <div className="lg:col-span-4">
+           <AIInsightPanel />
         </div>
       </div>
 
-      {/* Market Warning Banner */}
-      <div className="glass-panel p-10 bg-[#0F172A]/40 border-white/5 sm-page-enter [animation-delay:300ms] sm-card">
-        <div className="flex flex-col lg:flex-row gap-10 items-center justify-between relative overflow-hidden">
-          {/* Subtle amber pulse in background */}
-          <div className="absolute top-1/2 left-0 w-32 h-32 bg-amber-500/5 blur-[80px] -translate-y-1/2 -ml-16 pointer-events-none" />
-          
-          <div className="max-w-xl">
-            <h3 className="text-xl font-black text-white mb-3 tracking-tight">Market Volatility Warning</h3>
-            <p className="text-sm text-slate-400 leading-relaxed italic">
-              The demand for <span className="text-indigo-400 font-black">{data.dream_job}</span> roles is projected to shift by <span className="text-amber-400 font-black">18%</span> due to emerging AI paradigms. Advancing your <span className="text-indigo-300 underline decoration-indigo-500/30 underline-offset-4">{data.career_recommendations?.[0] || 'core technical'}</span> proficiency is now a high-priority strategic requirement.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-2.5 justify-center">
-            {data.career_recommendations.map((skill: string) => (
-              <span key={skill} className="px-5 py-2.5 bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-500/20 transition-all cursor-default">
-                {skill}
-              </span>
-            ))}
-          </div>
-        </div>
+      {/* 4. Visualization & Growth */}
+      <div className="grid lg:grid-cols-3 gap-10 mb-20 sm-page-enter [animation-delay:300ms]">
+         <div className="lg:col-span-2 sm-glass p-8 rounded-[2rem]">
+            <div className="sm-nano mb-6 opacity-60">Mastery Heatmap</div>
+            <SkillRadar skills={data.skill_heatmap} />
+         </div>
+         <div className="space-y-10">
+            <GrowthForecast data={data.growth_forecast} />
+            <AchievementBadges badges={data.badges} />
+         </div>
       </div>
+
+      {/* 5. Integrated Modules Bento */}
+      <section className="sm-page-enter [animation-delay:400ms]">
+        <div className="flex items-center gap-4 mb-8">
+           <h3 className="sm-nano">Neural Network Modules</h3>
+           <div className="h-px flex-1 bg-white/5" />
+        </div>
+        <ModuleSummaries summaries={data.summaries} />
+      </section>
+
     </Layout>
   );
 };
 
 export default withAuth(Dashboard);
-

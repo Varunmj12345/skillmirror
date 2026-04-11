@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 
 class MarketTrend(models.Model):
@@ -70,3 +71,25 @@ class UserMilestone(models.Model):
     description = models.CharField(max_length=255)
     is_notified = models.BooleanField(default=False)
     achieved_at = models.DateTimeField(auto_now_add=True)
+
+class PlatformEvent(models.Model):
+    """
+    Enterprise Event Store for high-scale analytical distribution.
+    Acts as the bridge to Kafka/Redis Streams.
+    """
+    event_id = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    actor = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='platform_events')
+    action = models.CharField(max_length=100) # e.g. "skill_mastery", "interview_completed"
+    payload = models.JSONField(default=dict)
+    processed = models.BooleanField(default=False)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-timestamp']
+        indexes = [
+            models.Index(fields=['action', 'timestamp']),
+            models.Index(fields=['event_id']),
+        ]
+
+    def __str__(self):
+        return f"Event: {self.action} by {self.actor.email} at {self.timestamp}"
