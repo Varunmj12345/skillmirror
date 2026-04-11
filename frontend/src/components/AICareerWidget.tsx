@@ -65,10 +65,10 @@ const AICareerWidget: React.FC = () => {
           <div className="bg-indigo-600 text-white px-4 py-3 flex justify-between items-center">
             <span className="font-semibold text-sm">AI Career Assistant</span>
             <div className="flex items-center gap-2">
-              <Link href="/roadmap">
-                <span className="text-white/90 hover:text-white text-[11px] font-medium mr-2">
+              <Link href="/roadmap" passHref>
+                <a className="text-white/90 hover:text-white text-[11px] font-medium mr-2">
                   View Roadmap
-                </span>
+                </a>
               </Link>
               <button onClick={() => setOpen(false)} className="text-white/70 hover:text-white p-1.5 rounded-lg hover:bg-white/10 active:scale-90 transition-all duration-150">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

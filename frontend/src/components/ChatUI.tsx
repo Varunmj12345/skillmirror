@@ -29,7 +29,17 @@ const TypingIndicator = () => (
   </motion.div>
 );
 
-const MessageBubble = ({ message, index }) => {
+interface Message {
+  role: string;
+  text: string;
+}
+
+interface MessageBubbleProps {
+  message: Message;
+  index: number;
+}
+
+const MessageBubble: React.FC<MessageBubbleProps> = ({ message, index }) => {
   const isUser = message.role === 'user';
   return (
     <motion.div
@@ -74,8 +84,13 @@ const MessageBubble = ({ message, index }) => {
   );
 };
 
-const ChatUI = ({ messages = [], loading = false }) => {
-  const bottomRef = useRef(null);
+interface ChatUIProps {
+  messages: Message[];
+  loading?: boolean;
+}
+
+const ChatUI: React.FC<ChatUIProps> = ({ messages = [], loading = false }) => {
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });

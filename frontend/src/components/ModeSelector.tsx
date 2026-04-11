@@ -1,6 +1,11 @@
 import React from 'react';
 
-const ModeSelector = ({ selectedMode, onModeChange }) => {
+interface ModeSelectorProps {
+  selectedMode: string;
+  onModeChange: (mode: string) => void;
+}
+
+const ModeSelector: React.FC<ModeSelectorProps> = ({ selectedMode, onModeChange }) => {
   const modes = [
     { id: 'career',   label: 'Career',   icon: '💼' },
     { id: 'learning', label: 'Learning', icon: '📚' },
