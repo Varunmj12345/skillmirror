@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { sendCareerMessage } from '../services/aiChat';
+import ModeSelector from './ModeSelector';
 
 const AICareerWidget: React.FC = () => {
   const [open, setOpen] = useState(false);
+  const [selectedMode, setSelectedMode] = useState('career');
   const [messages, setMessages] = useState<{ role: string; text: string }[]>([
     { role: 'ai', text: "Hi! I'm your AI Career Assistant. Ask about roadmap, skills, resume, or career advice." },
   ]);
@@ -62,6 +64,11 @@ const AICareerWidget: React.FC = () => {
               </button>
             </div>
           </div>
+          {/* Mode Selector — sits above messages, no backend connection */}
+          <div className="px-4 pt-4">
+            <ModeSelector selectedMode={selectedMode} onModeChange={setSelectedMode} />
+          </div>
+
           <div className="flex-1 overflow-y-auto h-80 p-4 space-y-4 bg-gray-50 dark:bg-slate-950/50">
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : ''}`}>
