@@ -47,7 +47,7 @@ const AICareerWidget: React.FC = () => {
           {/* Glass glare effect */}
           <div className="absolute inset-0 bg-gradient-to-br from-white/30 to-transparent opacity-50" />
           
-          <i className={`fa-solid ${open ? 'fa-xmark' : 'fa-brain-circuit'} text-2xl text-white relative z-10 transition-transform duration-300 ${open ? 'rotate-90 scale-90' : 'rotate-0 scale-100 group-hover:animate-pulse'}`} />
+          <i className={`fa-solid ${open ? 'fa-xmark' : 'fa-brain'} text-2xl text-white relative z-10 transition-transform duration-300 ${open ? 'rotate-90 scale-90' : 'rotate-0 scale-100 group-hover:animate-pulse'}`} />
         </button>
       </div>
 

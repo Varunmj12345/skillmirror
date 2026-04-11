@@ -251,7 +251,7 @@ function ProfileDashboard() {
               <div className="glass-panel p-6 bg-gradient-to-br from-indigo-600/20 to-violet-600/20 border-indigo-500/30 relative overflow-hidden animate-in fade-in slide-in-from-left-4 duration-500">
                 <div className="flex items-start gap-4 relative z-10">
                   <div className="w-12 h-12 rounded-2xl bg-indigo-500 flex items-center justify-center text-white shadow-xl">
-                    <i className="fa-solid fa-brain-circuit text-xl"></i>
+                    <i className="fa-solid fa-brain text-xl"></i>
                   </div>
                   <div className="flex-1 space-y-1">
                     <h3 className="text-sm font-black text-indigo-300 uppercase tracking-widest">AI Strategic Recommendation</h3>

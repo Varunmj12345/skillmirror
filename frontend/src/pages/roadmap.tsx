@@ -248,7 +248,7 @@ const Roadmap: React.FC = () => {
                   <div className="bg-slate-950/40 rounded-3xl p-6 border border-indigo-500/20 shadow-2xl relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-20 h-20 bg-indigo-600/5 rounded-full blur-2xl"></div>
                     <div className="flex items-center gap-2 mb-3">
-                      <i className="fa-solid fa-brain-circuit text-indigo-400 text-sm"></i>
+                      <i className="fa-solid fa-brain text-indigo-400 text-sm"></i>
                       <span className="text-[10px] font-black text-indigo-500 uppercase tracking-widest">Next Best Skill</span>
                     </div>
                     {suggLoading ? (

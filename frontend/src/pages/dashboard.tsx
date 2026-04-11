@@ -95,7 +95,7 @@ const Dashboard: React.FC = () => {
       {/* 2. Primary KPI Grid */}
       <section className="grid grid-cols-2 lg:grid-cols-5 gap-6 mb-16 sm-page-enter [animation-delay:100ms]">
         <MetricCard label="Readiness" value={data.job_readiness_score} icon="fa-bullseye" color="indigo" />
-        <MetricCard label="Market Match" value={92} icon="fa-chart-network" color="cyan" />
+        <MetricCard label="Market Match" value={92} icon="fa-network-wired" color="cyan" />
         <MetricCard label="Risk Index" value={data.career_risk_index} icon="fa-bolt" color="orange" suffix="%" />
         <MetricCard label="XP Level" value={data.xp_system.level} icon="fa-trophy" color="amber" />
         <MetricCard label="Trust Score" value={98} icon="fa-shield-check" color="emerald" suffix="%" />

@@ -8,7 +8,7 @@ interface ModeSelectorProps {
 const ModeSelector: React.FC<ModeSelectorProps> = ({ selectedMode, onModeChange }) => {
   const modes = [
     { id: 'career',   label: 'Strategy', icon: 'fa-chess-knight' },
-    { id: 'learning', label: 'Learning', icon: 'fa-book-sparkles' },
+    { id: 'learning', label: 'Learning', icon: 'fa-book-open' },
     { id: 'quick',    label: 'Quick',    icon: 'fa-bolt-lightning' },
   ];
 

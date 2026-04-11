@@ -16,7 +16,7 @@ const TypingIndicator = () => (
   >
     <div className="w-8 h-8 rounded-xl bg-brand-neural/20 flex items-center justify-center flex-shrink-0 shadow-inner border border-brand-neural/30 relative overflow-hidden">
       <div className="absolute inset-0 bg-brand-neural/10 animate-pulse" />
-      <i className="fa-solid fa-brain-circuit text-brand-neural text-xs relative z-10" />
+      <i className="fa-solid fa-brain text-brand-neural text-xs relative z-10" />
     </div>
     <div className="bg-white/5 border border-white/5 rounded-[20px] rounded-bl-sm px-5 py-4 shadow-sm backdrop-blur-md">
       <div className="flex items-center gap-1.5">

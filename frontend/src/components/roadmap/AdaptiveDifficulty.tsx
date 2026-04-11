@@ -8,7 +8,7 @@ const AdaptiveDifficulty: React.FC<AdaptiveDifficultyProps> = ({ level }) => {
     const config = {
         beginner: { label: 'Foundational', color: 'emerald', icon: 'fa-seedling' },
         intermediate: { label: 'Intermediate', color: 'indigo', icon: 'fa-rocket' },
-        advanced: { label: 'Advanced', color: 'violet', icon: 'fa-brain-circuit' }
+        advanced: { label: 'Advanced', color: 'violet', icon: 'fa-brain' }
     };
 
     const { label, color, icon } = config[level] || config.intermediate;

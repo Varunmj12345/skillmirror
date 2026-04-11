@@ -36,7 +36,7 @@ const Header: React.FC = () => {
       title: 'AI Intelligence',
       items: [
         { href: '/roadmap', label: 'Career Roadmap', icon: 'fa-compass' },
-        { href: '/skill-gap', label: 'Gap Analyzer', icon: 'fa-brain-circuit' },
+        { href: '/skill-gap', label: 'Gap Analyzer', icon: 'fa-brain' },
         { href: '/resume', label: 'ATS Optimizer', icon: 'fa-file-shield' },
         { href: '/mock-interview', label: 'Interview Shadow', icon: 'fa-headset' },
       ],
@@ -44,7 +44,7 @@ const Header: React.FC = () => {
     {
       title: 'Market Intelligence',
       items: [
-        { href: '/job-intelligence', label: 'Demand Streams', icon: 'fa-chart-network' },
+        { href: '/job-intelligence', label: 'Demand Streams', icon: 'fa-network-wired' },
         { href: '/smart-alerts', label: 'Smart Alerts', icon: 'fa-bolt-lightning' },
       ],
     },
