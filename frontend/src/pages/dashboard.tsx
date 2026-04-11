@@ -11,7 +11,7 @@ import XPSystem from '../components/dashboard/XPSystem';
 import AIStrategy from '../components/dashboard/AIStrategy';
 import Benchmarking from '../components/dashboard/Benchmarking';
 import GrowthForecast from '../components/dashboard/GrowthForecast';
-import SkillHeatmap from '../components/dashboard/SkillHeatmap';
+import SkillRadar from '../components/dashboard/SkillRadar';
 import ModuleSummaries from '../components/dashboard/ModuleSummaries';
 import ConsistencyScore from '../components/dashboard/ConsistencyScore';
 import AchievementBadges from '../components/dashboard/AchievementBadges';
@@ -193,7 +193,7 @@ const Dashboard: React.FC = () => {
             percentile={data.benchmarking.percentile}
           />
 
-          <SkillHeatmap skills={data.skill_heatmap} />
+          <SkillRadar skills={data.skill_heatmap} />
 
           <AchievementBadges badges={data.badges} />
         </div>
