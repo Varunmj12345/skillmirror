@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { motion } from 'framer-motion';
 import useAuth from '../hooks/useAuth';
-import Layout from '../components/Layout';
 import HeroSection from '../components/HeroSection';
+import AICareerWidget from '../components/AICareerWidget';
 import FeatureCards from '../components/FeatureCards';
 import AIFeatureSection from '../components/AIFeatureSection';
 import LandingFooter from '../components/LandingFooter';
@@ -19,13 +19,13 @@ const Home: React.FC = () => {
   }, []);
 
   return (
-    <Layout>
+    <>
       <Head>
         <title>SkillMirror | Build Your Career with AI</title>
         <meta name="description" content="SkillMirror helps you analyze skills, build personalized roadmaps, and get job-ready with real-time AI." />
       </Head>
 
-      <div className="bg-[#020617] text-slate-200 selection:bg-indigo-500/30">
+      <div className="bg-[#020617] text-slate-200 selection:bg-indigo-500/30 min-h-screen">
 
         {/* Sticky landing navbar */}
         <motion.nav
@@ -119,7 +119,8 @@ const Home: React.FC = () => {
         {/* Footer */}
         <LandingFooter />
       </div>
-    </Layout>
+      {!user ? null : <AICareerWidget />}
+    </>
   );
 };
 
