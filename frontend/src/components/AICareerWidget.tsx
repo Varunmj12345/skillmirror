@@ -38,18 +38,30 @@ const AICareerWidget: React.FC = () => {
 
   return (
     <>
-      <button
-        onClick={() => setOpen(!open)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-indigo-600 text-white shadow-lg hover:bg-indigo-700 flex items-center justify-center transition-all"
-        aria-label="AI Career Assistant"
-      >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-        </svg>
-      </button>
+      <div className="fixed bottom-6 right-6 z-50">
+        {/* Pulse ring indicator */}
+        {!open && (
+          <span className="absolute inset-0 rounded-full bg-indigo-500 animate-ping opacity-25 pointer-events-none" />
+        )}
+        <button
+          onClick={() => setOpen(!open)}
+          className="relative w-14 h-14 rounded-full bg-gradient-to-br from-indigo-600 to-violet-600 text-white shadow-lg shadow-indigo-600/30 flex items-center justify-center transition-all duration-200 hover:scale-110 hover:shadow-xl hover:shadow-indigo-600/40 active:scale-95"
+          aria-label="AI Career Assistant"
+        >
+          <svg
+            className={`w-6 h-6 transition-transform duration-300 ${open ? 'rotate-90 scale-90' : 'rotate-0 scale-100'}`}
+            fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          >
+            {open
+              ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            }
+          </svg>
+        </button>
+      </div>
 
       {open && (
-        <div className="fixed bottom-24 right-6 z-50 w-96 max-w-[calc(100vw-3rem)] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-slate-800 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300">
+        <div className="fixed bottom-24 right-6 z-50 w-96 max-w-[calc(100vw-3rem)] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl shadow-black/20 border border-gray-200 dark:border-slate-800 flex flex-col overflow-hidden sm-panel-in">
           <div className="bg-indigo-600 text-white px-4 py-3 flex justify-between items-center">
             <span className="font-semibold text-sm">AI Career Assistant</span>
             <div className="flex items-center gap-2">
@@ -58,7 +70,7 @@ const AICareerWidget: React.FC = () => {
                   View Roadmap
                 </span>
               </Link>
-              <button onClick={() => setOpen(false)} className="text-white/80 hover:text-white p-1">
+              <button onClick={() => setOpen(false)} className="text-white/70 hover:text-white p-1.5 rounded-lg hover:bg-white/10 active:scale-90 transition-all duration-150">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -80,9 +92,12 @@ const AICareerWidget: React.FC = () => {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && send()}
               placeholder="Ask me anything..."
-              className="flex-1 px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+              className="flex-1 px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 outline-none sm-input"
             />
-            <button onClick={send} className="p-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 active:scale-95 transition-all shadow-md shadow-indigo-600/20">
+            <button
+              onClick={send}
+              disabled={loading}
+              className="p-2.5 bg-gradient-to-br from-indigo-600 to-violet-600 text-white rounded-xl shadow-md shadow-indigo-600/20 transition-all duration-150 hover:scale-105 hover:shadow-lg hover:shadow-indigo-600/30 active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
               </svg>

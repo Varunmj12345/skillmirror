@@ -373,3 +373,102 @@ body {
     -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent);
     mask-image: linear-gradient(to bottom, black 50%, transparent);
 }
+
+/* ─── Micro-Interaction System ────────────────────────────────────────── */
+
+/* Page-level fade-in for main content area */
+@keyframes sm-page-enter {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0);   }
+}
+
+.sm-page-enter {
+    animation: sm-page-enter 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Chat message slide-up + fade */
+@keyframes sm-msg-in {
+    from { opacity: 0; transform: translateY(10px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+.sm-msg-in {
+    animation: sm-msg-in 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Widget panel pop-in */
+@keyframes sm-panel-in {
+    from { opacity: 0; transform: translateY(12px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+.sm-panel-in {
+    animation: sm-panel-in 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* FAB pulse ring */
+@keyframes sm-ping-once {
+    0%   { transform: scale(1);    opacity: 0.6; }
+    80%  { transform: scale(1.9);  opacity: 0;   }
+    100% { transform: scale(1.9);  opacity: 0;   }
+}
+
+.sm-ping-once {
+    animation: sm-ping-once 0.55s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+/* Interactive button base — add this class to all CTA buttons */
+.sm-btn {
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.2s ease;
+}
+.sm-btn:hover  { transform: translateY(-1px) scale(1.035); }
+.sm-btn:active { transform: scale(0.95); }
+
+/* Card lift on hover */
+.sm-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.sm-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.35);
+}
+
+/* Input focus glow ring */
+.sm-input {
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+.sm-input:focus {
+    outline: none;
+    border-color: rgba(99, 102, 241, 0.6);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
+}
+
+/* Sidebar nav link slide */
+.sm-nav-item {
+    transition: transform 0.18s ease, background-color 0.18s ease, color 0.18s ease;
+}
+.sm-nav-item:hover { transform: translateX(3px); }
+
+/* Tooltip fade */
+.sm-tooltip {
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    opacity: 0;
+    transform: translateY(4px);
+    pointer-events: none;
+}
+.sm-tooltip-trigger:hover .sm-tooltip {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Subtle shimmer on skeleton loaders */
+@keyframes sm-skeleton {
+    0%   { background-position: -200% 0; }
+    100% { background-position:  200% 0; }
+}
+.sm-skeleton {
+    background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+    background-size: 200% 100%;
+    animation: sm-skeleton 1.5s infinite;
+}
+/* ──────────────────────────────────────────────────────────────────────── */
