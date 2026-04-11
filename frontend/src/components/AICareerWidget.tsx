@@ -8,7 +8,7 @@ const AICareerWidget: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [selectedMode, setSelectedMode] = useState('career');
   const [messages, setMessages] = useState<{ role: string; text: string }[]>([
-    { role: 'ai', text: "Hi! I'm your AI Career Assistant. Ask about roadmap, skills, resume, or career advice." },
+    { role: 'ai', text: "Neural connection established. I am your AI Career Architect. How can we optimize your trajectory today?" },
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -21,16 +21,13 @@ const AICareerWidget: React.FC = () => {
     setLoading(true);
     try {
       const res = await sendCareerMessage(userMsg);
-      const replyText = res?.reply || 'I can help with career guidance. Try asking about roadmap, skills, or resume.';
+      const replyText = res?.reply || 'I am processing your career data. Ask about your Roadmap, Skills Matrix, or Resume optimization.';
       setMessages((m) => [
         ...m,
-        {
-          role: 'ai',
-          text: replyText,
-        },
+        { role: 'ai', text: replyText },
       ]);
     } catch {
-      setMessages((m) => [...m, { role: 'ai', text: 'Sorry, something went wrong. Please try again.' }]);
+      setMessages((m) => [...m, { role: 'ai', text: 'Latency detected. Please try your request again.' }]);
     } finally {
       setLoading(false);
     }
@@ -38,74 +35,83 @@ const AICareerWidget: React.FC = () => {
 
   return (
     <>
-      <div className="fixed bottom-6 right-6 z-50">
-        {/* Pulse ring indicator */}
+      <div className="fixed bottom-8 right-8 z-[100]">
         {!open && (
-          <span className="absolute inset-0 rounded-full bg-indigo-500 animate-ping opacity-25 pointer-events-none" />
+          <span className="absolute inset-0 rounded-full bg-brand-neural animate-ping opacity-30 pointer-events-none" />
         )}
         <button
           onClick={() => setOpen(!open)}
-          className="relative w-14 h-14 rounded-full bg-gradient-to-br from-indigo-600 to-violet-600 text-white shadow-lg shadow-indigo-600/30 flex items-center justify-center transition-all duration-200 hover:scale-110 hover:shadow-xl hover:shadow-indigo-600/40 active:scale-95"
-          aria-label="AI Career Assistant"
+          className="relative w-16 h-16 rounded-[1.25rem] bg-brand-neural flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 shadow-glass-glow shadow-brand-neural/50 overflow-hidden group"
+          aria-label="Toggle Neural Assistant"
         >
-          <svg
-            className={`w-6 h-6 transition-transform duration-300 ${open ? 'rotate-90 scale-90' : 'rotate-0 scale-100'}`}
-            fill="none" stroke="currentColor" viewBox="0 0 24 24"
-          >
-            {open
-              ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-            }
-          </svg>
+          {/* Glass glare effect */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/30 to-transparent opacity-50" />
+          
+          <i className={`fa-solid ${open ? 'fa-xmark' : 'fa-brain-circuit'} text-2xl text-white relative z-10 transition-transform duration-300 ${open ? 'rotate-90 scale-90' : 'rotate-0 scale-100 group-hover:animate-pulse'}`} />
         </button>
       </div>
 
       {open && (
-        <div className="fixed bottom-24 right-6 z-50 w-96 max-w-[calc(100vw-3rem)] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl shadow-black/20 border border-gray-200 dark:border-slate-800 flex flex-col overflow-hidden sm-panel-in">
-          <div className="bg-indigo-600 text-white px-4 py-3 flex justify-between items-center">
-            <span className="font-semibold text-sm">AI Career Assistant</span>
-            <div className="flex items-center gap-2">
+        <div className="fixed bottom-28 right-8 z-[100] w-[400px] max-w-[calc(100vw-4rem)] sm-glass bg-brand-obsidian/95 backdrop-blur-3xl rounded-[2rem] border border-white/10 flex flex-col overflow-hidden sm-page-enter [animation-duration:400ms] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8),_0_0_20px_2px_rgba(99,102,241,0.15)]">
+          {/* Header */}
+          <div className="px-6 py-5 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
+            <div className="flex items-center gap-3">
+               <div className="w-8 h-8 rounded-lg bg-brand-neural/20 flex items-center justify-center border border-brand-neural/30 relative">
+                  <div className="absolute -inset-1 bg-brand-neural/20 blur-md rounded-full" />
+                  <i className="fa-solid fa-sparkles text-brand-neural text-xs relative z-10" />
+               </div>
+               <div>
+                  <h3 className="text-sm font-bold text-white tracking-tight">Intelligence Node</h3>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                     <span className="w-1.5 h-1.5 rounded-full bg-brand-emerald animate-pulse" />
+                     <span className="sm-nano text-brand-emerald">Online</span>
+                  </div>
+               </div>
+            </div>
+            <div className="flex items-center gap-4">
               <Link href="/roadmap" passHref>
-                <a className="text-white/90 hover:text-white text-[11px] font-medium mr-2">
+                <a className="sm-nano text-slate-400 hover:text-white transition-colors">
                   View Roadmap
                 </a>
               </Link>
-              <button onClick={() => setOpen(false)} className="text-white/70 hover:text-white p-1.5 rounded-lg hover:bg-white/10 active:scale-90 transition-all duration-150">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
             </div>
           </div>
-          {/* Mode Selector — sits above messages, no backend connection */}
-          <div className="px-4 pt-4">
+          
+          {/* Mode Selector */}
+          <div className="px-6 pt-5 pb-2">
             <ModeSelector selectedMode={selectedMode} onModeChange={setSelectedMode} />
           </div>
 
-          <div className="h-80">
+          {/* Chat Container */}
+          <div className="h-[360px] relative">
             <ChatUI messages={messages} loading={loading} />
+            {/* Soft gradient mask for scroll edge */}
+            <div className="absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-brand-obsidian/95 to-transparent pointer-events-none" />
           </div>
-          <div className="p-3 border-t border-gray-200 dark:border-slate-800 dark:bg-slate-900 bg-white flex gap-2">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && send()}
-              placeholder="Ask me anything..."
-              className="flex-1 px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 outline-none sm-input"
-            />
-            <button
-              onClick={send}
-              disabled={loading}
-              className="p-2.5 bg-gradient-to-br from-indigo-600 to-violet-600 text-white rounded-xl shadow-md shadow-indigo-600/20 transition-all duration-150 hover:scale-105 hover:shadow-lg hover:shadow-indigo-600/30 active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-              </svg>
-            </button>
+          
+          {/* Input Area */}
+          <div className="p-5 border-t border-white/5 bg-white/[0.02]">
+            <div className="relative flex gap-3">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && send()}
+                placeholder="Ask your Career Architect..."
+                className="flex-1 px-5 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder:text-slate-500 outline-none focus:border-brand-neural/50 focus:bg-white/10 transition-all font-medium tracking-wide"
+              />
+              <button
+                onClick={send}
+                disabled={loading || !input.trim()}
+                className="w-12 h-[52px] bg-brand-neural text-white flex justify-center items-center rounded-2xl shadow-glass-glow shadow-brand-neural/30 transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed group overflow-hidden relative"
+              >
+                <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent opacity-50" />
+                <i className="fa-solid fa-paper-plane-top text-sm relative z-10 group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
           </div>
         </div>
       )}
-
     </>
   );
 };

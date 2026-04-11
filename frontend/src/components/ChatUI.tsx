@@ -2,9 +2,9 @@ import React, { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const msgVariant = {
-  hidden:  { opacity: 0, y: 10, scale: 0.97 },
+  hidden:  { opacity: 0, y: 10, scale: 0.98 },
   visible: { opacity: 1, y: 0,  scale: 1,
-    transition: { duration: 0.28, ease: [0.16, 1, 0.3, 1] } },
+    transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] } },
 };
 
 const TypingIndicator = () => (
@@ -12,18 +12,17 @@ const TypingIndicator = () => (
     variants={msgVariant}
     initial="hidden"
     animate="visible"
-    className="flex items-end gap-2"
+    className="flex items-end gap-3 mb-4"
   >
-    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0 shadow-md shadow-indigo-500/20">
-      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z" />
-      </svg>
+    <div className="w-8 h-8 rounded-xl bg-brand-neural/20 flex items-center justify-center flex-shrink-0 shadow-inner border border-brand-neural/30 relative overflow-hidden">
+      <div className="absolute inset-0 bg-brand-neural/10 animate-pulse" />
+      <i className="fa-solid fa-brain-circuit text-brand-neural text-xs relative z-10" />
     </div>
-    <div className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl rounded-bl-md px-4 py-3 shadow-sm">
+    <div className="bg-white/5 border border-white/5 rounded-[20px] rounded-bl-sm px-5 py-4 shadow-sm backdrop-blur-md">
       <div className="flex items-center gap-1.5">
-        <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '0ms'   }} />
-        <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '150ms' }} />
-        <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+        <span className="w-1.5 h-1.5 rounded-full bg-brand-neural/70 animate-bounce" style={{ animationDelay: '0ms'   }} />
+        <span className="w-1.5 h-1.5 rounded-full bg-brand-neural/70 animate-bounce" style={{ animationDelay: '150ms' }} />
+        <span className="w-1.5 h-1.5 rounded-full bg-brand-neural/70 animate-bounce" style={{ animationDelay: '300ms' }} />
       </div>
     </div>
   </motion.div>
@@ -47,39 +46,32 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, index }) => {
       initial="hidden"
       animate="visible"
       custom={index}
-      className={`flex items-end gap-2 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}
+      className={`flex items-end gap-3 mb-4 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}
     >
-      {/* AI avatar */}
-      {!isUser && (
-        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0 shadow-md shadow-indigo-500/20 transition-transform duration-200 hover:scale-110">
-          <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z" />
-          </svg>
+      {/* Avatar */}
+      {!isUser ? (
+        <div className="w-8 h-8 rounded-xl bg-brand-neural/10 flex items-center justify-center flex-shrink-0 border border-brand-neural/20 hover:scale-110 transition-transform relative">
+          <i className="fa-solid fa-sparkles text-brand-neural text-xs" />
+        </div>
+      ) : (
+        <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0 border border-white/10 hover:scale-110 transition-transform">
+          <i className="fa-solid fa-user text-slate-400 text-xs" />
         </div>
       )}
 
       {/* Bubble */}
       <div
         className={`
-          max-w-[80%] px-4 py-2.5 text-sm leading-relaxed shadow-sm
-          transition-all duration-200 hover:shadow-md
+          max-w-[80%] px-5 py-3.5 text-sm leading-relaxed shadow-sm backdrop-blur-md
+          transition-all duration-300 hover:shadow-md font-medium tracking-wide
           ${isUser
-            ? 'bg-gradient-to-br from-indigo-600 to-violet-600 text-white rounded-2xl rounded-br-md shadow-indigo-500/20'
-            : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-100 dark:border-slate-700 rounded-2xl rounded-bl-md'
+            ? 'bg-brand-neural text-white rounded-[20px] rounded-br-[4px] shadow-glass-glow shadow-brand-neural/20'
+            : 'bg-white/5 text-slate-200 border border-white/10 rounded-[20px] rounded-bl-[4px] hover:bg-white/10'
           }
         `}
       >
         {message.text}
       </div>
-
-      {/* User avatar */}
-      {isUser && (
-        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-slate-700 to-slate-600 flex items-center justify-center flex-shrink-0 border border-slate-600 transition-transform duration-200 hover:scale-110">
-          <svg className="w-3.5 h-3.5 text-slate-300" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
-          </svg>
-        </div>
-      )}
     </motion.div>
   );
 };
@@ -97,14 +89,14 @@ const ChatUI: React.FC<ChatUIProps> = ({ messages = [], loading = false }) => {
   }, [messages, loading]);
 
   return (
-    <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-4 space-y-4 bg-slate-50 dark:bg-slate-950/50 scroll-smooth sm-scrollbar">
+    <div className="h-full overflow-y-auto overscroll-contain px-6 py-6 scroll-smooth sm-scrollbar">
       <AnimatePresence initial={false}>
         {messages.map((message, index) => (
           <MessageBubble key={index} message={message} index={index} />
         ))}
         {loading && <TypingIndicator key="typing" />}
       </AnimatePresence>
-      <div ref={bottomRef} />
+      <div ref={bottomRef} className="h-4" />
     </div>
   );
 };
