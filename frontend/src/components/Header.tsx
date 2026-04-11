@@ -59,7 +59,7 @@ const Header: React.FC = () => {
         <Link href="/">
           <div className="flex items-center gap-4 cursor-pointer group/logo">
              <div className="w-11 h-11 rounded-[14px] bg-brand-neural relative flex items-center justify-center shadow-glass-glow shadow-brand-neural/30 transition-all group-hover/logo:scale-105">
-                <i className="fa-solid fa-mirror text-white text-xl" />
+                <i className="fa-solid fa-cube text-white text-xl" />
                 <div className="absolute inset-0 bg-white/20 rounded-inherit opacity-0 group-hover/logo:opacity-100 transition-opacity" />
              </div>
              <div className="flex flex-col">

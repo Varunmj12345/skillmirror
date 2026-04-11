@@ -19,12 +19,41 @@ const ExportPanel: React.FC = () => {
     };
 
     const handleExport = async (key: string) => {
-        setExporting(key);
-        // Simulate export
-        await new Promise(r => setTimeout(r, 1200));
-        setExporting(null);
-        setToast(`${key.toUpperCase()} export ready!`);
-        setTimeout(() => setToast(''), 3000);
+        if (key === 'pdf') {
+            const element = document.getElementById('resume-export-container');
+            if (!element) {
+                setToast('Error: Resume preview not found');
+                setTimeout(() => setToast(''), 3000);
+                return;
+            }
+            setExporting(key);
+            try {
+                // @ts-ignore - Dynamic import to bypass SSR restrictions
+                const html2pdf = (await import('html2pdf.js')).default;
+                const opt = {
+                    margin:       0,
+                    filename:     'SkillMirror_Resume.pdf',
+                    image:        { type: 'jpeg' as const, quality: 0.98 },
+                    html2canvas:  { scale: 2, useCORS: true },
+                    jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' as const }
+                };
+                await html2pdf().set(opt).from(element).save();
+                setToast('PDF saved to local machine!');
+            } catch (err) {
+                console.error(err);
+                setToast('Failed to generate PDF');
+            } finally {
+                setExporting(null);
+                setTimeout(() => setToast(''), 3000);
+            }
+        } else {
+            // Document/TXT fallbacks in future iterations
+            setExporting(key);
+            await new Promise(r => setTimeout(r, 1200));
+            setExporting(null);
+            setToast(`${key.toUpperCase()} export is coming soon. Use PDF.`);
+            setTimeout(() => setToast(''), 3000);
+        }
     };
 
     return (

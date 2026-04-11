@@ -150,7 +150,7 @@ const ResumePreview: React.FC<Props> = ({ data, template }) => {
     );
 
     return (
-        <div className="bg-white rounded-xl shadow-2xl overflow-hidden text-slate-800" style={{ fontFamily: font }}>
+        <div id="resume-export-container" className="bg-white rounded-xl shadow-2xl overflow-hidden text-slate-800" style={{ fontFamily: font }}>
             {/* Header */}
             <div className="px-6 py-5" style={{ backgroundColor: accent + '15', borderBottom: `2px solid ${accent}30` }}>
                 <h1 className="text-base font-black" style={{ color: accent }}>
