@@ -29,7 +29,15 @@ SECRET_KEY = os.getenv('JWT_SECRET', os.getenv('DJANGO_SECRET_KEY', 'your-defaul
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "0.0.0.0", "skillmirror-api.onrender.com", "skillmirror-puce.vercel.app", "*"]
+ALLOWED_HOSTS = [
+    "127.0.0.1", 
+    "localhost", 
+    "0.0.0.0", 
+    "skillmirror-api.onrender.com", 
+    "skillmirror-api-judc.onrender.com", 
+    "skillmirror-puce.vercel.app", 
+    "*"
+]
 
 # Application definition
 INSTALLED_APPS = [
@@ -134,19 +142,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'skillmirror.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-if os.getenv('DJANGO_USE_SQLITE', 'True') == 'True':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
-else:
-    DATABASES = {
-        'default': dj_database_url.parse(os.getenv('DATABASE_URL'))
-    }
+# Database configuration using Neon PostgreSQL
+DATABASES = {
+    'default': dj_database_url.parse(os.getenv('DATABASE_URL'))
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators

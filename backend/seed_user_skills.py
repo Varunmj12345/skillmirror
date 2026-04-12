@@ -30,4 +30,4 @@ def seed_user_skills(email):
             print(f"User already has skill {name}")
 
 if __name__ == "__main__":
-    seed_user_skills('srinivaskt275@gmail.com')
+    seed_user_skills('varunmj1356@gmail.com')

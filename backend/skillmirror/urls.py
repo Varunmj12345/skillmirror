@@ -3,16 +3,21 @@ from django.urls import path, include
 from django.http import JsonResponse
 from django.conf import settings
 from django.conf.urls.static import static
+from django.utils import timezone
 
 def api_root(request):
     return JsonResponse({
         'message': 'SkillMirror API',
         'docs': 'Visit http://localhost:3000 for the app',
-        'endpoints': ['/users/', '/roadmaps/', '/skills/', '/analytics/', '/admin/'],
+        'endpoints': ['/users/', '/roadmaps/', '/skills/', '/analytics/', '/admin/', '/health/'],
     })
+
+def health_check(request):
+    return JsonResponse({'status': 'healthy', 'timestamp': str(timezone.now())})
 
 urlpatterns = [
     path('', api_root),
+    path('health/', health_check),
     path('admin/', admin.site.urls),
     path('users/', include('apps.users.urls')),
     path('api/users/', include('apps.users.urls')), # Added for consistency

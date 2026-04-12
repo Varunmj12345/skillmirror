@@ -23,7 +23,9 @@ class EnterpriseSecurityMiddleware:
         start_time = time.time()
         
         # Identity Check
-        user_id = request.user.id if request.user.is_authenticated else "anonymous"
+        user_id = "anonymous"
+        if hasattr(request, 'user') and request.user.is_authenticated:
+            user_id = request.user.id
         
         response = self.get_response(request)
         
