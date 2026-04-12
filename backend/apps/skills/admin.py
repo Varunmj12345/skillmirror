@@ -2,7 +2,8 @@ from django.contrib import admin
 from .models import (
     Skill, UserSkill, RequiredSkill, SkillGapReport, 
     RoleTemplate, CareerReadinessSnapshot, ResumeData, 
-    ResumeHistory, ResumeBuilderProfile, CommunityTemplate
+    ResumeHistory, ResumeBuilderProfile, CommunityTemplate,
+    GeneratedResume
 )
 
 @admin.register(Skill)
@@ -54,3 +55,13 @@ class CommunityTemplateAdmin(admin.ModelAdmin):
     list_display = ('name', 'created_by', 'category', 'use_count', 'is_approved')
     list_filter = ('category', 'is_approved')
     search_fields = ('name', 'created_by__email')
+@admin.register(ResumeBuilderProfile)
+class ResumeBuilderProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'updated_at')
+    search_fields = ('user__email', 'summary')
+
+@admin.register(GeneratedResume)
+class GeneratedResumeAdmin(admin.ModelAdmin):
+    list_display = ('user', 'file_name', 'version_number', 'ats_score', 'created_at')
+    list_filter = ('created_at',)
+    search_fields = ('user__email', 'file_name')
