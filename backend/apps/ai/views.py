@@ -268,26 +268,26 @@ You MUST act strictly as an interpretation layer.
 SYSTEM INPUT (DO NOT RE-CALCULATE OR MODIFY):
 
 User Profile:
-- Skills: {{data['user_skills']}}
-- Projects: {{data['projects']}}
-- Experience Level: {{data['experience']}}
-- Target Role: {{data['target_role']}}
+- Skills: {data['user_skills']}
+- Projects: {data['projects']}
+- Experience Level: {data['experience']}
+- Target Role: {data['target_role']}
 
 Resume Data:
-- Resume Score (ATS): {{data['resume_score']}}
-- Extracted Skills: {{data['extracted_skills']}}
-- Project Details: {{data['project_data']}}
+- Resume Score (ATS): {data['resume_score']}
+- Extracted Skills: {data['extracted_skills']}
+- Project Details: {data['project_data']}
 
 Market Intelligence:
-- Trending Skills: {{data['trending_skills']}}
-- Declining Skills: {{data['declining_skills']}}
+- Trending Skills: {data['trending_skills']}
+- Declining Skills: {data['declining_skills']}
 
 Benchmark Data:
-- Average Skills for Role: {{data['avg_skills']}}
-- Top Candidate Profile: {{data['top_profile']}}
+- Average Skills for Role: {data['avg_skills']}
+- Top Candidate Profile: {data['top_profile']}
 
 System Metrics:
-- Confidence Score: {{data['confidence_score']}}
+- Confidence Score: {data['confidence_score']}
 
 
 STRICT SYSTEM RULES:
@@ -307,9 +307,9 @@ OUTPUT FORMAT:
 
 1. 🔴 RESUME OVERVIEW
 
-- ATS Score: {{data['resume_score']}}
+- ATS Score: {data['resume_score']}
 - Resume Strength Level: (Weak / Moderate / Strong)
-- Confidence Score: {{data['confidence_score']}}%
+- Confidence Score: {data['confidence_score']}%
 
 Interpretation:
 - Explain what the ATS score indicates in real hiring conditions
