@@ -232,7 +232,7 @@ STRICT RULES:
             report = completion.choices[0].message.content
             return Response({'report': report, 'metrics': data})
         except Exception as e:
-            print(f"Groq API Error: {e}")
+            print(f"Career Intelligence View Error: {e}")
             return Response({'report': self._get_fallback_report(data), 'metrics': data})
 
     def _get_fallback_report(self, data):
@@ -504,7 +504,7 @@ FINAL OUTPUT STYLE:
             report = completion.choices[0].message.content
             return Response({'report': report, 'metrics': data})
         except Exception as e:
-            print(f"Groq API Error: {e}")
+            print(f"Resume Intelligence View Error: {e}")
             return Response({'report': self._get_fallback_report(data), 'metrics': data})
 
     def _get_fallback_report(self, data):

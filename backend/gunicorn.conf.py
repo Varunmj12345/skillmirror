@@ -8,12 +8,18 @@ bind = f"0.0.0.0:{port}"
 # ── Workers ───────────────────────────────────────────────────────────────────
 # Formula: (2 × CPU_cores) + 1  →  Render free = 0.1 vCPU, so keep it at 1
 # Using 1 worker avoids OOM SIGKILL on free tier (512MB RAM limit)
-workers = int(os.environ.get("WEB_CONCURRENCY", "1"))
+try:
+    workers = int(os.environ.get("WEB_CONCURRENCY", "1"))
+except (ValueError, TypeError):
+    workers = 1
 worker_class = "sync"           # sync is lightest; use "gevent" only if you add it
 
 # ── Timeouts ─────────────────────────────────────────────────────────────────
 # Render kills workers after 30s by default — raise for AI/ML heavy endpoints
-timeout = int(os.environ.get("GUNICORN_TIMEOUT", "120"))   # 2 min for AI calls
+try:
+    timeout = int(os.environ.get("GUNICORN_TIMEOUT", "120"))   # 2 min for AI calls
+except (ValueError, TypeError):
+    timeout = 120
 graceful_timeout = 30
 keepalive = 5
 

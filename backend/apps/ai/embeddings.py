@@ -35,6 +35,9 @@ class EmbeddingGenerator:
         intersection = tokens1.intersection(tokens2)
         union = tokens1.union(tokens2)
         
+        if not union:
+            return 0.0
+            
         return float(len(intersection)) / len(union)
 
     def analyze_skill_embeddings(self, skills):
