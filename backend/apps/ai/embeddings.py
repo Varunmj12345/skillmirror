@@ -47,6 +47,8 @@ class EmbeddingGenerator:
         return self.generate_embeddings(job_descriptions)
 
     def find_most_similar(self, target_tokens, tokens_list):
+        if not tokens_list:
+            return 0, 0.0
         similarities = [self.calculate_similarity(target_tokens, t) for t in tokens_list]
         most_similar_index = np.argmax(similarities)
         return most_similar_index, similarities[most_similar_index]
