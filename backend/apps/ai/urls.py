@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views
+from apps.ai import views
 
 # Force re-deployment trigger
 

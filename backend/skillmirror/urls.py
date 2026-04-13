@@ -16,7 +16,7 @@ def health_check(request):
     return JsonResponse({
         'status': 'healthy', 
         'timestamp': str(timezone.now()),
-        'version': '1.1.2-stabilized',
+        'version': '1.1.3-refined',
         'engine': 'NeuralIntelligenceEngine-v2'
     })
 
