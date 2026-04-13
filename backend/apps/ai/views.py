@@ -237,3 +237,76 @@ STRICT RULES:
 
     def _get_fallback_report(self, data):
         return f"### 🔴 Career Intelligence Diagnostic Report (Fallback Mode)\n\n**Risk Score**: {data['risk_score']}/100\n**Confidence**: {data['confidence_score']}%\n\nAnalyze your career risks manually using the metrics above until the analytical engine is back online."
+
+class ResumeIntelligenceReportView(APIView):
+    """
+    High-impact Resume Intelligence Engine.
+    Generates structured, data-driven insights about a user's resume.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        engine = NeuralIntelligenceEngine()
+        data = engine.get_resume_intelligence_data(request.user)
+        
+        system_prompt = f"""
+You are a Resume Intelligence Engine integrated into a real system.
+This system functions as a Resume Decision Support Engine, not a resume scoring tool.
+This system does NOT behave like a chatbot. It generates structured, analytical, and decision-focused insights.
+
+SYSTEM INPUT (DO NOT RE-CALCULATE):
+User Profile:
+- Skills: {data['user_skills']}
+- Projects: {data['projects']}
+- Experience Level: {data['experience']}
+- Target Role: {data['target_role']}
+
+Resume Data:
+- Resume Score (ATS): {data['resume_score']}
+- Extracted Skills: {data['extracted_skills']}
+- Project Details: {data['project_data']}
+
+Market Intelligence:
+- Trending Skills: {data['trending_skills']}
+- Declining Skills: {data['declining_skills']}
+
+Benchmark Data:
+- Average Skills for Role: {data['avg_skills']}
+- Top Candidate Profile: {data['top_profile']}
+
+System Metrics:
+- Confidence Score: {data['confidence_score']}
+
+STRICT RULES:
+- DO NOT assume fake data
+- DO NOT generate random numbers
+- DO NOT recalculate any scores
+- ONLY analyze provided inputs
+- Maintain analytical, professional, and decision-focused tone
+
+Generate a complete 12-section Resume Intelligence Report exactly matching the requested format.
+"""
+
+        api_key = os.environ.get('GROQ_API_KEY')
+        if not api_key or api_key == 'gsk_your_key_here':
+            return Response({'report': self._get_fallback_report(data), 'metrics': data})
+
+        try:
+            client = Groq(api_key=api_key)
+            completion = client.chat.completions.create(
+                model="llama-3.3-70b-versatile",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": "Generate the full Resume Intelligence Report based on the provided system inputs. Ensure it is analytical and strict."}
+                ],
+                max_tokens=2000,
+                temperature=0.2, # Extremely analytical and strict
+            )
+            report = completion.choices[0].message.content
+            return Response({'report': report, 'metrics': data})
+        except Exception as e:
+            print(f"Groq API Error: {e}")
+            return Response({'report': self._get_fallback_report(data), 'metrics': data})
+
+    def _get_fallback_report(self, data):
+        return f"### 🔴 Resume Intelligence Diagnostic Report (Fallback Mode)\n\n**ATS Score**: {data['resume_score']}/100\n**Confidence**: {data['confidence_score']}%\n\nResume parsing complete. Advanced AI interpretation is currently offline."

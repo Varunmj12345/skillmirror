@@ -11,4 +11,5 @@ urlpatterns = [
     path('chat/', views.CareerChatView.as_view(), name='ai-career-chat'),
     path('predict-demand/', views.PredictDemandView.as_view(), name='ai-predict-demand'),
     path('career-intelligence/report/', views.CareerIntelligenceReportView.as_view(), name='ai-career-intelligence-report'),
+    path('resume-intelligence/report/', views.ResumeIntelligenceReportView.as_view(), name='ai-resume-intelligence-report'),
 ]

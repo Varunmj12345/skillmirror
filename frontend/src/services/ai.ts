@@ -41,3 +41,13 @@ export const getCareerIntelligenceReport = async () => {
         throw error;
     }
 };
+
+export const getResumeIntelligenceReport = async () => {
+    try {
+        const response = await apiClient.get('/api/ai/resume-intelligence/report/');
+        return response as any;
+    } catch (error) {
+        console.error('Error fetching resume intelligence report:', error);
+        throw error;
+    }
+};

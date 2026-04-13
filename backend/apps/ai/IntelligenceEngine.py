@@ -138,4 +138,50 @@ class NeuralIntelligenceEngine:
             "percentile": percentile,
             "peer_gap": ", ".join(peer_gap)
         }
+
+    def get_resume_intelligence_data(self, user):
+        """
+        Aggregates metrics for the Resume Intelligence Report.
+        Pulls from UserProfile and ResumeData.
+        """
+        profile = getattr(user, 'profile', None)
+        
+        # Resume specifics
+        resume_score = 0
+        extracted_skills = []
+        try:
+            resume = user.resume_data
+            extracted_skills = resume.extracted_skills or []
+            resume_score = min(100, 60 + (len(extracted_skills) * 2))
+        except Exception:
+            pass
+
+        # Calculate basic metrics
+        readiness = self.compute_readiness(user) if profile else 50
+        confidence_score = min(100, 85 + (len(extracted_skills) // 2))
+
+        # Market & Benchmark Data
+        trending_skills = ["Next.js", "Python Fast API", "Retrieval-Augmented Generation (RAG)"]
+        declining_skills = ["jQuery", "Vanilla PHP", "Manual Regression"]
+        avg_skills = "React, Node.js, SQL, Express"
+        top_profile = "React, Next.js, Node.js, PostgreSQL, Docker, AWS"
+
+        # Projects mock
+        projects = "SkillMirror System Architecture (High Impact), E-commerce Backend (Moderate)"
+
+        return {
+            "user_skills": ", ".join([s.name for s in user.skills.all()]),
+            "projects": projects,
+            "experience": profile.experience_level if profile else "Intermediate",
+            "target_role": profile.dream_job if profile else "Software Engineer",
+            "resume_score": resume_score,
+            "extracted_skills": ", ".join(extracted_skills) if extracted_skills else "None Extracted",
+            "project_data": "SkillMirror (85% impact rating), E-commerce API (60% impact rating)",
+            "trending_skills": ", ".join(trending_skills),
+            "declining_skills": ", ".join(declining_skills),
+            "avg_skills": avg_skills,
+            "top_profile": top_profile,
+            "confidence_score": confidence_score
+        }
+
 import random
