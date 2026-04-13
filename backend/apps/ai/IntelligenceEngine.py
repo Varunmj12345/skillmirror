@@ -1,3 +1,4 @@
+import random
 import numpy as np
 from datetime import datetime, timezone
 from django.db.models import Avg
@@ -43,10 +44,16 @@ class NeuralIntelligenceEngine:
         if not user_skills or not profile.dream_job:
             skill_score = 10
         else:
-            # Simple embedding similarity between skills and target role
-            u_emb = self.embedding_gen.generate_embeddings([" ".join(user_skills)])[0]
-            r_emb = self.embedding_gen.generate_embeddings([profile.dream_job])[0]
-            skill_score = self.embedding_gen.calculate_similarity(u_emb, r_emb) * 100
+            try:
+                # TF-IDF requires both docs together so the vocabulary is shared
+                skills_text = " ".join(user_skills)
+                job_text = profile.dream_job
+                combined = self.embedding_gen.generate_embeddings([skills_text, job_text])
+                u_emb = combined[0]
+                r_emb = combined[1]
+                skill_score = float(self.embedding_gen.calculate_similarity(u_emb, r_emb)) * 100
+            except Exception:
+                skill_score = 40  # Safe fallback if embedding fails
 
         # 2. Interview Feedback Logic
         interview_avg = user.interview_sessions.aggregate(Avg('score'))['score__avg'] or 0
@@ -184,4 +191,3 @@ class NeuralIntelligenceEngine:
             "confidence_score": confidence_score
         }
 
-import random
