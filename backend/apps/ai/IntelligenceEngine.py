@@ -1,7 +1,7 @@
 import numpy as np
 from datetime import datetime, timezone
 from django.db.models import Avg
-from .embeddings import EmbeddingGenerator
+from apps.ai.embeddings import EmbeddingGenerator
 
 class NeuralIntelligenceEngine:
     """
