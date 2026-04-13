@@ -33,6 +33,7 @@ ALLOWED_HOSTS = [
     "127.0.0.1", 
     "localhost", 
     "0.0.0.0", 
+    "skillmirror.onrender.com",
     "skillmirror-api.onrender.com", 
     "skillmirror-api-judc.onrender.com", 
     "skillmirror-puce.vercel.app", 
@@ -80,6 +81,7 @@ MIDDLEWARE = [
 ]
 
 # ─── Production Audit Logging Configuration ──────────────────────────────────
+_log_handlers = ['audit_file'] if DEBUG else []
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -100,7 +102,7 @@ LOGGING = {
     },
     'loggers': {
         'audit': {
-            'handlers': ['audit_file'],
+            'handlers': _log_handlers,  # Only write to file locally; Render captures stdout
             'level': 'INFO',
             'propagate': True,
         },
@@ -119,6 +121,7 @@ CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
     "https://skillmirror-7uzro8erv-varunmj12345s-projects.vercel.app",
     "https://skillmirror-puce.vercel.app",
+    "https://skillmirror.onrender.com",
     "https://skillmirror-api.onrender.com",
     "https://skillmirror-api-judc.onrender.com",
 ]

@@ -1,1 +1,1 @@
-web: gunicorn skillmirror.wsgi:application --log-file -
+web: gunicorn skillmirror.wsgi:application --config gunicorn.conf.py
