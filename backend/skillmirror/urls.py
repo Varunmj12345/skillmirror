@@ -13,7 +13,12 @@ def api_root(request):
     })
 
 def health_check(request):
-    return JsonResponse({'status': 'healthy', 'timestamp': str(timezone.now())})
+    return JsonResponse({
+        'status': 'healthy', 
+        'timestamp': str(timezone.now()),
+        'version': '1.1.2-stabilized',
+        'engine': 'NeuralIntelligenceEngine-v2'
+    })
 
 urlpatterns = [
     path('', api_root),

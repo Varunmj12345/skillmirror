@@ -1,8 +1,8 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
-from apps.ai.models import AIModel
-from apps.ai.serializers import AIModelSerializer
-from apps.ai.IntelligenceEngine import NeuralIntelligenceEngine
+from .models import AIModel
+from .serializers import AIModelSerializer
+from .IntelligenceEngine import NeuralIntelligenceEngine
 
 class AIModelViewSet(viewsets.ModelViewSet):
     queryset = AIModel.objects.all()
