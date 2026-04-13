@@ -10,4 +10,5 @@ urlpatterns = [
     path('generate-roadmap/', views.GenerateRoadmapView.as_view(), name='ai-generate-roadmap'),
     path('chat/', views.CareerChatView.as_view(), name='ai-career-chat'),
     path('predict-demand/', views.PredictDemandView.as_view(), name='ai-predict-demand'),
+    path('career-intelligence/report/', views.CareerIntelligenceReportView.as_view(), name='ai-career-intelligence-report'),
 ]

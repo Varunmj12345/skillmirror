@@ -31,3 +31,13 @@ export const getJobIntelligence = async (jobTitle: string) => {
         throw error;
     }
 };
+
+export const getCareerIntelligenceReport = async () => {
+    try {
+        const response = await apiClient.get('/api/ai/career-intelligence/report/');
+        return response as any;
+    } catch (error) {
+        console.error('Error fetching career intelligence report:', error);
+        throw error;
+    }
+};

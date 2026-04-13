@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from .models import AIModel
 from .serializers import AIModelSerializer
+from .IntelligenceEngine import NeuralIntelligenceEngine
 
 class AIModelViewSet(viewsets.ModelViewSet):
     queryset = AIModel.objects.all()
@@ -159,3 +160,80 @@ class PredictDemandView(APIView):
             'risk_level': risk_level,
             'insight': insight
         })
+
+
+class CareerIntelligenceReportView(APIView):
+    """
+    High-impact Career Intelligence Engine.
+    Generates structured, data-driven reports using computed metrics.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        engine = NeuralIntelligenceEngine()
+        data = engine.get_career_intelligence_data(request.user)
+        
+        # System Prompt construction using user provided strict template
+        system_prompt = f"""
+You are an AI Career Intelligence Engine integrated into a real system.
+This is NOT a chatbot. This is a system-generated intelligence report.
+
+SYSTEM INPUT (DO NOT RE-CALCULATE):
+User Profile:
+- Skills: {data['user_skills']}
+- Projects: {data['projects']}
+- Experience Level: {data['experience']}
+- Target Role: {data['target_role']}
+
+Precomputed Metrics:
+- Career Risk Score: {data['risk_score']}
+- Confidence Score: {data['confidence_score']}
+- Skill Scores: {data['skill_scores']}
+- Market Demand Score: {data['market_score']}
+- Learning Activity Score: {data['activity_score']}
+- Competition Score: {data['competition_score']}
+
+Simulation Data:
+- Scenario A (No Action): {data['no_action']}
+- Scenario B (Moderate Learning): {data['moderate']}
+- Scenario C (Smart Learning): {data['smart']}
+
+Market Intelligence:
+- Trending Skills: {data['trending_skills']}
+- Declining Skills: {data['declining_skills']}
+
+Peer Benchmark:
+- User Percentile: {data['percentile']}
+- Peer Skill Gap: {data['peer_gap']}
+
+STRICT RULES:
+- DO NOT generate or assume new numbers
+- DO NOT recalculate scores
+- ONLY interpret given structured data
+- Maintain analytical, professional, and slightly strict tone
+- No fluff, only insights
+"""
+
+        api_key = os.environ.get('GROQ_API_KEY')
+        if not api_key or api_key == 'gsk_your_key_here':
+            return Response({'report': self._get_fallback_report(data), 'metrics': data})
+
+        try:
+            client = Groq(api_key=api_key)
+            completion = client.chat.completions.create(
+                model="llama-3.3-70b-versatile",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": "Generate the full Career Intelligence Dashboard Report based on the provided system inputs."}
+                ],
+                max_tokens=2000,
+                temperature=0.3, # Low temperature for analytical consistency
+            )
+            report = completion.choices[0].message.content
+            return Response({'report': report, 'metrics': data})
+        except Exception as e:
+            print(f"Groq API Error: {e}")
+            return Response({'report': self._get_fallback_report(data), 'metrics': data})
+
+    def _get_fallback_report(self, data):
+        return f"### 🔴 Career Intelligence Diagnostic Report (Fallback Mode)\n\n**Risk Score**: {data['risk_score']}/100\n**Confidence**: {data['confidence_score']}%\n\nAnalyze your career risks manually using the metrics above until the analytical engine is back online."

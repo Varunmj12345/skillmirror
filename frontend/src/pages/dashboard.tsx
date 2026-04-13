@@ -15,11 +15,13 @@ import SkillRadar from '../components/dashboard/SkillRadar';
 import ModuleSummaries from '../components/dashboard/ModuleSummaries';
 import AIInsightPanel from '../components/dashboard/AIInsightPanel';
 import AchievementBadges from '../components/dashboard/AchievementBadges';
+import CareerIntelligenceModal from '../components/CareerIntelligenceModal';
 
 const Dashboard: React.FC = () => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isReportOpen, setIsReportOpen] = useState(false);
 
   const loadData = async () => {
     try {
@@ -78,7 +80,16 @@ const Dashboard: React.FC = () => {
           <h1 className="sm-h1 !text-5xl lg:!text-6xl">Command Center</h1>
         </div>
         
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4">
+           {/* New Intelligence Report Trigger */}
+           <button 
+              onClick={() => setIsReportOpen(true)}
+              className="bg-brand-neural hover:shadow-glass-glow shadow-brand-neural/50 text-white px-8 py-4 rounded-2xl flex items-center gap-3 group text-xs font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95"
+           >
+              <i className="fa-solid fa-brain-circuit text-lg opacity-80 group-hover:rotate-12 transition-transform" />
+              <span>Generate AI Report</span>
+           </button>
+
            <div className="text-right border-r border-white/5 pr-8 hidden sm:block">
               <p className="sm-nano !text-[8px] opacity-40">Global IQ Percentile</p>
               <p className="text-xl font-black text-white">Top 8.4% <span className="text-brand-emerald text-xs">↑</span></p>
@@ -91,6 +102,8 @@ const Dashboard: React.FC = () => {
            </Link>
         </div>
       </div>
+
+      <CareerIntelligenceModal isOpen={isReportOpen} onClose={() => setIsReportOpen(false)} />
 
       {/* 2. Primary KPI Grid */}
       <section className="grid grid-cols-2 lg:grid-cols-5 gap-6 mb-16 sm-page-enter [animation-delay:100ms]">
