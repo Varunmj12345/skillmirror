@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 
+# Force re-deployment trigger
+
 ai_list = views.AIModelViewSet.as_view({'get': 'list', 'post': 'create'})
 ai_detail = views.AIModelViewSet.as_view({'get': 'retrieve', 'put': 'update', 'delete': 'destroy'})
 
