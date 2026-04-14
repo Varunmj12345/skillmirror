@@ -4,15 +4,36 @@ import { useRouter } from 'next/router';
 import Layout from '../../components/Layout';
 import withAuth from '../../components/withAuth';
 import LiveInterviewSystem from '../../components/Interview/LiveInterviewSystem';
+import { interviewService } from '../../services/interviewService';
 
 const LiveInterviewPage: React.FC = () => {
     const router = useRouter();
     const { id } = router.query;
 
-    if (!id) return (
+    const [interviewData, setInterviewData] = useState<any>(null);
+
+    useEffect(() => {
+        if (id) {
+            interviewService.getDetail(parseInt(id as string)).then((res: any) => {
+                setInterviewData(res.data);
+            });
+        }
+    }, [id]);
+
+    const handleComplete = async (report: any) => {
+        try {
+            await interviewService.finalizeInterview(parseInt(id as string), report);
+            router.push(`/mock-interview/result?id=${id}`);
+        } catch (err) {
+            console.error("Finalization failed", err);
+            router.push(`/mock-interview/result?id=${id}`);
+        }
+    };
+
+    if (!id || !interviewData) return (
         <Layout>
             <div className="flex items-center justify-center min-h-[60vh] text-slate-500 font-bold uppercase tracking-widest text-xs">
-                Redirecting to Interview Setup...
+                {id ? 'Initializing AI Proctor...' : 'Redirecting to Interview Setup...'}
             </div>
         </Layout>
     );
@@ -31,7 +52,10 @@ const LiveInterviewPage: React.FC = () => {
 
                 <LiveInterviewSystem
                     interviewId={parseInt(id as string)}
-                    onComplete={() => router.push(`/mock-interview/result?id=${id}`)}
+                    role={interviewData.role}
+                    level={interviewData.experience_level}
+                    skills={interviewData.questions.map((q: any) => q.category)} // or use from metadata if available
+                    onComplete={handleComplete}
                 />
 
                 <div className="mt-12 grid md:grid-cols-3 gap-8">
