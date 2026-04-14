@@ -3,6 +3,7 @@ import numpy as np
 from datetime import datetime, timezone
 from django.db.models import Avg
 from apps.ai.embeddings import EmbeddingGenerator
+from apps.skills.models import RequiredSkill, RoleTemplate
 
 class NeuralIntelligenceEngine:
     """
@@ -78,9 +79,28 @@ class NeuralIntelligenceEngine:
         return final_readiness
 
     def identify_gaps(self, user):
-        """Identifies exactly which high-impact skills are missing."""
-        # Simple gap analysis vs mock target vector
-        return ["System Design", "Distributed Systems", "Event-Driven Arch"]
+        """Identifies exactly which high-impact skills are missing based on target role."""
+        profile = getattr(user, 'profile', None)
+        if not profile or not profile.dream_job:
+            return []
+            
+        target_role = profile.dream_job
+        user_skill_names = set(s.name.lower() for s in user.skills.all())
+        
+        # Query required skills for this role
+        required = RequiredSkill.objects.filter(role_name__icontains=target_role)
+        
+        gaps = []
+        for rs in required:
+            if rs.skill_name.lower() not in user_skill_names:
+                gaps.append({
+                    "name": rs.skill_name,
+                    "importance": rs.importance_level,
+                    "category": rs.category
+                })
+        
+        # Sort by importance (Mandatory/Critical first)
+        return sorted(gaps, key=lambda x: x['importance'], reverse=True)
 
     def get_career_intelligence_data(self, user):
         """
@@ -105,11 +125,14 @@ class NeuralIntelligenceEngine:
         trending = ["LLM Orchestration", "Next.js 14", "Rust for Backend"]
         declining = ["Legacy PHP", "REST-only architectures", "Manual QA"]
         
-        # 4. Peer Benchmark
+        # 4. Peer Benchmark & Gaps
         percentile = min(99, max(1, readiness + random.randint(-10, 10)))
-        peer_gap = self.identify_gaps(user)
+        gaps = self.identify_gaps(user)
+        peer_gap_names = [g['name'] for g in gaps[:3]] # Top 3 gaps
 
-        # 5. Simulation Logic
+        # 5. Simulation Logic (Dynamic)
+        top_gap = gaps[0]['name'] if gaps else "Next-gen Architecture"
+        
         simulation = {
             "no_action": {
                 "job_prob": f"{max(5, readiness - 15)}%",
@@ -117,12 +140,12 @@ class NeuralIntelligenceEngine:
                 "risk_trend": "Increasing"
             },
             "moderate": {
-                "improvements": "React Query, Docker basic certification",
-                "growth": "12%"
+                "improvements": f"Acquiring {top_gap} basic proficiency",
+                "growth": f"{min(25, 5 + len(gaps))}%"
             },
             "smart": {
-                "maximum_potential": "Senior AI Infrastructure Engineer",
-                "improvement_vs_none": "45%"
+                "maximum_potential": f"Senior {profile.dream_job or 'Engineer'} (AI Optimized)",
+                "improvement_vs_none": f"{min(80, 25 + readiness // 2)}%"
             }
         }
 
@@ -133,7 +156,7 @@ class NeuralIntelligenceEngine:
             "target_role": profile.dream_job if profile else "Software Engineer",
             "risk_score": risk_score,
             "confidence_score": confidence,
-            "skill_scores": str({s.name: s.level for s in user.skills.all()}),
+            "skill_scores": {s.name: s.level for s in user.skills.all()}, # Return as dict (Structured JSON)
             "market_score": 75, # Mock market demand
             "activity_score": activity_score,
             "competition_score": 100 - percentile,
@@ -143,7 +166,8 @@ class NeuralIntelligenceEngine:
             "trending_skills": ", ".join(trending),
             "declining_skills": ", ".join(declining),
             "percentile": percentile,
-            "peer_gap": ", ".join(peer_gap)
+            "peer_gap": ", ".join(peer_gap_names),
+            "gaps": gaps # Detailed gap analysis for frontend
         }
 
     def get_resume_intelligence_data(self, user):

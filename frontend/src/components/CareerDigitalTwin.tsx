@@ -42,6 +42,11 @@ interface TwinMetrics {
   declining_skills: string;
   percentile: number;
   peer_gap: string;
+  gaps: Array<{
+    name: string;
+    importance: number;
+    category: string;
+  }>;
 }
 
 interface CareerDigitalTwinProps {
@@ -143,9 +148,28 @@ const CareerDigitalTwin: React.FC<CareerDigitalTwinProps> = ({ metrics, onResimu
             <div className="flex items-center gap-2 text-xs font-bold text-slate-200">
                <TrendingUp size={14} className="text-emerald-500" /> Skill Evolution
             </div>
-            <p className="text-[11px] text-slate-500 leading-relaxed">
-              Mapping {(metrics.user_skills || '').split(',').filter(Boolean).length} core skills against {metrics.target_role}. Evolution is {metrics.risk_score < 40 ? 'synchronized' : 'deviating'} from standard market growth.
-            </p>
+            <div className="space-y-3">
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Mapping {(metrics.user_skills || '').split(',').filter(Boolean).length} core skills against {metrics.target_role}. Evolution is {metrics.risk_score < 40 ? 'synchronized' : 'deviating'} from standard market growth.
+              </p>
+              {/* Progress Bar */}
+              {metrics.gaps && (
+                <div className="space-y-1">
+                  <div className="flex justify-between text-[9px] font-black uppercase tracking-tighter text-slate-400">
+                    <span>Target Core Readiness</span>
+                    <span>{Math.max(0, 100 - (metrics.gaps.length * 15))}%</span>
+                  </div>
+                  <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                    <motion.div 
+                      initial={{ width: 0 }}
+                      animate={{ width: `${Math.max(5, 100 - (metrics.gaps.length * 15))}%` }}
+                      transition={{ duration: 1, ease: "easeOut" }}
+                      className="h-full bg-gradient-to-r from-emerald-500 to-cyan-400 shadow-[0_0_10px_rgba(52,211,153,0.3)]" 
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-xs font-bold text-slate-200">
@@ -213,21 +237,58 @@ const CareerDigitalTwin: React.FC<CareerDigitalTwinProps> = ({ metrics, onResimu
         </motion.div>
       </div>
 
-      {/* 4. Skills at Risk */}
-      <motion.div variants={item} className="sm-glass p-6 rounded-3xl border-white/5">
-        <div className="flex items-center gap-3 mb-4">
-           <Timer size={16} className="text-amber-400" />
-           <p className="text-xs font-bold text-white uppercase tracking-wider">Skill Relevance Decay</p>
-        </div>
-        <div className="flex flex-wrap gap-4">
-           {(metrics.declining_skills || '').split(',').filter(Boolean).map((s, i) => (
-             <div key={i} className="flex items-center gap-3 px-4 py-2 bg-slate-900/50 rounded-2xl border border-white/5">
-                <span className="text-[11px] font-medium text-slate-300">{s.trim()}</span>
-                <span className="text-[9px] font-bold text-rose-500 bg-rose-500/10 px-1.5 py-0.5 rounded uppercase tracking-tighter">Decline in 18m</span>
-             </div>
-           ))}
-        </div>
-      </motion.div>
+      {/* 4. Gap Analysis & Risk */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <motion.div variants={item} className="sm-glass p-8 rounded-[2rem] border-white/5">
+          <div className="flex items-center gap-3 mb-6">
+             <Target size={18} className="text-cyan-400" />
+             <h3 className="text-xs font-black uppercase tracking-widest text-white">Critical Evolution Gaps</h3>
+          </div>
+          <div className="space-y-3">
+             {metrics.gaps?.length > 0 ? (
+               metrics.gaps.slice(0, 4).map((gap, i) => (
+                 <div key={i} className="flex items-center justify-between p-3 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all">
+                    <div className="flex items-center gap-3">
+                       <div className={`w-1.5 h-1.5 rounded-full ${gap.importance >= 4 ? 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]' : 'bg-amber-500'}`} />
+                       <span className="text-[11px] font-bold text-slate-200">{gap.name}</span>
+                    </div>
+                    <span className="text-[9px] font-mono text-slate-500 uppercase tracking-tighter">
+                       Priority: {gap.importance >= 5 ? 'Mandatory' : gap.importance >= 4 ? 'Critical' : 'High'}
+                    </span>
+                 </div>
+               ))
+             ) : (
+               <div className="py-4 text-center">
+                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">No Critical Gaps Detected</p>
+               </div>
+             )}
+          </div>
+        </motion.div>
+
+        <motion.div variants={item} className="sm-glass p-8 rounded-[2rem] border-white/5">
+          <div className="flex items-center gap-3 mb-6">
+             <Timer size={18} className="text-amber-400" />
+             <h3 className="text-xs font-black uppercase tracking-widest text-white">Skill Relevance Decay</h3>
+          </div>
+          <div className="space-y-4">
+             {(metrics.declining_skills || '').split(',').filter(Boolean).slice(0, 3).map((s, i) => (
+               <div key={i} className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[11px] font-medium text-slate-300">{s.trim()}</span>
+                    <span className="text-[9px] font-bold text-rose-500 px-1.5 py-0.5 rounded uppercase tracking-tighter bg-rose-500/10">Declining</span>
+                  </div>
+                  <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                    <motion.div 
+                      initial={{ width: "100%" }}
+                      animate={{ width: `${100 - (i * 20)}%` }}
+                      className="h-full bg-rose-500/30" 
+                    />
+                  </div>
+               </div>
+             ))}
+          </div>
+        </motion.div>
+      </div>
 
       {/* 5. Action Plan Footer */}
       <motion.div variants={item} className="p-8 rounded-[2rem] bg-gradient-to-br from-indigo-500/10 via-cyan-500/5 to-transparent border border-white/5">
