@@ -25,6 +25,7 @@ const GEN_BOOT_SEQUENCE = [
 ];
 
 const Roadmap: React.FC = () => {
+  const router = useRouter();
   const [goals, setGoals] = useState<string[]>([]);
   const [skills, setSkills] = useState<any[]>([]);
   const [selectedGoal, setSelectedGoal] = useState('');
