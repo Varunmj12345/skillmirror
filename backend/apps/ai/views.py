@@ -674,7 +674,14 @@ FINAL OUTPUT STYLE:
         state = "High Growth" if risk < 25 else "Competitive" if risk < 45 else "Developing" if risk < 65 else "Stagnating"
         stability = "High" if conf > 75 else "Medium" if conf > 50 else "Low"
         adaptability = "High" if data['activity_score'] > 60 else "Medium" if data['activity_score'] > 30 else "Low"
-        return f"""## CAREER DIGITAL TWIN — SYSTEM OUTPUT
+        
+        learning_level = "Accelerated" if data['activity_score'] > 70 else "Steady" if data['activity_score'] > 40 else "Low Impact"
+        alignment = "Strong" if risk < 30 else "Moderate" if risk < 60 else "Weak"
+        competition = f"Top {100 - data['competition_score']}%"
+
+        return f"""⚠️ SYSTEM STATUS
+- Live AI: Unavailable
+- Mode: Fallback Simulation
 
 ---
 
@@ -686,49 +693,45 @@ FINAL OUTPUT STYLE:
 
 ---
 
-### 2. ⚙️ Behavioral Pattern
+### 2. ⚙️ Computed Behavioral Summary
 
-- **Learning Pattern:** Activity index at {data['activity_score']}/100. Skill acquisition rate below threshold for target role alignment.
-- **Skill Evolution:** Existing skills cover partial overlap with {data['target_role']} requirements. Gap detected in high-demand segments.
-- **Career Direction:** Trajectory is defined but acceleration is insufficient. Market competition score: {data['competition_score']}/100.
-
----
-
-### 3. 🔮 Evolution Simulation
-
-**A. Passive State (No Action):**
-- Future Condition: {data['no_action']}
-- Risk Direction: Upward. Risk score will increase without intervention.
-
-**B. Active Growth:**
-- Improvement Path: {data['moderate']}
-- Career Acceleration: {data['smart']}
+- **Learning Activity Level:** {learning_level} ({data['activity_score']}/100)
+- **Market Alignment Level:** {alignment}
+- **Competitive Standing:** {competition}
 
 ---
 
-### 4. 📉 Decay Prediction
+### 3. 🔮 Scenario Simulation Summary
 
-- **Declining:** {data['declining_skills']}
-- **Timeline:** Skills in declining category lose 60% market value within 18 months.
+**A. No Action:**
+- Outcome: {data['no_action']}
 
----
+**B. Moderate Learning:**
+- Outcome: {data['moderate']}
 
-### 5. 🚀 Growth Trajectory
-
-- **Optimal Direction:** {data['target_role']} with specialization in {data['trending_skills'].split(',')[0].strip()}.
-- **Growth Drivers:** {data['trending_skills']}
-
----
-
-### 6. 🧠 Twin Intelligence Insight
-
-Accelerate skill acquisition in trending domains immediately. The window for competitive positioning closes as market saturation increases.
+**C. Smart Path:**
+- Outcome: {data['smart']}
 
 ---
 
-### 7. 🚨 Critical Twin Alert
+### 4. 📉 Risk Indicator
 
-At current trajectory, user will fall below the competitive threshold for {data['target_role']} within 6 months. Immediate course correction required.
+- **Primary Risk Source:** Skill gap in {data['declining_skills']} sectors
+- **Risk Direction:** {"Increasing" if risk > 50 else "Stable"}
 
 ---
-*[Digital Twin Engine — Fallback Mode · Live AI offline]*"""
+
+### 5. 🚧 System Limitation Notice
+
+- Detailed AI interpretation is unavailable
+- Advanced insights and strategic recommendations are temporarily disabled
+
+---
+
+### 6. 🔁 Recovery Instruction
+
+- Restore AI functionality by configuring `GROQ_API_KEY` in backend environment
+
+---
+
+*[Digital Twin Engine — Fallback Simulation Active]*"""

@@ -51,7 +51,42 @@ const CareerDigitalTwinModal: React.FC<CareerDigitalTwinModalProps> = ({ isOpen,
             setMetrics(data.metrics);
         } catch {
             // Never show a raw error — generate a minimal local twin output
-            setReport(`## CAREER DIGITAL TWIN — SYSTEM OUTPUT\n\n> ⚠️ Live AI offline. Displaying computed simulation.\n\n---\n\n### 1. 🧬 Digital Twin Identity\n- **Current State:** Developing\n- **Stability Level:** Medium\n- **Adaptability:** Medium\n\n---\n\n### 6. 🧠 Twin Intelligence Insight\n\nEnsure your GROQ_API_KEY is configured on the backend to unlock the full simulation.\n\n---\n*[Digital Twin Engine — Connection unavailable]*`);
+            setReport(`⚠️ SYSTEM STATUS
+- Live AI: Unavailable
+- Mode: Fallback Simulation
+
+---
+
+### 1. 🧬 Digital Twin Identity
+
+- **Current State:** Developing
+- **Stability Level:** Medium
+- **Adaptability:** Medium
+
+---
+
+### 2. ⚙️ Computed Behavioral Summary
+
+- **Learning Activity Level:** System sync pending
+- **Market Alignment Level:** Awaiting metrics
+- **Competitive Standing:** Handshake required
+
+---
+
+### 5. 🚧 System Limitation Notice
+
+- Detailed AI interpretation is unavailable
+- Advanced insights and strategic recommendations are temporarily disabled
+
+---
+
+### 6. 🔁 Recovery Instruction
+
+- Restore AI functionality by configuring \`GROQ_API_KEY\` in backend environment
+
+---
+
+*[Digital Twin Engine — Connection unavailable]*`);
         } finally {
             setLoading(false);
             if (timerRef.current) clearInterval(timerRef.current);
