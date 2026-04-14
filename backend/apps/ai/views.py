@@ -42,7 +42,7 @@ from rest_framework import permissions
 
 
 from apps.roadmaps.models import Roadmap, RoadmapStep, UserRoadmap
-from apps.skills.models import UserProfile
+from apps.users.models import UserProfile
 
 class GenerateRoadmapView(APIView):
     """

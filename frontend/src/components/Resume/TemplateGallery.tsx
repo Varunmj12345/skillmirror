@@ -20,19 +20,19 @@ import CommunityGallery from './CommunityGallery';
 const CATEGORIES = ['All', 'Modern', 'ATS-Friendly', 'Minimal', 'Creative', 'Corporate', 'Tech'];
 
 const COLORS = [
-    { name: 'Indigo', value: '#6366f1' },
-    { name: 'Sky', value: '#38bdf8' },
-    { name: 'Emerald', value: '#10b981' },
-    { name: 'Rose', value: '#f43f5e' },
-    { name: 'Amber', value: '#f59e0b' },
+    { name: 'Midnight', value: '#1e293b' },
+    { name: 'Indigo Pro', value: '#4f46e5' },
+    { name: 'Sky Tech', value: '#0ea5e9' },
+    { name: 'Emerald Soft', value: '#059669' },
+    { name: 'Slate Gold', value: '#475569' },
 ];
 
 const FONTS = ['Inter', 'Roboto', 'Playfair Display', 'Source Sans', 'Merriweather'];
 
 const TEMPLATES: Omit<TemplateConfig, 'color' | 'font' | 'layout'>[] = [
-    { id: 't1', name: 'Nova', category: 'Modern', accent: '#6366f1' },
-    { id: 't2', name: 'Apex', category: 'Modern', accent: '#38bdf8' },
-    { id: 't3', name: 'Clean Pro', category: 'ATS-Friendly', accent: '#10b981' },
+    { id: 't1', name: 'Nova', category: 'Modern', accent: '#4f46e5' },
+    { id: 't2', name: 'Apex', category: 'Modern', accent: '#0ea5e9' },
+    { id: 't3', name: 'Clean Pro', category: 'ATS-Friendly', accent: '#059669' },
     { id: 't4', name: 'ATS Max', category: 'ATS-Friendly', accent: '#64748b' },
     { id: 't5', name: 'Zen', category: 'Minimal', accent: '#1e293b' },
     { id: 't6', name: 'Pure', category: 'Minimal', accent: '#94a3b8' },
@@ -43,9 +43,9 @@ const TEMPLATES: Omit<TemplateConfig, 'color' | 'font' | 'layout'>[] = [
     { id: 't11', name: 'Executive', category: 'Corporate', accent: '#1e40af' },
     { id: 't12', name: 'Summit', category: 'Corporate', accent: '#1e3a5f' },
     { id: 't13', name: 'Prestige', category: 'Corporate', accent: '#0f172a' },
-    { id: 't14', name: 'Binary', category: 'Tech', accent: '#6366f1' },
+    { id: 't14', name: 'Binary', category: 'Tech', accent: '#4f46e5' },
     { id: 't15', name: 'Stack', category: 'Tech', accent: '#22d3ee' },
-    { id: 't16', name: 'Deploy', category: 'Tech', accent: '#10b981' },
+    { id: 't16', name: 'Deploy', category: 'Tech', accent: '#059669' },
     { id: 't17', name: 'Circuit', category: 'Tech', accent: '#a855f7' },
     { id: 't18', name: 'Lumina', category: 'Modern', accent: '#f59e0b' },
     { id: 't19', name: 'Clarity', category: 'ATS-Friendly', accent: '#0ea5e9' },
@@ -68,7 +68,7 @@ const TemplateGallery: React.FC<Props> = ({ selected, onSelect }) => {
     const selectTemplate = (t: typeof TEMPLATES[0]) => {
         const newLayout = (t.category === 'Creative' || t.category === 'Tech') ? '2-col' : '1-col';
         const newColor = t.accent;
-        const newFont = t.category === 'Corporate' ? 'Merriweather' : (t.category === 'Modern' ? 'Inter' : 'Roboto');
+        const newFont = (t.category === 'Corporate' || t.category === 'Modern' || t.category === 'Tech') ? 'Merriweather' : 'Inter';
         setGlobalLayout(newLayout);
         setGlobalColor(newColor);
         setGlobalFont(newFont);
@@ -100,13 +100,11 @@ const TemplateGallery: React.FC<Props> = ({ selected, onSelect }) => {
                                 onClick={() => { setView('community'); setRequestedShare(true); }}
                                 className="px-3 py-1 bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 text-[10px] font-black rounded-lg uppercase tracking-widest hover:bg-indigo-600/20 transition-all flex items-center gap-2"
                             >
-
                                 <i className="fa-solid fa-cloud-arrow-up text-[9px]"></i>
                                 Upload to Community
                             </button>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-
                             {/* Color */}
                             <div>
                                 <label className="text-[9px] font-black text-slate-600 uppercase tracking-widest block mb-2">Accent Color</label>
@@ -194,32 +192,31 @@ const TemplateGallery: React.FC<Props> = ({ selected, onSelect }) => {
                                                 </div>
                                             </>
                                         ) : (
-                                            <div className="w-full flex flex-col gap-1.5">
-                                                <div className="h-2 pb-1 flex items-center gap-2 border-b" style={{ borderColor: t.accent + '40' }}>
-                                                    <div className="h-2 w-24 rounded" style={{ backgroundColor: t.accent + '80' }} />
+                                            <div className="w-full flex flex-col gap-1">
+                                                <div className="h-6 flex items-center gap-2 border-b-2 mb-1" style={{ borderColor: t.accent }}>
+                                                    <div className="h-2 w-16 rounded bg-slate-800" />
                                                 </div>
-                                                {[1, 2, 3, 4, 5, 6].map(i => (
-                                                    <div key={i} className="h-1 rounded bg-slate-800" style={{ width: `${50 + (i % 4) * 12}%` }} />
+                                                {[1, 2, 3].map(i => (
+                                                    <div key={i} className="space-y-1 mt-1">
+                                                        <div className="h-1 w-8 rounded" style={{ backgroundColor: t.accent + '40' }} />
+                                                        <div className="h-0.5 w-full bg-slate-900 rounded" />
+                                                        <div className="h-0.5 w-3/4 bg-slate-900 rounded" />
+                                                    </div>
                                                 ))}
-                                                <div className="mt-1 h-px w-full" style={{ backgroundColor: t.accent + '30' }} />
-                                                {[1, 2].map(i => <div key={i} className="h-1 rounded bg-slate-800" style={{ width: `${40 + i * 12}%` }} />)}
                                             </div>
                                         )}
 
-                                        {/* Selected Indicator */}
                                         {isSelected && (
                                             <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-indigo-500 flex items-center justify-center shadow-lg">
                                                 <i className="fa-solid fa-check text-white text-[8px]"></i>
                                             </div>
                                         )}
 
-                                        {/* Hover Overlay */}
                                         <div className="absolute inset-0 bg-slate-950/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                             <span className="text-[10px] font-black text-white uppercase tracking-widest">Use Template</span>
                                         </div>
                                     </div>
 
-                                    {/* Template Info */}
                                     <div className="bg-slate-900 border-t border-slate-800 px-3 py-2 text-left">
                                         <div className="flex items-center justify-between">
                                             <span className="text-[11px] font-bold text-slate-200">{t.name}</span>
@@ -240,10 +237,8 @@ const TemplateGallery: React.FC<Props> = ({ selected, onSelect }) => {
                     onShareHandled={() => setRequestedShare(false)}
                 />
             )}
-
         </div>
     );
 };
-
 
 export default TemplateGallery;
