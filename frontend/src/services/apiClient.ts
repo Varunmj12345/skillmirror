@@ -4,7 +4,7 @@ const MAX_RETRIES = 3;
 const BASE_DELAY = 1000; // 1s initial delay
 
 const apiClient: AxiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://skillmirror.onrender.com', // Primary production URL
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://skillmirror-api-judc.onrender.com', // Primary production URL
   timeout: 45000,
   headers: {
     'Content-Type': 'application/json',
