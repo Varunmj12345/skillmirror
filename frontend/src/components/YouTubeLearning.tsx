@@ -27,12 +27,19 @@ const YouTubeLearning: React.FC<YouTubeLearningProps> = ({ skills = ['Python', '
     const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
     const [tab, setTab] = useState<'search' | 'saved'>('search');
 
+    const [activeSkill, setActiveSkill] = useState<string>('');
+
     useEffect(() => {
         loadSaved();
-        if (skills.length > 0) {
-            handleSearch(skills[0]);
+    }, []);
+
+    useEffect(() => {
+        if (skills && skills.length > 0) {
+            const initialSkill = skills[0];
+            setActiveSkill(initialSkill);
+            handleSearch(initialSkill);
         }
-    }, [skills]);
+    }, [JSON.stringify(skills)]);
 
     const loadSaved = async () => {
         try {
@@ -49,7 +56,9 @@ const YouTubeLearning: React.FC<YouTubeLearningProps> = ({ skills = ['Python', '
         setLoading(true);
         setTab('search');
         try {
-            const res: any = await searchVideos(q);
+            // Enhanced query for better quality results
+            const enhancedQuery = `${q} tutorial for beginners 2026`;
+            const res: any = await searchVideos(enhancedQuery);
             setVideos(res || []);
         } catch (e) {
             console.error(e);
@@ -112,6 +121,24 @@ const YouTubeLearning: React.FC<YouTubeLearningProps> = ({ skills = ['Python', '
                     <button onClick={() => setTab('saved')} className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${tab === 'saved' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:text-slate-200'}`}>My List ({savedVideos.length})</button>
                 </div>
             </div>
+
+            {tab === 'search' && skills.length > 0 && (
+                <div className="flex flex-wrap gap-2 py-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 flex items-center mr-2">Top Skills:</span>
+                    {skills.slice(0, 4).map(skill => (
+                        <button
+                            key={skill}
+                            onClick={() => {
+                                setActiveSkill(skill);
+                                handleSearch(skill);
+                            }}
+                            className={`px-3 py-1 rounded-full text-[10px] font-bold border transition-all ${activeSkill === skill ? 'bg-indigo-600/20 border-indigo-500 text-indigo-400' : 'bg-slate-900 border-slate-800 text-slate-500 hover:text-slate-300'}`}
+                        >
+                            {skill}
+                        </button>
+                    ))}
+                </div>
+            )}
 
             {tab === 'search' && (
                 <div className="space-y-4">

@@ -26,6 +26,7 @@ type ResumeAnalysis = {
   missingSkills: string[];
   breakdown: { label: string; value: number }[];
   aiSuggestions?: string[];
+  dreamJob?: string;
 };
 
 type Tab = 'analyze' | 'build';
@@ -202,8 +203,12 @@ const ResumePage: React.FC = () => {
     try {
       const res: any = await apiClient.post('/api/skills/resume/ats-insight/', {});
       setAtsData(res);
-    } catch { }
-    finally { setAtsLoading(false); }
+      startToast('✓ ATS Scan complete');
+    } catch { 
+      setError('ATS Analysis failed. Ensure you have uploaded a resume.');
+    } finally { 
+      setAtsLoading(false); 
+    }
   };
 
   const breakdownData = useMemo(() =>
@@ -407,7 +412,11 @@ const ResumePage: React.FC = () => {
             </div>
 
             {/* AI Improvement Panel */}
-            <AIImprovementPanel skills={analysis?.skills.map(s => s.name)} />
+            <AIImprovementPanel 
+              skills={analysis?.skills.map(s => s.name)} 
+              injections={atsData?.keyword_injections}
+              role={atsData?.target_job || analysis?.dreamJob || 'Software Developer'}
+            />
 
             {/* Resume History */}
             <ResumeHistoryPanel

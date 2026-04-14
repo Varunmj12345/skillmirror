@@ -5,6 +5,13 @@ interface ATSData {
     keyword_score: number;
     formatting_score: number;
     readability_score: number;
+    target_job: string;
+    heatmap: {
+        technical: number;
+        soft: number;
+        tools: number;
+    };
+    missing_critical: string[];
     suggestions: string[];
 }
 
@@ -65,10 +72,17 @@ const ATSScorePanel: React.FC<Props> = ({ data, loading, onAnalyze }) => {
     return (
         <div className="glass-panel p-6 border-slate-800/50">
             <div className="flex items-center justify-between mb-6">
-                <h3 className="text-sm font-bold text-slate-50 flex items-center gap-2">
-                    <i className="fa-solid fa-robot text-emerald-400 text-xs"></i>
-                    ATS Optimization Engine
-                </h3>
+                <div className="space-y-1">
+                    <h3 className="text-sm font-bold text-slate-50 flex items-center gap-2">
+                        <i className="fa-solid fa-robot text-emerald-400 text-xs"></i>
+                        ATS Optimization Engine
+                    </h3>
+                    {data && (
+                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.1em]">
+                            Target: <span className="text-indigo-400">{data.target_job}</span>
+                        </p>
+                    )}
+                </div>
                 <button
                     onClick={onAnalyze}
                     disabled={loading}
@@ -95,6 +109,49 @@ const ATSScorePanel: React.FC<Props> = ({ data, loading, onAnalyze }) => {
                         <ScoreRing score={data.formatting_score} label="Formatting" color="amber" />
                         <ScoreRing score={data.readability_score} label="Readability" color="sky" />
                     </div>
+
+                    {/* Heatmap Section */}
+                    <div className="p-5 bg-slate-900/40 rounded-2xl border border-slate-800/60 space-y-4">
+                        <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                            <i className="fa-solid fa-layer-group text-indigo-400"></i> Keyword Coverage Heatmap
+                        </h4>
+                        <div className="grid grid-cols-1 gap-3">
+                            {[
+                                { key: 'technical', label: 'Technical Core', color: 'bg-indigo-500', value: data.heatmap?.technical || 0 },
+                                { key: 'soft', label: 'Soft Skills', color: 'bg-emerald-500', value: data.heatmap?.soft || 0 },
+                                { key: 'tools', label: 'Tools & Ecosystem', color: 'bg-amber-500', value: data.heatmap?.tools || 0 },
+                            ].map(cluster => (
+                                <div key={cluster.key} className="space-y-1.5">
+                                    <div className="flex justify-between text-[10px] font-bold">
+                                        <span className="text-slate-400">{cluster.label}</span>
+                                        <span className="text-slate-200">{cluster.value}% Match</span>
+                                    </div>
+                                    <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                                        <div 
+                                            className={`h-full ${cluster.color} transition-all duration-1000 ease-out shadow-[0_0_8px_rgba(0,0,0,0.5)]`} 
+                                            style={{ width: `${cluster.value}%` }} 
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Critical Gaps */}
+                    {data.missing_critical?.length > 0 && (
+                        <div className="bg-rose-500/5 border border-rose-500/10 p-4 rounded-xl">
+                            <h5 className="text-[9px] font-black text-rose-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                <i className="fa-solid fa-circle-exclamation"></i> Critical Skill Gaps
+                            </h5>
+                            <div className="flex flex-wrap gap-2">
+                                {data.missing_critical.map(gap => (
+                                    <span key={gap} className="px-2 py-0.5 bg-rose-500/10 border border-rose-500/20 rounded text-[10px] font-bold text-rose-300">
+                                        {gap}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
                     {/* Overall verdict */}
                     <div className={`p-3 rounded-xl border flex items-center gap-3 ${data.ats_score >= 80 ? 'bg-emerald-500/5 border-emerald-500/20' : data.ats_score >= 60 ? 'bg-amber-500/5 border-amber-500/20' : 'bg-rose-500/5 border-rose-500/20'}`}>

@@ -7,7 +7,7 @@ from pypdf import PdfReader, PdfWriter
 from PIL import Image, ImageDraw, ImageFont
 from django.core.files.base import ContentFile
 from groq import Groq
-from rest_framework import viewsets, status, generics
+from rest_framework import viewsets, status, generics, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -393,17 +393,90 @@ class ResumeAIImproveView(APIView):
         except Exception as e: return Response({'error': str(e)}, status=500)
 
 class ATSInsightView(APIView):
+    """
+    Resume Intelligence 2.0 Engine.
+    Performs dynamic ATS scoring by matching resume content against 
+    target job requirements (RequiredSkill models).
+    """
     permission_classes = [IsAuthenticated]
+
     def post(self, request):
+        user = request.user
+        profile = getattr(user, 'profile', None)
+        target_job = profile.dream_job if profile else "Software Engineer"
+        
+        try:
+            resume = user.resume_data
+            text = extract_text_from_file(resume.resume_file)[:4000].lower()
+        except:
+            return Response({'error': 'No resume found. Please upload a resume first.'}, status=400)
+
+        # 1. Fetch Job Requirements
+        job_skills = RequiredSkill.objects.filter(role_name__icontains=target_job)
+        if not job_skills.exists():
+            # Fallback to general Software Engineer if specific job not found
+            job_skills = RequiredSkill.objects.filter(role_name__icontains="Software Engineer")
+
+        # 2. Match Skills
+        matches = []
+        gaps = []
+        heatmap = {
+            'technical': {'match': 0, 'total': 0},
+            'soft': {'match': 0, 'total': 0},
+            'tools': {'match': 0, 'total': 0}
+        }
+
+        for skill in job_skills:
+            category = skill.category if skill.category in heatmap else 'technical'
+            heatmap[category]['total'] += 1
+            
+            # Simple word matching (can be improved with NLP/Embeddings)
+            if skill.skill_name.lower() in text:
+                matches.append(skill.skill_name)
+                heatmap[category]['match'] += 1
+            else:
+                gaps.append({
+                    'name': skill.skill_name,
+                    'importance': skill.importance_level,
+                    'impact': min(20, skill.importance_level * 4)
+                })
+
+        # 3. Calculate Scores
+        keyword_score = int((len(matches) / job_skills.count() * 100)) if job_skills.count() > 0 else 70
+        
+        # Formatting Score (Basic heuristic)
+        fmt_score = 90
+        if len(text) < 1000: fmt_score -= 20 # Too short
+        if 'experience' not in text: fmt_score -= 15
+        if 'education' not in text: fmt_score -= 10
+        if '@' not in text: fmt_score -= 15 # Missing contact?
+
+        readability = 85 # Placeholder for legibility
+
+        # 4. Generate Keyword Injections
+        # Focus on Critical (4) or Mandatory (5) gaps
+        injections = []
+        critical_gaps = [g for g in gaps if g['importance'] >= 4]
+        for g in critical_gaps[:3]:
+            injections.append(f"Inject '{g['name']}' into your Experience section to boost your ATS match by ~{g['impact']}%")
+
+        # 5. Build Final Response
         return Response({
-            'ats_score': 82,
-            'keyword_score': 78,
-            'formatting_score': 90,
-            'readability_score': 85,
+            'ats_score': int((keyword_score * 0.7) + (fmt_score * 0.3)),
+            'keyword_score': keyword_score,
+            'formatting_score': fmt_score,
+            'readability_score': readability,
+            'target_job': target_job,
+            'heatmap': {
+                k: int((v['match']/v['total']*100)) if v['total'] > 0 else 0 
+                for k, v in heatmap.items()
+            },
+            'keyword_injections': injections,
+            'missing_critical': [g['name'] for g in critical_gaps],
             'suggestions': [
-                'Add more action verbs like "Spearheaded", "Engineered"',
-                'Quantify your achievements (e.g., Improved X by Y%)',
-                'Add missing keywords: Kubernetes, Terraform'
+                'Quantify your achievements (e.g., Improved X by Y%)' if 'resposible for' in text else 'Well structured achievements',
+                f'Add missing critical skills: {", ".join([g["name"] for g in critical_gaps[:2]])}' if critical_gaps else 'Core technical keywords are well represented',
+                'Ensure your email and LinkedIn are clearly visible' if '@' not in text else 'Contact information detected'
             ]
         })
 
