@@ -54,7 +54,9 @@ export const getResumeIntelligenceReport = async () => {
 
 export const getCareerDigitalTwinReport = async () => {
     try {
-        const response = await apiClient.get('/api/ai/career-digital-twin/');
+        const response = await apiClient.get('/api/ai/career-digital-twin/', {
+            timeout: 90000 // 90s specifically for the heavy digital twin simulation
+        });
         return response as any;
     } catch (error) {
         console.error('Error fetching career digital twin report:', error);

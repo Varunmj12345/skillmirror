@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
-import ReactMarkdown from 'react-markdown';
 import { getCareerDigitalTwinReport } from '../services/ai';
 import { motion, AnimatePresence } from 'framer-motion';
+import CareerDigitalTwin from './CareerDigitalTwin';
 
 interface CareerDigitalTwinModalProps {
     isOpen: boolean;
@@ -51,42 +50,25 @@ const CareerDigitalTwinModal: React.FC<CareerDigitalTwinModalProps> = ({ isOpen,
             setMetrics(data.metrics);
         } catch {
             // Never show a raw error — generate a minimal local twin output
-            setReport(`⚠️ SYSTEM STATUS
-- Live AI: Unavailable
-- Mode: Fallback Simulation
-
----
-
-### 1. 🧬 Digital Twin Identity
-
-- **Current State:** Developing
-- **Stability Level:** Medium
-- **Adaptability:** Medium
-
----
-
-### 2. ⚙️ Computed Behavioral Summary
-
-- **Learning Activity Level:** System sync pending
-- **Market Alignment Level:** Awaiting metrics
-- **Competitive Standing:** Handshake required
-
----
-
-### 5. 🚧 System Limitation Notice
-
-- Detailed AI interpretation is unavailable
-- Advanced insights and strategic recommendations are temporarily disabled
-
----
-
-### 6. 🔁 Recovery Instruction
-
-- Restore AI functionality by configuring \`GROQ_API_KEY\` in backend environment
-
----
-
-*[Digital Twin Engine — Connection unavailable]*`);
+            setMetrics({
+                user_skills: "System Handshake, Connection Node",
+                projects: "N/A",
+                experience: "N/A",
+                target_role: "N/A",
+                risk_score: 50,
+                confidence_score: 50,
+                market_score: 50,
+                activity_score: 0,
+                competition_score: 50,
+                no_action: { job_prob: "45%", salary: "Declining", risk_trend: "Critical" },
+                moderate: { improvements: "Re-establishing connection", growth: "0%" },
+                smart: { maximum_potential: "System Operator", improvement_vs_none: "0%" },
+                trending_skills: "AI Infrastructure, DevOps",
+                declining_skills: "Manual Configuration",
+                percentile: 50,
+                peer_gap: "Connection lost"
+            });
+            setReport(`⚠️ SYSTEM STATUS... (Fallback)`);
         } finally {
             setLoading(false);
             if (timerRef.current) clearInterval(timerRef.current);
@@ -176,34 +158,13 @@ const CareerDigitalTwinModal: React.FC<CareerDigitalTwinModalProps> = ({ isOpen,
                             </div>
                         ) : (
                             <div className="p-8">
-                                <div className="prose prose-invert max-w-none twin-report">
-                                    <ReactMarkdown>{report || ''}</ReactMarkdown>
-                                </div>
+                                <CareerDigitalTwin 
+                                    metrics={metrics} 
+                                    onResimulate={runSimulation} 
+                                />
                             </div>
                         )}
                     </div>
-
-                    {/* Footer */}
-                    {!loading && (
-                        <div className="px-8 py-4 border-t border-cyan-500/10 bg-cyan-500/[0.02] flex justify-between items-center">
-                            <p className="text-[10px] text-slate-600 font-mono">TWIN_ENGINE_v1.0 · SIMULATION_COMPLETE</p>
-                            <div className="flex gap-3">
-                                <button
-                                    onClick={runSimulation}
-                                    className="px-5 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-[10px] font-black text-slate-300 uppercase tracking-widest transition-all flex items-center gap-2"
-                                >
-                                    <i className="fa-solid fa-rotate-right" />
-                                    Re-Simulate
-                                </button>
-                                <button
-                                    onClick={onClose}
-                                    className="px-6 py-2 bg-cyan-500 hover:bg-cyan-400 rounded-xl text-[10px] font-black text-slate-950 uppercase tracking-widest transition-all"
-                                >
-                                    Acknowledge Twin
-                                </button>
-                            </div>
-                        </div>
-                    )}
                 </motion.div>
             </div>
 

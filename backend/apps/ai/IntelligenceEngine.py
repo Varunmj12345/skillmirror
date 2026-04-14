@@ -137,9 +137,9 @@ class NeuralIntelligenceEngine:
             "market_score": 75, # Mock market demand
             "activity_score": activity_score,
             "competition_score": 100 - percentile,
-            "no_action": str(simulation["no_action"]),
-            "moderate": str(simulation["moderate"]),
-            "smart": str(simulation["smart"]),
+            "no_action": simulation["no_action"],
+            "moderate": simulation["moderate"],
+            "smart": simulation["smart"],
             "trending_skills": ", ".join(trending),
             "declining_skills": ", ".join(declining),
             "percentile": percentile,
