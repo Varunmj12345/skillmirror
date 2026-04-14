@@ -8,8 +8,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from groq import Groq
-from .models import MockInterview, MockInterviewQuestion, LiveInterviewSession
-from .serializers import MockInterviewSerializer, MockInterviewQuestionSerializer, LiveInterviewSessionSerializer
+from apps.interviews.models import MockInterview, MockInterviewQuestion, LiveInterviewSession
+from apps.interviews.serializers import MockInterviewSerializer, MockInterviewQuestionSerializer, LiveInterviewSessionSerializer
 
 # Audio Analysis Placeholder Logic
 def analyze_audio_metrics(audio_file):
@@ -350,39 +350,31 @@ class FinalizeInterviewView(APIView):
 
     def post(self, request, interview_id):
         interview = get_object_or_404(MockInterview, id=interview_id, user=request.user)
-        questions = interview.questions.all()
         
-        if not questions:
-            return Response({'error': 'No questions found'}, status=400)
+        # New: Accept rich AI data from the engine
+        ai_data = request.data.get('ai_report', {})
+        
+        if ai_data:
+            interview.total_score = ai_data.get('overall_score', interview.total_score)
+            interview.ai_summary = ai_data.get('evaluation', {}).get('feedback', interview.ai_summary)
+            interview.strengths = ai_data.get('strengths', interview.strengths)
+            interview.weaknesses = ai_data.get('weaknesses', interview.weaknesses)
+            interview.improvement_areas = ai_data.get('skill_gap', interview.improvement_areas)
+            
+            # Additional metrics if provided
+            market = ai_data.get('market_intelligence', {})
+            if market:
+                interview.performance_trend = f"Market Demand: {market.get('market_demand')} | Growth: {market.get('growth_forecast')}"
 
-        # Average scores
-        total_q = questions.count()
-        avg_score = sum(q.score for q in questions) / total_q
-        avg_tech = sum(q.technical_accuracy for q in questions) / total_q
-        avg_comm = sum(q.communication_rating for q in questions) / total_q
-        avg_depth = sum(q.depth_score for q in questions) / total_q
-        avg_clarity = sum(q.structure_score for q in questions) / total_q
-        
-        interview.total_score = round(avg_score * 10, 1) # Normalize to 100
-        interview.technical_accuracy = round(avg_tech * 10, 1)
-        interview.communication_score = round(avg_comm * 10, 1)
-        interview.depth_of_knowledge = round(avg_depth * 10, 1)
-        interview.clarity_score = round(avg_clarity * 10, 1)
-        
-        interview.technical_readiness = interview.technical_accuracy
-        interview.communication_readiness = interview.communication_score
-        
-        if interview.total_score >= 80:
-            interview.confidence_level = "High - Job Ready"
-        elif interview.total_score >= 50:
-            interview.confidence_level = "Moderate - Needs Polish"
         else:
-            interview.confidence_level = "Low - Needs Fundamental Work"
+            # Fallback to traditional averaging
+            questions = interview.questions.all()
+            if questions:
+                total_q = questions.count()
+                avg_score = sum(q.score for q in questions) / total_q
+                interview.total_score = round(avg_score * 10, 1)
 
         interview.is_completed = True
-        
-        # Generate Final Summary via AI
-        interview.ai_summary = f"You completed a {interview.difficulty} {interview.interview_type} interview for {interview.role} using {interview.interview_mode} mode."
         interview.save()
         
         # Sync with activity log
@@ -391,8 +383,8 @@ class FinalizeInterviewView(APIView):
             ActivityLog.objects.create(
                 user=request.user,
                 action_type='interview',
-                description=f"Completed {interview.role} mock interview. Score: {interview.total_score}%",
-                impact_score=10
+                description=f"Completed {interview.role} Advanced AI interview. Score: {interview.total_score}%",
+                impact_score=15
             )
         except:
             pass
@@ -559,160 +551,145 @@ class AICareerEngineView(APIView):
         if not api_key or api_key == 'gsk_your_key_here':
             return self._fallback_response(has_answer, is_final, index, total)
 
-        # Build previous answers summary for context
+        skills_text = ", ".join(skills) if skills else "Not specified"
         history_text = "\n".join([
             f"Q{i+1}: {h.get('question','')}\nA: {h.get('answer','[skipped]')}"
             for i, h in enumerate(history)
         ]) if history else "None yet."
 
-        skills_text = ", ".join(skills) if skills else "Not specified"
+        # Adaptive logic for Mandatory vs Dynamic questions
+        mandatory_focus = ""
+        if index == 0: mandatory_focus = "MANDATORY: Start with a professional Introduction question."
+        elif index == 1: mandatory_focus = "MANDATORY: Focus on a Core Technical Skill relevant to " + role
+        elif index == 2: mandatory_focus = "MANDATORY: Focus on a complex Problem-solving scenario."
 
-        # ─── MODE: Generate Question ─────────────────────────────────────────
+        prompt_context = f"""
+        Role: {role}
+        Level: {level}
+        Skills: {skills_text}
+        Question Index: {index + 1} of {total}
+        History: {history_text}
+        """
+
         if not has_answer:
+            # Stage: question
             prompt = f"""
-You are a senior FAANG interviewer and AI career advisor.
+            You are an advanced AI Interview Engine.
+            GOAL: Generate the next interview question.
+            
+            CONTEXT:
+            {prompt_context}
+            {mandatory_focus if index < 3 else "ADAPTIVE: Generate a probing or advanced question based on previous performance."}
 
-INPUT:
-Role: {role}
-Difficulty: {level}
-User Skills: {skills_text}
-Previous Q&A:
-{history_text}
-Question Index: {index + 1} of {total}
+            RULES:
+            1. Stage: question
+            2. If QIndex < 3, follow the mandatory sequence (Intro -> Core Tech -> Problem).
+            3. If QIndex >= 3, use adaptive branching (Harder if strong, simpler if weak).
+            4. CROSS-CHECK: If user mentioned skills in history, validate their understanding.
 
-TASK: Generate ONE high-quality, unique interview question.
-- Match role and difficulty precisely
-- Do NOT repeat any previous questions
-- If index > 1, increase difficulty slightly from the previous question
-- Choose the right type: concept / problem / system-design / behavioral
-
-STRICT JSON RESPONSE ONLY — no extra text:
-{{
-  "stage": "question",
-  "question": "...",
-  "type": "concept|problem|system-design|behavioral",
-  "difficulty_hint": "Easy|Moderate|Hard|Expert",
-  "what_is_tested": "Brief note on what this question tests"
-}}
-"""
-        # ─── MODE: Evaluate + Intelligence Report ────────────────────────────
+            OUTPUT FORMAT (STRICT JSON):
+            {{
+              "stage": "question",
+              "question": "The question text",
+              "type": "concept|problem|system-design|behavioral",
+              "expected_concepts": ["key1", "key2"]
+            }}
+            """
         elif not is_final:
+            # Stage: evaluation + next_question
             prompt = f"""
-You are a FAANG-level technical interviewer and AI career intelligence engine.
+            You are an advanced AI Interview Engine.
+            GOAL: Evaluate the answer and generate the NEXT question.
 
-INPUT:
-Role: {role}
-Difficulty: {level}
-User Skills: {skills_text}
-Previous Q&A:
-{history_text}
-Current Answer: {answer}
-Question Index: {index + 1} of {total}
+            CONTEXT:
+            {prompt_context}
+            Current Answer: {answer}
+            {mandatory_focus if index < 3 else ""}
 
-TASKS:
-1. Evaluate the current answer strictly like a FAANG interviewer.
-2. Generate the NEXT interview question (slightly harder than current).
-3. Provide job market intelligence for the role.
-4. Analyze skill match between user skills and market requirements.
+            EVALUATION METRICS:
+            Analyze: Clarity, Technical Accuracy, Confidence, Depth (all 0-10).
+            Detect filler words (um, uh, etc.) and hesitation.
+            
+            MARKET INTELLIGENCE:
+            Generate Salary Projection, Top 3 Companies, and Demand for {role}.
 
-STRICT JSON RESPONSE ONLY:
-{{
-  "stage": "evaluation",
-  "score": <0-10>,
-  "feedback": "Detailed interviewer feedback...",
-  "ideal_answer": "The complete ideal answer...",
-  "improvement": "Specific tips to improve this answer...",
-  "next_question": {{
-    "question": "...",
-    "type": "concept|problem|system-design|behavioral",
-    "difficulty_hint": "..."
-  }},
-  "job_insights": {{
-    "top_skills": ["skill1", "skill2", "skill3", "skill4", "skill5"],
-    "salary_range": "e.g. $90k – $140k / year",
-    "market_growth": "e.g. +22% over next 3 years",
-    "top_hiring_companies": ["Company A", "Company B", "Company C"],
-    "risk_level": "low|medium|high"
-  }},
-  "skill_match": {{
-    "match_percentage": <0-100>,
-    "matched_skills": [],
-    "missing_skills": [],
-    "priority_skills": []
-  }}
-}}
-"""
-        # ─── MODE: Final Report ───────────────────────────────────────────────
+            RULES:
+            1. If QIndex < 3, the 'next_question' must be the next mandatory one.
+            2. Cross-check Answer against Skills/Resume. Detect mismatches.
+
+            OUTPUT FORMAT (STRICT JSON):
+            {{
+              "stage": "evaluation",
+              "evaluation": {{
+                "clarity": 0-10,
+                "technical_accuracy": 0-10,
+                "confidence": 0-10,
+                "depth": 0-10,
+                "keyword_match": 0-10,
+                "filler_words": [],
+                "feedback": "..."
+              }},
+              "behavioral_analysis": {{
+                "communication": "Good|Average|Poor",
+                "confidence_level": "High|Medium|Low",
+                "issues_detected": []
+              }},
+              "market_intelligence": {{
+                "salary_projection": "₹X - ₹Y LPA",
+                "top_companies": ["C1", "C2", "C3"],
+                "market_demand": "High|Medium|Low",
+                "growth_forecast": "X%"
+              }},
+              "skill_gap_analysis": {{
+                "missing_skills": [],
+                "improvement_suggestions": []
+              }},
+              "next_question": {{
+                "question": "...",
+                "type": "..."
+              }}
+            }}
+            """
         else:
+            # Stage: final_report
             prompt = f"""
-You are a FAANG-level technical interviewer and AI career intelligence engine.
+            You are an advanced AI Interview Engine.
+            GOAL: Final Intelligence Report.
+            
+            {prompt_context}
+            Final Answer: {answer}
 
-INPUT:
-Role: {role}
-Difficulty: {level}
-User Skills: {skills_text}
-Complete Interview History:
-{history_text}
-Final Answer: {answer}
-
-TASKS — generate the complete final intelligence report.
-
-STRICT JSON RESPONSE ONLY:
-{{
-  "stage": "final_report",
-  "score": <0-10 for the final answer>,
-  "feedback": "...",
-  "ideal_answer": "...",
-  "improvement": "...",
-  "overall_score": <0-100 overall interview score>,
-  "strengths": ["strength1", "strength2", "strength3"],
-  "weaknesses": ["weakness1", "weakness2"],
-  "skill_gap": ["gap1", "gap2", "gap3"],
-  "recommended_skills": ["skill1", "skill2", "skill3"],
-  "learning_path": [
-    "Step 1: ...",
-    "Step 2: ...",
-    "Step 3: ..."
-  ],
-  "interview_summary": "2-3 sentence executive summary of performance...",
-  "job_insights": {{
-    "top_skills": ["skill1", "skill2", "skill3", "skill4", "skill5"],
-    "salary_range": "e.g. $90k – $140k / year",
-    "market_growth": "e.g. +22% over next 3 years",
-    "top_hiring_companies": ["Company A", "Company B", "Company C"],
-    "risk_level": "low|medium|high"
-  }},
-  "skill_match": {{
-    "match_percentage": <0-100>,
-    "matched_skills": [],
-    "missing_skills": [],
-    "priority_skills": []
-  }},
-  "career_simulation": {{
-    "growth_path": "Where this candidate realistically ends up in 3-5 years...",
-    "salary_projection": "e.g. $85k → $115k → $145k over 5 years",
-    "key_decisions": [
-      "Decision 1 that will define the career trajectory",
-      "Decision 2..."
-    ],
-    "risks": [
-      "Risk 1 if skill gaps are not addressed",
-      "Risk 2..."
-    ]
-  }}
-}}
-"""
+            Provide a comprehensive summary of strengths, weaknesses, skill gaps, and a realistic growth path.
+            
+            OUTPUT FORMAT (STRICT JSON):
+            {{
+              "stage": "final_report",
+              "overall_score": 0-100,
+              "evaluation": {{ "feedback": "Final summary..." }},
+              "market_intelligence": {{ ... }},
+              "skill_gap_analysis": {{ ... }},
+              "career_simulation": {{
+                "growth_path": "Realistic 3-5 year trajectory",
+                "salary_projection": "Year-by-year growth",
+                "key_decisions": [],
+                "risks": []
+              }}
+            }}
+            """
 
         try:
             client = Groq(api_key=api_key)
             completion = client.chat.completions.create(
-                messages=[{"role": "user", "content": prompt}],
+                messages=[{"role": "system", "content": "You are a professional hiring engine. Respond ONLY in valid JSON."},
+                          {"role": "user", "content": prompt}],
                 model="llama-3.3-70b-versatile",
                 response_format={"type": "json_object"},
-                max_tokens=2048,
                 temperature=0.7
             )
             return json.loads(completion.choices[0].message.content)
+        except Exception as e:
+            print(f"AI Career Engine Error: {e}")
+            return self._fallback_response(has_answer, is_final, index, total)
         except Exception as e:
             print(f"AI Career Engine Error: {e}")
             return self._fallback_response(has_answer, is_final, index, total)

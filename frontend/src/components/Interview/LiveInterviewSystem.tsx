@@ -1,32 +1,43 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { interviewService } from '../../services/interviewService';
+import { interviewService, AIEngineResponse, MarketIntelligence, EvaluationMetrics } from '../../services/interviewService';
 
 interface Props {
     interviewId: number;
-    roomId?: string;
-    onComplete: () => void;
+    role?: string;
+    level?: string;
+    skills?: string[];
+    onComplete: (report: any) => void;
 }
 
-const LiveInterviewSystem: React.FC<Props> = ({ interviewId, roomId, onComplete }) => {
+const LiveInterviewSystem: React.FC<Props> = ({ 
+    interviewId, 
+    role = "Software Engineer", 
+    level = "Mid", 
+    skills = [], 
+    onComplete 
+}) => {
+    // Session State
     const [status, setStatus] = useState<'idle' | 'recording' | 'thinking' | 'speaking'>('idle');
-    const [questions, setQuestions] = useState<any[]>([]);
-    const [currentQIndex, setCurrentQIndex] = useState(0);
-    const [transcript, setTranscript] = useState('');
-    const [isAIVoiceActive, setIsAIVoiceActive] = useState(false);
+    const [currentQuestion, setCurrentQuestion] = useState<string>("");
+    const [history, setHistory] = useState<{ question: string; answer: string }[]>([]);
+    const [qIndex, setQIndex] = useState(0);
+    const totalQuestions = 5;
 
-    // WebRTC & Audio Refs
+    // Intelligence State
+    const [aiReport, setAiReport] = useState<AIEngineResponse | null>(null);
+    const [marketPulse, setMarketPulse] = useState<MarketIntelligence | null>(null);
+    const [behavioral, setBehavioral] = useState<EvaluationMetrics | null>(null);
+    const [transcript, setTranscript] = useState('');
+
+    // Audio/Video Refs
     const videoRef = useRef<HTMLVideoElement>(null);
-    const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-    const chunksRef = useRef<Blob[]>([]);
     const recognitionRef = useRef<any>(null);
 
     useEffect(() => {
         startCamera();
         setupSpeechRecognition();
-        return () => {
-            stopCamera();
-        };
+        return () => stopCamera();
     }, []);
 
     const startCamera = async () => {
@@ -52,12 +63,12 @@ const LiveInterviewSystem: React.FC<Props> = ({ interviewId, roomId, onComplete 
             recognitionRef.current.continuous = true;
             recognitionRef.current.interimResults = true;
             recognitionRef.current.onresult = (event: any) => {
-                let interim = '';
+                let currentTranscript = '';
                 for (let i = event.resultIndex; i < event.results.length; ++i) {
                     if (event.results[i].isFinal) {
-                        setTranscript(prev => prev + ' ' + event.results[i][0].transcript);
+                        setTranscript(prev => prev + event.results[i][0].transcript);
                     } else {
-                        interim += event.results[i][0].transcript;
+                        currentTranscript += event.results[i][0].transcript;
                     }
                 }
             };
@@ -65,263 +76,266 @@ const LiveInterviewSystem: React.FC<Props> = ({ interviewId, roomId, onComplete 
     };
 
     const speak = (text: string) => {
-        setIsAIVoiceActive(true);
         setStatus('speaking');
         const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 0.95;
         utterance.onend = () => {
-            setIsAIVoiceActive(false);
             setStatus('recording');
-            startRecording();
+            setTranscript('');
+            if (recognitionRef.current) recognitionRef.current.start();
         };
         window.speechSynthesis.speak(utterance);
     };
 
-    const startRecording = () => {
-        setTranscript('');
-        if (recognitionRef.current) recognitionRef.current.start();
-
-        const stream = videoRef.current?.srcObject as MediaStream;
-        if (stream) {
-            mediaRecorderRef.current = new MediaRecorder(stream);
-            mediaRecorderRef.current.ondataavailable = (e) => chunksRef.current.push(e.data);
-            mediaRecorderRef.current.onstop = handleRecordingStop;
-            mediaRecorderRef.current.start();
+    const startInterview = async () => {
+        setStatus('thinking');
+        try {
+            const res = await interviewService.callAIEngine({
+                role, level, skills,
+                history: [],
+                answer: "",
+                index: 0,
+                total: totalQuestions
+            });
+            if (res.question) {
+                setCurrentQuestion(res.question);
+                speak(res.question);
+            }
+        } catch (err) {
+            console.error("Failed to start engine", err);
         }
     };
 
-    const stopRecording = () => {
+    const handleFinishAnswer = async () => {
         if (recognitionRef.current) recognitionRef.current.stop();
-        if (mediaRecorderRef.current) mediaRecorderRef.current.stop();
-        setStatus('thinking');
-    };
-
-    const handleRecordingStop = async () => {
-        const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' });
-        chunksRef.current = [];
         setStatus('thinking');
 
         try {
-            const currentQ = questions[currentQIndex];
+            const res = await interviewService.callAIEngine({
+                role, level, skills,
+                history,
+                answer: transcript,
+                index: qIndex,
+                total: totalQuestions
+            });
 
-            // 1. Fire background tasks (Don't hold up UI)
-            if (currentQ?.id && transcript) {
-                interviewService.evaluateAnswer(currentQ.id, transcript).catch(e => console.error("Eval Error", e));
-                // interviewService.processAudio(currentQ.id, audioBlob).catch(e => console.error("Audio Error", e));
+            // Update Intelligence
+            if (res.market_intelligence) setMarketPulse(res.market_intelligence);
+            if (res.evaluation) setBehavioral(res.evaluation);
+            setAiReport(res);
+
+            // Update History
+            const updatedHistory = [...history, { question: currentQuestion, answer: transcript }];
+            setHistory(updatedHistory);
+
+            if (res.stage === 'final_report') {
+                setStatus('idle');
+                onComplete(res);
+                return;
             }
 
-            // 2. Move to the next pre-generated question
-            const nextIdx = currentQIndex + 1;
-            if (nextIdx < questions.length) {
-                setCurrentQIndex(nextIdx);
-                speak(questions[nextIdx].question_text);
-            } else {
-                // Interview complete!
-                setStatus('idle');
-                onComplete();
+            // Move to Next Question (Adaptive or Mandatory)
+            const nextQ = res.next_question?.question || res.question;
+            if (nextQ) {
+                setQIndex(prev => prev + 1);
+                setCurrentQuestion(nextQ);
+                speak(nextQ);
             }
         } catch (err) {
-            console.error('Processing failed', err);
-            setStatus('idle');
-        }
-    };
-
-    const initializeInterview = async () => {
-        // Mock starter question or load from interviewId
-        const res = await interviewService.getDetail(interviewId);
-        const data = res as any;
-        setQuestions(data.questions);
-        if (data.questions.length > 0) {
-            speak(data.questions[0].question_text);
+            console.error("Engine evaluation failed", err);
+            setStatus('recording');
         }
     };
 
     return (
-        <div className="relative min-h-[600px] bg-slate-950 rounded-3xl overflow-hidden border border-white/5 shadow-2xl">
-            {/* Background elements */}
-            <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:40px_40px]" />
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
-
-            <div className="relative z-10 p-8 flex flex-col h-full h-[600px]">
-                <div className="flex justify-between items-center mb-8">
-                    <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
-                            <i className="fa-solid fa-robot text-indigo-400 text-lg"></i>
+        <div className="relative min-h-[700px] bg-slate-950 rounded-[3rem] overflow-hidden border border-white/5 shadow-2xl flex flex-col font-sans">
+            {/* 1. Market Intelligence Ticker (Predictive Footer) */}
+            <AnimatePresence>
+                {marketPulse && (
+                    <motion.div 
+                        initial={{ y: 50 }} animate={{ y: 0 }}
+                        className="absolute bottom-0 left-0 w-full h-12 bg-indigo-600/90 backdrop-blur-xl z-50 flex items-center overflow-hidden border-t border-white/20"
+                    >
+                        <div className="flex gap-12 whitespace-nowrap animate-marquee px-8">
+                            {[1, 2].map(i => (
+                                <div key={i} className="flex gap-12 items-center">
+                                    <span className="flex items-center gap-2 text-white font-black text-[10px] uppercase tracking-widest">
+                                        <i className="fa-solid fa-chart-line text-emerald-300"></i> Market Demand: {marketPulse.market_demand}
+                                    </span>
+                                    <span className="flex items-center gap-2 text-white font-black text-[10px] uppercase tracking-widest">
+                                        <i className="fa-solid fa-money-bill-trend-up text-emerald-300"></i> Salary Index: {marketPulse.salary_projection}
+                                    </span>
+                                    <span className="flex items-center gap-2 text-white font-black text-[10px] uppercase tracking-widest">
+                                        <i className="fa-solid fa-building text-indigo-300"></i> Hiring Now: {marketPulse.top_companies.join(", ")}
+                                    </span>
+                                    <span className="flex items-center gap-2 text-white font-black text-[10px] uppercase tracking-widest">
+                                        <i className="fa-solid fa-arrow-trend-up text-emerald-300"></i> Growth: {marketPulse.growth_forecast}
+                                    </span>
+                                </div>
+                            ))}
                         </div>
-                        <div>
-                            <h3 className="text-white font-bold tracking-tight">SkillMirror AI Interviewer</h3>
-                            <div className="flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                <p className="text-[9px] text-slate-500 uppercase tracking-widest font-black">Secure Real-time Session</p>
-                            </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* 2. Main Sandbox Workspace */}
+            <div className="flex-1 p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10">
+                
+                {/* Left: Performance Metrics (Behavioral Pulse) */}
+                <div className="lg:col-span-3 flex flex-col gap-6">
+                    <div className="glass-panel p-6 rounded-[2rem] border-white/5 bg-white/[0.02]">
+                        <h4 className="text-slate-500 font-black text-[9px] uppercase tracking-widest mb-6">Behavioral Pulse</h4>
+                        <div className="space-y-6">
+                            {[
+                                { label: 'Clarity', val: behavioral?.clarity || 0, color: 'bg-indigo-500' },
+                                { label: 'Tech Accuracy', val: behavioral?.technical_accuracy || 0, color: 'bg-emerald-500' },
+                                { label: 'Confidence', val: behavioral?.confidence || 0, color: 'bg-sky-500' }
+                            ].map(m => (
+                                <div key={m.label}>
+                                    <div className="flex justify-between text-[10px] font-bold text-white mb-2">
+                                        <span>{m.label}</span>
+                                        <span>{m.val}/10</span>
+                                    </div>
+                                    <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                        <motion.div animate={{ width: `${m.val * 10}%` }} className={`h-full ${m.color}`} />
+                                    </div>
+                                </div>
+                            ))}
                         </div>
-                    </div>
-                </div>
-
-                <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-8 min-h-0">
-                    {/* User Feed - Left */}
-                    <div className="relative rounded-[2.5rem] overflow-hidden border border-white/10 bg-[#0a0f1e] group shadow-2xl">
-                        <video ref={videoRef} autoPlay muted playsInline className="w-full h-full object-cover scale-x-[-1]" />
-
-                        <div className="absolute top-6 left-6">
-                            <div className="px-4 py-1.5 bg-black/60 backdrop-blur-xl rounded-xl border border-white/10 flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
-                                <span className="text-[9px] text-white font-black uppercase tracking-widest">Candidate Feed</span>
-                            </div>
-                        </div>
-
-                        {/* Audio Waveform Simulation */}
-                        {status === 'recording' && (
-                            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-end gap-1.5 h-16">
-                                {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-                                    <motion.div
-                                        key={i}
-                                        animate={{ height: [10, Math.random() * 50 + 10, 10] }}
-                                        transition={{ repeat: Infinity, duration: 0.4, delay: i * 0.05 }}
-                                        className="w-2 bg-indigo-500 rounded-full shadow-[0_0_20px_rgba(99,102,241,0.6)]"
-                                    />
-                                ))}
+                        {behavioral?.filler_words && behavioral.filler_words.length > 0 && (
+                            <div className="mt-8 p-3 bg-rose-500/10 rounded-xl border border-rose-500/20">
+                                <p className="text-[9px] font-black text-rose-500 uppercase tracking-widest mb-1">Hesitation Detected</p>
+                                <div className="flex flex-wrap gap-2 text-[10px] text-white/50">
+                                    {behavioral.filler_words.join(", ")}
+                                </div>
                             </div>
                         )}
                     </div>
 
-                    {/* AI Interviewer Feed - Right */}
-                    <div className="relative rounded-[2.5rem] overflow-hidden border border-white/10 bg-[#020617] flex flex-col items-center justify-center group shadow-2xl">
-                        <div className="absolute inset-0 spotlight-bg opacity-40" />
-
-                        {/* Avatar Simulation */}
-                        <div className="relative z-10 flex flex-col items-center">
-                            <motion.div
-                                animate={status === 'speaking' ? {
-                                    scale: [1, 1.05, 1],
-                                } : {}}
-                                transition={{ repeat: Infinity, duration: 2 }}
-                                className={`w-44 h-44 rounded-[3rem] flex items-center justify-center transition-all duration-1000 relative ${status === 'speaking' ? 'bg-indigo-600/20 shadow-[0_0_80px_rgba(99,102,241,0.5)] border-2 border-indigo-400' : 'bg-slate-900 border-2 border-white/5'}`}
-                            >
-                                <div className="absolute inset-3 border border-white/5 rounded-[2.5rem]" />
-                                <i className={`fa-solid fa-headset text-6xl ${status === 'speaking' ? 'text-indigo-400' : 'text-slate-700'}`}></i>
-                            </motion.div>
-
-                            <div className="mt-12 text-center">
-                                <p className="text-xs text-indigo-200 font-black uppercase tracking-[0.5em] mb-3">AI PROCTOR</p>
-                            </div>
+                    <div className="glass-panel p-6 rounded-[2rem] border-white/5 bg-white/[0.02]">
+                        <h4 className="text-slate-500 font-black text-[9px] uppercase tracking-widest mb-6">Skill Gap Alerts</h4>
+                        <div className="space-y-3">
+                            {aiReport?.skill_gap_analysis?.missing_skills?.map(skill => (
+                                <div key={skill} className="px-4 py-2 bg-rose-500/10 border border-rose-500/20 rounded-xl text-[10px] text-rose-300 font-bold flex items-center gap-2">
+                                    <i className="fa-solid fa-triangle-exclamation"></i> {skill}
+                                </div>
+                            )) || <p className="text-[10px] text-slate-600 italic">No critical gaps identified yet.</p>}
                         </div>
-
-                        {/* Thinking Overlay */}
-                        <AnimatePresence>
-                            {status === 'thinking' && (
-                                <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                    className="absolute inset-0 bg-slate-950/90 backdrop-blur-2xl flex items-center justify-center z-20"
-                                >
-                                    <div className="flex flex-col items-center">
-                                        <div className="relative mb-8 scale-125">
-                                            <div className="w-20 h-20 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin" />
-                                            <i className="fa-solid fa-brain text-indigo-400 text-2xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-                                        </div>
-                                        <p className="text-[10px] text-indigo-400 font-black uppercase tracking-[0.4em] text-glow-premium animate-pulse">Neural synthesis...</p>
-                                    </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
                     </div>
                 </div>
 
-                {/* Interaction Console */}
-                <div className="mt-8 p-8 glass-panel border-white/10 bg-white/[0.04] backdrop-blur-3xl flex flex-col items-center gap-8 rounded-[2rem]">
-
-                    {/* Persistent Question Display */}
-                    {(status === 'recording' || status === 'speaking' || status === 'thinking') && questions[currentQIndex] && (
-                        <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="w-full max-w-4xl p-6 bg-indigo-500/10 rounded-2xl border border-indigo-500/20 relative overflow-hidden group"
-                        >
-                            <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500" />
-                            <div className="flex items-center gap-3 mb-3">
-                                <div className="px-2 py-0.5 bg-indigo-500 text-white text-[8px] font-black uppercase tracking-widest rounded-md">Question {currentQIndex + 1}</div>
-                                <span className="text-[10px] text-indigo-400 font-bold uppercase tracking-widest flex items-center gap-1 group-hover:text-indigo-300 transition-colors">
-                                    <i className="fa-solid fa-wand-magic-sparkles"></i> AI Deep Feedback
-                                </span>
+                {/* Center: Live Feeds */}
+                <div className="lg:col-span-6 flex flex-col gap-6">
+                    <div className="relative rounded-[3rem] overflow-hidden border border-white/10 aspect-video bg-[#0a0f1e] shadow-2xl">
+                        <video ref={videoRef} autoPlay muted playsInline className="w-full h-full object-cover scale-x-[-1]" />
+                        <div className="absolute top-6 left-6 px-4 py-1.5 bg-black/60 backdrop-blur-xl rounded-xl border border-white/10 flex items-center gap-2">
+                            <span className={`w-1.5 h-1.5 rounded-full ${status === 'recording' ? 'bg-rose-500 animate-pulse' : 'bg-slate-500'}`} />
+                            <span className="text-[9px] text-white font-black uppercase tracking-widest">
+                                {status === 'recording' ? 'Live Intake' : 'Proctor Idle'}
+                            </span>
+                        </div>
+                        
+                        {/* Detection Overlay */}
+                        {status === 'recording' && (
+                            <div className="absolute top-6 right-6 px-4 py-1.5 bg-indigo-500 text-white rounded-xl text-[9px] font-black uppercase tracking-widest animate-pulse">
+                                Analyzing Clarity...
                             </div>
-                            <p className="text-lg text-white font-bold leading-relaxed">
-                                {questions[currentQIndex]?.question_text}
-                            </p>
+                        )}
+                    </div>
 
-                            {status === 'speaking' && (
-                                <motion.div
-                                    animate={{ opacity: [0.4, 1, 0.4] }}
-                                    transition={{ repeat: Infinity, duration: 1.5 }}
-                                    className="absolute top-4 right-4 text-indigo-400"
-                                >
-                                    <i className="fa-solid fa-volume-high"></i>
-                                </motion.div>
-                            )}
+                    {/* Interaction Console */}
+                    <div className="glass-panel p-8 rounded-[2.5rem] border-white/10 bg-white/[0.04] backdrop-blur-3xl min-h-[200px] flex flex-col justify-center gap-4">
+                        <AnimatePresence exitBeforeEnter>
+                            <motion.div 
+                                key={currentQuestion}
+                                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                                className="relative py-4"
+                            >
+                                <div className="flex items-center gap-2 mb-3">
+                                    <span className="px-2 py-0.5 bg-indigo-500 text-white text-[8px] font-black uppercase tracking-widest rounded">AI Proctor Intelligence</span>
+                                    <span className="text-[8px] text-slate-500 font-black uppercase tracking-widest">Q{qIndex + 1} of {totalQuestions}</span>
+                                </div>
+                                <h2 className="text-xl text-white font-bold leading-relaxed">
+                                    {currentQuestion || "Ready when you are. Start with a professional introduction."}
+                                </h2>
+                            </motion.div>
+                        </AnimatePresence>
+
+                        <div className="h-px w-full bg-white/5" />
+
+                        <p className="text-sm text-slate-400 font-medium italic min-h-[1.5rem]">
+                            {status === 'recording' ? `"${transcript || 'Listening to your response...'}"` : status === 'thinking' ? 'AI synthesizing evaluation...' : ''}
+                        </p>
+                    </div>
+                </div>
+
+                {/* Right: AI Proctor Feed */}
+                <div className="lg:col-span-3 flex flex-col">
+                    <div className="flex-1 relative rounded-[3rem] overflow-hidden border border-white/10 bg-[#020617] flex flex-col items-center justify-center p-8 group shadow-2xl">
+                        <div className="absolute inset-0 spotlight-bg opacity-20" />
+                        <motion.div 
+                            animate={status === 'speaking' ? { scale: [1, 1.05, 1], rotate: [0, 1, -1, 0] } : {}}
+                            className={`w-32 h-32 rounded-[2.5rem] flex items-center justify-center transition-all duration-700 ${status === 'speaking' ? 'bg-indigo-500/20 border-2 border-indigo-400/50 shadow-[0_0_50px_rgba(99,102,241,0.3)]' : 'bg-slate-900 border border-white/5'}`}
+                        >
+                            <i className={`fa-solid fa-robot text-5xl ${status === 'speaking' ? 'text-indigo-400' : 'text-slate-800'}`}></i>
                         </motion.div>
-                    )}
-
-                    <div className="flex flex-col md:flex-row items-center justify-between w-full gap-8">
-                        <div className="flex-1 w-full max-w-3xl">
-                            {status === 'recording' ? (
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.98 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    className="relative py-4 px-6 bg-rose-500/5 rounded-[1.5rem] border border-rose-500/20 shadow-inner"
-                                >
-                                    <div className="flex justify-between items-center mb-2">
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-                                            <span className="text-[10px] font-black text-rose-500 uppercase tracking-widest">LIVE TRANSCRIPTION (YOUR RESPONSE)</span>
-                                        </div>
-                                    </div>
-                                    <p className="text-base text-slate-200 font-medium leading-relaxed italic line-clamp-1">
-                                        "{transcript || 'Listening for your response...'}"
-                                    </p>
-                                </motion.div>
-                            ) : status === 'speaking' ? (
-                                <div className="flex items-center gap-4 text-indigo-400">
-                                    <i className="fa-solid fa-volume-high animate-pulse"></i>
-                                    <p className="text-sm font-bold uppercase tracking-widest text-[10px]">AI Interviewer is speaking... Please listen and respond.</p>
-                                </div>
-                            ) : (
-                                <p className="text-sm text-slate-400 font-medium">Ready to start your high-fidelity practice session.</p>
-                            )}
+                        <div className="mt-8 text-center">
+                            <p className="text-[9px] text-indigo-400 font-black uppercase tracking-[0.4em] mb-2">Master Intelligence Engine</p>
+                            <div className="flex items-center justify-center gap-1.5">
+                                {[1, 2, 3].map(i => (
+                                    <motion.div 
+                                        key={i} 
+                                        animate={status === 'speaking' ? { height: [4, 12, 4] } : { height: 4 }}
+                                        transition={{ repeat: Infinity, duration: 0.6, delay: i * 0.1 }}
+                                        className="w-1 bg-indigo-500 rounded-full" 
+                                    />
+                                ))}
+                            </div>
                         </div>
 
-                        <div className="flex items-center gap-6">
-                            {status === 'idle' ? (
-                                <button
-                                    onClick={initializeInterview}
-                                    className="px-12 py-5 bg-indigo-600 text-white rounded-[1.8rem] font-black text-xs uppercase tracking-[0.2em] hover:bg-indigo-500 hover:scale-[1.05] transition-all shadow-2xl shadow-indigo-600/40"
-                                >
-                                    Start Interview
-                                </button>
-                            ) : (
-                                <div className="flex items-center gap-3">
-                                    <button
-                                        onClick={stopRecording}
-                                        disabled={status !== 'recording'}
-                                        className="px-12 py-5 bg-white/5 border border-white/10 text-white rounded-[1.8rem] font-black text-xs uppercase tracking-[0.2em] hover:bg-white/10 transition-all disabled:opacity-20 flex items-center gap-4"
-                                    >
-                                        <i className="fa-solid fa-stop text-rose-500"></i>
-                                        Finish Answer
-                                    </button>
-                                    <button
-                                        onClick={onComplete}
-                                        className="px-8 py-5 bg-indigo-600 text-white rounded-[1.8rem] font-black text-[10px] uppercase tracking-[0.2em] hover:bg-indigo-500 transition-all shadow-xl flex items-center gap-3"
-                                    >
-                                        End & Analyze <i className="fa-solid fa-chart-line"></i>
-                                    </button>
-                                </div>
-                            )}
-                            <button onClick={onComplete} title="Complete Session" className="w-14 h-14 flex items-center justify-center rounded-[1.8rem] bg-rose-500/10 text-rose-500 hover:bg-rose-600 hover:text-white transition-all shadow-lg hover:shadow-rose-500/40">
-                                <i className="fa-solid fa-phone-slash text-lg"></i>
+                        {/* Adaptive Status Pill */}
+                        <div className="absolute bottom-8 px-4 py-2 bg-white/5 rounded-2xl border border-white/10">
+                            <p className="text-[8px] text-slate-500 font-bold uppercase tracking-widest">
+                                Mode: {qIndex < 3 ? 'Mandatory Core' : 'Adaptive Branching'}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="mt-8 flex flex-col gap-4">
+                        {status === 'idle' ? (
+                            <button onClick={startInterview} className="w-full py-5 bg-indigo-600 text-white rounded-3xl font-black text-xs uppercase tracking-[0.2em] hover:bg-indigo-500 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-indigo-600/20">
+                                Start Sandbox session
                             </button>
-                        </div>
+                        ) : (
+                            <button 
+                                onClick={handleFinishAnswer} 
+                                disabled={status !== 'recording'}
+                                className="w-full py-5 bg-white/5 border border-white/10 text-white rounded-3xl font-black text-xs uppercase tracking-[0.2em] hover:bg-rose-500/20 hover:border-rose-500/30 transition-all disabled:opacity-20 flex items-center justify-center gap-3"
+                            >
+                                <i className={`fa-solid ${status === 'thinking' ? 'fa-spinner fa-spin' : 'fa-stop text-rose-500'}`}></i>
+                                {status === 'thinking' ? 'Synthesizing...' : 'Finish Answer'}
+                            </button>
+                        )}
+                        <button onClick={() => onComplete(aiReport)} className="w-full py-4 text-slate-500 hover:text-white transition-colors text-[9px] font-black uppercase tracking-[0.3em]">
+                            Terminate & View Insights
+                        </button>
                     </div>
                 </div>
             </div>
+            
+            <style dangerouslySetInnerHTML={{ __html: `
+                @keyframes marquee {
+                    0% { transform: translateX(0); }
+                    100% { transform: translateX(-50%); }
+                }
+                .animate-marquee {
+                    display: flex;
+                    animation: marquee 30s linear infinite;
+                }
+                .animate-marquee:hover {
+                    animation-play-state: paused;
+                }
+            `}} />
         </div>
     );
 };

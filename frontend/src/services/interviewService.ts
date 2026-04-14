@@ -11,6 +11,56 @@ export interface InterviewSetup {
     job_description?: string;
 }
 
+export interface EvaluationMetrics {
+    clarity: number;
+    technical_accuracy: number;
+    confidence: number;
+    depth: number;
+    keyword_match: number;
+    filler_words: string[];
+    feedback: string;
+}
+
+export interface BehavioralAnalysis {
+    communication: 'Good' | 'Average' | 'Poor';
+    confidence_level: 'High' | 'Medium' | 'Low';
+    issues_detected: string[];
+}
+
+export interface MarketIntelligence {
+    salary_projection: string;
+    top_companies: string[];
+    market_demand: 'High' | 'Medium' | 'Low';
+    growth_forecast: string;
+}
+
+export interface SkillGapAnalysis {
+    missing_skills: string[];
+    improvement_suggestions: string[];
+}
+
+export interface AIEngineResponse {
+    stage: 'question' | 'evaluation' | 'final_report';
+    question?: string;
+    type?: string;
+    expected_concepts?: string[];
+    evaluation?: EvaluationMetrics;
+    behavioral_analysis?: BehavioralAnalysis;
+    market_intelligence?: MarketIntelligence;
+    skill_gap_analysis?: SkillGapAnalysis;
+    next_question?: {
+        question: string;
+        type: string;
+    };
+    overall_score?: number;
+    career_simulation?: {
+        growth_path: string;
+        salary_projection: string;
+        key_decisions: string[];
+        risks: string[];
+    };
+}
+
 export const interviewService = {
     getHistory: async () => {
         return apiClient.get('/api/interviews/history/');
@@ -44,8 +94,8 @@ export const interviewService = {
         return apiClient.get(`/api/interviews/interview-result/${interviewId}/`);
     },
 
-    finalizeInterview: async (interviewId: number) => {
-        return apiClient.post(`/api/interviews/finalize/${interviewId}/`);
+    finalizeInterview: async (interviewId: number, aiReport?: any) => {
+        return apiClient.post(`/api/interviews/finalize/${interviewId}/`, { ai_report: aiReport });
     },
 
     processAudio: async (questionId: number, audioBlob: Blob) => {
@@ -66,9 +116,6 @@ export const interviewService = {
 
     /**
      * AI Career Intelligence Engine — unified 7-stage endpoint.
-     * stage = "question"    → answer is empty
-     * stage = "evaluation"  → answer provided, index < total
-     * stage = "final_report"→ answer provided, index >= total
      */
     callAIEngine: async (payload: {
         role: string;
@@ -78,7 +125,7 @@ export const interviewService = {
         answer: string;
         index: number;
         total: number;
-    }) => {
+    }): Promise<AIEngineResponse> => {
         return apiClient.post('/api/interviews/ai-engine/', payload);
     }
 };
