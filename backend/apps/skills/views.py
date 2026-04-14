@@ -13,9 +13,9 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
 
-from .models import Skill, SkillProficiency, UserSkill, RequiredSkill, SkillGapReport, ResumeData, ResumeHistory, ResumeBuilderProfile, CustomTemplate, GeneratedResume
-from .serializers import SkillSerializer, UserSkillSerializer, SkillGapReportSerializer, ResumeDataSerializer, ResumeHistorySerializer, ResumeBuilderProfileSerializer, CustomTemplateSerializer, GeneratedResumeSerializer
-from .analysis import analyze_skills, extract_skills_from_text, calculate_match_score, generate_roadmap, extract_text_from_file
+from apps.skills.models import Skill, SkillProficiency, UserSkill, RequiredSkill, SkillGapReport, ResumeData, ResumeHistory, ResumeBuilderProfile, CustomTemplate, GeneratedResume
+from apps.skills.serializers import SkillSerializer, UserSkillSerializer, SkillGapReportSerializer, ResumeDataSerializer, ResumeHistorySerializer, ResumeBuilderProfileSerializer, CustomTemplateSerializer, GeneratedResumeSerializer
+from apps.skills.analysis import analyze_skills, extract_skills_from_text, calculate_match_score, generate_roadmap, extract_text_from_file
 
 class SkillViewSet(viewsets.ViewSet):
     permission_classes = [AllowAny]
@@ -492,11 +492,11 @@ class CommunityTemplateViewSet(viewsets.ModelViewSet):
     serializer_class = None  # set dynamically
 
     def get_serializer_class(self):
-        from .serializers import CommunityTemplateSerializer
+        from apps.skills.serializers import CommunityTemplateSerializer
         return CommunityTemplateSerializer
 
     def get_queryset(self):
-        from .models import CommunityTemplate
+        from apps.skills.models import CommunityTemplate
         return CommunityTemplate.objects.filter(is_approved=True)
 
     def perform_create(self, serializer):
