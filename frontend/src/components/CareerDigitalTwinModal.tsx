@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/router';
 import { getCareerDigitalTwinReport } from '../services/ai';
 import { motion, AnimatePresence } from 'framer-motion';
 import CareerDigitalTwin from './CareerDigitalTwin';
@@ -24,6 +25,7 @@ const CareerDigitalTwinModal: React.FC<CareerDigitalTwinModalProps> = ({ isOpen,
     const [status, setStatus] = useState(BOOT_SEQUENCE[0]);
     const [statusIdx, setStatusIdx] = useState(0);
     const [metrics, setMetrics] = useState<any>(null);
+    const router = useRouter();
     const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
     useEffect(() => {
@@ -161,7 +163,11 @@ const CareerDigitalTwinModal: React.FC<CareerDigitalTwinModalProps> = ({ isOpen,
                             <div className="p-8">
                                 <CareerDigitalTwin 
                                     metrics={metrics} 
-                                    onResimulate={runSimulation} 
+                                    onResimulate={runSimulation}
+                                    onAccept={() => {
+                                        onClose();
+                                        router.push('/roadmap?generate=true');
+                                    }} 
                                 />
                             </div>
                         )}

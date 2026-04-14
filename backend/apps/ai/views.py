@@ -41,23 +41,109 @@ from rest_framework.views import APIView
 from rest_framework import permissions
 
 
+from apps.roadmaps.models import Roadmap, RoadmapStep, UserRoadmap
+from apps.skills.models import UserProfile
+
 class GenerateRoadmapView(APIView):
-    """Mock AI endpoint that returns a structured roadmap JSON for a given job/skills."""
-    permission_classes = [permissions.AllowAny]
+    """
+    Intelligent Career Roadmap Optimizer.
+    Generates a persistent, multi-phase learning path based on 
+    identified skill gaps and target job requirements.
+    """
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
-        data = request.data
-        job = data.get('job') or data.get('target_job')
-        skills = data.get('skills', [])
-        roadmap = {
-            'title': f"Roadmap for {job if job else 'your goal'}",
-            'steps': [
-                {'order': 1, 'title': 'Foundations', 'description': 'Learn basics', 'skills': skills[:2]},
-                {'order': 2, 'title': 'Intermediate Projects', 'description': 'Build projects', 'skills': skills[2:4]},
-                {'order': 3, 'title': 'Advanced Topics', 'description': 'Deepen knowledge', 'skills': skills[4:]},
-            ]
-        }
-        return Response(roadmap)
+        user = request.user
+        profile = getattr(user, 'profile', None)
+        if not profile:
+            return Response({'error': 'User profile not found.'}, status=400)
+
+        target_job = profile.dream_job or "Software Engineer"
+        engine = NeuralIntelligenceEngine()
+        gaps = engine.identify_gaps(user)
+
+        if not gaps:
+            return Response({'message': 'You already have high alignment with this role! Consider an advanced specialization.'})
+
+        # Clear existing roadmaps (Maintain single active path as requested)
+        UserRoadmap.objects.filter(user=user).delete()
+        Roadmap.objects.filter(userroadmaps__user=user).delete()
+
+        # Create Roadmap
+        roadmap = Roadmap.objects.create(
+            title=f"The {target_job} Evolution Path",
+            description=f"A personalized execution plan to bridge {len(gaps)} detected skill gaps and reach target job-readiness.",
+            required_skills=[g['name'] for g in gaps]
+        )
+        UserRoadmap.objects.create(user=user, roadmap=roadmap)
+
+        # Split gaps into 3 logical phases
+        phase1_skills = [g for g in gaps if g['importance'] >= 4]
+        phase2_skills = [g for g in gaps if g['importance'] == 3 and g['category'] == 'technical']
+        phase3_skills = [g for g in gaps if g not in phase1_skills and g not in phase2_skills]
+
+        # Phase 1: Mission-Critical Foundations
+        if phase1_skills:
+            RoadmapStep.objects.create(
+                roadmap=roadmap,
+                order=1,
+                title="Mission-Critical Foundations",
+                description="Acquire the mandatory skills required for foundational role stability.",
+                skills_list=[s['name'] for s in phase1_skills],
+                duration_weeks=len(phase1_skills) * 1, # Accelerated: 1 week per skill
+                estimated_hours=len(phase1_skills) * 15,
+                difficulty='advanced' if len(phase1_skills) > 3 else 'intermediate'
+            )
+
+        # Phase 2: Technical Specialization
+        if phase2_skills:
+            RoadmapStep.objects.create(
+                roadmap=roadmap,
+                order=2,
+                title="Technical Specialization",
+                description="Master the core secondary technologies that separate competitive candidates.",
+                skills_list=[s['name'] for s in phase2_skills],
+                duration_weeks=len(phase2_skills) * 2, # Standard depth: 2 weeks per skill
+                estimated_hours=len(phase2_skills) * 20,
+                difficulty='intermediate'
+            )
+
+        # Phase 3: Ecosystem & Industry Polish
+        if phase3_skills:
+            RoadmapStep.objects.create(
+                roadmap=roadmap,
+                order=3,
+                title="Ecosystem & Industry Polish",
+                description="Finalize your toolkit with secondary tools and high-impact soft skills.",
+                skills_list=[s['name'] for s in phase3_skills],
+                duration_weeks=int(len(phase3_skills) * 1.5), # Polish: 1.5 weeks per skill
+                estimated_hours=len(phase3_skills) * 10,
+                difficulty='beginner'
+            )
+
+        # Prepare Response (Standard Serializer-style output)
+        steps_data = []
+        for step in roadmap.steps.all():
+            steps_data.append({
+                "id": step.id,
+                "order": step.order,
+                "title": step.title,
+                "description": step.description,
+                "skills_list": step.skills_list,
+                "duration_weeks": step.duration_weeks,
+                "estimated_hours": step.estimated_hours,
+                "difficulty": step.difficulty,
+                "completed": False
+            })
+
+        return Response({
+            "id": roadmap.id,
+            "title": roadmap.title,
+            "description": roadmap.description,
+            "required_skills": roadmap.required_skills,
+            "steps": steps_data,
+            "completion_percentage": 0
+        })
 
 
 import os

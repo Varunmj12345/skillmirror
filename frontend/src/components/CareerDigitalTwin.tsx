@@ -52,9 +52,10 @@ interface TwinMetrics {
 interface CareerDigitalTwinProps {
   metrics: TwinMetrics;
   onResimulate: () => void;
+  onAccept: () => void;
 }
 
-const CareerDigitalTwin: React.FC<CareerDigitalTwinProps> = ({ metrics, onResimulate }) => {
+const CareerDigitalTwin: React.FC<CareerDigitalTwinProps> = ({ metrics, onResimulate, onAccept }) => {
   const getStatusColor = (val: number, type: 'risk' | 'confidence' | 'activity') => {
     if (type === 'risk') {
       if (val < 30) return 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
@@ -310,7 +311,10 @@ const CareerDigitalTwin: React.FC<CareerDigitalTwinProps> = ({ metrics, onResimu
               >
                 Re-simulate
               </button>
-              <button className="sm-btn-primary px-8 py-4 text-[10px] uppercase tracking-widest">
+              <button 
+                onClick={onAccept}
+                className="sm-btn-primary px-8 py-4 text-[10px] uppercase tracking-widest"
+              >
                 Accept Recommendations
               </button>
            </div>

@@ -13,6 +13,16 @@ import PhaseMiniMock from '../components/roadmap/PhaseMiniMock';
 import Leaderboard from '../components/roadmap/Leaderboard';
 import apiClient from '../services/apiClient';
 import withAuth from '../components/withAuth';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const GEN_BOOT_SEQUENCE = [
+  'Accessing Skill Graph...',
+  'Analyzing Digital Twin Gaps...',
+  'Synthesizing Learning Phases...',
+  'Optimizing Skill Timelines...',
+  'Accelerating Foundation Paths...',
+  'Finalizing Execution Roadmap...',
+];
 
 const Roadmap: React.FC = () => {
   const [goals, setGoals] = useState<string[]>([]);
@@ -28,6 +38,9 @@ const Roadmap: React.FC = () => {
   const [analytics, setAnalytics] = useState<any>(null);
   const [aiSuggestion, setAiSuggestion] = useState<any>(null);
   const [suggLoading, setSuggLoading] = useState(false);
+
+  const [genStatus, setGenStatus] = useState(GEN_BOOT_SEQUENCE[0]);
+  const [genStatusIdx, setGenStatusIdx] = useState(0);
 
   useEffect(() => {
     const load = async () => {
@@ -46,13 +59,18 @@ const Roadmap: React.FC = () => {
 
         if (goalsData.length) setSelectedGoal(goalsData[0]);
 
-        // Fetch existing roadmap
-        const existing: any = await apiClient.get('/roadmaps/');
-        if (existing && existing.length > 0) {
-          const firstRoadmap = existing[0];
-          const latestDetail = await fetchRoadmapDetail(firstRoadmap.id);
-          setRoadmap(latestDetail);
-          loadSuggestion(firstRoadmap.id);
+        // Handle auto-generation from Digital Twin
+        if (router.query.generate === 'true') {
+          handleGenerate();
+        } else {
+          // Fetch existing roadmap
+          const existing: any = await apiClient.get('/roadmaps/');
+          if (existing && existing.length > 0) {
+            const firstRoadmap = existing[0];
+            const latestDetail = await fetchRoadmapDetail(firstRoadmap.id);
+            setRoadmap(latestDetail);
+            loadSuggestion(firstRoadmap.id);
+          }
         }
       } catch (e) {
         console.error(e);
@@ -60,8 +78,8 @@ const Roadmap: React.FC = () => {
         setLoading(false);
       }
     };
-    load();
-  }, []);
+    if (router.isReady) load();
+  }, [router.isReady, router.query.generate]);
 
   const loadSuggestion = async (id: number) => {
     setSuggLoading(true);
@@ -84,15 +102,30 @@ const Roadmap: React.FC = () => {
   const handleGenerate = async () => {
     setGenError(null);
     setGenLoading(true);
+    setGenStatusIdx(0);
+    setGenStatus(GEN_BOOT_SEQUENCE[0]);
+
+    // Boot animation sequence
+    const bootTimer = setInterval(() => {
+      setGenStatusIdx(prev => {
+        const next = Math.min(prev + 1, GEN_BOOT_SEQUENCE.length - 1);
+        setGenStatus(GEN_BOOT_SEQUENCE[next]);
+        return next;
+      });
+    }, 1500);
+
     try {
       const res: any = await generateRoadmap(selectedGoal, selectedSkills);
       setRoadmap(res);
       if (res?.id) {
         loadSuggestion(res.id);
       }
+      // Clean up URL
+      router.replace('/roadmap', undefined, { shallow: true });
     } catch (e: any) {
       setGenError(e?.response?.data?.detail || e?.message || 'Failed to generate roadmap.');
     } finally {
+      clearInterval(bootTimer);
       setGenLoading(false);
     }
   };
@@ -211,8 +244,13 @@ const Roadmap: React.FC = () => {
               </div>
             </div>
 
-            <button onClick={handleGenerate} disabled={genLoading} className="w-full btn-primary py-4 rounded-2xl text-sm font-black shadow-xl shadow-indigo-600/25 relative overflow-hidden group">
-              {genLoading ? 'Processing your path...' : 'Generate Intelligent Roadmap'}
+            <button onClick={handleGenerate} disabled={genLoading} className="w-full sm-btn-primary py-5 rounded-2xl text-sm font-black shadow-xl shadow-indigo-600/25 relative overflow-hidden group">
+              {genLoading ? (
+                <div className="flex items-center justify-center gap-4">
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span className="animate-pulse">{genStatus}</span>
+                </div>
+              ) : 'Bootstrap Intelligent Path'}
             </button>
           </div>
         ) : (
@@ -293,7 +331,14 @@ const Roadmap: React.FC = () => {
                       </div>
                       <div className="flex-1 space-y-3">
                         <div className="flex items-baseline justify-between gap-4">
-                          <h4 className={`text-lg font-bold ${step.completed ? 'text-slate-500 line-through' : 'text-slate-100'}`}>{step.title}</h4>
+                          <div className="flex items-center gap-3">
+                            <h4 className={`text-lg font-bold ${step.completed ? 'text-slate-500 line-through' : 'text-slate-100'}`}>{step.title}</h4>
+                            {step.order === 1 && (
+                              <span className="px-2 py-0.5 bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[8px] font-black uppercase tracking-widest rounded flex items-center gap-1">
+                                <i className="fa-solid fa-circle-exclamation" /> High Priority
+                              </span>
+                            )}
+                          </div>
                           <button onClick={() => toggleStep(step.id, !!step.completed)} className={`w-8 h-8 rounded-full border transition-all flex items-center justify-center ${step.completed ? 'bg-green-600 border-green-500 text-white' : 'border-slate-800 hover:border-indigo-500 text-slate-700'}`}>
                             <i className="fa-solid fa-check text-xs"></i>
                           </button>
