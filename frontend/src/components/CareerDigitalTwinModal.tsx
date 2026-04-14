@@ -1,3 +1,4 @@
+import React, { useState, useEffect, useRef } from 'react';
 import { getCareerDigitalTwinReport } from '../services/ai';
 import { motion, AnimatePresence } from 'framer-motion';
 import CareerDigitalTwin from './CareerDigitalTwin';
