@@ -15,12 +15,14 @@ import SkillRadar from '../components/dashboard/SkillRadar';
 import ModuleSummaries from '../components/dashboard/ModuleSummaries';
 import AIInsightPanel from '../components/dashboard/AIInsightPanel';
 import AchievementBadges from '../components/dashboard/AchievementBadges';
+import CareerDigitalTwinModal from '../components/CareerDigitalTwinModal';
 
 
 const Dashboard: React.FC = () => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isTwinOpen, setIsTwinOpen] = useState(false);
 
 
   const loadData = async () => {
@@ -81,6 +83,15 @@ const Dashboard: React.FC = () => {
         </div>
         
         <div className="flex items-center gap-4">
+           {/* Career Digital Twin Trigger */}
+           <button
+              onClick={() => setIsTwinOpen(true)}
+              className="flex items-center gap-2.5 px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 text-cyan-300 hover:border-cyan-400/60 hover:text-cyan-200 hover:shadow-[0_0_20px_-5px_rgba(6,182,212,0.4)]"
+           >
+              <i className="fa-solid fa-dna text-sm animate-pulse" />
+              <span>Digital Twin</span>
+           </button>
+
            <div className="text-right border-r border-white/5 pr-8 hidden sm:block">
               <p className="sm-nano !text-[8px] opacity-40">Global IQ Percentile</p>
               <p className="text-xl font-black text-white">Top 8.4% <span className="text-brand-emerald text-xs">↑</span></p>
@@ -95,6 +106,8 @@ const Dashboard: React.FC = () => {
       </div>
 
 
+
+      <CareerDigitalTwinModal isOpen={isTwinOpen} onClose={() => setIsTwinOpen(false)} />
 
       {/* 2. Primary KPI Grid */}
       <section className="grid grid-cols-2 lg:grid-cols-5 gap-6 mb-16 sm-page-enter [animation-delay:100ms]">

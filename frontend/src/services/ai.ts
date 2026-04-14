@@ -51,3 +51,13 @@ export const getResumeIntelligenceReport = async () => {
         throw error;
     }
 };
+
+export const getCareerDigitalTwinReport = async () => {
+    try {
+        const response = await apiClient.get('/api/ai/career-digital-twin/');
+        return response as any;
+    } catch (error) {
+        console.error('Error fetching career digital twin report:', error);
+        throw error;
+    }
+};

@@ -509,3 +509,226 @@ FINAL OUTPUT STYLE:
 
     def _get_fallback_report(self, data):
         return f"### 🔴 Resume Intelligence Diagnostic Report (Fallback Mode)\n\n**ATS Score**: {data['resume_score']}/100\n**Confidence**: {data['confidence_score']}%\n\nResume parsing complete. Advanced AI interpretation is currently offline."
+
+
+class CareerDigitalTwinView(APIView):
+    """
+    Career Digital Twin Engine.
+    Simulates a virtual representation of the user's career state,
+    behavior, and future evolution using system-computed metrics.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        engine = NeuralIntelligenceEngine()
+        data = engine.get_career_intelligence_data(request.user)
+
+        system_prompt = f"""You are a Career Digital Twin Engine.
+
+You simulate a virtual representation of the user's career state, behavior, and future evolution.
+
+This is NOT a chatbot.
+This is a system-generated simulation model.
+
+---
+
+SYSTEM INPUT (DO NOT RE-CALCULATE):
+
+User Profile:
+- Skills: {data['user_skills']}
+- Experience Level: {data['experience']}
+- Target Role: {data['target_role']}
+
+System Metrics:
+- Career Risk Score: {data['risk_score']}
+- Confidence Score: {data['confidence_score']}
+- Market Demand Score: {data['market_score']}
+- Activity Score: {data['activity_score']}
+- Competition Score: {data['competition_score']}
+
+Simulation Data:
+- Scenario A (No Action): {data['no_action']}
+- Scenario B (Moderate): {data['moderate']}
+- Scenario C (Smart Path): {data['smart']}
+
+Market Intelligence:
+- Trending Skills: {data['trending_skills']}
+- Declining Skills: {data['declining_skills']}
+
+---
+
+STRICT RULES:
+
+- DO NOT generate new numbers
+- DO NOT act conversationally
+- ONLY simulate and interpret system state
+- Focus on behavior, evolution, and outcomes
+
+---
+
+OUTPUT FORMAT:
+
+1. 🧬 Digital Twin Identity
+
+- Current State:
+  (Stagnating / Developing / Competitive / High Growth)
+
+- Stability Level:
+  (Low / Medium / High)
+
+- Adaptability:
+  (Low / Medium / High)
+
+---
+
+2. ⚙️ Behavioral Pattern
+
+Analyze user behavior:
+
+- Learning Pattern:
+- Skill Evolution:
+- Career Direction:
+
+---
+
+3. 🔮 Evolution Simulation
+
+A. Passive State (No Action):
+- Future Condition:
+- Risk Direction:
+
+B. Active Growth:
+- Improvement Path:
+- Career Acceleration:
+
+---
+
+4. 📉 Decay Prediction
+
+- Which skills will lose value
+- Time-based relevance decline
+
+---
+
+5. 🚀 Growth Trajectory
+
+- Best possible career direction
+- Skills driving growth
+
+---
+
+6. 🧠 Twin Intelligence Insight
+
+- What the digital twin suggests:
+  (One strong strategic insight)
+
+---
+
+7. 🚨 Critical Twin Alert
+
+- One serious warning about current path
+
+---
+
+TONE:
+
+- Analytical
+- System-like
+- Slightly futuristic
+- No emotional tone
+
+---
+
+FINAL OUTPUT STYLE:
+
+- Clean sections
+- Short insights
+- Must feel like a simulation system output
+- NOT a chatbot response
+"""
+
+        api_key = os.environ.get('GROQ_API_KEY')
+        if not api_key or api_key == 'gsk_your_key_here':
+            return Response({'report': self._get_fallback_twin(data), 'metrics': data})
+
+        try:
+            client = Groq(api_key=api_key)
+            completion = client.chat.completions.create(
+                model="llama-3.3-70b-versatile",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": "Run the Career Digital Twin simulation and generate the full output report based on system inputs."}
+                ],
+                max_tokens=2000,
+                temperature=0.2,
+            )
+            report = completion.choices[0].message.content
+            return Response({'report': report, 'metrics': data})
+        except Exception as e:
+            print(f"Career Digital Twin Error: {e}")
+            return Response({'report': self._get_fallback_twin(data), 'metrics': data})
+
+    def _get_fallback_twin(self, data):
+        risk = data['risk_score']
+        conf = data['confidence_score']
+        state = "High Growth" if risk < 25 else "Competitive" if risk < 45 else "Developing" if risk < 65 else "Stagnating"
+        stability = "High" if conf > 75 else "Medium" if conf > 50 else "Low"
+        adaptability = "High" if data['activity_score'] > 60 else "Medium" if data['activity_score'] > 30 else "Low"
+        return f"""## CAREER DIGITAL TWIN — SYSTEM OUTPUT
+
+---
+
+### 1. 🧬 Digital Twin Identity
+
+- **Current State:** {state}
+- **Stability Level:** {stability}
+- **Adaptability:** {adaptability}
+
+---
+
+### 2. ⚙️ Behavioral Pattern
+
+- **Learning Pattern:** Activity index at {data['activity_score']}/100. Skill acquisition rate below threshold for target role alignment.
+- **Skill Evolution:** Existing skills cover partial overlap with {data['target_role']} requirements. Gap detected in high-demand segments.
+- **Career Direction:** Trajectory is defined but acceleration is insufficient. Market competition score: {data['competition_score']}/100.
+
+---
+
+### 3. 🔮 Evolution Simulation
+
+**A. Passive State (No Action):**
+- Future Condition: {data['no_action']}
+- Risk Direction: Upward. Risk score will increase without intervention.
+
+**B. Active Growth:**
+- Improvement Path: {data['moderate']}
+- Career Acceleration: {data['smart']}
+
+---
+
+### 4. 📉 Decay Prediction
+
+- **Declining:** {data['declining_skills']}
+- **Timeline:** Skills in declining category lose 60% market value within 18 months.
+
+---
+
+### 5. 🚀 Growth Trajectory
+
+- **Optimal Direction:** {data['target_role']} with specialization in {data['trending_skills'].split(',')[0].strip()}.
+- **Growth Drivers:** {data['trending_skills']}
+
+---
+
+### 6. 🧠 Twin Intelligence Insight
+
+Accelerate skill acquisition in trending domains immediately. The window for competitive positioning closes as market saturation increases.
+
+---
+
+### 7. 🚨 Critical Twin Alert
+
+At current trajectory, user will fall below the competitive threshold for {data['target_role']} within 6 months. Immediate course correction required.
+
+---
+*[Digital Twin Engine — Fallback Mode · Live AI offline]*"""
