@@ -56,7 +56,7 @@ class NeuralIntelligenceEngine:
                 skill_score = 40  # Safe fallback if embedding fails
 
         # 2. Interview Feedback Logic
-        interview_avg = user.interview_sessions.aggregate(Avg('score'))['score__avg'] or 0
+        interview_avg = user.mock_interviews.aggregate(Avg('total_score'))['total_score__avg'] or 0
         interview_score = interview_avg # 0-100 scale
 
         # 3. Apply Recency Decay to profile-based completeness
