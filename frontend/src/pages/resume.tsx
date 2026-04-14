@@ -12,7 +12,7 @@ import ExportPanel from '../components/Resume/ExportPanel';
 import ResumeBuilderForm, { EMPTY_FORM } from '../components/Resume/ResumeBuilderForm';
 import TemplateGallery from '../components/Resume/TemplateGallery';
 import ResumePreview from '../components/Resume/ResumePreview';
-import ResumeIntelligenceModal from '../components/Resume/ResumeIntelligenceModal';
+
 import type { BuilderFormData } from '../components/Resume/ResumeBuilderForm';
 import type { TemplateConfig } from '../components/Resume/TemplateGallery';
 import apiClient from '../services/apiClient';
@@ -60,7 +60,7 @@ const ResumePage: React.FC = () => {
   const [formData, setFormData] = useState<BuilderFormData>(EMPTY_FORM);
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateConfig>(DEFAULT_TEMPLATE);
   const [extractingProfile, setExtractingProfile] = useState(false);
-  const [isResumeReportOpen, setIsResumeReportOpen] = useState(false);
+
 
   useEffect(() => {
     if (tab === 'build') {
@@ -241,19 +241,7 @@ const ResumePage: React.FC = () => {
               Analyze, build, and optimize your resume with AI-powered tools and ATS scoring.
             </p>
           </div>
-          <button 
-            onClick={() => setIsResumeReportOpen(true)}
-            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-400 hover:to-purple-400 text-white text-xs font-bold uppercase tracking-widest rounded-xl transition-all shadow-[0_0_20px_-5px_rgba(99,102,241,0.4)] hover:shadow-[0_0_25px_-5px_rgba(99,102,241,0.6)]"
-          >
-            <i className="fa-solid fa-microchip animate-pulse"></i>
-            Generate Resume Intelligence
-          </button>
         </header>
-
-        <ResumeIntelligenceModal 
-          isOpen={isResumeReportOpen}
-          onClose={() => setIsResumeReportOpen(false)}
-        />
 
 
         {/* Main Tab Switcher */}
