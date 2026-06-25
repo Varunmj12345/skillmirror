@@ -26,6 +26,72 @@ interface JobDemandTrendsProps {
 const JobDemandTrends: React.FC<JobDemandTrendsProps> = ({ trends }) => {
     if (!trends || trends.length === 0) return <div className="p-4 text-center text-gray-500">Loading trends...</div>;
 
+    const formatIndianRupee = (val: number | null | undefined): string => {
+        if (val === null || val === undefined || isNaN(val)) return '₹0';
+        if (val < 100000) {
+            return `₹${Math.round(val).toLocaleString('en-IN')}`;
+        } else if (val < 10000000) {
+            const lakhs = val / 100000;
+            const formatted = parseFloat(lakhs.toFixed(2));
+            return `₹${formatted}L`;
+        } else {
+            const crores = val / 10000000;
+            const formatted = parseFloat(crores.toFixed(2));
+            return `₹${formatted}Cr`;
+        }
+    };
+
+    const processedTrends = React.useMemo(() => {
+        if (!trends || trends.length === 0) return [];
+
+        const monthlyGroups: { [key: string]: { demand_score: number[]; avg_salary: number[]; date: string } } = {};
+        
+        trends.forEach(item => {
+            const dateObj = new Date(item.date);
+            const year = dateObj.getFullYear();
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const monthKey = `${year}-${month}`;
+            
+            if (!monthlyGroups[monthKey]) {
+                monthlyGroups[monthKey] = {
+                    demand_score: [],
+                    avg_salary: [],
+                    date: item.date
+                };
+            }
+            monthlyGroups[monthKey].demand_score.push(item.demand_score);
+            monthlyGroups[monthKey].avg_salary.push(item.avg_salary);
+        });
+        
+        const aggregated = Object.keys(monthlyGroups)
+            .sort()
+            .map(monthKey => {
+                const group = monthlyGroups[monthKey];
+                const avgDemand = group.demand_score.reduce((sum, val) => sum + val, 0) / group.demand_score.length;
+                const avgSalary = group.avg_salary.reduce((sum, val) => sum + val, 0) / group.avg_salary.length;
+                
+                const parts = group.date.split('T')[0].split('-');
+                let monthLabel = '';
+                if (parts.length >= 2) {
+                    const year = parseInt(parts[0], 10);
+                    const month = parseInt(parts[1], 10) - 1;
+                    const day = parts.length > 2 ? parseInt(parts[2], 10) : 1;
+                    const localDate = new Date(year, month, day);
+                    monthLabel = localDate.toLocaleDateString('en-US', { month: 'short' });
+                } else {
+                    monthLabel = new Date(group.date).toLocaleDateString('en-US', { month: 'short' });
+                }
+                
+                return {
+                    monthLabel,
+                    demand_score: Math.round(avgDemand),
+                    avg_salary: Math.round(avgSalary)
+                };
+            });
+            
+        return aggregated.slice(-6);
+    }, [trends]);
+
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             {/* Job Demand Trend */}
@@ -39,7 +105,7 @@ const JobDemandTrends: React.FC<JobDemandTrendsProps> = ({ trends }) => {
                 </div>
                 <div className="h-72">
                     <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={trends}>
+                        <AreaChart data={processedTrends}>
                             <defs>
                                 <linearGradient id="colorDemand" x1="0" y1="0" x2="0" y2="1">
                                     <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.3} />
@@ -47,7 +113,7 @@ const JobDemandTrends: React.FC<JobDemandTrendsProps> = ({ trends }) => {
                                 </linearGradient>
                             </defs>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
-                            <XAxis dataKey="date" tick={{ fontSize: 12 }} tickFormatter={(val: string) => new Date(val).toLocaleDateString(undefined, { month: 'short' })} />
+                            <XAxis dataKey="monthLabel" tick={{ fontSize: 12 }} />
                             <YAxis tick={{ fontSize: 12 }} />
                             <Tooltip
                                 contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
@@ -70,13 +136,13 @@ const JobDemandTrends: React.FC<JobDemandTrendsProps> = ({ trends }) => {
                 </div>
                 <div className="h-72">
                     <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={trends}>
+                        <LineChart data={processedTrends}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
-                            <XAxis dataKey="date" tick={{ fontSize: 12 }} tickFormatter={(val: string) => new Date(val).toLocaleDateString(undefined, { month: 'short' })} />
-                            <YAxis tick={{ fontSize: 12 }} domain={['auto', 'auto']} tickFormatter={(val: number) => `$${val / 1000}k`} />
+                            <XAxis dataKey="monthLabel" tick={{ fontSize: 12 }} />
+                            <YAxis tick={{ fontSize: 12 }} domain={['auto', 'auto']} tickFormatter={(val: number) => formatIndianRupee(val)} />
                             <Tooltip
                                 contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
-                                formatter={(val: any) => [val ? `$${val.toLocaleString()}` : '$0', 'Salary']}
+                                formatter={(val: any) => [val ? formatIndianRupee(Number(val)) : '₹0', 'Salary']}
                             />
                             <Line type="monotone" dataKey="avg_salary" stroke="#10B981" strokeWidth={3} dot={{ r: 4, fill: '#10B981' }} activeDot={{ r: 6 }} />
                         </LineChart>
