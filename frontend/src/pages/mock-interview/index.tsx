@@ -50,7 +50,6 @@ const MockInterviewSetup: React.FC = () => {
         <Layout>
             <Head>
                 <title>Mock Interview Setup • SkillMirror</title>
-                <link rel="stylesheet" href="/styles/mock-interview.css" />
             </Head>
 
             <div className="interview-container">
@@ -63,13 +62,13 @@ const MockInterviewSetup: React.FC = () => {
                     </p>
                 </div>
 
-                <div className="setup-card">
+                <div className="sm-glass sm-card-hover p-8 max-w-4xl mx-auto border-slate-800/60">
                     <div className="space-y-8">
                         <div className="form-group">
                             <label className="form-label">Target Job Role</label>
                             <input
                                 type="text"
-                                className="form-input"
+                                className="sm-input px-4 py-3"
                                 placeholder="e.g. Senior Frontend Developer"
                                 value={setup.role}
                                 onChange={(e) => setSetup({ ...setup, role: e.target.value })}
@@ -80,7 +79,7 @@ const MockInterviewSetup: React.FC = () => {
                             <div className="form-group">
                                 <label className="form-label">Experience Level</label>
                                 <select
-                                    className="form-select"
+                                    className="sm-input px-4 py-3"
                                     value={setup.experience_level}
                                     onChange={(e) => setSetup({ ...setup, experience_level: e.target.value as any })}
                                 >
@@ -93,7 +92,7 @@ const MockInterviewSetup: React.FC = () => {
                             <div className="form-group">
                                 <label className="form-label">Interview Type</label>
                                 <select
-                                    className="form-select"
+                                    className="sm-input px-4 py-3"
                                     value={setup.interview_type}
                                     onChange={(e) => setSetup({ ...setup, interview_type: e.target.value as any })}
                                 >
@@ -106,7 +105,7 @@ const MockInterviewSetup: React.FC = () => {
                             <div className="form-group">
                                 <label className="form-label">Difficulty</label>
                                 <select
-                                    className="form-select"
+                                    className="sm-input px-4 py-3"
                                     value={setup.difficulty}
                                     onChange={(e) => setSetup({ ...setup, difficulty: e.target.value as any })}
                                 >
@@ -118,7 +117,7 @@ const MockInterviewSetup: React.FC = () => {
                             <div className="form-group">
                                 <label className="form-label">Interview Mode</label>
                                 <select
-                                    className="form-select"
+                                    className="sm-input px-4 py-3"
                                     value={setup.interview_mode}
                                     onChange={(e) => setSetup({ ...setup, interview_mode: e.target.value as any })}
                                 >
@@ -161,7 +160,7 @@ const MockInterviewSetup: React.FC = () => {
                         <div className="form-group">
                             <label className="form-label">Job Description (Optional Context)</label>
                             <textarea
-                                className="form-textarea h-32"
+                                className="sm-input h-32 px-4 py-3 resize-none"
                                 placeholder="Paste the JD here to generate custom questions matched to the role's specific requirements."
                                 value={setup.job_description}
                                 onChange={(e) => setSetup({ ...setup, job_description: e.target.value })}
@@ -172,7 +171,7 @@ const MockInterviewSetup: React.FC = () => {
                             <button
                                 onClick={() => handleStart(false)}
                                 disabled={loading || !setup.role}
-                                className="flex-1 start-btn text-lg"
+                                className="sm-btn-primary flex-1 py-5 text-sm flex items-center justify-center gap-2"
                             >
                                 {loading ? (
                                     <span className="flex items-center justify-center gap-2">
@@ -185,7 +184,7 @@ const MockInterviewSetup: React.FC = () => {
                             <button
                                 onClick={() => handleStart(true)}
                                 disabled={loading || !setup.role}
-                                className="flex-1 px-8 py-5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-indigo-600/30 flex items-center justify-center gap-3"
+                                className="sm-btn-primary bg-indigo-600 hover:bg-indigo-500 shadow-indigo-600/30 flex-1 py-5 text-sm flex items-center justify-center gap-2"
                             >
                                 <i className="fa-solid fa-video text-base"></i>
                                 Start Live Video Interview
@@ -211,9 +210,6 @@ const MockInterviewSetup: React.FC = () => {
                 </div>
             </div>
 
-            <style jsx global>{`
-                @import url('/styles/mock-interview.css');
-            `}</style>
         </Layout>
     );
 };

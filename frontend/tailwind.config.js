@@ -7,6 +7,9 @@ module.exports = {
   darkMode: 'class',
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+      },
       colors: {
         brand: {
           obsidian: '#020617',
@@ -18,6 +21,14 @@ module.exports = {
             800: '#1e293b',
             700: '#334155',
           }
+        },
+        accent: {
+          primary: 'var(--accent-primary)',
+          success: 'var(--accent-success)',
+          warning: 'var(--accent-warning)',
+          danger: 'var(--accent-danger)',
+          gold: 'var(--accent-gold)',
+          purple: 'var(--accent-purple)',
         }
       },
       fontSize: {
@@ -37,10 +48,27 @@ module.exports = {
       backgroundImage: {
         'neural-gradient': 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%)',
         'obsidian-gradient': 'linear-gradient(180deg, #020617 0%, #0f172a 100%)',
+      },
+      animation: {
+        'shimmer': 'shimmerSweep 1.5s infinite linear',
+        'fab-breathe': 'fabBreathing 3s infinite ease-in-out',
+        'shake': 'shake 300ms ease-in-out',
+      },
+      keyframes: {
+        shimmerSweep: {
+          '100%': { transform: 'translateX(200%) skewx(-20deg)' }
+        },
+        fabBreathing: {
+          '0%, 100%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.03)' }
+        },
+        shake: {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '25%': { transform: 'translateX(-4px)' },
+          '75%': { transform: 'translateX(4px)' }
+        }
       }
     },
   },
   plugins: [],
 }
-
-

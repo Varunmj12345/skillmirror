@@ -18,8 +18,10 @@ export default function withAuth<P extends object>(Component: React.ComponentTyp
 
     if (loading) {
       return (
-        <div className="flex items-center justify-center min-h-screen bg-slate-950">
-          <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="flex flex-col items-center justify-center min-h-screen bg-[#0A0A0F]">
+          <div className="w-16 h-16 rounded-2xl bg-brand-neural/10 border border-brand-neural/30 flex items-center justify-center animate-pulse shadow-[0_0_30px_rgba(45,212,191,0.15)]">
+            <i className="fa-solid fa-infinity text-brand-neural text-3xl"></i>
+          </div>
         </div>
       );
     }

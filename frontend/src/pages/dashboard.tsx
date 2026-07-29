@@ -4,7 +4,8 @@ import Link from 'next/link';
 import Layout from '../components/Layout';
 import withAuth from '../components/withAuth';
 import { fetchDashboard } from '../services/dashboard';
-
+import { ScrollReveal, StaggerChildren } from '../components/motion/ScrollReveal';
+import { SkeletonCard } from '../components/motion/Skeleton';
 // Modular Components
 import MetricCard from '../components/dashboard/MetricCard';
 import XPSystem from '../components/dashboard/XPSystem';
@@ -46,9 +47,24 @@ const Dashboard: React.FC = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="flex flex-col items-center justify-center min-h-[75vh] gap-8">
-          <div className="w-16 h-16 border-2 border-brand-neural/20 border-t-brand-neural rounded-full animate-spin" />
-          <p className="sm-nano animate-pulse">Synchronizing Neural Pathways...</p>
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16">
+          <div className="space-y-4">
+            <div className="w-48 h-4 skeleton-shimmer rounded" />
+            <div className="w-96 h-16 skeleton-shimmer rounded-xl" />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-6 mb-16">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
+        <div className="grid lg:grid-cols-12 gap-10 mb-20">
+          <div className="lg:col-span-8">
+            <SkeletonCard className="!h-[400px]" />
+          </div>
+          <div className="lg:col-span-4">
+            <SkeletonCard className="!h-[400px]" />
+          </div>
         </div>
       </Layout>
     );
@@ -76,7 +92,7 @@ const Dashboard: React.FC = () => {
       </Head>
 
       {/* 1. Header & Identity */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16 sm-page-enter">
+      <ScrollReveal variant="fadeLeft" className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16">
         <div>
           <div className="sm-nano text-brand-neural mb-3 opacity-60">Career Intelligence Terminal</div>
           <h1 className="sm-h1 !text-5xl lg:!text-6xl">Command Center</h1>
@@ -103,23 +119,21 @@ const Dashboard: React.FC = () => {
               </button>
            </Link>
         </div>
-      </div>
-
-
+      </ScrollReveal>
 
       <CareerDigitalTwinModal isOpen={isTwinOpen} onClose={() => setIsTwinOpen(false)} />
 
       {/* 2. Primary KPI Grid */}
-      <section className="grid grid-cols-2 lg:grid-cols-5 gap-6 mb-16 sm-page-enter [animation-delay:100ms]">
-        <MetricCard label="Readiness" value={data.job_readiness_score} icon="fa-bullseye" color="indigo" />
-        <MetricCard label="Market Match" value={92} icon="fa-network-wired" color="cyan" />
-        <MetricCard label="Risk Index" value={data.career_risk_index} icon="fa-bolt" color="orange" suffix="%" />
-        <MetricCard label="XP Level" value={data.xp_system.level} icon="fa-trophy" color="amber" />
-        <MetricCard label="Trust Score" value={98} icon="fa-shield-check" color="emerald" suffix="%" />
-      </section>
+      <StaggerChildren className="grid grid-cols-2 lg:grid-cols-5 gap-6 mb-16">
+        <ScrollReveal stagger><MetricCard label="Readiness" value={data.job_readiness_score} icon="fa-bullseye" color="indigo" /></ScrollReveal>
+        <ScrollReveal stagger><MetricCard label="Market Match" value={92} icon="fa-network-wired" color="cyan" /></ScrollReveal>
+        <ScrollReveal stagger><MetricCard label="Risk Index" value={data.career_risk_index} icon="fa-bolt" color="orange" suffix="%" /></ScrollReveal>
+        <ScrollReveal stagger><MetricCard label="XP Level" value={data.xp_system.level} icon="fa-trophy" color="amber" /></ScrollReveal>
+        <ScrollReveal stagger><MetricCard label="Trust Score" value={98} icon="fa-shield-check" color="emerald" suffix="%" /></ScrollReveal>
+      </StaggerChildren>
 
       {/* 3. The "Brain" Layer: Intelligence & Insights */}
-      <div className="grid lg:grid-cols-12 gap-10 mb-20 sm-page-enter [animation-delay:200ms]">
+      <ScrollReveal delay={0.2} className="grid lg:grid-cols-12 gap-10 mb-20">
         <div className="lg:col-span-8">
            <AIStrategy strategy={data.ai_strategy} />
            <div className="mt-10">
@@ -135,10 +149,10 @@ const Dashboard: React.FC = () => {
         <div className="lg:col-span-4">
            <AIInsightPanel />
         </div>
-      </div>
+      </ScrollReveal>
 
       {/* 4. Visualization & Growth */}
-      <div className="grid lg:grid-cols-3 gap-10 mb-20 sm-page-enter [animation-delay:300ms]">
+      <ScrollReveal delay={0.3} className="grid lg:grid-cols-3 gap-10 mb-20">
          <div className="lg:col-span-2 sm-glass p-8 rounded-[2rem]">
             <div className="sm-nano mb-6 opacity-60">Mastery Heatmap</div>
             <SkillRadar skills={data.skill_heatmap} />
@@ -147,16 +161,16 @@ const Dashboard: React.FC = () => {
             <GrowthForecast data={data.growth_forecast} />
             <AchievementBadges badges={data.badges} />
          </div>
-      </div>
+      </ScrollReveal>
 
       {/* 5. Integrated Modules Bento */}
-      <section className="sm-page-enter [animation-delay:400ms]">
+      <ScrollReveal delay={0.4}>
         <div className="flex items-center gap-4 mb-8">
            <h3 className="sm-nano">Neural Network Modules</h3>
            <div className="h-px flex-1 bg-white/5" />
         </div>
         <ModuleSummaries summaries={data.summaries} />
-      </section>
+      </ScrollReveal>
 
     </Layout>
   );

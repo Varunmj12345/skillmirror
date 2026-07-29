@@ -14,6 +14,8 @@ import Leaderboard from '../components/roadmap/Leaderboard';
 import apiClient from '../services/apiClient';
 import withAuth from '../components/withAuth';
 import { motion, AnimatePresence } from 'framer-motion';
+import { SkeletonCard } from '../components/motion/Skeleton';
+import { ScrollReveal, StaggerChildren } from '../components/motion/ScrollReveal';
 
 const GEN_BOOT_SEQUENCE = [
   'Accessing Skill Graph...',
@@ -154,9 +156,12 @@ const Roadmap: React.FC = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
-          <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-slate-400 font-medium tracking-wide">Initializing SkillMirror Intelligence...</p>
+        <div className="flex flex-col gap-6 py-10 max-w-5xl mx-auto px-4 w-full">
+          <SkeletonCard className="h-32" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <SkeletonCard className="md:col-span-2 h-96" />
+            <SkeletonCard className="h-96" />
+          </div>
         </div>
       </Layout>
     );
@@ -171,7 +176,7 @@ const Roadmap: React.FC = () => {
 
         {/* Top Analytics Bar */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="glass-panel p-4 flex items-center gap-4 bg-slate-900/40 border-slate-800/60">
+          <div className="sm-glass p-4 flex items-center gap-4 bg-slate-900/40 border-slate-800/60">
             <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 border border-orange-500/20">
               <i className="fa-solid fa-fire text-lg text-orange-400 animate-pulse"></i>
             </div>
@@ -180,7 +185,7 @@ const Roadmap: React.FC = () => {
               <p className="text-xl font-black text-white">{analytics?.streak || 0}</p>
             </div>
           </div>
-          <div className="glass-panel p-4 flex items-center gap-4 bg-slate-900/40 border-slate-800/60">
+          <div className="sm-glass p-4 flex items-center gap-4 bg-slate-900/40 border-slate-800/60">
             <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 border border-indigo-500/20">
               <i className="fa-solid fa-star text-lg"></i>
             </div>
@@ -189,7 +194,7 @@ const Roadmap: React.FC = () => {
               <p className="text-xl font-black text-white">{analytics?.points || 0}</p>
             </div>
           </div>
-          <div className="glass-panel p-4 flex items-center gap-4 bg-slate-900/40 border-slate-800/60">
+          <div className="sm-glass p-4 flex items-center gap-4 bg-slate-900/40 border-slate-800/60">
             <div className="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center text-green-400 border border-green-500/20">
               <i className="fa-solid fa-check-double text-lg"></i>
             </div>
@@ -198,7 +203,7 @@ const Roadmap: React.FC = () => {
               <p className="text-xl font-black text-white">{analytics?.completed_steps || 0}</p>
             </div>
           </div>
-          <div className="glass-panel p-4 flex items-center gap-4 bg-slate-900/40 border-slate-800/60">
+          <div className="sm-glass p-4 flex items-center gap-4 bg-slate-900/40 border-slate-800/60">
             <div className="w-10 h-10 rounded-xl bg-violet-500/10 flex items-center justify-center text-violet-400 border border-violet-500/20">
               <i className="fa-solid fa-award text-lg"></i>
             </div>
@@ -210,7 +215,7 @@ const Roadmap: React.FC = () => {
         </div>
 
         {!roadmap ? (
-          <div className="glass-panel p-10 border-slate-800 shadow-2xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <ScrollReveal className="sm-glass p-10 border-slate-800 shadow-2xl space-y-8">
             <div className="text-center md:text-left">
               <h1 className="text-3xl font-black text-white tracking-tight">Generate Your Smart Career Roadmap</h1>
               <p className="mt-2 text-slate-400 max-w-xl">Our Groq AI engine will build a phased learning timeline with daily streaks, video resources, and automatic progress tracking.</p>
@@ -253,12 +258,12 @@ const Roadmap: React.FC = () => {
                 </div>
               ) : 'Bootstrap Intelligent Path'}
             </button>
-          </div>
+          </ScrollReveal>
         ) : (
-          <div className="space-y-10 animate-in fade-in duration-700">
+          <ScrollReveal className="space-y-10">
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
-              <div className="lg:col-span-2 glass-panel p-8 relative overflow-hidden bg-slate-900/30 border-slate-800/60 flex flex-col justify-between">
+              <div className="lg:col-span-2 sm-glass p-8 relative overflow-hidden bg-slate-900/30 border-slate-800/60 flex flex-col justify-between">
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <h2 className="text-2xl font-black text-white">{roadmap.title}</h2>
@@ -306,7 +311,7 @@ const Roadmap: React.FC = () => {
 
               <div className="space-y-8">
                 <Leaderboard />
-                <div className="glass-panel p-6 bg-slate-950/40 border-slate-800">
+                <div className="sm-glass p-6 bg-slate-950/40 border-slate-800">
                   <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">Level System</h3>
                   <div className="flex items-center gap-4">
                     <div className="w-16 h-16 rounded-full border-4 border-indigo-500/30 flex items-center justify-center relative">
@@ -323,9 +328,10 @@ const Roadmap: React.FC = () => {
             </div>
 
             <div className="space-y-6">
-              <div className="grid gap-6">
+              <StaggerChildren className="grid gap-6">
                 {(roadmap.steps || []).map((step: any, idx: number) => (
-                  <div key={step.id || idx} className={`group glass-panel bg-slate-950/40 rounded-3xl border p-6 space-y-4 transition-all ${step.completed ? 'border-green-500/20 opacity-70' : 'border-slate-800 hover:border-indigo-500/40'}`}>
+                  <ScrollReveal stagger key={step.id || idx}>
+                    <div className={`group sm-glass bg-slate-950/40 rounded-3xl border p-6 space-y-4 transition-all ${step.completed ? 'border-green-500/20 opacity-70' : 'border-slate-800 hover:border-indigo-500/40'}`}>
                     <div className="flex items-start gap-6">
                       <div className={`flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center font-black transition-all ${step.completed ? 'bg-green-600/10 text-green-400 border border-green-500/20' : 'bg-slate-950 border border-slate-800 text-slate-500 group-hover:bg-indigo-600 group-hover:text-white'}`}>
                         {idx + 1}
@@ -412,8 +418,9 @@ const Roadmap: React.FC = () => {
                       </div>
                     )}
                   </div>
+                  </ScrollReveal>
                 ))}
-              </div>
+              </StaggerChildren>
             </div>
 
             {analytics?.badges?.length > 0 && (
@@ -438,7 +445,7 @@ const Roadmap: React.FC = () => {
               <YouTubeLearning skills={roadmap.required_skills?.length ? roadmap.required_skills : selectedSkills} />
             </div>
 
-          </div>
+          </ScrollReveal>
         )}
       </div>
     </Layout>

@@ -3,6 +3,8 @@ import Head from 'next/head';
 import Layout from '../components/Layout';
 import { alertService, SmartAlert, WeeklySummary } from '../services/alertService';
 import Link from 'next/link';
+import { SkeletonCard } from '../components/motion/Skeleton';
+import { ScrollReveal, StaggerChildren } from '../components/motion/ScrollReveal';
 
 const SmartAlertsPage: React.FC = () => {
     const [alerts, setAlerts] = useState<SmartAlert[]>([]);
@@ -74,7 +76,7 @@ const SmartAlertsPage: React.FC = () => {
                 <title>Predictive Career Intelligence • Smart Alerts</title>
             </Head>
 
-            <div className="space-y-8 animate-fadeIn">
+            <ScrollReveal className="space-y-8">
                 <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <p className="text-[10px] uppercase tracking-[0.3em] text-indigo-500 font-black mb-1">AI Predictive Engine</p>
@@ -96,7 +98,7 @@ const SmartAlertsPage: React.FC = () => {
 
                 {/* Weekly AI Summary Card */}
                 {summary && (
-                    <div className="glass-panel p-8 border-indigo-500/20 bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-900/10 relative overflow-hidden group">
+                    <div className="sm-glass sm-card-hover p-8 border-indigo-500/20 bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-900/10 relative overflow-hidden group">
                         <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
                             <i className="fa-solid fa-brain text-8xl text-indigo-500" />
                         </div>
@@ -140,13 +142,13 @@ const SmartAlertsPage: React.FC = () => {
                     </div>
                 )}
 
-                <section className="grid gap-6 md:grid-cols-3">
+                <StaggerChildren className="grid gap-6 md:grid-cols-3">
                     {[
                         { label: 'Alert Volume', value: stats.total, color: 'indigo', icon: 'fa-bullseye' },
                         { label: 'Unchecked Insights', value: stats.unread, color: 'amber', icon: 'fa-lightbulb' },
                         { label: 'Critical Risks', value: stats.critical, color: 'rose', icon: 'fa-triangle-exclamation' },
                     ].map((s, i) => (
-                        <div key={i} className="glass-panel p-6 border-slate-800/60 transition-all hover:border-indigo-500/20">
+                        <ScrollReveal stagger key={i} className="sm-glass sm-card-hover p-6 border-slate-800/60 transition-all hover:border-indigo-500/20">
                             <div className="flex justify-between items-start mb-4">
                                 <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{s.label}</span>
                                 <div className={`w-8 h-8 rounded-lg bg-${s.color}-500/10 flex items-center justify-center text-${s.color}-400`}>
@@ -154,9 +156,9 @@ const SmartAlertsPage: React.FC = () => {
                                 </div>
                             </div>
                             <span className="text-3xl font-black text-white">{s.value}</span>
-                        </div>
+                        </ScrollReveal>
                     ))}
-                </section>
+                </StaggerChildren>
 
                 <div className="bg-slate-900/40 rounded-3xl border border-slate-800/60 overflow-hidden">
                     <div className="p-4 border-b border-slate-800/60 flex flex-wrap gap-2 items-center justify-between bg-slate-950/20">
@@ -173,9 +175,9 @@ const SmartAlertsPage: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="divide-y divide-slate-800/60">
+                    <StaggerChildren className="divide-y divide-slate-800/60">
                         {loading ? (
-                            <div className="p-20 text-center text-slate-500 animate-pulse">Running predictive simulations...</div>
+                            <div className="p-20 text-center"><SkeletonCard className="!h-24" /></div>
                         ) : filteredAlerts.length === 0 ? (
                             <div className="p-20 text-center">
                                 <div className="w-16 h-16 rounded-full bg-slate-950 flex items-center justify-center mx-auto mb-4 border border-slate-800">
@@ -188,7 +190,7 @@ const SmartAlertsPage: React.FC = () => {
                             filteredAlerts.map(alert => {
                                 const ui = getAlertUI(alert);
                                 return (
-                                    <div key={alert.id} className={`p-8 group/card transition-all hover:bg-slate-800/20 ${!alert.is_read ? 'bg-indigo-500/5' : ''}`}>
+                                    <ScrollReveal stagger key={alert.id} className={`p-8 group/card transition-all hover:bg-slate-800/20 ${!alert.is_read ? 'bg-indigo-500/5' : ''}`}>
                                         <div className="flex flex-col lg:flex-row gap-8">
                                             <div className="flex flex-col items-center gap-4 shrink-0">
                                                 <div className={`w-14 h-14 rounded-2xl bg-${ui.color}-500/10 border border-${ui.color}-500/20 flex items-center justify-center text-2xl text-${ui.color}-400 shadow-lg`}>
@@ -251,7 +253,7 @@ const SmartAlertsPage: React.FC = () => {
 
                                             <div className="flex flex-row lg:flex-col gap-3 shrink-0 justify-end lg:justify-start min-w-[160px]">
                                                 <Link href={alert.action_link || '#'}>
-                                                    <button className="btn-primary text-[10px] px-6 py-3 w-full flex items-center justify-center gap-2 shadow-xl shadow-indigo-600/10">
+                                                    <button className="sm-btn-primary text-[10px] px-6 py-3 w-full flex items-center justify-center gap-2">
                                                         Execute Action <i className="fa-solid fa-bolt text-[9px]" />
                                                     </button>
                                                 </Link>
@@ -272,13 +274,13 @@ const SmartAlertsPage: React.FC = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </ScrollReveal>
                                 );
                             })
                         )}
-                    </div>
+                    </StaggerChildren>
                 </div>
-            </div>
+            </ScrollReveal>
         </Layout>
     );
 };

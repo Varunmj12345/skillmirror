@@ -12,6 +12,8 @@ import ExportPanel from '../components/Resume/ExportPanel';
 import ResumeBuilderForm, { EMPTY_FORM } from '../components/Resume/ResumeBuilderForm';
 import TemplateGallery from '../components/Resume/TemplateGallery';
 import ResumePreview from '../components/Resume/ResumePreview';
+import { SkeletonCard } from '../components/motion/Skeleton';
+import { ScrollReveal } from '../components/motion/ScrollReveal';
 
 import type { BuilderFormData } from '../components/Resume/ResumeBuilderForm';
 import type { TemplateConfig } from '../components/Resume/TemplateGallery';
@@ -265,10 +267,10 @@ const ResumePage: React.FC = () => {
 
         {/* ============ ANALYZE TAB ============ */}
         {tab === 'analyze' && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-400">
+          <ScrollReveal className="space-y-6">
             {/* Upload + Scores row */}
             <div className="grid gap-6 lg:grid-cols-[1.3fr_1.2fr]">
-              <div className="glass-panel p-5 space-y-4">
+              <div className="sm-glass p-5 space-y-4">
                 <h2 className="text-sm font-medium text-slate-50">Upload Resume</h2>
                 <div
                   onDrop={e => { e.preventDefault(); setDragActive(false); const f = e.dataTransfer.files?.[0]; if (f) void handleFile(f); }}
@@ -296,10 +298,10 @@ const ResumePage: React.FC = () => {
                 {error && <div className="p-2 bg-red-500/10 border border-red-500/50 text-red-200 text-[10px] rounded-lg">{error}</div>}
               </div>
 
-              <div className="glass-panel p-5 space-y-4">
+              <div className="sm-glass p-5 space-y-4">
                 <h2 className="text-sm font-medium text-slate-50">Readiness & Match</h2>
                 {!analysis ? (
-                  <div className="h-40 bg-slate-900 rounded-xl animate-pulse" />
+                  <SkeletonCard className="!h-40" />
                 ) : (
                   <div className="flex gap-6">
                     <div className="relative w-32 h-32 flex items-center justify-center">
@@ -340,13 +342,13 @@ const ResumePage: React.FC = () => {
 
             {/* Skills + Radar row */}
             <div className="grid gap-6 lg:grid-cols-[1.4fr_1.2fr]">
-              <div className="glass-panel p-5 space-y-4">
+              <div className="sm-glass p-5 space-y-4">
                 <div className="flex items-center justify-between">
                   <h2 className="text-sm font-medium text-slate-50">Skills Extracted</h2>
                   {analysis && <span className="text-[10px] font-black text-indigo-400 px-2 py-1 bg-indigo-500/10 rounded-lg">{analysis.skills.length} skills</span>}
                 </div>
                 {!analysis ? (
-                  <div className="flex flex-wrap gap-2 animate-pulse">{[1, 2, 3, 4].map(n => <div key={n} className="h-6 w-16 bg-slate-900 rounded-full" />)}</div>
+                  <div className="flex flex-wrap gap-2"><SkeletonCard className="!h-6 !w-16 !rounded-full" /><SkeletonCard className="!h-6 !w-16 !rounded-full" /><SkeletonCard className="!h-6 !w-16 !rounded-full" /></div>
                 ) : (
                   <div className="space-y-4">
                     <div className="flex flex-wrap gap-2">
@@ -360,13 +362,13 @@ const ResumePage: React.FC = () => {
                       <span className="text-[10px] text-amber-300 font-medium flex items-center gap-1">
                         <i className="fa-solid fa-triangle-exclamation" /> Review your skill gaps
                       </span>
-                      <button onClick={() => router.push('/skill-gap')} className="btn-primary text-[10px] py-1.5 px-3">Go to Roadmap</button>
+                      <button onClick={() => router.push('/skill-gap')} className="sm-btn-primary text-[10px] py-1.5 px-3">Go to Roadmap</button>
                     </div>
                   </div>
                 )}
               </div>
 
-              <div className="glass-panel p-5 space-y-4 overflow-hidden">
+              <div className="sm-glass p-5 space-y-4 overflow-hidden">
                 <h2 className="text-sm font-medium text-slate-50">Strength Breakdown</h2>
                 <div className="h-56 -mx-4">
                   {analysis ? (
@@ -393,7 +395,7 @@ const ResumePage: React.FC = () => {
 
             {/* AI Suggestions + AI Improvement row */}
             <div className="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
-              <div className="glass-panel p-5 space-y-3">
+              <div className="sm-glass p-5 space-y-3">
                 <h2 className="text-sm font-medium text-slate-50">AI Optimization Suggestions</h2>
                 <ul className="space-y-2">
                   {(analysis?.aiSuggestions || [
@@ -427,7 +429,7 @@ const ResumePage: React.FC = () => {
               }}
               refreshTrigger={historyRefresh}
             />
-          </div>
+          </ScrollReveal>
         )}
 
         {/* ============ BUILD TAB ============ */}
@@ -448,7 +450,7 @@ const ResumePage: React.FC = () => {
                 ))}
               </div>
               <div className="flex gap-2">
-                <button onClick={handleSaveProfile} className="btn-primary text-[10px] py-1.5 px-4 bg-emerald-600 hover:bg-emerald-500 shadow-emerald-600/20">
+                <button onClick={handleSaveProfile} className="sm-btn-primary text-[10px] py-1.5 px-4 bg-brand-emerald hover:bg-emerald-500 shadow-brand-emerald/20">
                   <i className="fa-solid fa-floppy-disk mr-2"></i> Save Changes
                 </button>
               </div>
@@ -469,7 +471,7 @@ const ResumePage: React.FC = () => {
                 <button
                   onClick={handleExtractProfile}
                   disabled={extractingProfile}
-                  className="w-full sm:w-auto px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="sm-btn-primary w-full sm:w-auto px-5 py-2.5 flex items-center justify-center gap-2"
                 >
                   {extractingProfile ? <i className="fa-solid fa-circle-notch fa-spin"></i> : <i className="fa-solid fa-bolt"></i>}
                   {extractingProfile ? 'Extracting...' : 'Import from Resume'}
@@ -506,7 +508,7 @@ const ResumePage: React.FC = () => {
                 {/* Controls panel */}
                 <div className="space-y-4">
                   <ExportPanel />
-                  <div className="glass-panel p-5 border-slate-800/50">
+                  <div className="sm-glass p-5 border-slate-800/50">
                     <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Quick Actions</h4>
                     <div className="space-y-2">
                       <button onClick={() => setBuildSubTab('form')} className="w-full py-3 bg-slate-800 hover:bg-slate-700 text-[11px] font-black text-slate-300 uppercase tracking-widest rounded-xl border border-slate-700 transition-all flex items-center justify-center gap-2">

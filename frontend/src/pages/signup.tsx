@@ -110,7 +110,7 @@ const Signup: React.FC = () => {
                     onChange={(e) => setUsername(e.target.value)}
                     required
                     placeholder="yourname"
-                    className="w-full pl-11 pr-5 py-3.5 bg-slate-800/60 border border-slate-700/60 rounded-xl text-slate-100 placeholder:text-slate-600 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 outline-none transition-all text-sm"
+                    className={`sm-input pl-11 py-3.5 text-sm ${error ? 'error' : ''}`}
                   />
                 </div>
               </div>
@@ -130,7 +130,7 @@ const Signup: React.FC = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     placeholder="name@company.com"
-                    className="w-full pl-11 pr-5 py-3.5 bg-slate-800/60 border border-slate-700/60 rounded-xl text-slate-100 placeholder:text-slate-600 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 outline-none transition-all text-sm"
+                    className={`sm-input pl-11 py-3.5 text-sm ${error ? 'error' : ''}`}
                   />
                 </div>
               </div>
@@ -151,7 +151,7 @@ const Signup: React.FC = () => {
                     required
                     minLength={8}
                     placeholder="Min. 8 characters"
-                    className="w-full pl-11 pr-16 py-3.5 bg-slate-800/60 border border-slate-700/60 rounded-xl text-slate-100 placeholder:text-slate-600 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 outline-none transition-all text-sm"
+                    className={`sm-input pl-11 pr-16 py-3.5 text-sm ${error ? 'error' : ''}`}
                   />
                   <button
                     type="button"
@@ -169,7 +169,7 @@ const Signup: React.FC = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-black text-sm tracking-wide shadow-lg shadow-violet-500/25 active:scale-[0.98] hover:scale-[1.01] transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
+                className="sm-btn-primary w-full flex items-center justify-center gap-2 mt-2"
               >
                 {loading ? (
                   <>

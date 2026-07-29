@@ -130,7 +130,7 @@ const Login: React.FC = () => {
                       onChange={(e) => setEmail(e.target.value)}
                       required
                       placeholder="name@company.com"
-                      className="w-full pl-11 pr-5 py-3.5 bg-slate-800/60 border border-slate-700/60 rounded-xl text-slate-100 placeholder:text-slate-600 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 outline-none transition-all text-sm"
+                      className={`sm-input pl-11 py-3.5 text-sm ${error ? 'error' : ''}`}
                     />
                   </div>
                 </div>
@@ -150,7 +150,7 @@ const Login: React.FC = () => {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       placeholder="••••••••"
-                      className="w-full pl-11 pr-16 py-3.5 bg-slate-800/60 border border-slate-700/60 rounded-xl text-slate-100 placeholder:text-slate-600 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 outline-none transition-all text-sm"
+                      className={`sm-input pl-11 pr-16 py-3.5 text-sm ${error ? 'error' : ''}`}
                     />
                     <button
                       type="button"
@@ -169,11 +169,10 @@ const Login: React.FC = () => {
                   </Link>
                 </div>
 
-                {/* Submit button */}
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-black text-sm tracking-wide shadow-lg shadow-indigo-500/25 active:scale-[0.98] hover:scale-[1.01] transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="sm-btn-primary w-full flex items-center justify-center gap-2"
                 >
                   {loading ? (
                     <>
@@ -206,21 +205,21 @@ const Login: React.FC = () => {
                 )}
 
                 <div className="flex justify-center">
-                  <input
-                    type="text"
-                    maxLength={6}
-                    value={twoFactorCode}
-                    onChange={(e) => setTwoFactorCode(e.target.value)}
-                    required
-                    placeholder="000000"
-                    className="w-44 text-center text-2xl tracking-[0.5em] px-4 py-4 bg-slate-800/60 border border-slate-700/60 rounded-xl text-white focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all font-mono"
-                  />
+                    <input
+                      type="text"
+                      maxLength={6}
+                      value={twoFactorCode}
+                      onChange={(e) => setTwoFactorCode(e.target.value)}
+                      required
+                      placeholder="000000"
+                      className={`sm-input w-44 text-center text-2xl tracking-[0.5em] px-4 py-4 font-mono ${error ? 'error' : ''}`}
+                    />
                 </div>
 
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-black text-sm shadow-lg shadow-indigo-500/25 active:scale-[0.98] transition-all disabled:opacity-60 flex items-center justify-center gap-2"
+                  className="sm-btn-primary w-full flex items-center justify-center gap-2"
                 >
                   {loading ? (
                     <>

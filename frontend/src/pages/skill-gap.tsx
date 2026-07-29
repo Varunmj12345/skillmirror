@@ -13,6 +13,8 @@ import SmartNotifications from '../components/SkillGap/SmartNotifications';
 import GamificationHeader from '../components/SkillGap/GamificationHeader';
 import { skillService } from '../services/skillService';
 import { Skill, AIRecommendationsData, ActionPlan } from '../components/SkillGap/types';
+import { SkeletonCard } from '../components/motion/Skeleton';
+import { ScrollReveal } from '../components/motion/ScrollReveal';
 
 // Extended report type for the new UI
 interface EnhancedSkillGapReport {
@@ -234,7 +236,7 @@ const SkillGapPage: React.FC = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Left: Configuration */}
                     <div className="lg:col-span-1 space-y-6">
-                        <div className="glass-panel p-6 border-slate-800/50">
+                        <div className="sm-glass p-6 border-slate-800/50">
                             <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-6 flex items-center gap-2">
                                 <i className="fa-solid fa-bullseye text-sky-400"></i> Target Goal
                             </h3>
@@ -245,7 +247,7 @@ const SkillGapPage: React.FC = () => {
                                     <select
                                         value={role}
                                         onChange={(e) => setRole(e.target.value)}
-                                        className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-slate-200 focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all"
+                                        className="sm-input px-4 py-3 text-sm"
                                     >
                                         {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
                                     </select>
@@ -272,7 +274,7 @@ const SkillGapPage: React.FC = () => {
                                     <select
                                         value={industry}
                                         onChange={(e) => setIndustry(e.target.value)}
-                                        className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-slate-200 focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all"
+                                        className="sm-input px-4 py-3 text-sm"
                                     >
                                         {INDUSTRIES.map(i => <option key={i} value={i}>{i}</option>)}
                                     </select>
@@ -280,7 +282,7 @@ const SkillGapPage: React.FC = () => {
                             </div>
                         </div>
 
-                        <div className="glass-panel p-6 border-slate-800/50 bg-indigo-600/5">
+                        <div className="sm-glass p-6 border-slate-800/50 bg-indigo-600/5">
                             <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
                                 <i className="fa-solid fa-file-invoice text-indigo-400"></i> Job Description Scan
                             </h3>
@@ -292,7 +294,7 @@ const SkillGapPage: React.FC = () => {
                                     value={jobDescription}
                                     onChange={(e) => setJobDescription(e.target.value)}
                                     placeholder="Paste JD here..."
-                                    className="w-full h-32 bg-slate-900/50 border border-slate-800 rounded-xl px-4 py-3 text-slate-300 placeholder:text-slate-700 text-sm focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all resize-none"
+                                    className="sm-input h-32 px-4 py-3 text-sm resize-none"
                                 />
                                 <button
                                     onClick={handleExtractJD}
@@ -307,7 +309,7 @@ const SkillGapPage: React.FC = () => {
                     </div>
 
                     <div className="lg:col-span-2 space-y-6">
-                        <div className="glass-panel p-6 border-slate-800/50">
+                        <div className="sm-glass p-6 border-slate-800/50">
                             <div className="flex items-center justify-between mb-6">
                                 <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
                                     <i className="fa-solid fa-brain text-emerald-400"></i> Active Profile Skills
@@ -352,7 +354,7 @@ const SkillGapPage: React.FC = () => {
                                         onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                                         onKeyDown={(e) => e.key === 'Enter' && addManualSkill()}
                                         placeholder="Add skill (e.g. AWS, Figma, Python)..."
-                                        className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-10 pr-4 py-3 text-slate-200 placeholder:text-slate-600 outline-none focus:border-indigo-500/50 transition-all text-sm"
+                                        className="sm-input pl-10 pr-4 py-3 text-sm"
                                     />
                                     {showSuggestions && filteredSuggestions.length > 0 && (
                                         <div className="absolute z-50 bottom-full left-0 w-full mb-2 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-2">
@@ -371,7 +373,7 @@ const SkillGapPage: React.FC = () => {
                                 <select
                                     value={newSkillLevel}
                                     onChange={(e) => setNewSkillLevel(e.target.value)}
-                                    className="bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-slate-400 text-sm focus:ring-2 focus:ring-indigo-500/50 outline-none"
+                                    className="sm-input px-4 py-3 text-sm"
                                 >
                                     <option>Beginner</option>
                                     <option>Intermediate</option>
@@ -428,19 +430,17 @@ const SkillGapPage: React.FC = () => {
                         )}
 
                         {loading && (
-                            <div className="py-20 flex flex-col items-center justify-center space-y-4">
-                                <div className="relative">
-                                    <div className="w-16 h-16 rounded-full border-4 border-slate-800 border-t-indigo-500 animate-spin"></div>
-                                    <div className="absolute inset-0 flex items-center justify-center">
-                                        <div className="w-8 h-8 rounded-full bg-indigo-500/20 animate-pulse"></div>
-                                    </div>
+                            <div className="py-10 grid gap-6">
+                                <SkeletonCard className="h-64" />
+                                <div className="grid grid-cols-2 gap-6">
+                                    <SkeletonCard className="h-48" />
+                                    <SkeletonCard className="h-48" />
                                 </div>
-                                <p className="text-slate-500 font-black text-[10px] tracking-[0.4em] uppercase animate-pulse">Simulating Career Future...</p>
                             </div>
                         )}
 
                         {!report && !loading && (
-                            <div className="py-24 flex flex-col items-center justify-center text-center space-y-6 glass-panel border-dashed border-slate-800 bg-transparent">
+                            <div className="py-24 flex flex-col items-center justify-center text-center space-y-6 sm-glass border-dashed border-slate-800 bg-transparent">
                                 <div className="w-20 h-20 rounded-full bg-slate-900 flex items-center justify-center text-slate-700 text-3xl">
                                     <i className="fa-solid fa-magnifying-glass-chart"></i>
                                 </div>

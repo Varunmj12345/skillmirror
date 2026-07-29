@@ -103,7 +103,7 @@ const Header: React.FC = () => {
       {/* Account / Footer */}
       <div className="p-6 mt-auto">
          {!loading && user && (
-            <div className="sm-glass p-5 rounded-[22px] border-white/10 group-hover:border-brand-neural/20 transition-all">
+            <div className="sm-glass p-5 rounded-[22px] border-white/10 sm-card-hover">
                <div className="flex items-center gap-4 mb-5">
                   <div className="w-12 h-12 rounded-2xl bg-brand-neural/10 border border-brand-neural/20 flex items-center justify-center border-dashed font-black text-brand-neural text-xl">
                     {user?.username?.charAt(0).toUpperCase() || 'U'}
@@ -122,7 +122,7 @@ const Header: React.FC = () => {
                
                <button 
                  onClick={logout}
-                 className="w-full py-3 rounded-xl bg-slate-900 border border-white/5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-rose-400 hover:border-rose-500/30 hover:bg-rose-500/5 transition-all"
+                 className="w-full py-3 rounded-xl bg-slate-900 border border-white/5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-rose-400 hover:border-rose-500/30 hover:bg-rose-500/5 transition-all duration-200 hover:-translate-y-0.5 active:scale-95"
                >
                  Terminate Session
                </button>

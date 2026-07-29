@@ -10,6 +10,8 @@ import { jobService } from '../services/jobService';
 import { analyticsService } from '../services/analyticsService';
 import { aiService } from '../services/aiService';
 import withAuth from '../components/withAuth';
+import { SkeletonCard } from '../components/motion/Skeleton';
+import { ScrollReveal } from '../components/motion/ScrollReveal';
 
 const JobIntelligencePage: React.FC = () => {
     const router = useRouter();
@@ -61,16 +63,16 @@ const JobIntelligencePage: React.FC = () => {
         <Layout>
             <div className="container mx-auto px-4 py-8">
                 {/* Header Section */}
-                <div className="flex flex-col md:flex-row justify-between items-center mb-8">
+                <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-800">Live Job Intelligence Engine</h1>
-                        <p className="text-gray-600 mt-2">Real-time market insights & AI-driven career guidance.</p>
+                        <h1 className="text-3xl font-bold text-slate-50">Live Job Intelligence Engine</h1>
+                        <p className="text-slate-400 mt-2">Real-time market insights & AI-driven career guidance.</p>
                     </div>
-                    <div className="flex gap-4 mt-4 md:mt-0">
+                    <div className="flex flex-wrap gap-4 mt-4 md:mt-0">
                         <select
                             value={selectedRole}
                             onChange={handleRoleChange}
-                            className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            className="sm-input px-4 py-2 w-full sm:w-auto min-w-[200px]"
                         >
                             <option value="Frontend Developer">Frontend Developer</option>
                             <option value="Backend Developer">Backend Developer</option>
@@ -81,13 +83,13 @@ const JobIntelligencePage: React.FC = () => {
                         </select>
                         <button
                             onClick={handleDownloadReport}
-                            className="bg-white text-gray-800 border border-gray-200 px-4 py-2 rounded-xl hover:bg-gray-50 transition flex items-center gap-2 shadow-sm font-bold text-sm"
+                            className="sm-btn-primary px-4 py-2 flex items-center gap-2 font-bold text-sm bg-slate-800 hover:bg-slate-700 shadow-none border border-slate-700 text-slate-300"
                         >
                             <i className="fa-solid fa-download"></i> Report
                         </button>
                         <button
                             onClick={() => router.push('/skill-gap')}
-                            className="bg-indigo-600 text-white px-4 py-2 rounded-xl hover:bg-indigo-700 transition flex items-center gap-2 shadow-lg shadow-indigo-100 font-bold text-sm"
+                            className="sm-btn-primary px-4 py-2 flex items-center gap-2 font-bold text-sm"
                         >
                             <i className="fa-solid fa-magnifying-glass-chart"></i> Analyze Gap
                         </button>
@@ -95,28 +97,28 @@ const JobIntelligencePage: React.FC = () => {
                 </div>
 
                 {loading ? (
-                    <div className="space-y-6 animate-pulse">
+                    <div className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                            {[...Array(5)].map((_, i) => <div key={i} className="h-24 bg-gray-200 rounded-xl"></div>)}
+                            {[...Array(5)].map((_, i) => <SkeletonCard key={i} className="!h-24" />)}
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="h-72 bg-gray-200 rounded-xl"></div>
-                            <div className="h-72 bg-gray-200 rounded-xl"></div>
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <SkeletonCard className="lg:col-span-2 !h-[400px]" />
+                            <SkeletonCard className="!h-[400px]" />
                         </div>
                     </div>
                 ) : error ? (
-                    <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl flex flex-col items-center">
+                    <div className="bg-red-500/10 border border-red-500/50 text-red-400 px-6 py-4 rounded-xl flex flex-col items-center">
                         <i className="fa-solid fa-circle-exclamation text-2xl mb-2"></i>
                         <span className="font-semibold">{error}</span>
                         <button
                             onClick={() => fetchData(selectedRole)}
-                            className="mt-3 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                            className="mt-3 sm-btn-primary px-4 py-2 bg-red-600 hover:bg-red-700 text-white shadow-none"
                         >
                             Retry Connection
                         </button>
                     </div>
                 ) : (
-                    <>
+                    <ScrollReveal className="space-y-6">
                         <MarketOverview data={marketData} />
 
                         {/* Charts Section */}
@@ -179,7 +181,7 @@ const JobIntelligencePage: React.FC = () => {
                                 </div>
                             </div>
                         </div>
-                    </>
+                    </ScrollReveal>
                 )}
             </div>
         </Layout>

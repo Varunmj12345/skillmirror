@@ -1,4 +1,5 @@
 import React from 'react';
+import { useCountUp } from '../../hooks/useCountUp';
 
 interface MetricCardProps {
   label: string;
@@ -26,9 +27,12 @@ const colorMap = {
 
 const MetricCard: React.FC<MetricCardProps> = ({ label, value, suffix = '', icon, color, trend }) => {
   const styles = colorMap[color] || colorMap.indigo;
+  const isNumber = typeof value === 'number';
+  const { count, elementRef } = useCountUp(isNumber ? (value as number) : 0, 1000);
+  const displayValue = isNumber ? count : value;
 
   return (
-    <div className={`group sm-glass p-6 rounded-[1.5rem] relative overflow-hidden transition-all duration-500 hover:border-brand-neural/30`}>
+    <div ref={elementRef as React.RefObject<HTMLDivElement>} className={`group sm-glass p-6 rounded-[1.5rem] relative overflow-hidden sm-card-hover`}>
       {/* 1. Animated Background Sparkline Pattern */}
       <div className="absolute inset-0 opacity-10 pointer-events-none">
         <svg className="w-full h-full" preserveAspectRatio="none">
@@ -48,7 +52,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ label, value, suffix = '', icon
       </div>
 
       <div className="relative z-10 flex items-baseline gap-1">
-        <span className="text-4xl font-black text-white tracking-ultra-tight">{value}</span>
+        <span className="text-4xl font-black text-white tracking-ultra-tight tabular-nums">{displayValue}</span>
         <span className="text-sm font-bold text-slate-500">{suffix}</span>
       </div>
 
