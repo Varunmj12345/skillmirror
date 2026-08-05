@@ -16,23 +16,23 @@ const getVariant = (type: VariantType) => {
   switch (type) {
     case 'fadeUp':
       return {
-        hidden: { opacity: 0, y: 30 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] } },
       };
     case 'fadeLeft':
       return {
-        hidden: { opacity: 0, x: -30 },
-        visible: { opacity: 1, x: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
+        hidden: { opacity: 0, x: -20 },
+        visible: { opacity: 1, x: 0, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] } },
       };
     case 'fadeRight':
       return {
-        hidden: { opacity: 0, x: 30 },
-        visible: { opacity: 1, x: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
+        hidden: { opacity: 0, x: 20 },
+        visible: { opacity: 1, x: 0, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] } },
       };
     case 'zoomIn':
       return {
-        hidden: { opacity: 0, scale: 0.95 },
-        visible: { opacity: 1, scale: 1, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
+        hidden: { opacity: 0, scale: 0.97 },
+        visible: { opacity: 1, scale: 1, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] } },
       };
   }
 };
@@ -46,7 +46,8 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
   stagger = false
 }) => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-50px' });
+  // Use amount:0 so ANY pixel entering viewport triggers; margin:0px removes the strict inset guard
+  const isInView = useInView(ref, { once: true, amount: 0, margin: '0px' });
   const selectedVariant = getVariant(variant);
 
   if (stagger) {
@@ -59,12 +60,15 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
   }
 
   return (
-    <div ref={ref} style={{ width, overflow: 'hidden' }} className={className}>
+    // The outer div acts as the ref target for useInView.
+    // The inner motion.div gets the className so that flex/grid layouts apply directly to children.
+    <div ref={ref} style={{ width }}>
       <motion.div
         variants={selectedVariant}
         initial="hidden"
         animate={isInView ? 'visible' : 'hidden'}
         transition={{ delay }}
+        className={className}
       >
         {children}
       </motion.div>
@@ -78,7 +82,8 @@ export const StaggerChildren: React.FC<{
   className?: string;
 }> = ({ children, staggerDelay = 0.08, className = '' }) => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-50px' });
+  // Same fix: amount:0, no margin guard so it triggers reliably
+  const isInView = useInView(ref, { once: true, amount: 0, margin: '0px' });
 
   const container = {
     hidden: { opacity: 0 },
