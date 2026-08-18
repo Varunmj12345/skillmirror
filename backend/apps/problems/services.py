@@ -369,50 +369,72 @@ class ProjectIntelligenceEngine:
 class EvidenceGeneratorService:
     """
     Synthesizes completed project data into formal "Evidence of Skill" statements.
-    Connects evidence into user's Resume Data and Career Digital Twin.
+    Connects evidence into user's Resume Data, Skill Profile, and Career Digital Twin.
+    No admin approval required for student project completion.
     """
     def generate_evidence(self, project: Project, github_url: str = "", deployment_url: str = "") -> ProjectEvidence:
         problem = project.problem
         user = project.user
-        tech_str = ", ".join(project.tech_stack)
+        tech_str = ", ".join(project.tech_stack) if project.tech_stack else "modern technology stack"
+
+        # Determine evidence verification level (FIX 4 & FIX 10)
+        # Student-submitted evidence is default 'self_reported' (or 'ai_assessed' if code/deployment links are provided)
+        trust_level = 'self_reported'
+        g_url = github_url.strip() if github_url else ""
+        d_url = deployment_url.strip() if deployment_url else ""
+        if g_url or d_url:
+            trust_level = 'ai_assessed'
 
         evidence_statement = (
-            f"Student demonstrated {tech_str} proficiency by engineering a production-ready "
-            f"solution for '{problem.title}' affecting {problem.people_affected} target users "
-            f"in the {problem.industry} sector."
+            f"Student demonstrated {tech_str} proficiency by engineering a practical solution "
+            f"for '{problem.title}' targeting {problem.industry} sector requirements."
         )
+
+        completed_tasks_count = project.tasks.filter(is_completed=True).count()
+        total_tasks_count = project.tasks.count()
 
         evidence, _ = ProjectEvidence.objects.update_or_create(
             project=project,
             defaults={
                 "user": user,
                 "problem_solved_summary": problem.description,
-                "student_contribution": f"Designed database architecture, developed RESTful API endpoints, and integrated frontend UI using {tech_str}.",
+                "student_contribution": f"Built core MVP project features, completed technical tasks, and utilized {tech_str}.",
                 "technologies_used": project.tech_stack,
                 "features_developed": project.functional_requirements,
-                "github_url": github_url or "https://github.com/student/skillmirror-project",
-                "deployment_url": deployment_url or "https://skillmirror-demo.onrender.com",
+                "github_url": g_url,
+                "deployment_url": d_url,
                 "testing_passed": True,
-                "performance_metrics": {"api_latency_ms": 140, "test_coverage": "88%"},
-                "user_feedback": "Successfully resolved manual workflow bottleneck.",
-                "problem_impact_rating": 90,
+                "performance_metrics": {
+                    "tasks_completed": completed_tasks_count,
+                    "total_tasks": total_tasks_count,
+                    "completion_rate": "100%"
+                },
+                "user_feedback": "",
+                "problem_impact_rating": 85,
                 "evidence_statement": evidence_statement,
-                "verification_status": "verified"
+                "verification_status": trust_level
             }
         )
 
-        # Update project status
+        # Update project status directly to completed (FIX 3 — NO ADMIN APPROVAL NEEDED)
         project.status = 'completed'
         project.progress_percentage = 100
         project.save()
 
-        # Connect into Resume Data
+        # Connect into Resume Data & User Profile XP (FIX 11)
         try:
             resume_data, _ = ResumeData.objects.get_or_create(user=user)
             existing_skills = set(resume_data.extracted_skills or [])
             new_skills = list(existing_skills.union(set(project.tech_stack)))
             resume_data.extracted_skills = new_skills
             resume_data.save()
+        except Exception:
+            pass
+
+        try:
+            profile = user.profile
+            profile.total_learning_points += 150
+            profile.save()
         except Exception:
             pass
 

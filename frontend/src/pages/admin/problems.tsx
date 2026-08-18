@@ -61,7 +61,7 @@ const AdminProblemPortalPage: React.FC = () => {
           <div>
             <span className="text-xs font-black uppercase tracking-widest text-indigo-400">Admin Control Center</span>
             <h1 className="sm-h1 !text-4xl">Problem Intelligence Portal</h1>
-            <p className="sm-body-text mt-1">Review submitted real-world problems, merge duplicate candidates, and verify evidence.</p>
+            <p className="sm-body-text mt-1">Review submitted real-world problem statements, merge duplicate candidates, and validate organization sources. (Student projects require no admin approval).</p>
           </div>
         </div>
 

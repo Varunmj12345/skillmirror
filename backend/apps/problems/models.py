@@ -179,7 +179,6 @@ class Project(models.Model):
         ('planning', 'Planning'),
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
-        ('verified', 'Verified'),
     ]
 
     problem = models.ForeignKey(Problem, on_delete=models.CASCADE, related_name='projects')
@@ -245,6 +244,12 @@ class ProjectTask(models.Model):
 
 
 class ProjectEvidence(models.Model):
+    VERIFICATION_STATUS_CHOICES = [
+        ('self_reported', 'Self-Reported'),
+        ('ai_assessed', 'AI-Assessed'),
+        ('organization_verified', 'Organization-Verified'),
+    ]
+
     project = models.OneToOneField(Project, on_delete=models.CASCADE, related_name='evidence')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='project_evidences')
     problem_solved_summary = models.TextField()
@@ -260,7 +265,11 @@ class ProjectEvidence(models.Model):
     
     # Formal Evidence Statement
     evidence_statement = models.TextField(help_text="e.g. Student demonstrated Django REST API development...")
-    verification_status = models.CharField(max_length=20, default='verified')
+    verification_status = models.CharField(
+        max_length=30,
+        choices=VERIFICATION_STATUS_CHOICES,
+        default='self_reported'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

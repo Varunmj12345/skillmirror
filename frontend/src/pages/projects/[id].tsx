@@ -119,6 +119,23 @@ const ProjectDetailPage: React.FC = () => {
           <div className="w-full h-2.5 rounded-full bg-slate-900 overflow-hidden border border-white/5">
             <div className="h-full bg-gradient-to-r from-cyan-400 to-emerald-400 transition-all duration-500" style={{ width: `${project.progress_percentage}%` }} />
           </div>
+
+          {project.status === 'completed' && (
+            <div className="p-5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 space-y-2">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs">
+                  <i className="fa-solid fa-circle-check text-sm" />
+                  <span>Project Completed & Evidence Statement Generated</span>
+                </div>
+                <span className="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-slate-950 text-emerald-300 border border-emerald-500/30">
+                  Trust Level: Self-Reported / AI-Assessed
+                </span>
+              </div>
+              <p className="text-xs text-slate-300">
+                Your evidence statement has been generated and synced into your Resume Intelligence, Career Digital Twin, and Skill Profile without requiring admin approval.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Phased Scope Selector */}
