@@ -16,16 +16,51 @@ class RoadmapViewSet(viewsets.ViewSet):
 
     def create(self, request):
         data = request.data
-        skills = data.get('skills', [])
-        goals = data.get('goals', {}) or data.get('target_job', 'Software Engineer')
-        if isinstance(goals, str):
-            goals = {'target_job': goals}
-        roadmap_data = generate_roadmap(skills, goals)
+        from apps.users.models import UserProfile
+        profile, _ = UserProfile.objects.get_or_create(user=request.user)
+
+        # Pull skills from request or user skills
+        skills = data.get('skills')
+        if skills is None or not isinstance(skills, list):
+            if hasattr(request.user, 'skills'):
+                skills = [s.name for s in request.user.skills.all()]
+            else:
+                skills = []
+
+        target_job = (
+            data.get('target_role') or
+            data.get('target_job') or
+            (data.get('goals', {}).get('target_job') if isinstance(data.get('goals'), dict) else data.get('goals')) or
+            profile.dream_job or
+            'Software Developer'
+        )
+
+        profile_data = {
+            "degree": data.get('degree') or profile.degree or "B.Tech",
+            "branch_domain": data.get('branch_domain') or data.get('domain') or profile.branch_domain or "Computer Science / IT",
+            "current_year_semester": data.get('current_year_semester') or profile.current_year_semester or "3rd Year",
+            "target_role": str(target_job),
+            "experience_level": data.get('experience_level') or data.get('proficiency_level') or profile.experience_level or "Beginner",
+            "user_skills": skills,
+            "software_tools": data.get('software_tools') or profile.software_tools or [],
+            "certifications": data.get('certifications') or profile.certifications or [],
+            "career_interests": data.get('career_interests') or profile.career_interests or []
+        }
+
+        # Update UserProfile attributes
+        if 'degree' in data: profile.degree = data['degree']
+        if 'branch_domain' in data or 'domain' in data:
+            profile.branch_domain = data.get('branch_domain') or data.get('domain')
+        if 'software_tools' in data: profile.software_tools = data['software_tools']
+        if 'certifications' in data: profile.certifications = data['certifications']
+        if 'career_interests' in data: profile.career_interests = data['career_interests']
+        profile.dream_job = str(target_job)
+        profile.save()
+
+        roadmap_data = generate_roadmap(profile_data)
         roadmap = save_roadmap_to_db(request.user, roadmap_data)
         
         # Streak Update logic
-        from apps.users.models import UserProfile
-        profile, _ = UserProfile.objects.get_or_create(user=request.user)
         today = timezone.now().date()
         if profile.last_active_date != today:
             if profile.last_active_date == today - timezone.timedelta(days=1):
@@ -171,10 +206,77 @@ class UserAnalyticsView(APIView):
             "badges": [{"title": a.title, "type": a.badge_type} for a in achievements]
         })
 
-# Existing views kept for compatibility
+# Universal Domain Views
+class DomainTaxonomyView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        from .taxonomy import get_available_domains, DOMAIN_TAXONOMY
+        domain_param = request.query_params.get('domain')
+        if domain_param and domain_param in DOMAIN_TAXONOMY:
+            return Response(DOMAIN_TAXONOMY[domain_param])
+        return Response({
+            "domains": get_available_domains()
+        })
+
+
+class CareerRecommendationView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        from .taxonomy import DOMAIN_TAXONOMY
+        from apps.users.models import UserProfile
+
+        profile, _ = UserProfile.objects.get_or_create(user=request.user)
+        domain = request.data.get('branch_domain') or profile.branch_domain or "Computer Science / IT"
+        degree = request.data.get('degree') or profile.degree or "B.Tech"
+        user_skills = request.data.get('skills') or ([s.name for s in request.user.skills.all()] if hasattr(request.user, 'skills') else [])
+        software_tools = request.data.get('software_tools') or profile.software_tools or []
+
+        recommendations = []
+        domain_meta = DOMAIN_TAXONOMY.get(domain)
+        
+        if not domain_meta:
+            for d_name, d_meta in DOMAIN_TAXONOMY.items():
+                for role_title, role_info in d_meta["roles"].items():
+                    recommendations.append({
+                        "domain": d_name,
+                        "role": role_title,
+                        "match_score": 85,
+                        "description": f"Recommended career path for {degree} graduates in {d_name}.",
+                        "top_skills": role_info["critical_skills"][:3],
+                        "primary_tools": role_info["high_priority"][:2],
+                        "sample_projects": role_info.get("projects", [])[:2]
+                    })
+        else:
+            for role_title, role_info in domain_meta["roles"].items():
+                reqs = role_info["critical_skills"] + role_info["high_priority"]
+                known = set([s.lower() for s in (user_skills + software_tools)])
+                matches = sum(1 for r in reqs if any(k in r.lower() or r.lower() in k for k in known))
+                match_pct = min(98, max(68, 72 + matches * 8))
+                
+                recommendations.append({
+                    "domain": domain,
+                    "role": role_title,
+                    "match_score": match_pct,
+                    "description": f"Aligned career path in {domain} for {degree} students.",
+                    "top_skills": role_info["critical_skills"][:3],
+                    "primary_tools": role_info["high_priority"][:2],
+                    "sample_projects": role_info.get("projects", [])[:2]
+                })
+
+        recommendations.sort(key=lambda x: x["match_score"], reverse=True)
+        return Response({"recommendations": recommendations[:4]})
+
+
 class RoadmapGoalsView(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
-    def list(self, request): return Response({'goals': GOAL_OPTIONS})
+    def list(self, request):
+        from .taxonomy import DOMAIN_TAXONOMY, get_available_domains
+        return Response({
+            'domains': get_available_domains(),
+            'taxonomy': DOMAIN_TAXONOMY
+        })
 
 class ProgressTrackerView(APIView):
     permission_classes = [IsAuthenticated]

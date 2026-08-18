@@ -191,6 +191,12 @@ class ProfileView(APIView):
             'experience_level': profile.experience_level,
             'dream_job': profile.dream_job,
             'country': profile.country,
+            'degree': profile.degree,
+            'branch_domain': profile.branch_domain,
+            'current_year_semester': profile.current_year_semester,
+            'software_tools': profile.software_tools,
+            'certifications': profile.certifications,
+            'career_interests': profile.career_interests,
             'has_resume': bool(profile.resume),
             'two_factor_enabled': profile.two_factor_enabled,
             'profile_visibility': profile.profile_visibility,
@@ -205,6 +211,15 @@ class ProfileView(APIView):
         profile.dream_job = request.data.get('dream_job', profile.dream_job)
         profile.experience_level = request.data.get('experience_level', profile.experience_level)
         profile.country = request.data.get('country', profile.country)
+        profile.degree = request.data.get('degree', profile.degree)
+        profile.branch_domain = request.data.get('branch_domain', profile.branch_domain)
+        profile.current_year_semester = request.data.get('current_year_semester', profile.current_year_semester)
+        if 'software_tools' in request.data:
+            profile.software_tools = request.data.get('software_tools')
+        if 'certifications' in request.data:
+            profile.certifications = request.data.get('certifications')
+        if 'career_interests' in request.data:
+            profile.career_interests = request.data.get('career_interests')
         if 'two_factor_enabled' in request.data:
             profile.two_factor_enabled = request.data.get('two_factor_enabled')
         if 'profile_visibility' in request.data:

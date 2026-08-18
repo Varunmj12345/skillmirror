@@ -1,5 +1,13 @@
 import apiClient from './apiClient';
 
+export const fetchDomains = async () => {
+  return apiClient.get('/roadmaps/domains/');
+};
+
+export const fetchCareerRecommendations = async (profileData: any) => {
+  return apiClient.post('/roadmaps/recommend-careers/', profileData);
+};
+
 export const fetchGoals = async () => {
   return apiClient.get('/roadmaps/goals/');
 };
@@ -8,12 +16,15 @@ export const fetchSkills = async () => {
   return apiClient.get('/skills/proficiency/');
 };
 
-export const generateRoadmap = async (goal: string, skills: string[] = []) => {
-  return apiClient.post('/roadmaps/generate/', {
-    target_job: goal,
-    skills,
-    goals: { target_job: goal },
-  });
+export const generateRoadmap = async (profilePayload: any, skills: string[] = []) => {
+  if (typeof profilePayload === 'string') {
+    return apiClient.post('/roadmaps/generate/', {
+      target_role: profilePayload,
+      target_job: profilePayload,
+      skills,
+    });
+  }
+  return apiClient.post('/roadmaps/generate/', profilePayload);
 };
 
 export const fetchRoadmapDetail = async (id: number) => {

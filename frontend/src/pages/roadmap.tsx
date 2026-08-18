@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Layout from '../components/Layout';
 import YouTubeLearning from '../components/YouTubeLearning';
-import { fetchGoals, fetchSkills, generateRoadmap, updateProgress, fetchUserAnalytics, fetchAISuggestion, fetchRoadmapDetail } from '../services/roadmap';
+import { fetchGoals, fetchSkills, fetchDomains, fetchCareerRecommendations, generateRoadmap, updateProgress, fetchUserAnalytics, fetchAISuggestion, fetchRoadmapDetail } from '../services/roadmap';
 import MasteryScore from '../components/roadmap/MasteryScore';
 import AdaptiveDifficulty from '../components/roadmap/AdaptiveDifficulty';
 import SkillDemand from '../components/roadmap/SkillDemand';
@@ -13,29 +13,57 @@ import PhaseMiniMock from '../components/roadmap/PhaseMiniMock';
 import Leaderboard from '../components/roadmap/Leaderboard';
 import apiClient from '../services/apiClient';
 import withAuth from '../components/withAuth';
-import { motion, AnimatePresence } from 'framer-motion';
 import { SkeletonCard } from '../components/motion/Skeleton';
 import { ScrollReveal, StaggerChildren } from '../components/motion/ScrollReveal';
 
 const GEN_BOOT_SEQUENCE = [
-  'Accessing Skill Graph...',
-  'Analyzing Digital Twin Gaps...',
-  'Synthesizing Learning Phases...',
-  'Optimizing Skill Timelines...',
-  'Accelerating Foundation Paths...',
-  'Finalizing Execution Roadmap...',
+  'Profiling Student Domain & Degree...',
+  'Evaluating Domain Skill Gaps...',
+  'Synthesizing Learning Sequence...',
+  'Mapping Software Tools & Projects...',
+  'Calculating Job Readiness Score...',
+  'Finalizing Universal Domain Roadmap...',
 ];
+
+const DOMAIN_OPTIONS = [
+  'Civil Engineering',
+  'Mechanical Engineering',
+  'ECE / EEE',
+  'Computer Science / IT',
+  'Automobile Engineering',
+  'Chemical Engineering',
+  'Biotechnology / Bioengineering',
+  'Agriculture & Agribusiness',
+  'Architecture & Urban Planning',
+  'Commerce, Finance & Management'
+];
+
+const DEGREE_OPTIONS = ['B.Tech', 'B.E.', 'B.Sc', 'B.Com', 'B.Arch', 'M.Tech', 'MBA', 'Diploma'];
+const LEVEL_OPTIONS = ['Beginner', 'Intermediate', 'Advanced'];
 
 const Roadmap: React.FC = () => {
   const router = useRouter();
-  const [goals, setGoals] = useState<string[]>([]);
-  const [skills, setSkills] = useState<any[]>([]);
-  const [selectedGoal, setSelectedGoal] = useState('');
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [roadmap, setRoadmap] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [genLoading, setGenLoading] = useState(false);
   const [genError, setGenError] = useState<string | null>(null);
+
+  // Student Profile Form State
+  const [degree, setDegree] = useState('B.Tech');
+  const [domain, setDomain] = useState('Computer Science / IT');
+  const [currentYear, setCurrentYear] = useState('3rd Year');
+  const [level, setLevel] = useState('Beginner');
+  const [targetRole, setTargetRole] = useState('Software Developer');
+  const [userSkills, setUserSkills] = useState<string[]>([]);
+  const [softwareTools, setSoftwareTools] = useState<string[]>([]);
+  const [newSkillInput, setNewSkillInput] = useState('');
+  const [newToolInput, setNewToolInput] = useState('');
+
+  // Domain Taxonomy & Recommendations State
+  const [domainTaxonomy, setDomainTaxonomy] = useState<any>(null);
+  const [recommendations, setRecommendations] = useState<any[]>([]);
+  const [showRecsModal, setShowRecsModal] = useState(false);
+  const [recsLoading, setRecsLoading] = useState(false);
 
   // Analytics State
   const [analytics, setAnalytics] = useState<any>(null);
@@ -43,46 +71,53 @@ const Roadmap: React.FC = () => {
   const [suggLoading, setSuggLoading] = useState(false);
 
   const [genStatus, setGenStatus] = useState(GEN_BOOT_SEQUENCE[0]);
-  const [genStatusIdx, setGenStatusIdx] = useState(0);
 
+  // Load existing profile & roadmap data
   useEffect(() => {
-    const load = async () => {
+    const loadData = async () => {
       setLoading(true);
       try {
-        const [goalsRes, skillsRes, analyticsRes] = await Promise.all([
-          fetchGoals(),
-          fetchSkills(),
-          fetchUserAnalytics()
+        const [profileRes, analyticsRes, taxonomyRes] = await Promise.all([
+          apiClient.get('/users/profile/').catch(() => null),
+          fetchUserAnalytics().catch(() => null),
+          fetchDomains().catch(() => null)
         ]) as any[];
 
+        if (profileRes) {
+          setDegree(profileRes.degree || 'B.Tech');
+          setDomain(profileRes.branch_domain || 'Computer Science / IT');
+          setCurrentYear(profileRes.current_year_semester || '3rd Year');
+          setLevel(profileRes.experience_level || 'Beginner');
+          if (profileRes.dream_job) setTargetRole(profileRes.dream_job);
+          if (Array.isArray(profileRes.software_tools)) setSoftwareTools(profileRes.software_tools);
+        }
+
         setAnalytics(analyticsRes);
-        const goalsData = goalsRes?.goals || [];
-        setGoals(goalsData.length ? goalsData : ['Data Scientist', 'Web Developer', 'Software Engineer', 'Frontend Developer', 'Backend Developer']);
-        setSkills(Array.isArray(skillsRes) ? skillsRes : (skillsRes?.results || []));
+        if (taxonomyRes?.domains) {
+          setDomainTaxonomy(taxonomyRes.domains);
+        }
 
-        if (goalsData.length) setSelectedGoal(goalsData[0]);
-
-        // Handle auto-generation from Digital Twin
+        // Check URL or fetch latest roadmap
         if (router.query.generate === 'true') {
           handleGenerate();
         } else {
-          // Fetch existing roadmap
-          const existing: any = await apiClient.get('/roadmaps/');
+          const existing: any = await apiClient.get('/roadmaps/').catch(() => null);
           if (existing && existing.length > 0) {
             const firstRoadmap = existing[0];
-            const latestDetail = await fetchRoadmapDetail(firstRoadmap.id);
+            const latestDetail = await fetchRoadmapDetail(firstRoadmap.id).catch(() => firstRoadmap);
             setRoadmap(latestDetail);
             loadSuggestion(firstRoadmap.id);
           }
         }
-      } catch (e) {
-        console.error(e);
+      } catch (err) {
+        console.error('Failed to load roadmap init data:', err);
       } finally {
         setLoading(false);
       }
     };
-    if (router.isReady) load();
-  }, [router.isReady, router.query.generate]);
+
+    if (router.isReady) loadData();
+  }, [router.isReady]);
 
   const loadSuggestion = async (id: number) => {
     setSuggLoading(true);
@@ -96,34 +131,73 @@ const Roadmap: React.FC = () => {
     }
   };
 
-  const toggleSkill = (name: string) => {
-    setSelectedSkills((prev) =>
-      prev.includes(name) ? prev.filter((s) => s !== name) : [...prev, name]
-    );
+  const handleAddSkill = () => {
+    if (newSkillInput.trim() && !userSkills.includes(newSkillInput.trim())) {
+      setUserSkills([...userSkills, newSkillInput.trim()]);
+      setNewSkillInput('');
+    }
+  };
+
+  const handleRemoveSkill = (skill: string) => {
+    setUserSkills(userSkills.filter(s => s !== skill));
+  };
+
+  const handleAddTool = () => {
+    if (newToolInput.trim() && !softwareTools.includes(newToolInput.trim())) {
+      setSoftwareTools([...softwareTools, newToolInput.trim()]);
+      setNewToolInput('');
+    }
+  };
+
+  const handleRemoveTool = (tool: string) => {
+    setSoftwareTools(softwareTools.filter(t => t !== tool));
+  };
+
+  const handleFetchRecommendations = async () => {
+    try {
+      setRecsLoading(true);
+      setShowRecsModal(true);
+      const res: any = await fetchCareerRecommendations({
+        degree,
+        branch_domain: domain,
+        skills: userSkills,
+        software_tools: softwareTools
+      });
+      setRecommendations(res?.recommendations || []);
+    } catch (err) {
+      console.error('Failed recommendations:', err);
+    } finally {
+      setRecsLoading(false);
+    }
   };
 
   const handleGenerate = async () => {
     setGenError(null);
     setGenLoading(true);
-    setGenStatusIdx(0);
     setGenStatus(GEN_BOOT_SEQUENCE[0]);
 
-    // Boot animation sequence
+    let stepIdx = 0;
     const bootTimer = setInterval(() => {
-      setGenStatusIdx(prev => {
-        const next = Math.min(prev + 1, GEN_BOOT_SEQUENCE.length - 1);
-        setGenStatus(GEN_BOOT_SEQUENCE[next]);
-        return next;
-      });
-    }, 1500);
+      stepIdx = (stepIdx + 1) % GEN_BOOT_SEQUENCE.length;
+      setGenStatus(GEN_BOOT_SEQUENCE[stepIdx]);
+    }, 1200);
 
     try {
-      const res: any = await generateRoadmap(selectedGoal, selectedSkills);
+      const payload = {
+        degree,
+        branch_domain: domain,
+        current_year_semester: currentYear,
+        target_role: targetRole,
+        experience_level: level,
+        skills: userSkills,
+        software_tools: softwareTools
+      };
+
+      const res: any = await generateRoadmap(payload);
       setRoadmap(res);
       if (res?.id) {
         loadSuggestion(res.id);
       }
-      // Clean up URL
       router.replace('/roadmap', undefined, { shallow: true });
     } catch (e: any) {
       setGenError(e?.response?.data?.detail || e?.message || 'Failed to generate roadmap.');
@@ -136,31 +210,33 @@ const Roadmap: React.FC = () => {
   const toggleStep = async (stepId: number, completed: boolean) => {
     try {
       await updateProgress(stepId, !completed);
-      const updatedSteps = roadmap.steps.map((s: any) =>
+      const updatedSteps = (roadmap.steps || []).map((s: any) =>
         s.id === stepId ? { ...s, completed: !completed } : s
       );
       const doneCount = updatedSteps.filter((s: any) => s.completed).length;
       setRoadmap((prev: any) => ({
         ...prev,
         steps: updatedSteps,
-        completion_percentage: Math.round((doneCount / updatedSteps.length) * 100)
+        completion_percentage: Math.round((doneCount / maxOne(updatedSteps.length)) * 100)
       }));
       const analyticsRes = await fetchUserAnalytics();
       setAnalytics(analyticsRes);
-      loadSuggestion(roadmap.id);
+      if (roadmap.id) loadSuggestion(roadmap.id);
     } catch (e) {
       console.error(e);
     }
   };
 
+  const maxOne = (val: number) => (val > 0 ? val : 1);
+
   if (loading) {
     return (
       <Layout>
         <div className="flex flex-col gap-6 py-10 max-w-5xl mx-auto px-4 w-full">
-          <SkeletonCard className="h-32" />
+          <SkeletonCard className="!h-32" />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <SkeletonCard className="md:col-span-2 h-96" />
-            <SkeletonCard className="h-96" />
+            <SkeletonCard className="md:col-span-2 !h-96" />
+            <SkeletonCard className="!h-96" />
           </div>
         </div>
       </Layout>
@@ -170,282 +246,479 @@ const Roadmap: React.FC = () => {
   return (
     <Layout>
       <Head>
-        <title>Smart Career Roadmap • SkillMirror AI</title>
+        <title>Universal Domain Career Roadmap • SkillMirror</title>
       </Head>
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-slate-100 min-h-screen">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-slate-100 min-h-screen space-y-8">
 
-        {/* Top Analytics Bar */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="sm-glass p-4 flex items-center gap-4 bg-slate-900/40 border-slate-800/60">
-            <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 border border-orange-500/20">
-              <i className="fa-solid fa-fire text-lg text-orange-400 animate-pulse"></i>
+        {/* Analytics Top Bar */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="sm-glass p-4 flex items-center gap-4 border-white/5">
+            <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-400 border border-orange-500/20">
+              <i className="fa-solid fa-fire text-lg animate-pulse" />
             </div>
             <div>
-              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Day Streak</p>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Day Streak</p>
               <p className="text-xl font-black text-white">{analytics?.streak || 0}</p>
             </div>
           </div>
-          <div className="sm-glass p-4 flex items-center gap-4 bg-slate-900/40 border-slate-800/60">
+          <div className="sm-glass p-4 flex items-center gap-4 border-white/5">
             <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 border border-indigo-500/20">
-              <i className="fa-solid fa-star text-lg"></i>
+              <i className="fa-solid fa-star text-lg" />
             </div>
             <div>
-              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Points earned</p>
-              <p className="text-xl font-black text-white">{analytics?.points || 0}</p>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Learning Points</p>
+              <p className="text-xl font-black text-white">{analytics?.points || 0} XP</p>
             </div>
           </div>
-          <div className="sm-glass p-4 flex items-center gap-4 bg-slate-900/40 border-slate-800/60">
-            <div className="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center text-green-400 border border-green-500/20">
-              <i className="fa-solid fa-check-double text-lg"></i>
+          <div className="sm-glass p-4 flex items-center gap-4 border-white/5">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20">
+              <i className="fa-solid fa-graduation-cap text-lg" />
             </div>
             <div>
-              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Steps Ready</p>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Completed Steps</p>
               <p className="text-xl font-black text-white">{analytics?.completed_steps || 0}</p>
             </div>
           </div>
-          <div className="sm-glass p-4 flex items-center gap-4 bg-slate-900/40 border-slate-800/60">
-            <div className="w-10 h-10 rounded-xl bg-violet-500/10 flex items-center justify-center text-violet-400 border border-violet-500/20">
-              <i className="fa-solid fa-award text-lg"></i>
+          <div className="sm-glass p-4 flex items-center gap-4 border-white/5">
+            <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-400 border border-cyan-500/20">
+              <i className="fa-solid fa-award text-lg" />
             </div>
             <div>
-              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Badges</p>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Badges Earned</p>
               <p className="text-xl font-black text-white">{analytics?.badges?.length || 0}</p>
             </div>
           </div>
         </div>
 
         {!roadmap ? (
-          <ScrollReveal className="sm-glass p-10 border-slate-800 shadow-2xl space-y-8">
-            <div className="text-center md:text-left">
-              <h1 className="text-3xl font-black text-white tracking-tight">Generate Your Smart Career Roadmap</h1>
-              <p className="mt-2 text-slate-400 max-w-xl">Our Groq AI engine will build a phased learning timeline with daily streaks, video resources, and automatic progress tracking.</p>
+          /* Profile & Roadmap Generator Setup Form */
+          <ScrollReveal className="sm-glass p-8 sm:p-10 rounded-3xl border border-white/10 space-y-8">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-6">
+              <div>
+                <span className="text-xs font-black uppercase tracking-widest text-cyan-400">Universal Career Engine</span>
+                <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">Domain-Aware Career Roadmap</h1>
+                <p className="mt-1 text-xs sm:text-sm text-slate-300">
+                  Select your engineering or non-engineering domain to perform skill gap analysis and generate a personalized learning sequence.
+                </p>
+              </div>
+              <button
+                onClick={handleFetchRecommendations}
+                className="px-4 py-2.5 rounded-xl bg-cyan-500/20 text-cyan-300 font-bold text-xs hover:bg-cyan-500/30 border border-cyan-500/30 flex items-center gap-2"
+              >
+                <i className="fa-solid fa-compass" />
+                <span>Recommend Careers for Me</span>
+              </button>
             </div>
 
-            <div className="space-y-6">
-              <div>
-                <label className="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Target Job Role</label>
+            {/* Profiling Inputs */}
+            <div className="grid md:grid-cols-3 gap-6 text-xs">
+              <div className="space-y-2">
+                <label className="sm-label">Degree / Education</label>
                 <select
-                  value={selectedGoal}
-                  onChange={(e) => setSelectedGoal(e.target.value)}
-                  className="w-full px-4 py-4 border border-slate-700/50 bg-slate-950/80 text-slate-100 rounded-xl focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-400 outline-none appearance-none transition-all"
+                  value={degree}
+                  onChange={(e) => setDegree(e.target.value)}
+                  className="sm-input px-4 py-3"
                 >
-                  {goals.map((g) => <option key={g} value={g}>{g}</option>)}
+                  {DEGREE_OPTIONS.map((d) => <option key={d} value={d}>{d}</option>)}
                 </select>
               </div>
 
-              <div>
-                <label className="block text-xs font-black text-slate-500 uppercase tracking-widest mb-3">Optional Focus Areas</label>
-                <div className="flex flex-wrap gap-2.5">
-                  {skills.map((s: any) => {
-                    const name = s.name || s.skill?.name;
-                    if (!name) return null;
-                    const isSelected = selectedSkills.includes(name);
-                    return (
-                      <button key={name} onClick={() => toggleSkill(name)} type="button" className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all ${isSelected ? 'bg-indigo-600 border-indigo-400 text-white shadow-lg shadow-indigo-600/20' : 'bg-slate-900/60 border-slate-700/50 text-slate-400 hover:text-slate-200'}`}>
-                        {name}
-                      </button>
-                    );
-                  })}
+              <div className="space-y-2">
+                <label className="sm-label">Academic Domain / Branch</label>
+                <select
+                  value={domain}
+                  onChange={(e) => setDomain(e.target.value)}
+                  className="sm-input px-4 py-3 font-semibold text-cyan-300"
+                >
+                  {DOMAIN_OPTIONS.map((dom) => <option key={dom} value={dom}>{dom}</option>)}
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="sm-label">Current Skill Level</label>
+                <select
+                  value={level}
+                  onChange={(e) => setLevel(e.target.value)}
+                  className="sm-input px-4 py-3"
+                >
+                  {LEVEL_OPTIONS.map((l) => <option key={l} value={l}>{l}</option>)}
+                </select>
+              </div>
+            </div>
+
+            <div className="space-y-2 text-xs">
+              <label className="sm-label">Target Career Role</label>
+              <input
+                type="text"
+                placeholder="e.g. Structural Engineer, Embedded Engineer, Mechanical Design Engineer, Software Developer..."
+                value={targetRole}
+                onChange={(e) => setTargetRole(e.target.value)}
+                className="sm-input px-4 py-3 text-white font-bold"
+              />
+            </div>
+
+            {/* Skills & Tools Entry */}
+            <div className="grid md:grid-cols-2 gap-6 text-xs">
+              <div className="space-y-3 p-5 rounded-2xl bg-slate-950/60 border border-white/5">
+                <label className="sm-label flex items-center justify-between">
+                  <span>Known Domain & Technical Skills</span>
+                  <span className="text-[10px] text-slate-400">({userSkills.length} added)</span>
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Add skill (e.g. Structural Analysis, Verilog, C++)"
+                    value={newSkillInput}
+                    onChange={(e) => setNewSkillInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddSkill())}
+                    className="sm-input px-3 py-2 flex-1"
+                  />
+                  <button onClick={handleAddSkill} className="px-4 py-2 bg-slate-800 text-slate-200 font-bold rounded-xl hover:bg-slate-700">
+                    + Add
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-1.5 pt-2">
+                  {userSkills.map((s) => (
+                    <span key={s} className="px-2.5 py-1 rounded-lg bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 flex items-center gap-1.5 text-[11px]">
+                      <span>{s}</span>
+                      <button onClick={() => handleRemoveSkill(s)} className="hover:text-rose-400"><i className="fa-solid fa-xmark text-[10px]" /></button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-3 p-5 rounded-2xl bg-slate-950/60 border border-white/5">
+                <label className="sm-label flex items-center justify-between">
+                  <span>Software & Industry Tools Known</span>
+                  <span className="text-[10px] text-slate-400">({softwareTools.length} added)</span>
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Add tool (e.g. AutoCAD, SolidWorks, STAAD.Pro, KiCAD, Power BI)"
+                    value={newToolInput}
+                    onChange={(e) => setNewToolInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTool())}
+                    className="sm-input px-3 py-2 flex-1"
+                  />
+                  <button onClick={handleAddTool} className="px-4 py-2 bg-slate-800 text-slate-200 font-bold rounded-xl hover:bg-slate-700">
+                    + Add
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-1.5 pt-2">
+                  {softwareTools.map((t) => (
+                    <span key={t} className="px-2.5 py-1 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 flex items-center gap-1.5 text-[11px]">
+                      <span>{t}</span>
+                      <button onClick={() => handleRemoveTool(t)} className="hover:text-rose-400"><i className="fa-solid fa-xmark text-[10px]" /></button>
+                    </span>
+                  ))}
                 </div>
               </div>
             </div>
 
-            <button onClick={handleGenerate} disabled={genLoading} className="w-full sm-btn-primary py-5 rounded-2xl text-sm font-black shadow-xl shadow-indigo-600/25 relative overflow-hidden group">
+            {genError && (
+              <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-bold">
+                {genError}
+              </div>
+            )}
+
+            <button
+              onClick={handleGenerate}
+              disabled={genLoading}
+              className="w-full sm-btn-primary py-4 rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl shadow-cyan-500/20"
+            >
               {genLoading ? (
-                <div className="flex items-center justify-center gap-4">
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <div className="flex items-center justify-center gap-3">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   <span className="animate-pulse">{genStatus}</span>
                 </div>
-              ) : 'Bootstrap Intelligent Path'}
+              ) : `Generate ${domain} Career Roadmap →`}
             </button>
           </ScrollReveal>
         ) : (
-          <ScrollReveal className="space-y-10">
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
-              <div className="lg:col-span-2 sm-glass p-8 relative overflow-hidden bg-slate-900/30 border-slate-800/60 flex flex-col justify-between">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <h2 className="text-2xl font-black text-white">{roadmap.title}</h2>
-                    <span className="px-3 py-1 bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 rounded-full text-[10px] font-black uppercase tracking-wider">
-                      {roadmap.completion_percentage || 0}% Complete
-                    </span>
-                    <button
-                      onClick={() => setRoadmap(null)}
-                      className="ml-auto text-xs px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg border border-slate-700 transition-colors flex items-center gap-2"
-                    >
-                      <i className="fa-solid fa-plus"></i> New Path
-                    </button>
-                  </div>
-
-                  <div className="w-full h-3 bg-slate-950 rounded-full overflow-hidden border border-slate-800/50">
-                    <div className="h-full bg-gradient-to-r from-indigo-500 to-violet-500 transition-all duration-1000 shadow-[0_0_10px_rgba(79,70,229,0.5)]" style={{ width: `${roadmap.completion_percentage || 0}%` }}></div>
-                  </div>
-
-                  <p className="text-sm text-slate-400 leading-relaxed italic">
-                    {roadmap.description}
-                  </p>
+          /* Roadmap View Display */
+          <ScrollReveal className="space-y-8">
+            {/* Header Card */}
+            <div className="sm-glass p-8 rounded-3xl border border-white/10 space-y-6">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="px-3 py-1 rounded-lg text-xs font-black uppercase tracking-wider bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
+                    {roadmap.domain || domain}
+                  </span>
+                  <span className="px-3 py-1 rounded-lg text-xs font-black uppercase tracking-wider bg-slate-800 text-slate-300 border border-white/5">
+                    {roadmap.student_level || level} Level
+                  </span>
                 </div>
-
-                <div className="mt-8 space-y-6">
-                  <CareerOutcome projection={roadmap.outcome_projection} />
-                  <div className="bg-slate-950/40 rounded-3xl p-6 border border-indigo-500/20 shadow-2xl relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-20 h-20 bg-indigo-600/5 rounded-full blur-2xl"></div>
-                    <div className="flex items-center gap-2 mb-3">
-                      <i className="fa-solid fa-brain text-indigo-400 text-sm"></i>
-                      <span className="text-[10px] font-black text-indigo-500 uppercase tracking-widest">Next Best Skill</span>
-                    </div>
-                    {suggLoading ? (
-                      <div className="animate-pulse space-y-2">
-                        <div className="h-3 bg-slate-800 rounded w-full"></div>
-                        <div className="h-3 bg-slate-800 rounded w-2/3"></div>
-                      </div>
-                    ) : (
-                      <p className="text-xs text-slate-200 font-medium leading-relaxed">
-                        {aiSuggestion?.suggestion || "Maintain your focus on the core curriculum."}
-                      </p>
-                    )}
-                  </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-bold text-slate-300">
+                    Job Readiness: <span className="text-emerald-400 font-black text-sm">{roadmap.job_readiness_score || 75}%</span>
+                  </span>
+                  <button
+                    onClick={() => setRoadmap(null)}
+                    className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-all border border-white/5"
+                  >
+                    + New Domain Roadmap
+                  </button>
                 </div>
               </div>
 
-              <div className="space-y-8">
-                <Leaderboard />
-                <div className="sm-glass p-6 bg-slate-950/40 border-slate-800">
-                  <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">Level System</h3>
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-full border-4 border-indigo-500/30 flex items-center justify-center relative">
-                      <div className="absolute inset-0 border-t-4 border-indigo-500 rounded-full rotate-45"></div>
-                      <span className="text-2xl font-black text-white">4</span>
-                    </div>
-                    <div>
-                      <p className="text-xs font-black text-white uppercase tracking-widest">Career Explorer</p>
-                      <p className="text-[9px] text-slate-500 font-bold uppercase tracking-tight mt-1">2,450 / 5,000 XP to Level 5</p>
-                    </div>
+              <div className="space-y-2">
+                <h1 className="text-3xl font-black text-white">{roadmap.title}</h1>
+                <p className="text-xs text-slate-300">{roadmap.timeline_summary || 'Comprehensive domain sequence'}</p>
+              </div>
+
+              <div className="w-full h-2.5 rounded-full bg-slate-900 overflow-hidden border border-white/5">
+                <div className="h-full bg-gradient-to-r from-cyan-400 to-emerald-400 transition-all duration-500" style={{ width: `${roadmap.completion_percentage || 0}%` }} />
+              </div>
+            </div>
+
+            {/* Categorized Skill Gap Breakdown */}
+            {roadmap.categorized_gaps && (
+              <div className="sm-glass p-7 rounded-3xl border border-white/10 space-y-5">
+                <h3 className="text-base font-bold text-white flex items-center justify-between">
+                  <span>Domain Skill Gap Classification</span>
+                  <span className="text-xs text-slate-400 font-normal">Prioritized for {targetRole}</span>
+                </h3>
+
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                  {/* Critical */}
+                  <div className="p-4 rounded-2xl bg-rose-500/5 border border-rose-500/30 space-y-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-rose-400">🔴 Critical Must-Have</span>
+                    <ul className="space-y-1 font-semibold text-slate-200">
+                      {(roadmap.categorized_gaps.critical || []).length === 0 ? (
+                        <li className="text-slate-500 italic">No critical gaps!</li>
+                      ) : (
+                        roadmap.categorized_gaps.critical.map((sk: string, i: number) => (
+                          <li key={i} className="flex items-center gap-1.5">
+                            <i className="fa-solid fa-circle-exclamation text-[10px] text-rose-400" />
+                            <span>{sk}</span>
+                          </li>
+                        ))
+                      )}
+                    </ul>
                   </div>
+
+                  {/* High Priority */}
+                  <div className="p-4 rounded-2xl bg-amber-500/5 border border-amber-500/30 space-y-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-amber-400">🟠 High Priority</span>
+                    <ul className="space-y-1 font-semibold text-slate-200">
+                      {(roadmap.categorized_gaps.high_priority || []).length === 0 ? (
+                        <li className="text-slate-500 italic">No high priority gaps!</li>
+                      ) : (
+                        roadmap.categorized_gaps.high_priority.map((sk: string, i: number) => (
+                          <li key={i} className="flex items-center gap-1.5">
+                            <i className="fa-solid fa-triangle-exclamation text-[10px] text-amber-400" />
+                            <span>{sk}</span>
+                          </li>
+                        ))
+                      )}
+                    </ul>
+                  </div>
+
+                  {/* Medium Priority */}
+                  <div className="p-4 rounded-2xl bg-yellow-500/5 border border-yellow-500/30 space-y-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-yellow-300">🟡 Medium Priority</span>
+                    <ul className="space-y-1 font-semibold text-slate-200">
+                      {(roadmap.categorized_gaps.medium_priority || []).length === 0 ? (
+                        <li className="text-slate-500 italic">None</li>
+                      ) : (
+                        roadmap.categorized_gaps.medium_priority.map((sk: string, i: number) => (
+                          <li key={i} className="flex items-center gap-1.5">
+                            <i className="fa-solid fa-circle-dot text-[10px] text-yellow-300" />
+                            <span>{sk}</span>
+                          </li>
+                        ))
+                      )}
+                    </ul>
+                  </div>
+
+                  {/* Optional */}
+                  <div className="p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/30 space-y-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400">🟢 Optional Edge</span>
+                    <ul className="space-y-1 font-semibold text-slate-200">
+                      {(roadmap.categorized_gaps.optional || []).length === 0 ? (
+                        <li className="text-slate-500 italic">None</li>
+                      ) : (
+                        roadmap.categorized_gaps.optional.map((sk: string, i: number) => (
+                          <li key={i} className="flex items-center gap-1.5">
+                            <i className="fa-solid fa-star text-[10px] text-emerald-400" />
+                            <span>{sk}</span>
+                          </li>
+                        ))
+                      )}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Recommended Projects & Certifications Grid */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="sm-glass p-6 rounded-3xl border border-white/10 space-y-4 text-xs">
+                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <i className="fa-solid fa-diagram-project text-cyan-400" />
+                  <span>Domain Projects to Build</span>
+                </h3>
+                <div className="space-y-2">
+                  {(roadmap.projects_to_build || []).map((proj: string, i: number) => (
+                    <div key={i} className="p-3 rounded-xl bg-slate-950/60 border border-white/5 text-slate-200 font-semibold flex items-start gap-2">
+                      <span className="text-cyan-400 font-bold">{i+1}.</span>
+                      <span>{proj}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="sm-glass p-6 rounded-3xl border border-white/10 space-y-4 text-xs">
+                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <i className="fa-solid fa-certificate text-indigo-400" />
+                  <span>Industry Certifications to Pursue</span>
+                </h3>
+                <div className="space-y-2">
+                  {(roadmap.certifications || []).map((cert: string, i: number) => (
+                    <div key={i} className="p-3 rounded-xl bg-slate-950/60 border border-white/5 text-indigo-300 font-semibold flex items-center gap-2">
+                      <i className="fa-solid fa-ribbon text-indigo-400" />
+                      <span>{cert}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
 
+            {/* 5-Phase Learning Sequence */}
             <div className="space-y-6">
+              <h3 className="text-lg font-bold text-white flex items-center justify-between">
+                <span>Domain Learning & Execution Sequence</span>
+                <span className="text-xs text-slate-400 font-normal">Click checkmark to log completion</span>
+              </h3>
+
               <StaggerChildren className="grid gap-6">
                 {(roadmap.steps || []).map((step: any, idx: number) => (
                   <ScrollReveal stagger key={step.id || idx}>
-                    <div className={`group sm-glass bg-slate-950/40 rounded-3xl border p-6 space-y-4 transition-all ${step.completed ? 'border-green-500/20 opacity-70' : 'border-slate-800 hover:border-indigo-500/40'}`}>
-                    <div className="flex items-start gap-6">
-                      <div className={`flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center font-black transition-all ${step.completed ? 'bg-green-600/10 text-green-400 border border-green-500/20' : 'bg-slate-950 border border-slate-800 text-slate-500 group-hover:bg-indigo-600 group-hover:text-white'}`}>
-                        {idx + 1}
-                      </div>
-                      <div className="flex-1 space-y-3">
-                        <div className="flex items-baseline justify-between gap-4">
-                          <div className="flex items-center gap-3">
-                            <h4 className={`text-lg font-bold ${step.completed ? 'text-slate-500 line-through' : 'text-slate-100'}`}>{step.title}</h4>
-                            {step.order === 1 && (
-                              <span className="px-2 py-0.5 bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[8px] font-black uppercase tracking-widest rounded flex items-center gap-1">
-                                <i className="fa-solid fa-circle-exclamation" /> High Priority
-                              </span>
-                            )}
-                          </div>
-                          <button onClick={() => toggleStep(step.id, !!step.completed)} className={`w-8 h-8 rounded-full border transition-all flex items-center justify-center ${step.completed ? 'bg-green-600 border-green-500 text-white' : 'border-slate-800 hover:border-indigo-500 text-slate-700'}`}>
-                            <i className="fa-solid fa-check text-xs"></i>
-                          </button>
-                        </div>
-
-                        <div className="flex flex-wrap gap-2 items-center">
-                          <AdaptiveDifficulty level={step.difficulty} />
-                          <span className="px-3 py-1 bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 rounded-full text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5">
-                            <i className="fa-solid fa-calendar-days"></i>
-                            {step.duration_weeks || 2} Week{(step.duration_weeks || 2) > 1 ? 's' : ''}
+                    <div className={`sm-glass p-6 rounded-3xl border transition-all space-y-4 ${step.completed ? 'bg-emerald-500/5 border-emerald-500/30' : 'border-white/5 hover:border-cyan-500/30'}`}>
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                          <span className={`w-8 h-8 rounded-xl flex items-center justify-center font-black text-xs ${step.completed ? 'bg-emerald-500 text-slate-950' : 'bg-slate-900 text-cyan-400 border border-white/10'}`}>
+                            {idx + 1}
                           </span>
-                          <span className="px-3 py-1 bg-violet-500/10 border border-violet-500/20 text-violet-300 rounded-full text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5">
-                            <i className="fa-solid fa-clock"></i>
-                            {step.estimated_hours || 20} Hours
-                          </span>
+                          <h4 className={`text-base font-bold ${step.completed ? 'line-through text-slate-400' : 'text-white'}`}>
+                            {step.title}
+                          </h4>
                         </div>
-
-                        <p className="text-slate-400 text-xs leading-relaxed">{step.description}</p>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                          <div className="space-y-4">
-                            <MasteryScore score={step.mastery_score || 0} confidence={step.confidence_index || 40} />
-                            <TimeOptimization data={step.time_optimization} />
-                            <SkillDemand demand={step.skill_demand} />
-                          </div>
-                          <div className="flex flex-col justify-end">
-                            <PhaseMiniMock stepId={step.id} stepTitle={step.title} />
-                          </div>
-                        </div>
-
-                        {(step.skills || step.skills_list)?.length > 0 && (
-                          <div className="flex flex-wrap gap-1.5 pt-2">
-                            {(step.skills || step.skills_list).map((s: string) => (
-                              <span key={s} className="px-2 py-0.5 bg-slate-900 border border-slate-800 text-[10px] font-bold text-slate-400 rounded-lg">{s}</span>
-                            ))}
-                          </div>
-                        )}
+                        <button
+                          onClick={() => toggleStep(step.id, !!step.completed)}
+                          className={`w-8 h-8 rounded-xl border flex items-center justify-center transition-all ${step.completed ? 'bg-emerald-500 border-emerald-400 text-slate-950' : 'border-slate-700 bg-slate-900 text-slate-400 hover:text-white'}`}
+                        >
+                          <i className="fa-solid fa-check text-xs font-black" />
+                        </button>
                       </div>
-                    </div>
 
-                    {/* Recommended Resources */}
-                    {step.recommended_resources?.length > 0 && (
-                      <div className="pt-4 border-t border-slate-800/50">
-                        <h5 className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2">
-                          <i className="fa-solid fa-graduation-cap"></i>
-                          Recommended Learning Resources
-                        </h5>
-                        <div className="grid gap-2">
-                          {step.recommended_resources.map((resource: any, rIdx: number) => (
-                            <div key={rIdx} className="flex items-start gap-3 p-3 bg-slate-900/60 border border-slate-800/50 rounded-xl hover:border-indigo-500/30 transition-all">
-                              <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center flex-shrink-0">
-                                {resource.type === 'course' && <i className="fa-solid fa-book text-indigo-400 text-sm"></i>}
-                                {resource.type === 'book' && <i className="fa-solid fa-book-open text-violet-400 text-sm"></i>}
-                                {resource.type === 'tutorial' && <i className="fa-solid fa-code text-sky-400 text-sm"></i>}
-                                {resource.type === 'project' && <i className="fa-solid fa-rocket text-emerald-400 text-sm"></i>}
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="text-xs font-bold text-slate-200 truncate">{resource.name}</p>
-                                {resource.platform && <p className="text-[10px] text-slate-500 font-medium">{resource.platform}</p>}
-                                {resource.author && <p className="text-[10px] text-slate-500 font-medium">by {resource.author}</p>}
-                              </div>
-                              {resource.url && (
-                                <a href={resource.url} target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:text-indigo-300 transition-colors">
-                                  <i className="fa-solid fa-external-link text-xs"></i>
-                                </a>
-                              )}
-                            </div>
+                      <div className="flex flex-wrap gap-2 text-[10px] font-bold">
+                        <AdaptiveDifficulty level={step.difficulty} />
+                        <span className="px-3 py-1 bg-indigo-500/10 text-indigo-300 rounded-lg border border-indigo-500/20">
+                          ⏱️ {step.duration_weeks || 3} Weeks ({step.estimated_hours || 25} Hours)
+                        </span>
+                      </div>
+
+                      <p className="text-xs text-slate-300 leading-relaxed">{step.description}</p>
+
+                      {(step.skills || step.skills_list) && (
+                        <div className="flex flex-wrap gap-1.5 pt-1">
+                          {(step.skills || step.skills_list).map((sk: string, i: number) => (
+                            <span key={i} className="text-[10px] px-2.5 py-0.5 rounded bg-slate-900 text-cyan-300 font-semibold border border-white/5">
+                              {sk}
+                            </span>
                           ))}
                         </div>
-                      </div>
-                    )}
-                  </div>
+                      )}
+
+                      {/* Resources */}
+                      {step.recommended_resources && step.recommended_resources.length > 0 && (
+                        <div className="pt-3 border-t border-white/5 space-y-2 text-xs">
+                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Recommended Learning Resources</span>
+                          <div className="grid gap-2 sm:grid-cols-2">
+                            {step.recommended_resources.map((res: any, rIdx: number) => (
+                              <div key={rIdx} className="p-3 rounded-xl bg-slate-950/60 border border-white/5 flex items-center justify-between gap-2">
+                                <div className="min-w-0">
+                                  <p className="font-bold text-slate-200 truncate">{res.name}</p>
+                                  <p className="text-[10px] text-slate-400">{res.platform || res.author || res.type}</p>
+                                </div>
+                                {res.url && (
+                                  <a href={res.url} target="_blank" rel="noreferrer" className="text-cyan-400 hover:text-cyan-300 font-bold">
+                                    <i className="fa-solid fa-external-link text-xs" />
+                                  </a>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </ScrollReveal>
                 ))}
               </StaggerChildren>
             </div>
 
-            {analytics?.badges?.length > 0 && (
-              <div className="space-y-4">
-                <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                  <i className="fa-solid fa-medal"></i> Unlocked Achievements
-                </h3>
-                <div className="flex gap-4">
-                  {analytics.badges.map((b: any, i: number) => (
-                    <div key={i} className="flex flex-col items-center gap-2 group">
-                      <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform cursor-help" title={b.description}>
-                        <i className="fa-solid fa-trophy text-white text-xl"></i>
+            {/* YouTube Learning Section */}
+            <div className="pt-8 border-t border-white/10">
+              <YouTubeLearning skills={roadmap.required_skills?.length ? roadmap.required_skills : [targetRole]} />
+            </div>
+          </ScrollReveal>
+        )}
+
+        {/* Recommended Careers Modal */}
+        {showRecsModal && (
+          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="sm-glass p-8 rounded-3xl max-w-2xl w-full space-y-6 border border-cyan-500/30">
+              <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                <div>
+                  <span className="text-[10px] font-black uppercase text-cyan-400">Career Intelligence Engine</span>
+                  <h3 className="text-xl font-bold text-white">Recommended Career Paths for {domain}</h3>
+                </div>
+                <button onClick={() => setShowRecsModal(false)} className="text-slate-400 hover:text-white">
+                  <i className="fa-solid fa-xmark text-lg" />
+                </button>
+              </div>
+
+              {recsLoading ? (
+                <div className="p-8 text-center text-slate-400 space-y-3">
+                  <div className="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto" />
+                  <p className="text-xs">Analyzing education, branch, and current skills...</p>
+                </div>
+              ) : (
+                <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+                  {recommendations.map((rec, idx) => (
+                    <div key={idx} className="p-5 rounded-2xl bg-slate-950/80 border border-white/5 space-y-3 hover:border-cyan-500/30 transition-all">
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-sm font-bold text-white">{rec.role}</h4>
+                        <span className="px-3 py-1 rounded-lg text-xs font-black bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                          {rec.match_score}% Match
+                        </span>
                       </div>
-                      <span className="text-[10px] text-slate-400 font-bold">{b.title}</span>
+                      <p className="text-xs text-slate-300">{rec.description}</p>
+
+                      <div className="flex flex-wrap gap-2 text-[10px]">
+                        <span className="font-bold text-slate-400">Top Skills:</span>
+                        {(rec.top_skills || []).map((sk: string, sI: number) => (
+                          <span key={sI} className="bg-slate-800 text-cyan-300 px-2 py-0.5 rounded font-semibold">{sk}</span>
+                        ))}
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          setTargetRole(rec.role);
+                          setShowRecsModal(false);
+                        }}
+                        className="w-full py-2 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 font-bold text-xs rounded-xl transition-all"
+                      >
+                        Select "{rec.role}" & Generate Roadmap →
+                      </button>
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
-
-            <div className="pt-16 border-t border-slate-800/60">
-              <YouTubeLearning skills={roadmap.required_skills?.length ? roadmap.required_skills : selectedSkills} />
+              )}
             </div>
-
-          </ScrollReveal>
+          </div>
         )}
       </div>
     </Layout>
@@ -453,3 +726,4 @@ const Roadmap: React.FC = () => {
 };
 
 export default withAuth(Roadmap);
+

@@ -44,6 +44,14 @@ class UserProfile(models.Model):
     country = models.CharField(max_length=100, blank=True)
     resume = models.FileField(upload_to='resumes/', null=True, blank=True)
     
+    # Universal Domain Profiling
+    degree = models.CharField(max_length=100, blank=True, default="B.Tech")
+    branch_domain = models.CharField(max_length=100, blank=True, default="Computer Science / IT")
+    current_year_semester = models.CharField(max_length=50, blank=True, default="3rd Year")
+    software_tools = models.JSONField(default=list, blank=True)
+    certifications = models.JSONField(default=list, blank=True)
+    career_interests = models.JSONField(default=list, blank=True)
+
     # Career Identity
     current_role = models.CharField(max_length=100, blank=True)
     market_readiness_level = models.CharField(max_length=50, default='Beginner', choices=[

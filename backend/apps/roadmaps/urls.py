@@ -8,6 +8,8 @@ roadmap_goals = views.RoadmapGoalsView.as_view({'get': 'list'})
 
 urlpatterns = [
     path('', roadmap_list, name='roadmap-list'),
+    path('domains/', views.DomainTaxonomyView.as_view(), name='roadmap-domains'),
+    path('recommend-careers/', views.CareerRecommendationView.as_view(), name='recommend-careers'),
     path('goals/', roadmap_goals, name='roadmap-goals'),
     path('<int:pk>/', roadmap_detail, name='roadmap-detail'),
     path('generate/', roadmap_create, name='generate-roadmap'),
