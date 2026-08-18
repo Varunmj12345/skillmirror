@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React from 'react';
 import { LineChart as RechartsLineChart, Line as RechartsLine, XAxis as RechartsXAxis, YAxis as RechartsYAxis, CartesianGrid as RechartsCartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer as RechartsResponsiveContainer, AreaChart as RechartsAreaChart, Area as RechartsArea } from 'recharts';
+import { formatINR } from '../utils/formatters';
 
 const LineChart = RechartsLineChart as any;
 const Line = RechartsLine as any;
@@ -26,70 +27,71 @@ interface JobDemandTrendsProps {
 const JobDemandTrends: React.FC<JobDemandTrendsProps> = ({ trends }) => {
     if (!trends || trends.length === 0) return <div className="p-4 text-center text-gray-500">Loading trends...</div>;
 
-    const formatIndianRupee = (val: number | null | undefined): string => {
-        if (val === null || val === undefined || isNaN(val)) return '₹0';
-        if (val < 100000) {
-            return `₹${Math.round(val).toLocaleString('en-IN')}`;
-        } else if (val < 10000000) {
-            const lakhs = val / 100000;
-            const formatted = parseFloat(lakhs.toFixed(2));
-            return `₹${formatted}L`;
-        } else {
-            const crores = val / 10000000;
-            const formatted = parseFloat(crores.toFixed(2));
-            return `₹${formatted}Cr`;
-        }
-    };
-
     const processedTrends = React.useMemo(() => {
         if (!trends || trends.length === 0) return [];
 
-        const monthlyGroups: { [key: string]: { demand_score: number[]; avg_salary: number[]; date: string } } = {};
-        
+        // 1. Group raw hiring events by YYYY-MM
+        const monthlyMap: { [key: string]: { demand_scores: number[]; avg_salaries: number[]; sampleDate: Date } } = {};
+
         trends.forEach(item => {
+            if (!item.date) return;
             const dateObj = new Date(item.date);
+            if (isNaN(dateObj.getTime())) return;
+
             const year = dateObj.getFullYear();
             const month = String(dateObj.getMonth() + 1).padStart(2, '0');
             const monthKey = `${year}-${month}`;
-            
-            if (!monthlyGroups[monthKey]) {
-                monthlyGroups[monthKey] = {
-                    demand_score: [],
-                    avg_salary: [],
-                    date: item.date
+
+            if (!monthlyMap[monthKey]) {
+                monthlyMap[monthKey] = {
+                    demand_scores: [],
+                    avg_salaries: [],
+                    sampleDate: new Date(year, dateObj.getMonth(), 1)
                 };
             }
-            monthlyGroups[monthKey].demand_score.push(item.demand_score);
-            monthlyGroups[monthKey].avg_salary.push(item.avg_salary);
+            if (typeof item.demand_score === 'number') monthlyMap[monthKey].demand_scores.push(item.demand_score);
+            if (typeof item.avg_salary === 'number') monthlyMap[monthKey].avg_salaries.push(item.avg_salary);
         });
-        
-        const aggregated = Object.keys(monthlyGroups)
-            .sort()
-            .map(monthKey => {
-                const group = monthlyGroups[monthKey];
-                const avgDemand = group.demand_score.reduce((sum, val) => sum + val, 0) / group.demand_score.length;
-                const avgSalary = group.avg_salary.reduce((sum, val) => sum + val, 0) / group.avg_salary.length;
-                
-                const parts = group.date.split('T')[0].split('-');
-                let monthLabel = '';
-                if (parts.length >= 2) {
-                    const year = parseInt(parts[0], 10);
-                    const month = parseInt(parts[1], 10) - 1;
-                    const day = parts.length > 2 ? parseInt(parts[2], 10) : 1;
-                    const localDate = new Date(year, month, day);
-                    monthLabel = localDate.toLocaleDateString('en-US', { month: 'short' });
-                } else {
-                    monthLabel = new Date(group.date).toLocaleDateString('en-US', { month: 'short' });
-                }
-                
-                return {
-                    monthLabel,
-                    demand_score: Math.round(avgDemand),
-                    avg_salary: Math.round(avgSalary)
-                };
-            });
-            
-        return aggregated.slice(-6);
+
+        // 2. Sort month keys in chronological order
+        const sortedMonthKeys = Object.keys(monthlyMap).sort();
+
+        // 3. Extract monthly aggregated hiring totals
+        const aggregated = sortedMonthKeys.map(monthKey => {
+            const data = monthlyMap[monthKey];
+            const avgDemand = data.demand_scores.length > 0 
+                ? data.demand_scores.reduce((a, b) => a + b, 0) / data.demand_scores.length 
+                : 100;
+            const avgSal = data.avg_salaries.length > 0 
+                ? data.avg_salaries.reduce((a, b) => a + b, 0) / data.avg_salaries.length 
+                : 800000;
+
+            const monthLabel = data.sampleDate.toLocaleDateString('en-US', { month: 'short' });
+            return {
+                monthKey,
+                monthLabel,
+                demand_score: Math.round(avgDemand),
+                avg_salary: Math.round(avgSal)
+            };
+        });
+
+        // 4. Guarantee exactly 6 unique chronological month slots
+        const last6 = aggregated.slice(-6);
+
+        // Deduplicate month labels if year boundaries overlap
+        const seenLabels = new Set();
+        return last6.map(item => {
+            let label = item.monthLabel;
+            if (seenLabels.has(label)) {
+                const yearShort = item.monthKey.split('-')[0].slice(-2);
+                label = `${item.monthLabel} '${yearShort}`;
+            }
+            seenLabels.add(label);
+            return {
+                ...item,
+                monthLabel: label
+            };
+        });
     }, [trends]);
 
     return (
@@ -139,10 +141,10 @@ const JobDemandTrends: React.FC<JobDemandTrendsProps> = ({ trends }) => {
                         <LineChart data={processedTrends}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
                             <XAxis dataKey="monthLabel" tick={{ fontSize: 12 }} />
-                            <YAxis tick={{ fontSize: 12 }} domain={['auto', 'auto']} tickFormatter={(val: number) => formatIndianRupee(val)} />
+                            <YAxis tick={{ fontSize: 12 }} domain={['auto', 'auto']} tickFormatter={(val: number) => formatINR(val)} />
                             <Tooltip
                                 contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
-                                formatter={(val: any) => [val ? formatIndianRupee(Number(val)) : '₹0', 'Salary']}
+                                formatter={(val: any) => [val ? formatINR(Number(val)) : '₹0', 'Salary']}
                             />
                             <Line type="monotone" dataKey="avg_salary" stroke="#10B981" strokeWidth={3} dot={{ r: 4, fill: '#10B981' }} activeDot={{ r: 6 }} />
                         </LineChart>

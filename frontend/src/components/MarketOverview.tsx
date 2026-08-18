@@ -1,4 +1,4 @@
-import React from 'react';
+import { formatINR } from '../utils/formatters';
 
 interface MarketOverviewProps {
     data: {
@@ -21,21 +21,6 @@ const MarketOverview: React.FC<MarketOverviewProps> = ({ data }) => {
         </div>
     );
 
-    const formatIndianRupee = (val: number | null | undefined): string => {
-        if (val === null || val === undefined || isNaN(val)) return '₹0';
-        if (val < 100000) {
-            return `₹${Math.round(val).toLocaleString('en-IN')}`;
-        } else if (val < 10000000) {
-            const lakhs = val / 100000;
-            const formatted = parseFloat(lakhs.toFixed(2));
-            return `₹${formatted}L`;
-        } else {
-            const crores = val / 10000000;
-            const formatted = parseFloat(crores.toFixed(2));
-            return `₹${formatted}Cr`;
-        }
-    };
-
     const cards = [
         {
             title: 'Total Open Jobs',
@@ -48,7 +33,7 @@ const MarketOverview: React.FC<MarketOverviewProps> = ({ data }) => {
         },
         {
             title: 'Avg Salary Range',
-            value: `${formatIndianRupee(data.avg_salary_min)} - ${formatIndianRupee(data.avg_salary_max)}`,
+            value: `${formatINR(data.avg_salary_min)} - ${formatINR(data.avg_salary_max)}`,
             trend: '+5%',
             trendColor: 'text-emerald-400',
             bgGradient: 'from-emerald-500 to-teal-600',

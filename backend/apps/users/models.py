@@ -67,6 +67,52 @@ class UserProfile(models.Model):
     two_factor_code = models.CharField(max_length=6, blank=True, null=True)
     two_factor_code_expires = models.DateTimeField(blank=True, null=True)
 
+    def calculate_level(self):
+        """
+        Single Authoritative Level Formula (BUG 3B):
+        0–499 XP       = Level 1
+        500–1499 XP    = Level 2
+        1500–2999 XP   = Level 3
+        3000–4999 XP   = Level 4
+        5000+ XP       = Level 5
+        """
+        xp = self.total_learning_points
+        if xp < 500:
+            return 1
+        elif xp < 1500:
+            return 2
+        elif xp < 3000:
+            return 3
+        elif xp < 5000:
+            return 4
+        else:
+            return 5
+
+    def get_rank_title(self):
+        level = self.calculate_level()
+        titles = {
+            1: "Beginner Explorer",
+            2: "Skill Builder",
+            3: "Rising Specialist",
+            4: "Competitive Engineer",
+            5: "Elite Architect"
+        }
+        return titles.get(level, "Beginner Explorer")
+
+    def get_next_level_at(self):
+        level = self.calculate_level()
+        thresholds = {1: 500, 2: 1500, 3: 3000, 4: 5000, 5: 10000}
+        return thresholds.get(level, 10000)
+
+    def get_level_progress_percentage(self):
+        level = self.calculate_level()
+        xp = self.total_learning_points
+        bounds = {1: (0, 500), 2: (500, 1500), 3: (1500, 3000), 4: (3000, 5000), 5: (5000, 10000)}
+        min_xp, max_xp = bounds[level]
+        if xp >= max_xp:
+            return 100
+        return int(((xp - min_xp) / max(1, max_xp - min_xp)) * 100)
+
     def calculate_completeness(self):
         score = 0
         if self.dream_job: score += 20

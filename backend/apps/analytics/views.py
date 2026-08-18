@@ -153,12 +153,32 @@ class DashboardView(APIView):
             'percentile': min(99, int((readiness / 100) * 99) if readiness > market_avg else int((readiness / market_avg) * 50))
         }
         
-        # Skill Demand Heatmap
+        # 8 Skill Radar Dimensions (FIX 4D)
+        radar_dimensions = [
+            ("DSA", 90),
+            ("Frontend", 85),
+            ("Backend", 90),
+            ("System Design", 80),
+            ("Cloud", 75),
+            ("Communication", 85),
+            ("Problem Solving", 95),
+            ("AI/ML", 70)
+        ]
+        user_skill_dict = {s['skill__name'].lower(): s['level'] for s in skills}
+        user_skill_names_text = " ".join(user_skill_dict.keys()).lower()
+
         heatmap_skills = []
-        if latest_report and latest_report.missing_skills:
-             heatmap_skills = [{'name': s['name'], 'demand': 70 + (i * 5) % 30, 'match': s['user_level'] * 20} for i, s in enumerate(latest_report.missing_skills[:5])]
-        else:
-             heatmap_skills = [{'name': s, 'demand': 80 - i*10, 'match': 0} for i, s in enumerate(recommendations[:5])]
+        for name, demand in radar_dimensions:
+            match_val = 0
+            if name.lower() in user_skill_dict:
+                match_val = min(100, user_skill_dict[name.lower()] * 20)
+            elif any(w in user_skill_names_text for w in name.lower().split()):
+                match_val = 60
+            heatmap_skills.append({
+                'name': name,
+                'demand': demand,
+                'match': match_val
+            })
 
         # Weekly AI Strategy Suggestion
         ai_strategy = "Double down on projects involving AI integration. Your technical accuracy in interviews is high, but architectural depth can be improved."
@@ -193,10 +213,11 @@ class DashboardView(APIView):
             'learning_consistency': consistency_score,
             'benchmarking': benchmarking,
             'xp_system': {
-                'level': current_level,
-                'total_xp': total_xp,
-                'progress': level_progress,
-                'next_level_at': (current_level) * 1000
+                'level': profile.calculate_level(),
+                'total_xp': profile.total_learning_points,
+                'progress': profile.get_level_progress_percentage(),
+                'next_level_at': profile.get_next_level_at(),
+                'rank_title': profile.get_rank_title()
             },
             'skill_heatmap': heatmap_skills,
             'ai_strategy': ai_strategy,

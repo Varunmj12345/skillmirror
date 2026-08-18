@@ -1,12 +1,21 @@
 import React from 'react';
 
 interface BenchmarkingProps {
-  userScore: number;
-  marketAvg: number;
-  percentile: number;
+  userScore?: number;
+  marketAvg?: number;
+  percentile?: number;
+  data?: {
+    user_score?: number;
+    market_avg?: number;
+    percentile?: number;
+  };
 }
 
-const Benchmarking: React.FC<BenchmarkingProps> = ({ userScore, marketAvg, percentile }) => {
+const Benchmarking: React.FC<BenchmarkingProps> = (props) => {
+  const userScore = props.userScore ?? props.data?.user_score ?? 75;
+  const marketAvg = props.marketAvg ?? props.data?.market_avg ?? 65;
+  const percentile = props.percentile ?? props.data?.percentile ?? 82;
+
   return (
     <div className="glass-panel p-6 border-white/5 bg-slate-900/40 sm-card relative overflow-hidden group">
       {/* Decorative spotlight */}
@@ -86,4 +95,3 @@ const Benchmarking: React.FC<BenchmarkingProps> = ({ userScore, marketAvg, perce
 };
 
 export default Benchmarking;
-

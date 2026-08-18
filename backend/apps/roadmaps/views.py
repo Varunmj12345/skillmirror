@@ -145,8 +145,11 @@ class UserAnalyticsView(APIView):
         completed_steps = ProgressTracker.objects.filter(user=request.user, completed=True).count()
         completed_videos = UserVideoProgress.objects.filter(user=request.user, is_completed=True).count()
 
-        # Calculate level: 1 level per 500 points, max 10
-        current_level = min(10, (profile.total_learning_points // 500) + 1)
+        # Use authoritative UserProfile level calculation (BUG 3A/3B)
+        current_level = profile.calculate_level()
+        rank_title = profile.get_rank_title()
+        next_level_at = profile.get_next_level_at()
+        level_progress = profile.get_level_progress_percentage()
         
         # Reward specific badges if milestones met
         if profile.current_streak >= 7:
@@ -157,8 +160,12 @@ class UserAnalyticsView(APIView):
         return Response({
             "streak": profile.current_streak,
             "points": profile.total_learning_points,
+            "xp": profile.total_learning_points,
             "level": current_level,
-            "xp_next": (current_level) * 500,
+            "rank_title": rank_title,
+            "next_level_at": next_level_at,
+            "xp_next": next_level_at,
+            "level_progress": level_progress,
             "completed_steps": completed_steps,
             "completed_videos": completed_videos,
             "badges": [{"title": a.title, "type": a.badge_type} for a in achievements]

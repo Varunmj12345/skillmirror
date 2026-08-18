@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'apps.analytics',
     'apps.interviews',
     'apps.alerts',
+    'apps.problems',
 ]
 
 # Add CORS

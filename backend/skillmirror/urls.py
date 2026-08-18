@@ -37,6 +37,8 @@ urlpatterns = [
     path('api/analytics/', include('apps.analytics.urls')), # Added for new dashboard
     path('api/interviews/', include('apps.interviews.urls')),
     path('api/alerts/', include('apps.alerts.urls')),
+    path('problems/', include('apps.problems.urls')),
+    path('api/problems/', include('apps.problems.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

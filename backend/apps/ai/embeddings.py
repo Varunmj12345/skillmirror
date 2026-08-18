@@ -40,6 +40,29 @@ class EmbeddingGenerator:
             
         return float(len(intersection)) / len(union)
 
+    def calculate_overlap_similarity(self, user_tokens, target_tokens):
+        """
+        Calculates target skill coverage score (0.0 to 1.0).
+        Measures what percentage of target role skills/tokens are matched by user.
+        Prevents user with many skills from being penalized by large union size.
+        """
+        if not user_tokens or not target_tokens:
+            return 0.0
+        
+        # Stop words to ignore during role text match
+        stopwords = {'engineer', 'developer', 'senior', 'junior', 'lead', 'architect', 'specialist', 'manager', 'and', 'or', 'in', 'for', 'a', 'the', 'with'}
+        cleaned_target = {t for t in target_tokens if t not in stopwords and len(t) > 1}
+        
+        if not cleaned_target:
+            cleaned_target = target_tokens
+
+        matched = user_tokens.intersection(cleaned_target)
+        coverage = len(matched) / max(1, len(cleaned_target))
+        
+        # Blend 70% coverage ratio + 30% Jaccard similarity for precise accuracy
+        jaccard = self.calculate_similarity(user_tokens, target_tokens)
+        return min(1.0, (coverage * 0.70) + (jaccard * 0.30))
+
     def analyze_skill_embeddings(self, skills):
         return self.generate_embeddings(skills)
 

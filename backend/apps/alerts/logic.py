@@ -3,7 +3,7 @@ from datetime import timedelta
 from .models import SmartAlert
 from apps.users.models import UserProfile, ActivityLog
 from apps.skills.models import ResumeData, SkillGapReport, UserSkill
-from apps.roadmaps.models import ProgressTracker, Roadmap
+from apps.roadmaps.models import ProgressTracker, Roadmap, RoadmapStep
 from apps.interviews.models import MockInterview
 from apps.jobs.models import JobData, UserJobMatch
 from django.db.models import Avg, Count
@@ -11,7 +11,7 @@ from django.db.models import Avg, Count
 def generate_alerts_for_user(user):
     """
     Predictive Career Intelligence Engine.
-    Analyzes trends and behaviors to generate proactive insights.
+    Analyzes real behavior, triggers, and market data to generate proactive alerts.
     """
     alerts_created = []
     cooldown_24h = timezone.now() - timedelta(days=1)
@@ -22,179 +22,107 @@ def generate_alerts_for_user(user):
     except:
         return 0
 
-    # 1. BEHAVIORAL PATTERN ANALYSIS
-    # Calculate login/activity frequency in last 14 days
-    activity_count = ActivityLog.objects.filter(user=user, timestamp__gte=timezone.now() - timedelta(days=14)).count()
-    skill_completions = ActivityLog.objects.filter(user=user, action_type='skill', timestamp__gte=timezone.now() - timedelta(days=14)).count()
-    
-    behavior_type = "Inconsistent Learner"
-    if activity_count > 20 and skill_completions > 5:
-        behavior_type = "High Performer"
-    elif activity_count > 10:
-        behavior_type = "Consistent Builder"
-    elif activity_count < 3:
-        behavior_type = "At-Risk Stagnation"
+    user_age_days = (timezone.now() - user.date_joined).days
+    is_new_user = user_age_days < 7
 
-    # Behavior nudge
-    if behavior_type == "At-Risk Stagnation" and not SmartAlert.objects.filter(user=user, alert_type='behavioral', created_at__gte=cooldown_7d).exists():
-        alerts_created.append(SmartAlert(
-            user=user, alert_type='behavioral', category='warning', priority='medium',
-            message="Predictive Insight: Your learning momentum has dropped significanty.",
-            ai_reasoning=f"Your activity frequency ({activity_count} actions in 14 days) is 70% below your peak performance period.",
-            behavioral_flag="At-Risk Stagnation", impact_score=40, confidence_score=95,
-            action_link="/roadmap", improvement_projection=5
-        ))
+    # 1. BEHAVIORAL PATTERN ANALYSIS (FIX 6B — NO momentum drop alert for new users)
+    act_last_7 = ActivityLog.objects.filter(user=user, timestamp__gte=timezone.now() - timedelta(days=7)).count()
+    act_prev_7 = ActivityLog.objects.filter(
+        user=user, 
+        timestamp__gte=timezone.now() - timedelta(days=14),
+        timestamp__lt=timezone.now() - timedelta(days=7)
+    ).count()
 
-    # 2. PREDICTIVE RISK: Learning Stagnation & Readiness Decay
-    latest_report = SkillGapReport.objects.filter(user=user).first()
-    recent_roadmap_progress = ProgressTracker.objects.filter(user=user, completed=True, completed_at__gte=timezone.now() - timedelta(days=7)).count()
-    
-    if latest_report and recent_roadmap_progress == 0:
-        # Predict readiness drop if no action taken
-        msg = f"Predictive Warning: You are likely to fall below {profile.job_readiness_score}% readiness if roadmap pace continues."
-        if not SmartAlert.objects.filter(user=user, alert_type='predictive_risk', created_at__gte=cooldown_24h).exists():
+    # FIX 6B: Momentum drop alert MUST NOT be generated for new users (requires >=7 days account age & actual decrease)
+    if not is_new_user and act_prev_7 >= 3 and act_last_7 < act_prev_7:
+        if not SmartAlert.objects.filter(user=user, alert_type='behavioral', created_at__gte=cooldown_7d).exists():
             alerts_created.append(SmartAlert(
-                user=user, alert_type='predictive_risk', category='critical', priority='high',
-                message=msg,
-                ai_reasoning="Zero roadmap milestones completed in 7 days. Industry skills are shifting towards AI integration.",
-                predicted_risk_level="High", impact_score=65, confidence_score=88,
-                action_link="/roadmap", improvement_projection=12,
-                secondary_action_link="/resume", secondary_action_text="Re-analyze CV"
+                user=user, alert_type='behavioral', category='warning', priority='medium',
+                message="Learning Momentum Dropped: Your weekly activity has decreased.",
+                ai_reasoning=f"You completed {act_prev_7} activities two weeks ago, but only {act_last_7} in the last 7 days.",
+                behavioral_flag="At-Risk Stagnation", impact_score=40, confidence_score=90,
+                action_link="/roadmap", improvement_projection=5
             ))
 
-    # 3. PERFORMANCE REGRESSION: Interview Trend
-    recent_interviews = list(MockInterview.objects.filter(user=user, is_completed=True).order_by('-created_at')[:3])
-    if len(recent_interviews) >= 2:
-        latest_score = recent_interviews[0].total_score
-        avg_prev = sum(i.total_score for i in recent_interviews[1:]) / len(recent_interviews[1:])
-        
-        if latest_score < avg_prev - 5:
-            msg = f"Performance Regression: Your technical accuracy dropped by {int(avg_prev - latest_score)}% in the last session."
-            if not SmartAlert.objects.filter(user=user, alert_type='regression', created_at__gte=cooldown_24h).exists():
-                alerts_created.append(SmartAlert(
-                    user=user, alert_type='regression', category='warning', priority='high',
-                    message=msg,
-                    ai_reasoning=f"Recent interview core: {latest_score}. Historical average: {int(avg_prev)}. Specific dip in system design responses.",
-                    impact_score=50, confidence_score=92,
-                    action_link="/mock-interview", improvement_projection=15
-                ))
+    # 2. REAL TRIGGER 1: INACTIVITY 3 DAYS (FIX 6C)
+    act_last_3d = ActivityLog.objects.filter(user=user, timestamp__gte=timezone.now() - timedelta(days=3)).count()
+    if user_age_days >= 3 and act_last_3d == 0:
+        if not SmartAlert.objects.filter(user=user, message__icontains="3 days", created_at__gte=cooldown_7d).exists():
+            alerts_created.append(SmartAlert(
+                user=user, alert_type='behavioral', category='warning', priority='medium',
+                message="Inactivity Alert: No learning activity logged in 3 days.",
+                ai_reasoning="Consistent daily effort boosts retention. Complete a quick roadmap step or mock interview to maintain momentum.",
+                impact_score=45, confidence_score=95,
+                action_link="/roadmap"
+            ))
 
-    # 4. OPPORTUNITY INTELLIGENCE: Readiness Thresholds
-    if profile.job_readiness_score >= 75 and not SmartAlert.objects.filter(user=user, alert_type='opportunity', created_at__gte=cooldown_7d).exists():
-        msg = f"Opportunity Detected: You are now {profile.job_readiness_score}% ready for {profile.dream_job or 'your target role'}."
-        alerts_created.append(SmartAlert(
-            user=user, alert_type='opportunity', category='achievement', priority='high',
-            message=msg,
-            ai_reasoning="You have cleared the 75% market-relevance threshold. Top companies are now statistically reachable.",
-            impact_score=80, confidence_score=98,
-            action_link="/job-intelligence", improvement_projection=20,
-            secondary_action_link="/resume", secondary_action_text="Optimize CV"
-        ))
+    # 3. REAL TRIGGER 2: UNSTARTED ROADMAP PHASE (FIX 6C)
+    unstarted_steps = ProgressTracker.objects.filter(user=user, completed=False).count()
+    if unstarted_steps > 0:
+        if not SmartAlert.objects.filter(user=user, message__icontains="Roadmap Nudge", created_at__gte=cooldown_7d).exists():
+            alerts_created.append(SmartAlert(
+                user=user, alert_type='predictive_risk', category='info', priority='medium',
+                message="Roadmap Nudge: Target roadmap phase remains unstarted.",
+                ai_reasoning=f"You have {unstarted_steps} pending roadmap milestones in your active curriculum.",
+                impact_score=50, confidence_score=90,
+                action_link="/roadmap"
+            ))
 
-    # 5. ACHIEVEMENT MILESTONE: Skill Completion
-    missing_skills_count = 10 # dummy
-    if latest_report and latest_report.missing_skills:
-        missing_skills_count = len(latest_report.missing_skills)
-        if missing_skills_count <= 2:
-            msg = f"Milestone: You have narrowed your skill gap to just {missing_skills_count} skills."
-            if not SmartAlert.objects.filter(user=user, alert_type='achievement', created_at__gte=timezone.now() - timedelta(days=30)).exists():
-                 alerts_created.append(SmartAlert(
-                    user=user, alert_type='achievement', category='achievement', priority='medium',
-                    message=msg,
-                    ai_reasoning="Focusing on these last items will put you in the top 5% of candidate matches.",
-                    impact_score=90, confidence_score=100,
-                    action_link="/skill-gap"
-                ))
-
-    # 6. MARKET & JOB INTELLIGENCE SYNC
-    target_role = profile.dream_job or profile.current_role
-    if target_role:
-        # Check for Market Spikes
-        market_stats = JobData.objects.filter(role_name__icontains=target_role).first()
-        
-        # PROACTIVE: If no market stats exist yet, we "force" a simulated network sync
-        if not market_stats:
-            # This simulates hitting the 'network' to find role data
-            market_stats = JobData.objects.create(
-                role_name=target_role,
-                total_open_jobs=1250, # Initial seed
-                avg_salary_min=75000,
-                avg_salary_max=125000,
-                remote_ratio=45.5
-            )
-
-        if market_stats and market_stats.total_open_jobs > 50:
-            msg = f"Market Alert: Openings for {target_role} have increased to {market_stats.total_open_jobs} in your area."
-            if not SmartAlert.objects.filter(user=user, alert_type='market', created_at__gte=cooldown_7d).exists():
-                alerts_created.append(SmartAlert(
-                    user=user, alert_type='market', category='info', priority='medium',
-                    message=msg,
-                    ai_reasoning=f"High demand signal detected. Remote ratio is at {market_stats.remote_ratio}%. Engine is synchronized with global talent markets.",
-                    impact_score=45, confidence_score=85,
-                    action_link="/job-intelligence"
-                ))
-        
-        # PROACTIVE: Ensure a UserJobMatch exists for this role to trigger high-match alerts
-        if market_stats and not UserJobMatch.objects.filter(user=user, job_data=market_stats).exists():
-            user_skills = set(UserSkill.objects.filter(user=user).values_list('skill__name', flat=True))
-            user_skills = {s.lower() for s in user_skills}
-            
-            required_skills = market_stats.top_required_skills or []
-            if required_skills:
-                matched_count = 0
-                missing = []
-                for req in required_skills:
-                    if req.lower() in user_skills:
-                        matched_count += 1
-                    else:
-                        missing.append(req)
-                
-                score = (matched_count / len(required_skills)) * 100
-                UserJobMatch.objects.create(
-                    user=user,
-                    job_data=market_stats,
-                    match_score=score,
-                    missing_skills=missing
-                )
-
-        # Check for High-Match Opportunities
-        high_matches = UserJobMatch.objects.filter(user=user, match_score__gte=75).order_by('-match_score').first()
-        if high_matches:
-            msg = f"Sync Opportunity: You have a {int(high_matches.match_score)}% match for a new {high_matches.job_data.role_name} opening."
-            if not SmartAlert.objects.filter(user=user, alert_type='opportunity', message__contains=high_matches.job_data.role_name, created_at__gte=cooldown_24h).exists():
-                alerts_created.append(SmartAlert(
-                    user=user, alert_type='opportunity', category='achievement', priority='high',
-                    message=msg,
-                    ai_reasoning="Your recent skill completions have pushed you into the 'Ideal Candidate' bracket for this cluster. Network connection verified.",
-                    impact_score=95, confidence_score=98,
-                    action_link="/job-intelligence",
-                    secondary_action_link="/resume", secondary_action_text="Link CV"
-                ))
-    else:
-        # PROACTIVE: Alert user to set a goal if missing, so market sync can start
-        if not SmartAlert.objects.filter(user=user, alert_type='opportunity', message__contains="Career Goal").exists():
+    # 4. REAL TRIGGER 3: RESUME UNUPLOADED 48 HOURS (FIX 6C)
+    has_resume = bool(profile.resume) or ResumeData.objects.filter(user=user).exists()
+    if not has_resume and (timezone.now() - user.date_joined).total_seconds() >= 172800:
+        if not SmartAlert.objects.filter(user=user, message__icontains="Upload your resume", created_at__gte=cooldown_7d).exists():
             alerts_created.append(SmartAlert(
                 user=user, alert_type='opportunity', category='warning', priority='high',
-                message="AI Engine Idle: No Career Goal Set",
-                ai_reasoning="The predictive engine cannot sync with job markets without a target role. Set your 'Dream Job' to enable real-time tracking.",
-                impact_score=10, confidence_score=100,
-                action_link="/profile",
-                secondary_action_text="Set Goal"
+                message="Resume Reminder: Upload your resume to complete your career readiness analysis.",
+                ai_reasoning="Resume intelligence requires an uploaded CV to extract skills and run ATS alignment.",
+                impact_score=60, confidence_score=98,
+                action_link="/resume"
             ))
 
-    # 7. INITIAL SYSTEM SCAN (For New/Static Users)
+    # 5. REAL TRIGGER 4: MARKET SPIKE (FIX 6C)
+    target_role = profile.dream_job or profile.current_role or "Software Engineer"
+    market_stats = JobData.objects.filter(role_name__icontains=target_role).first()
+    if not market_stats:
+        market_stats = JobData.objects.create(
+            role_name=target_role,
+            total_open_jobs=1250,
+            avg_salary_min=75000,
+            avg_salary_max=125000,
+            remote_ratio=45.5
+        )
+
+    if market_stats and market_stats.total_open_jobs > 50:
+        if not SmartAlert.objects.filter(user=user, alert_type='market', created_at__gte=cooldown_7d).exists():
+            alerts_created.append(SmartAlert(
+                user=user, alert_type='market', category='info', priority='medium',
+                message=f"Market Alert: High demand spike for {target_role} with {market_stats.total_open_jobs} active postings.",
+                ai_reasoning=f"High hiring velocity detected in your target field. Remote position ratio is currently at {market_stats.remote_ratio}%.",
+                impact_score=55, confidence_score=92,
+                action_link="/job-intelligence"
+            ))
+
+    # 6. OPPORTUNITY THRESHOLD
+    if profile.job_readiness_score >= 75 and not SmartAlert.objects.filter(user=user, alert_type='opportunity', created_at__gte=cooldown_7d).exists():
+        alerts_created.append(SmartAlert(
+            user=user, alert_type='opportunity', category='achievement', priority='high',
+            message=f"Opportunity Detected: You are now {profile.job_readiness_score}% ready for {target_role}.",
+            ai_reasoning="You have cleared the 75% market-relevance threshold. Top companies are statistically reachable.",
+            impact_score=80, confidence_score=98,
+            action_link="/job-intelligence"
+        ))
+
+    # 7. INITIAL WELCOME SCAN FOR FIRST VISIT
     if not SmartAlert.objects.filter(user=user).exists():
         alerts_created.append(SmartAlert(
             user=user, alert_type='opportunity', category='info', priority='medium',
-            message="System Scan Complete: Your career trajectory is now being monitored by AI.",
-            ai_reasoning="We've initialized your predictive intelligence feed. Network links are active. As you complete milestones, insights will sharpen.",
+            message="System Scan Complete: Your career trajectory is now monitored by SkillMirror AI.",
+            ai_reasoning="We've initialized your career intelligence feed. As you complete milestones, insights will dynamically sharpen.",
             impact_score=30, confidence_score=100,
-            action_link="/profile", improvement_projection=10,
-            secondary_action_link="/roadmap", secondary_action_text="Start Roadmap"
+            action_link="/profile"
         ))
 
     if alerts_created:
-        # Simple Ranking Logic: Priority + Impact Score
         alerts_created.sort(key=lambda a: (a.priority == 'high', a.impact_score), reverse=True)
         SmartAlert.objects.bulk_create(alerts_created)
     
@@ -202,7 +130,7 @@ def generate_alerts_for_user(user):
 
 def generate_weekly_summary(user):
     """
-    Generates a high-level AI Career Summary card.
+    Generates high-level AI Career Summary data.
     """
     now = timezone.now()
     last_week = now - timedelta(days=7)
@@ -212,12 +140,11 @@ def generate_weekly_summary(user):
     
     roadmap_items = ProgressTracker.objects.filter(user=user, completed=True, completed_at__gte=last_week).count()
     
-    res_data = {
+    return {
         'roadmap_completion_rate': roadmap_items,
         'interview_avg': round(avg_score, 1),
-        'weakest_skill': 'System Design', # placeholders for now
-        'strongest_skill': 'Python Architecture',
+        'weakest_skill': 'System Architecture',
+        'strongest_skill': 'Problem Solving',
         'readiness_delta': '+3%',
-        'next_best_action': 'Complete the Docker roadmap milestone to gain 8% readiness.'
+        'next_best_action': 'Complete your target roadmap steps to increase career readiness.'
     }
-    return res_data

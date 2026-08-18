@@ -301,7 +301,15 @@ const ResumePage: React.FC = () => {
               <div className="sm-glass p-5 space-y-4">
                 <h2 className="text-sm font-medium text-slate-50">Readiness & Match</h2>
                 {!analysis ? (
-                  <SkeletonCard className="!h-40" />
+                  <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 space-y-2">
+                    <p className="text-xs text-slate-400">Upload and analyze your resume to see:</p>
+                    <ul className="text-xs text-slate-400 space-y-1 list-disc pl-4">
+                      <li>Career readiness</li>
+                      <li>Job match</li>
+                      <li>Skill alignment</li>
+                      <li>Missing skills</li>
+                    </ul>
+                  </div>
                 ) : (
                   <div className="flex gap-6">
                     <div className="relative w-32 h-32 flex items-center justify-center">
@@ -327,7 +335,7 @@ const ResumePage: React.FC = () => {
                         </div>
                       </div>
                       <div className="p-3 rounded-xl bg-slate-900 text-[10px] text-slate-400 leading-relaxed">
-                        Strong base skills detected. Cloud certifications could push your score past 90%.
+                        Strong base skills detected from your resume.
                       </div>
                       <div className="flex gap-2">
                         <span className={`px-2 py-1 rounded-lg text-[9px] font-black border ${analysis.readinessScore >= 80 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : analysis.readinessScore >= 60 ? 'bg-amber-500/10 border-amber-500/30 text-amber-400' : 'bg-rose-500/10 border-rose-500/30 text-rose-400'}`}>
@@ -347,8 +355,16 @@ const ResumePage: React.FC = () => {
                   <h2 className="text-sm font-medium text-slate-50">Skills Extracted</h2>
                   {analysis && <span className="text-[10px] font-black text-indigo-400 px-2 py-1 bg-indigo-500/10 rounded-lg">{analysis.skills.length} skills</span>}
                 </div>
-                {!analysis ? (
-                  <div className="flex flex-wrap gap-2"><SkeletonCard className="!h-6 !w-16 !rounded-full" /><SkeletonCard className="!h-6 !w-16 !rounded-full" /><SkeletonCard className="!h-6 !w-16 !rounded-full" /></div>
+                {analyzing ? (
+                  <div className="flex flex-wrap gap-2">
+                    <SkeletonCard className="!h-6 !w-16 !rounded-full" />
+                    <SkeletonCard className="!h-6 !w-16 !rounded-full" />
+                    <SkeletonCard className="!h-6 !w-16 !rounded-full" />
+                  </div>
+                ) : !analysis ? (
+                  <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 text-xs text-slate-400">
+                    Upload your resume to automatically identify your technical and professional skills.
+                  </div>
                 ) : (
                   <div className="space-y-4">
                     <div className="flex flex-wrap gap-2">
@@ -371,7 +387,11 @@ const ResumePage: React.FC = () => {
               <div className="sm-glass p-5 space-y-4 overflow-hidden">
                 <h2 className="text-sm font-medium text-slate-50">Strength Breakdown</h2>
                 <div className="h-56 -mx-4">
-                  {analysis ? (
+                  {analyzing ? (
+                    <div className="h-full flex items-center justify-center text-indigo-400 text-xs font-semibold animate-pulse">
+                      Analyzing your resume...
+                    </div>
+                  ) : analysis ? (
                     <ResponsiveContainer width="100%" height="100%">
                       <RadarChart cx="50%" cy="50%" outerRadius="70%" data={breakdownData}>
                         <PolarGrid stroke="#334155" />
@@ -380,8 +400,14 @@ const ResumePage: React.FC = () => {
                         <RechartsTooltip contentStyle={{ background: '#0f172a', border: '1px solid #334155', fontSize: '10px' }} />
                       </RadarChart>
                     </ResponsiveContainer>
+                  ) : error ? (
+                    <div className="h-full flex items-center justify-center text-rose-400 text-xs p-4 text-center">
+                      We couldn't complete the analysis. Please try analyzing your resume again.
+                    </div>
                   ) : (
-                    <div className="h-full flex items-center justify-center text-slate-500 text-xs">Awaiting analysis...</div>
+                    <div className="h-full flex items-center justify-center text-slate-400 text-xs p-4 text-center">
+                      Upload and analyze your resume to see your strongest career areas.
+                    </div>
                   )}
                 </div>
               </div>
@@ -393,25 +419,29 @@ const ResumePage: React.FC = () => {
               <JobTargetingPanel />
             </div>
 
-            {/* AI Suggestions + AI Improvement row */}
-            <div className="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
-              <div className="sm-glass p-5 space-y-3">
-                <h2 className="text-sm font-medium text-slate-50">AI Optimization Suggestions</h2>
-                <ul className="space-y-2">
-                  {(analysis?.aiSuggestions || [
-                    "Include quantifiable achievements like 'Reduced loading time by 40%'.",
-                    "Ensure your LinkedIn profile URL is clickable and professional.",
-                    "Highlight target keywords like 'System Design' or 'API Integration'."
-                  ]).map((s, i) => (
-                    <li key={i} className="flex items-start gap-2 text-[11px] text-slate-400">
-                      <i className="fa-solid fa-circle-check text-indigo-400 text-[10px] mt-0.5 shrink-0"></i>
-                      {s}
-                    </li>
-                  ))}
-                </ul>
+            {/* AI Suggestions + Export row (ONLY shown when real analysis exists with real suggestions) */}
+            {analysis && (
+              <div className="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
+                <div className="sm-glass p-5 space-y-3">
+                  <h2 className="text-sm font-medium text-slate-50">AI Optimization Suggestions</h2>
+                  {analysis.aiSuggestions && analysis.aiSuggestions.length > 0 ? (
+                    <ul className="space-y-2">
+                      {analysis.aiSuggestions.map((s, i) => (
+                        <li key={i} className="flex items-start gap-2 text-[11px] text-slate-400">
+                          <i className="fa-solid fa-circle-check text-indigo-400 text-[10px] mt-0.5 shrink-0"></i>
+                          {s}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-xs text-slate-400">
+                      No optimization suggestions yet. Your resume currently has no detected improvement items.
+                    </p>
+                  )}
+                </div>
+                <ExportPanel />
               </div>
-              <ExportPanel />
-            </div>
+            )}
 
             {/* AI Improvement Panel */}
             <AIImprovementPanel 

@@ -5,6 +5,22 @@ interface GrowthForecastProps {
 }
 
 const GrowthForecast: React.FC<GrowthForecastProps> = ({ data }) => {
+  const isInsufficient = !data || data.length === 0 || data.every(d => d.score === 0);
+
+  if (isInsufficient) {
+    return (
+      <div className="glass-panel p-6 border-white/5 bg-slate-900/40 sm-card relative overflow-hidden group min-h-[220px] flex flex-col justify-center items-center text-center">
+        <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-3">
+          <i className="fa-solid fa-chart-line text-emerald-400 text-lg"></i>
+        </div>
+        <h3 className="text-xs font-black text-white uppercase tracking-wider mb-1">Growth Forecast</h3>
+        <p className="text-xs text-slate-400 max-w-xs leading-relaxed">
+          Complete 3 activities to see your growth prediction.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="glass-panel p-6 border-white/5 bg-slate-900/40 sm-card relative overflow-hidden group">
       {/* Subtle emerald glow */}
@@ -55,4 +71,3 @@ const GrowthForecast: React.FC<GrowthForecastProps> = ({ data }) => {
 };
 
 export default GrowthForecast;
-

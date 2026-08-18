@@ -6,9 +6,10 @@ interface XPSystemProps {
   progress: number;
   nextLevelAt: number;
   username: string;
+  rankTitle?: string;
 }
 
-const XPSystem: React.FC<XPSystemProps> = ({ level, totalXp, progress, nextLevelAt, username }) => {
+const XPSystem: React.FC<XPSystemProps> = ({ level, totalXp, progress, nextLevelAt, username, rankTitle }) => {
   return (
     <div className="glass-panel p-6 bg-gradient-to-br from-indigo-900/10 via-slate-900 to-slate-900 border-white/5 relative overflow-hidden group">
       {/* Decorative background glow */}
@@ -44,7 +45,7 @@ const XPSystem: React.FC<XPSystemProps> = ({ level, totalXp, progress, nextLevel
           <div className="absolute inset-0 bg-indigo-500/5 animate-pulse" />
           <div
             className="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-500 transition-all duration-1000 ease-out shadow-[0_0_15px_rgba(99,102,241,0.4)] relative"
-            style={{ width: `${progress}%` }}
+            style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
           >
             {/* White beam on leading edge */}
             <div className="absolute top-0 right-0 h-full w-10 bg-gradient-to-r from-transparent to-white/20" />
@@ -52,8 +53,8 @@ const XPSystem: React.FC<XPSystemProps> = ({ level, totalXp, progress, nextLevel
         </div>
         
         <div className="flex justify-between items-center text-[9px] font-bold uppercase tracking-widest text-slate-500 italic">
-          <span>Rank: Intermediate</span>
-          <span>{(nextLevelAt - totalXp).toLocaleString()} XP to Next Level</span>
+          <span>Rank: {rankTitle || 'Skill Explorer'}</span>
+          <span>{Math.max(0, nextLevelAt - totalXp).toLocaleString()} XP to Next Level</span>
         </div>
       </div>
     </div>

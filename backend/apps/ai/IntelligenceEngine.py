@@ -52,7 +52,7 @@ class NeuralIntelligenceEngine:
                 combined = self.embedding_gen.generate_embeddings([skills_text, job_text])
                 u_emb = combined[0]
                 r_emb = combined[1]
-                skill_score = float(self.embedding_gen.calculate_similarity(u_emb, r_emb)) * 100
+                skill_score = float(self.embedding_gen.calculate_overlap_similarity(u_emb, r_emb)) * 100
             except Exception:
                 skill_score = 40  # Safe fallback if embedding fails
 
@@ -99,6 +99,37 @@ class NeuralIntelligenceEngine:
                     "category": rs.category
                 })
         
+        # Fallback to RoleTemplate or Domain Knowledge if empty
+        if not gaps:
+            templates = RoleTemplate.objects.filter(name__icontains=target_role)
+            for t in templates:
+                req_skills = t.required_skills or {}
+                for s_name, s_meta in req_skills.items():
+                    if s_name.lower() not in user_skill_names:
+                        weight = s_meta.get('weight', 3) if isinstance(s_meta, dict) else 3
+                        gaps.append({
+                            "name": s_name,
+                            "importance": weight,
+                            "category": "technical"
+                        })
+        
+        # Default intelligent domain recommendations if still empty
+        if not gaps:
+            role_lower = target_role.lower()
+            defaults = []
+            if "frontend" in role_lower or "web" in role_lower or "react" in role_lower:
+                defaults = [("TypeScript", 5, "technical"), ("Next.js", 4, "technical"), ("State Management (Redux/Zustand)", 3, "technical"), ("Web Performance Optimization", 3, "technical")]
+            elif "backend" in role_lower or "python" in role_lower or "django" in role_lower:
+                defaults = [("PostgreSQL", 5, "technical"), ("Docker & Containerization", 4, "tools"), ("RESTful API Security", 4, "technical"), ("Redis Caching", 3, "technical")]
+            elif "data" in role_lower or "ai" in role_lower or "ml" in role_lower:
+                defaults = [("Pandas & NumPy", 5, "technical"), ("PyTorch / TensorFlow", 4, "technical"), ("Model Deployment (MLOps)", 4, "devops"), ("SQL Data Modeling", 3, "data")]
+            else:
+                defaults = [("System Architecture & Design", 4, "technical"), ("CI/CD Deployment Pipelines", 4, "devops"), ("Agile Sprint Delivery", 3, "soft")]
+            
+            for name, imp, cat in defaults:
+                if name.lower() not in user_skill_names:
+                    gaps.append({"name": name, "importance": imp, "category": cat})
+
         # Sort by importance (Mandatory/Critical first)
         return sorted(gaps, key=lambda x: x['importance'], reverse=True)
 

@@ -20,10 +20,17 @@ const colorMap: Record<string, string> = {
 };
 
 const ModuleSummaries: React.FC<ModuleSummaryProps> = ({ summaries }) => {
+  const getDisplayValue = (val: number | null | undefined, suffix: string = '%'): string => {
+    if (val === null || val === undefined || val === 0) {
+      return 'Tap to activate →';
+    }
+    return `${Math.round(val)}${suffix}`;
+  };
+
   const modules = [
     {
       title: 'Resume Analyzer',
-      value: `${summaries.resume.score}%`,
+      value: getDisplayValue(summaries?.resume?.score),
       label: 'Intelligence Score',
       link: '/resume',
       icon: 'fa-file-invoice',
@@ -32,7 +39,7 @@ const ModuleSummaries: React.FC<ModuleSummaryProps> = ({ summaries }) => {
     },
     {
       title: 'Career Roadmap',
-      value: `${summaries.roadmap.progress}%`,
+      value: getDisplayValue(summaries?.roadmap?.progress),
       label: 'Curriculum Finish',
       link: '/roadmap',
       icon: 'fa-stairs',
@@ -41,7 +48,7 @@ const ModuleSummaries: React.FC<ModuleSummaryProps> = ({ summaries }) => {
     },
     {
       title: 'Mock Interview',
-      value: summaries.interview.last_score ? `${Math.round(summaries.interview.last_score)}%` : 'N/A',
+      value: getDisplayValue(summaries?.interview?.last_score),
       label: 'Last Analytics',
       link: '/mock-interview',
       icon: 'fa-microphone-lines',
@@ -50,7 +57,7 @@ const ModuleSummaries: React.FC<ModuleSummaryProps> = ({ summaries }) => {
     },
     {
       title: 'Job Intel',
-      value: `${summaries.job_intelligence.top_match}%`,
+      value: getDisplayValue(summaries?.job_intelligence?.top_match),
       label: 'Market Alignment',
       link: '/job-intelligence',
       icon: 'fa-briefcase',
@@ -59,7 +66,7 @@ const ModuleSummaries: React.FC<ModuleSummaryProps> = ({ summaries }) => {
     },
     {
       title: 'Smart Alerts',
-      value: summaries.alerts.count,
+      value: summaries?.alerts?.count ? `${summaries.alerts.count} Signals` : 'Tap to activate →',
       label: 'New Signals',
       link: '/smart-alerts',
       icon: 'fa-bell',
@@ -91,8 +98,12 @@ const ModuleSummaries: React.FC<ModuleSummaryProps> = ({ summaries }) => {
           <div className="relative z-10">
             <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.15em] mb-1.5">{mod.title}</h3>
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-black text-white tracking-tight">{mod.value}</span>
-              <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{mod.label}</span>
+              <span className={`font-black text-white tracking-tight ${mod.value.includes('Tap') ? 'text-xs text-indigo-400 underline decoration-indigo-500/40' : 'text-2xl'}`}>
+                {mod.value}
+              </span>
+              {!mod.value.includes('Tap') && (
+                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{mod.label}</span>
+              )}
             </div>
           </div>
         </div>
@@ -102,4 +113,3 @@ const ModuleSummaries: React.FC<ModuleSummaryProps> = ({ summaries }) => {
 };
 
 export default ModuleSummaries;
-

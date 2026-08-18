@@ -48,6 +48,23 @@ const Header: React.FC = () => {
         { href: '/smart-alerts', label: 'Smart Alerts', icon: 'fa-bolt-lightning' },
       ],
     },
+    {
+      title: 'Real-World Problems ⭐',
+      items: [
+        { href: '/problems', label: 'Discover Problems', icon: 'fa-earth-americas' },
+        { href: '/problems/matches', label: 'My Matches', icon: 'fa-bullseye' },
+        { href: '/problems/submit', label: 'Submit Problem', icon: 'fa-paper-plane' },
+        { href: '/projects', label: 'My Projects', icon: 'fa-diagram-project' },
+        { href: '/admin/problems', label: 'Admin Portal', icon: 'fa-shield' },
+      ],
+    },
+    {
+      title: 'Profile & Settings',
+      items: [
+        { href: '/profile', label: 'Career Identity', icon: 'fa-id-card' },
+        { href: '/settings', label: 'Account Settings', icon: 'fa-sliders' },
+      ],
+    },
   ];
 
   if (!mounted) return null;
