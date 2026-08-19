@@ -1,5 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from apps.users.permissions import CanAccessEngine
 from .models import Job
 from .serializers import JobSerializer
 from rest_framework.decorators import action
@@ -7,6 +9,8 @@ from rest_framework import status
 from apps.skills.models import UserSkill
 
 class JobViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated, CanAccessEngine]
+    required_engine = 'job_intelligence'
     def list(self, request):
         jobs = Job.objects.all()
         serializer = JobSerializer(jobs, many=True)

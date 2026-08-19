@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import Layout from '../components/Layout';
 import withAuth from '../components/withAuth';
 import { fetchDashboard } from '../services/dashboard';
@@ -21,6 +22,7 @@ import AchievementBadges from '../components/dashboard/AchievementBadges';
 import CareerDigitalTwinModal from '../components/CareerDigitalTwinModal';
 
 const Dashboard: React.FC = () => {
+  const router = useRouter();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -40,6 +42,15 @@ const Dashboard: React.FC = () => {
   const loadData = async () => {
     try {
       setLoading(true);
+      const authEngines: any = await apiClient.get('/users/authorized-engines/');
+      const authData = authEngines?.data || authEngines;
+      if (authData?.role && authData.role !== 'student' && authData?.default_dashboard) {
+        if (authData.default_dashboard !== '/dashboard') {
+          router.replace(authData.default_dashboard);
+          return;
+        }
+      }
+
       const res: any = await fetchDashboard();
       setData(res);
 

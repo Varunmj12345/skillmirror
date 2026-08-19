@@ -6,6 +6,7 @@ from datetime import datetime
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from apps.users.permissions import CanAccessEngine
 from django.shortcuts import get_object_or_404
 from groq import Groq
 from apps.interviews.models import MockInterview, MockInterviewQuestion, LiveInterviewSession

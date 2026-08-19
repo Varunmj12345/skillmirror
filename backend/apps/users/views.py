@@ -475,3 +475,149 @@ class DeleteAccountView(APIView):
         user = request.user
         user.delete()
         return Response({'detail': 'Account permanently deleted.'})
+
+
+class AuthorizedEnginesView(APIView):
+    """
+    Authoritative Engine & Navigation Permission Endpoint.
+    Returns domain-specific dashboards and navigation sections strictly scoped to the user's role and domain.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        profile, _ = UserProfile.objects.get_or_create(user=user)
+        role = profile.role if not user.is_staff else 'admin'
+        domain = profile.branch_domain or "General"
+
+        if role == 'student':
+            default_dashboard = '/dashboard'
+            nav_sections = [
+                {
+                    'title': 'Command Center',
+                    'items': [
+                        {'href': '/dashboard', 'label': 'Intelligence Hub', 'icon': 'fa-gauge-high'},
+                    ]
+                },
+                {
+                    'title': 'AI Career Engines',
+                    'items': [
+                        {'href': '/roadmap', 'label': 'Career Roadmap', 'icon': 'fa-compass'},
+                        {'href': '/skill-gap', 'label': 'Skill Gap Analysis', 'icon': 'fa-brain'},
+                        {'href': '/resume', 'label': 'Resume Builder', 'icon': 'fa-file-shield'},
+                        {'href': '/mock-interview', 'label': 'Mock Interview', 'icon': 'fa-headset'},
+                    ]
+                },
+                {
+                    'title': 'Market Intelligence',
+                    'items': [
+                        {'href': '/job-intelligence', 'label': 'Job Intelligence', 'icon': 'fa-network-wired'},
+                        {'href': '/smart-alerts', 'label': 'Smart Alerts', 'icon': 'fa-bolt-lightning'},
+                    ]
+                },
+                {
+                    'title': 'Projects & Real-World',
+                    'items': [
+                        {'href': '/problems', 'label': 'Discover Problems', 'icon': 'fa-earth-americas'},
+                        {'href': '/problems/matches', 'label': 'My Skill Matches', 'icon': 'fa-bullseye'},
+                        {'href': '/projects', 'label': 'My Projects', 'icon': 'fa-diagram-project'},
+                        {'href': '/projects/status-center', 'label': 'Status Center', 'icon': 'fa-chart-line'},
+                    ]
+                },
+                {
+                    'title': 'Profile & Settings',
+                    'items': [
+                        {'href': '/profile', 'label': 'Career Identity', 'icon': 'fa-id-card'},
+                        {'href': '/settings', 'label': 'Account Settings', 'icon': 'fa-sliders'},
+                    ]
+                }
+            ]
+        elif role == 'problem_owner':
+            default_dashboard = '/owner/dashboard'
+            nav_sections = [
+                {
+                    'title': 'Requester Command Center',
+                    'items': [
+                        {'href': '/owner/dashboard', 'label': 'My Requirements & Projects', 'icon': 'fa-user-shield'},
+                    ]
+                },
+                {
+                    'title': 'Requirement Actions',
+                    'items': [
+                        {'href': '/problems/submit', 'label': 'Submit Problem Statement', 'icon': 'fa-paper-plane'},
+                        {'href': '/projects/status-center', 'label': 'Project Lifecycle Center', 'icon': 'fa-chart-line'},
+                        {'href': '/problems', 'label': 'Browse Public Directory', 'icon': 'fa-earth-americas'},
+                    ]
+                },
+                {
+                    'title': 'Profile & Settings',
+                    'items': [
+                        {'href': '/profile', 'label': 'Account Profile', 'icon': 'fa-id-card'},
+                        {'href': '/settings', 'label': 'Account Settings', 'icon': 'fa-sliders'},
+                    ]
+                }
+            ]
+        elif role == 'evaluator':
+            default_dashboard = '/evaluator/dashboard'
+            nav_sections = [
+                {
+                    'title': 'Evaluator Portal',
+                    'items': [
+                        {'href': '/evaluator/dashboard', 'label': 'Technical Evaluation Queue', 'icon': 'fa-clipboard-check'},
+                    ]
+                },
+                {
+                    'title': 'Project Lifecycle',
+                    'items': [
+                        {'href': '/projects/status-center', 'label': 'Status Center Monitoring', 'icon': 'fa-chart-line'},
+                        {'href': '/problems', 'label': 'Browse Problem Directory', 'icon': 'fa-earth-americas'},
+                    ]
+                },
+                {
+                    'title': 'Profile & Settings',
+                    'items': [
+                        {'href': '/profile', 'label': 'Evaluator Identity', 'icon': 'fa-id-card'},
+                        {'href': '/settings', 'label': 'Account Settings', 'icon': 'fa-sliders'},
+                    ]
+                }
+            ]
+        else:
+            default_dashboard = '/admin/problems'
+            nav_sections = [
+                {
+                    'title': 'Platform Control Center',
+                    'items': [
+                        {'href': '/admin/problems', 'label': 'Admin Control Center', 'icon': 'fa-shield'},
+                    ]
+                },
+                {
+                    'title': 'System Review Portals',
+                    'items': [
+                        {'href': '/evaluator/dashboard', 'label': 'Evaluator Portal', 'icon': 'fa-clipboard-check'},
+                        {'href': '/owner/dashboard', 'label': 'Owner Portal', 'icon': 'fa-user-shield'},
+                        {'href': '/projects/status-center', 'label': 'Status Center', 'icon': 'fa-chart-line'},
+                    ]
+                },
+                {
+                    'title': 'Platform Engines',
+                    'items': [
+                        {'href': '/dashboard', 'label': 'Student Intelligence Hub', 'icon': 'fa-gauge-high'},
+                        {'href': '/roadmap', 'label': 'Career Roadmap Engine', 'icon': 'fa-compass'},
+                        {'href': '/job-intelligence', 'label': 'Job Intelligence Engine', 'icon': 'fa-network-wired'},
+                    ]
+                },
+                {
+                    'title': 'Profile & Settings',
+                    'items': [
+                        {'href': '/profile', 'label': 'Admin Identity', 'icon': 'fa-id-card'},
+                        {'href': '/settings', 'label': 'Account Settings', 'icon': 'fa-sliders'},
+                    ]
+                }
+            ]
+
+        return Response({
+            'role': role,
+            'domain': domain,
+            'default_dashboard': default_dashboard,
+            'nav_sections': nav_sections
+        })

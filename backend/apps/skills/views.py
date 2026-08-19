@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
+from apps.users.permissions import CanAccessEngine
 
 from apps.skills.models import Skill, SkillProficiency, UserSkill, RequiredSkill, SkillGapReport, ResumeData, ResumeHistory, ResumeBuilderProfile, CustomTemplate, GeneratedResume
 from apps.skills.serializers import SkillSerializer, UserSkillSerializer, SkillGapReportSerializer, ResumeDataSerializer, ResumeHistorySerializer, ResumeBuilderProfileSerializer, CustomTemplateSerializer, GeneratedResumeSerializer

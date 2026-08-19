@@ -1,6 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from apps.users.permissions import CanAccessEngine
 from .models import Roadmap, ProgressTracker, YouTubeVideo, UserVideoProgress, RoadmapStep
 from .serializers import RoadmapSerializer
 from .generator import generate_roadmap, GOAL_OPTIONS, save_roadmap_to_db
@@ -12,7 +13,8 @@ import requests
 import json
 
 class RoadmapViewSet(viewsets.ViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, CanAccessEngine]
+    required_engine = 'career_roadmap'
 
     def create(self, request):
         data = request.data
@@ -75,6 +77,8 @@ class RoadmapViewSet(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
         try:
             roadmap = Roadmap.objects.get(pk=pk)
+            if not (request.user.is_staff or Roadmap.objects.filter(pk=pk, user_roadmaps__user=request.user).exists()):
+                return Response({'detail': 'Forbidden: You do not own this roadmap.'}, status=403)
             serializer = RoadmapSerializer(roadmap)
             from apps.analytics.services import IntelligenceService
             

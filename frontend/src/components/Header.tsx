@@ -4,12 +4,12 @@ import { useRouter } from 'next/router';
 import useAuth from '../hooks/useAuth';
 import NotificationBell from './NotificationBell';
 import { motion } from 'framer-motion';
+import apiClient from '../services/apiClient';
 
 interface NavItem {
   href: string;
   label: string;
   icon: string;
-  roleRequired?: string[];
 }
 
 interface NavSection {
@@ -20,84 +20,79 @@ interface NavSection {
 const Header: React.FC = () => {
   const { user, loading, logout } = useAuth() as any;
   const [mounted, setMounted] = useState(false);
+  const [navSections, setNavSections] = useState<NavSection[]>([]);
+  const [activeRole, setActiveRole] = useState<string>('student');
+  const [activeDomain, setActiveDomain] = useState<string>('General');
   const router = useRouter();
+
+  const loadAuthorizedEngines = async () => {
+    try {
+      const res: any = await apiClient.get('/users/authorized-engines/');
+      const data = res?.data || res;
+      if (data?.nav_sections) {
+        setNavSections(data.nav_sections);
+        setActiveRole(data.role || 'student');
+        setActiveDomain(data.domain || 'General');
+      }
+    } catch (err) {
+      console.error('Failed to load authorized engine navigation:', err);
+      // Fallback student navigation if unauthenticated or error
+      setNavSections([
+        {
+          title: 'Command Center',
+          items: [{ href: '/dashboard', label: 'Intelligence Hub', icon: 'fa-gauge-high' }]
+        },
+        {
+          title: 'AI Career Engines',
+          items: [
+            { href: '/roadmap', label: 'Career Roadmap', icon: 'fa-compass' },
+            { href: '/skill-gap', label: 'Skill Gap Analysis', icon: 'fa-brain' },
+            { href: '/resume', label: 'Resume Builder', icon: 'fa-file-shield' },
+            { href: '/mock-interview', label: 'Mock Interview', icon: 'fa-headset' },
+          ]
+        },
+        {
+          title: 'Profile & Settings',
+          items: [
+            { href: '/profile', label: 'Career Identity', icon: 'fa-id-card' },
+            { href: '/settings', label: 'Account Settings', icon: 'fa-sliders' }
+          ]
+        }
+      ]);
+    }
+  };
 
   useEffect(() => {
     setMounted(true);
-  }, []);
-
-  const userRole = user?.role || 'student';
-  const isStaff = user?.is_staff || userRole === 'admin' || userRole === 'evaluator';
-
-  const navSections: NavSection[] = [
-    {
-      title: 'Command Center',
-      items: [
-        { href: '/dashboard', label: 'Intelligence Hub', icon: 'fa-gauge-high' },
-      ],
-    },
-    {
-      title: 'AI Intelligence',
-      items: [
-        { href: '/roadmap', label: 'Career Roadmap', icon: 'fa-compass' },
-        { href: '/skill-gap', label: 'Skill Gap Analysis', icon: 'fa-brain' },
-        { href: '/resume', label: 'Resume Builder', icon: 'fa-file-shield' },
-        { href: '/mock-interview', label: 'Mock Interview', icon: 'fa-headset' },
-      ],
-    },
-    {
-      title: 'Market Intelligence',
-      items: [
-        { href: '/job-intelligence', label: 'Job Intelligence', icon: 'fa-network-wired' },
-        { href: '/smart-alerts', label: 'Smart Alerts', icon: 'fa-bolt-lightning' },
-      ],
-    },
-    {
-      title: 'Real-World Problems ⭐',
-      items: [
-        { href: '/problems', label: 'Discover Problems', icon: 'fa-earth-americas' },
-        { href: '/problems/matches', label: 'My Matches', icon: 'fa-bullseye' },
-        { href: '/projects', label: 'My Projects', icon: 'fa-diagram-project' },
-        { href: '/projects/status-center', label: 'Status Center', icon: 'fa-chart-line' },
-        { href: '/problems/submit', label: 'Submit Problem', icon: 'fa-paper-plane' },
-        ...(isStaff || userRole === 'evaluator' ? [{ href: '/evaluator/dashboard', label: 'Evaluator Portal', icon: 'fa-clipboard-check' }] : []),
-        ...(userRole === 'problem_owner' || isStaff ? [{ href: '/owner/dashboard', label: 'Owner Portal', icon: 'fa-user-shield' }] : []),
-        ...(isStaff ? [{ href: '/admin/problems', label: 'Admin Management', icon: 'fa-shield' }] : []),
-      ],
-    },
-    {
-      title: 'Profile & Settings',
-      items: [
-        { href: '/profile', label: 'Career Identity', icon: 'fa-id-card' },
-        { href: '/settings', label: 'Account Settings', icon: 'fa-sliders' },
-      ],
-    },
-  ];
+    if (user) {
+      loadAuthorizedEngines();
+    }
+  }, [user]);
 
   if (!mounted) return null;
 
   return (
     <aside className="fixed inset-y-0 left-0 w-72 h-full z-50 bg-brand-obsidian border-r border-white/5 hidden lg:flex flex-col group transition-all duration-500 hover:w-[290px]">
       {/* Brand Section */}
-      <div className="p-8 pb-10 flex items-center gap-4">
+      <div className="p-8 pb-8 flex items-center gap-4">
         <Link href="/">
           <div className="flex items-center gap-4 cursor-pointer group/logo">
              <div className="w-11 h-11 rounded-[14px] bg-brand-neural relative flex items-center justify-center shadow-glass-glow shadow-brand-neural/30 transition-all group-hover/logo:scale-105">
                 <i className="fa-solid fa-cube text-white text-xl" />
                 <div className="absolute inset-0 bg-white/20 rounded-inherit opacity-0 group-hover/logo:opacity-100 transition-opacity" />
              </div>
-             <div className="flex flex-col">
+             <div className="flex flex-col min-w-0">
                 <span className="text-sm font-black text-white tracking-ultra-tight">SKILLMIRROR</span>
-                <span className="sm-nano text-brand-neural">Enterprise AI</span>
+                <span className="sm-nano text-brand-neural truncate">{activeDomain.toUpperCase()} DOMAIN</span>
              </div>
           </div>
         </Link>
       </div>
 
-      {/* Navigation */}
-      <div className="flex-1 px-4 space-y-9 overflow-y-auto sm-scrollbar">
+      {/* Dynamic Authorized Engine Navigation */}
+      <div className="flex-1 px-4 space-y-8 overflow-y-auto sm-scrollbar">
         {navSections.map((section) => (
-          <div key={section.title} className="space-y-4">
+          <div key={section.title} className="space-y-3">
             <h3 className="sm-nano px-4 opacity-50">{section.title}</h3>
             <nav className="space-y-1.5">
               {section.items.map((item) => {
@@ -136,7 +131,7 @@ const Header: React.FC = () => {
                      <span className="text-sm font-bold text-white truncate">{user?.username || 'Elite User'}</span>
                      <div className="flex items-center gap-1.5 mt-0.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-brand-emerald animate-pulse" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-brand-emerald">{userRole.toUpperCase()}</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-brand-emerald">{activeRole.toUpperCase()}</span>
                      </div>
                   </div>
                   <div className="ml-auto">
