@@ -13,6 +13,8 @@ const SubmitProblemPage: React.FC = () => {
   const [form, setForm] = useState({
     title: '',
     description: '',
+    source_type: 'COMPANY',
+    problem_owner_name: '',
     organization_name: '',
     org_type: 'company',
     industry: 'Healthcare',
@@ -22,6 +24,7 @@ const SubmitProblemPage: React.FC = () => {
     frequency: 'daily',
     estimated_impact: 'medium',
     required_solution: '',
+    expected_outcome: '',
     budget: '',
     contact_email: '',
     required_skills_input: 'Python, Django, React'
@@ -50,7 +53,7 @@ const SubmitProblemPage: React.FC = () => {
       }
     } catch (err) {
       console.error('Submission failed:', err);
-      alert('Failed to submit problem. Please check fields.');
+      alert('Failed to submit problem. Please check required fields.');
     } finally {
       setSubmitting(false);
     }
@@ -71,36 +74,68 @@ const SubmitProblemPage: React.FC = () => {
 
         <div className="sm-glass p-8 lg:p-10 rounded-3xl border border-white/10 space-y-8">
           <div className="space-y-2 border-b border-white/5 pb-6">
-            <span className="text-xs font-black uppercase tracking-widest text-cyan-400">Problem Collector Hub</span>
-            <h1 className="text-3xl font-black text-white">Submit Real-World Problem</h1>
+            <span className="text-xs font-black uppercase tracking-widest text-cyan-400">Problem Intelligence Engine</span>
+            <h1 className="text-3xl font-black text-white">Submit Problem Challenge</h1>
             <p className="text-sm text-slate-400">
-              Submit a genuine challenge from your organization, startup, hospital, NGO, or institution to get matched with skilled developers.
+              Submit a real-world problem statement from your organization, or generate an AI practice challenge for student developers.
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6 text-xs">
             <div className="grid sm:grid-cols-2 gap-6">
               <div className="space-y-2 sm:col-span-2">
+                <label className="sm-label">Problem Source Classification *</label>
+                <select
+                  name="source_type"
+                  value={form.source_type}
+                  onChange={handleChange}
+                  className="sm-input px-4 py-3 font-bold text-cyan-300"
+                >
+                  <option value="REAL_WORLD_ORGANIZATION">Real-World Organization</option>
+                  <option value="COMPANY">Private Company</option>
+                  <option value="STARTUP">Startup</option>
+                  <option value="HOSPITAL">Hospital / Healthcare Facility</option>
+                  <option value="NGO">NGO / Non-Profit</option>
+                  <option value="GOVERNMENT_PUBLIC">Government / Public Body</option>
+                  <option value="COMMUNITY">Community Organization</option>
+                  <option value="STUDENT_SUBMITTED">Student / Peer Submitted</option>
+                  <option value="AI_GENERATED_PRACTICE">AI-Generated Practice Project (Learning Only)</option>
+                </select>
+              </div>
+
+              <div className="space-y-2 sm:col-span-2">
                 <label className="sm-label">Problem Title *</label>
                 <input
                   type="text"
                   name="title"
                   required
-                  placeholder="e.g. Hospital OPD Appointment & Patient Management System"
+                  placeholder="e.g. Hospital OPD Patient Registration & Doctor Appointment System"
                   value={form.title}
+                  onChange={handleChange}
+                  className="sm-input px-4 py-3 font-bold text-white"
+                />
+              </div>
+
+              <div className="space-y-2 sm:col-span-2">
+                <label className="sm-label">Detailed Original Problem Description *</label>
+                <textarea
+                  name="description"
+                  required
+                  rows={4}
+                  placeholder="Explain the operational bottlenecks, user friction, and manual workflows..."
+                  value={form.description}
                   onChange={handleChange}
                   className="sm-input px-4 py-3"
                 />
               </div>
 
-              <div className="space-y-2 sm:col-span-2">
-                <label className="sm-label">Detailed Problem Description *</label>
-                <textarea
-                  name="description"
-                  required
-                  rows={4}
-                  placeholder="Explain the background context, root challenges, and workflow bottlenecks..."
-                  value={form.description}
+              <div className="space-y-2">
+                <label className="sm-label">Problem Owner / Requester Name</label>
+                <input
+                  type="text"
+                  name="problem_owner_name"
+                  placeholder="e.g. Dr. A. Sharma / Alex Mercer (Lead Engineer)"
+                  value={form.problem_owner_name}
                   onChange={handleChange}
                   className="sm-input px-4 py-3"
                 />
@@ -111,7 +146,7 @@ const SubmitProblemPage: React.FC = () => {
                 <input
                   type="text"
                   name="organization_name"
-                  placeholder="e.g. City General Hospital / AgriTech Startup"
+                  placeholder="e.g. City General Hospital / HealthTech Corp"
                   value={form.organization_name}
                   onChange={handleChange}
                   className="sm-input px-4 py-3"
@@ -119,75 +154,43 @@ const SubmitProblemPage: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="sm-label">Organization Type</label>
-                <select
-                  name="org_type"
-                  value={form.org_type}
+                <label className="sm-label">Contact Email</label>
+                <input
+                  type="email"
+                  name="contact_email"
+                  placeholder="owner@organization.com"
+                  value={form.contact_email}
                   onChange={handleChange}
                   className="sm-input px-4 py-3"
-                >
-                  <option value="company">Company</option>
-                  <option value="startup">Startup</option>
-                  <option value="hospital">Hospital / Healthcare</option>
-                  <option value="ngo">NGO / Non-Profit</option>
-                  <option value="college">College / University</option>
-                  <option value="agriculture">Farmers / Agriculture</option>
-                  <option value="local_business">Local Business</option>
-                  <option value="govt">Government Organization</option>
-                  <option value="student">Student Group</option>
-                  <option value="mentor">Mentor / Researcher</option>
-                </select>
+                />
               </div>
 
               <div className="space-y-2">
-                <label className="sm-label">Industry</label>
+                <label className="sm-label">Industry Sector</label>
                 <input
                   type="text"
                   name="industry"
-                  placeholder="e.g. Healthcare, Agriculture, EdTech"
+                  placeholder="e.g. Healthcare, Agriculture, Commerce"
                   value={form.industry}
                   onChange={handleChange}
                   className="sm-input px-4 py-3"
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="sm-label">Estimated People Affected</label>
-                <input
-                  type="number"
-                  name="people_affected"
-                  value={form.people_affected}
-                  onChange={handleChange}
-                  className="sm-input px-4 py-3"
-                />
-              </div>
-
               <div className="space-y-2 sm:col-span-2">
-                <label className="sm-label">Current Method / Existing Workaround</label>
+                <label className="sm-label">Expected Outcome & Deliverable Goals</label>
                 <textarea
-                  name="current_method"
+                  name="expected_outcome"
                   rows={2}
-                  placeholder="How is this problem currently handled? (e.g. Manual Excel sheets, physical registers)"
-                  value={form.current_method}
+                  placeholder="Describe expected outcome (e.g. Patient can register, book appointments, view doctor availability)..."
+                  value={form.expected_outcome}
                   onChange={handleChange}
                   className="sm-input px-4 py-3"
                 />
               </div>
 
               <div className="space-y-2 sm:col-span-2">
-                <label className="sm-label">Required Solution & Desired Features</label>
-                <textarea
-                  name="required_solution"
-                  rows={2}
-                  placeholder="Describe the desired digital web/mobile application solution..."
-                  value={form.required_solution}
-                  onChange={handleChange}
-                  className="sm-input px-4 py-3"
-                />
-              </div>
-
-              <div className="space-y-2 sm:col-span-2">
-                <label className="sm-label">Required Skills / Tech Preferences (comma separated)</label>
+                <label className="sm-label">Required Tech Stack (comma separated)</label>
                 <input
                   type="text"
                   name="required_skills_input"
@@ -205,7 +208,7 @@ const SubmitProblemPage: React.FC = () => {
                 disabled={submitting}
                 className="sm-btn-primary py-4 px-8 !text-xs uppercase tracking-widest disabled:opacity-50"
               >
-                {submitting ? 'Processing Submission...' : 'Submit & Analyze Problem'}
+                {submitting ? 'Analyzing & Synthesizing Requirement Spec...' : 'Submit & Synthesize Requirement Spec →'}
               </button>
             </div>
           </form>
