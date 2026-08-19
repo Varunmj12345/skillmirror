@@ -210,6 +210,10 @@ class ProfileView(APIView):
         u.first_name = request.data.get('first_name', u.first_name)
         u.last_name = request.data.get('last_name', u.last_name)
         u.save()
+        if 'role' in request.data:
+            new_role = request.data.get('role')
+            if new_role in ['student', 'problem_owner', 'evaluator', 'admin']:
+                profile.role = new_role
         profile.dream_job = request.data.get('dream_job', profile.dream_job)
         profile.experience_level = request.data.get('experience_level', profile.experience_level)
         profile.country = request.data.get('country', profile.country)

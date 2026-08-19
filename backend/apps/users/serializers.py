@@ -36,7 +36,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = [
-            'experience_level', 'dream_job', 'country', 'current_role', 
+            'experience_level', 'dream_job', 'country', 'current_role', 'role',
             'market_readiness_level', 'job_readiness_score', 'profile_completeness',
             'current_streak', 'total_learning_points'
         ]
@@ -53,6 +53,7 @@ class RegisterSerializer(serializers.Serializer):
     username = serializers.CharField()
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
+    role = serializers.CharField(required=False, default='student')
     experience_level = serializers.CharField(required=False, allow_blank=True)
     dream_job = serializers.CharField(required=False, allow_blank=True)
     country = serializers.CharField(required=False, allow_blank=True)
@@ -66,20 +67,29 @@ class RegisterSerializer(serializers.Serializer):
         user = User(username=validated_data['username'], email=validated_data['email'])
         user.set_password(validated_data['password'])
         user.save()
-        profile, _ = UserProfile.objects.get_or_create(
+        role = validated_data.get('role', 'student')
+        if role not in ['student', 'problem_owner', 'evaluator', 'admin']:
+            role = 'student'
+
+        profile, created = UserProfile.objects.get_or_create(
             user=user,
             defaults={
+                'role': role,
                 'experience_level': validated_data.get('experience_level', ''),
                 'dream_job': validated_data.get('dream_job', ''),
                 'country': validated_data.get('country', ''),
             }
         )
+        if not created:
+            profile.role = role
+            profile.save()
         return user
 
 class ProfileUpdateSerializer(serializers.Serializer):
     username = serializers.CharField(required=False)
     first_name = serializers.CharField(required=False)
     last_name = serializers.CharField(required=False)
+    role = serializers.CharField(required=False)
     experience_level = serializers.CharField(required=False)
     dream_job = serializers.CharField(required=False)
     country = serializers.CharField(required=False)

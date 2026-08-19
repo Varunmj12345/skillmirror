@@ -11,6 +11,7 @@ const Signup: React.FC = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState<'student' | 'problem_owner' | 'evaluator' | 'admin'>('student');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -28,7 +29,7 @@ const Signup: React.FC = () => {
     setError(null);
     setLoading(true);
     try {
-      await registerUser({ username, email, password });
+      await registerUser({ username, email, password, role });
       router.push('/login?fromSignup=1');
     } catch (err: any) {
       const data = err?.response?.data ?? err;
@@ -47,6 +48,37 @@ const Signup: React.FC = () => {
     }
   };
 
+  const roleOptions = [
+    {
+      id: 'student',
+      title: 'Student Developer',
+      desc: 'Discover real-world problems, build MVP projects & prove verified skills.',
+      icon: 'fa-user-graduate',
+      color: 'from-indigo-600 to-violet-600'
+    },
+    {
+      id: 'problem_owner',
+      title: 'Problem Owner / Requester',
+      desc: 'Submit genuine challenges from your company, hospital, NGO or startup.',
+      icon: 'fa-building',
+      color: 'from-cyan-600 to-blue-600'
+    },
+    {
+      id: 'evaluator',
+      title: 'Technical Evaluator',
+      desc: 'Review code repos, verify requirement coverage & guide project iterations.',
+      icon: 'fa-clipboard-check',
+      color: 'from-emerald-600 to-teal-600'
+    },
+    {
+      id: 'admin',
+      title: 'Platform Admin',
+      desc: 'Moderate problem submissions, manage system roles & oversee operations.',
+      icon: 'fa-user-shield',
+      color: 'from-amber-600 to-orange-600'
+    }
+  ] as const;
+
   return (
     <Layout>
       <Head>
@@ -63,23 +95,23 @@ const Signup: React.FC = () => {
           initial={{ opacity: 0, y: 24, scale: 0.97 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full max-w-md"
+          className="relative w-full max-w-xl"
         >
           {/* Card */}
-          <div className="bg-slate-900/80 backdrop-blur-2xl border border-slate-700/50 rounded-3xl shadow-2xl shadow-black/40 p-10">
+          <div className="bg-slate-900/80 backdrop-blur-2xl border border-slate-700/50 rounded-3xl shadow-2xl shadow-black/40 p-8 sm:p-10">
 
             {/* Logo + heading */}
-            <div className="text-center mb-10">
-              <div className="w-16 h-16 bg-gradient-to-tr from-violet-600 to-indigo-600 rounded-2xl mx-auto mb-5 flex items-center justify-center shadow-xl shadow-violet-500/30">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="text-center mb-8">
+              <div className="w-14 h-14 bg-gradient-to-tr from-violet-600 to-indigo-600 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-xl shadow-violet-500/30">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                 </svg>
               </div>
-              <h1 className="text-2xl font-black text-white tracking-tight">Create Account</h1>
-              <p className="text-slate-400 text-xs font-semibold mt-1.5 uppercase tracking-[0.2em]">Join the Intelligence Network</p>
+              <h1 className="text-2xl font-black text-white tracking-tight">Create SkillMirror Account</h1>
+              <p className="text-slate-400 text-xs font-semibold mt-1 uppercase tracking-[0.2em]">Select your primary role & access domain</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-6">
 
               {/* Error banner */}
               {error && (
@@ -95,103 +127,99 @@ const Signup: React.FC = () => {
                 </motion.div>
               )}
 
+              {/* Role Selection Grid */}
+              <div className="space-y-2">
+                <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest">Select Account Role *</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {roleOptions.map((opt) => (
+                    <div
+                      key={opt.id}
+                      onClick={() => setRole(opt.id as any)}
+                      className={`p-4 rounded-2xl border transition-all cursor-pointer space-y-1.5 flex flex-col justify-between ${
+                        role === opt.id
+                          ? 'bg-slate-850 border-cyan-400/60 shadow-lg shadow-cyan-500/10 ring-1 ring-cyan-400/50'
+                          : 'bg-slate-950/60 border-white/5 hover:border-slate-700 hover:bg-slate-900/60'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${opt.color} flex items-center justify-center text-white text-xs font-bold`}>
+                          <i className={`fa-solid ${opt.icon}`} />
+                        </div>
+                        {role === opt.id && (
+                          <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-glow" />
+                        )}
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-bold text-white">{opt.title}</h4>
+                        <p className="text-[10px] text-slate-400 leading-normal mt-0.5">{opt.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               {/* Username field */}
               <div className="space-y-1.5">
-                <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest">Username</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <svg className="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                  </div>
-                  <input
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                    placeholder="yourname"
-                    className={`sm-input pl-11 py-3.5 text-sm ${error ? 'error' : ''}`}
-                  />
-                </div>
+                <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest">Username *</label>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                  placeholder="yourname"
+                  className={`sm-input px-4 py-3.5 text-sm ${error ? 'error' : ''}`}
+                />
               </div>
 
               {/* Email field */}
               <div className="space-y-1.5">
-                <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest">Email</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <svg className="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-                    </svg>
-                  </div>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    placeholder="name@company.com"
-                    className={`sm-input pl-11 py-3.5 text-sm ${error ? 'error' : ''}`}
-                  />
-                </div>
+                <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest">Email *</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  placeholder="name@company.com"
+                  className={`sm-input px-4 py-3.5 text-sm ${error ? 'error' : ''}`}
+                />
               </div>
 
               {/* Password field */}
               <div className="space-y-1.5">
-                <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest">Password</label>
+                <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest">Password *</label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <svg className="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                    </svg>
-                  </div>
                   <input
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    minLength={8}
-                    placeholder="Min. 8 characters"
-                    className={`sm-input pl-11 pr-16 py-3.5 text-sm ${error ? 'error' : ''}`}
+                    placeholder="••••••••"
+                    className={`sm-input px-4 pr-16 py-3.5 text-sm ${error ? 'error' : ''}`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
                     className="absolute inset-y-0 right-0 px-4 flex items-center text-slate-500 hover:text-indigo-400 transition-colors text-xs font-bold uppercase tracking-wider"
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
                     {showPassword ? 'Hide' : 'Show'}
                   </button>
                 </div>
-                <p className="text-[11px] text-slate-600 pl-1">Use at least 8 characters with a mix of letters and numbers.</p>
               </div>
 
-              {/* Submit button */}
               <button
                 type="submit"
                 disabled={loading}
-                className="sm-btn-primary w-full flex items-center justify-center gap-2 mt-2"
+                className="sm-btn-primary w-full py-4 text-xs font-black uppercase tracking-widest flex items-center justify-center gap-2"
               >
-                {loading ? (
-                  <>
-                    <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-                    </svg>
-                    Creating account...
-                  </>
-                ) : 'Create Account'}
+                {loading ? 'Creating Role Account...' : `Register as ${roleOptions.find(r => r.id === role)?.title} →`}
               </button>
 
               <p className="text-center text-xs text-slate-500 pt-1">
                 Already have an account?{' '}
-                <Link href="/login"><span className="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors">Sign in</span></Link>
+                <Link href="/login"><span className="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors">Sign in here</span></Link>
               </p>
             </form>
           </div>
-
-          <p className="text-center text-xs text-slate-600 mt-6">
-            By creating an account you agree to our Terms of Service
-          </p>
         </motion.div>
       </div>
     </Layout>
@@ -199,4 +227,3 @@ const Signup: React.FC = () => {
 };
 
 export default Signup;
-

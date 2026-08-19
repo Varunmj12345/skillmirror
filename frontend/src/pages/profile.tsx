@@ -33,7 +33,7 @@ function ProfileDashboard() {
   const [mounted, setMounted] = useState(false);
   const [newSkill, setNewSkill] = useState({ name: '', category: 'Frontend', level: 3 });
   const [showEditProfile, setShowEditProfile] = useState(false);
-  const [editForm, setEditForm] = useState({ first_name: '', last_name: '', dream_job: '', experience_level: 'Junior' });
+  const [editForm, setEditForm] = useState({ first_name: '', last_name: '', dream_job: '', experience_level: 'Junior', role: 'student' });
 
   useEffect(() => {
     setMounted(true);
@@ -48,7 +48,8 @@ function ProfileDashboard() {
         first_name: res.profile.first_name || '',
         last_name: res.profile.last_name || '',
         dream_job: res.profile.dream_job || '',
-        experience_level: res.profile.experience_level || 'Junior'
+        experience_level: res.profile.experience_level || 'Junior',
+        role: res.profile.role || 'student'
       });
     } catch (err) {
       console.error("Dashboard Fetch Error:", err);
@@ -512,6 +513,19 @@ function ProfileDashboard() {
                 onChange={e => setEditForm({ ...editForm, dream_job: e.target.value })}
                 className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
               />
+            </div>
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Active System Role *</label>
+              <select
+                value={editForm.role || 'student'}
+                onChange={e => setEditForm({ ...editForm, role: e.target.value })}
+                className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-cyan-500/50 text-cyan-300 font-bold text-sm outline-none appearance-none focus:ring-2 focus:ring-cyan-500"
+              >
+                <option value="student">🎓 Student Developer</option>
+                <option value="problem_owner">🏢 Problem Owner / Requester</option>
+                <option value="evaluator">📋 Technical Evaluator</option>
+                <option value="admin">🛡️ Platform Admin</option>
+              </select>
             </div>
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Experience Level</label>
