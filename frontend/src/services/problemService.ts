@@ -1,9 +1,26 @@
 import apiClient from './apiClient';
 
+export interface ProjectRequirement {
+  id: number;
+  requirement_id: string;
+  title: string;
+  description: string;
+  req_type: 'functional' | 'non_functional' | 'technical';
+  priority: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+  source: 'OWNER_DEFINED' | 'AI_INFERRED';
+  status: 'pending_owner_confirmation' | 'confirmed' | 'rejected';
+  acceptance_criteria: string;
+  verification_method: string;
+}
+
 export interface Problem {
   id: number;
   title: string;
   description: string;
+  original_description?: string;
+  source_type: string;
+  is_real_world: boolean;
+  problem_owner_name?: string;
   organization_name: string;
   industry: string;
   location: string;
@@ -12,6 +29,8 @@ export interface Problem {
   frequency: string;
   estimated_impact: string;
   required_solution: string;
+  expected_outcome?: string;
+  constraints?: string[];
   budget: number | null;
   required_skills_list: string[];
   status: string;
@@ -26,6 +45,7 @@ export interface Problem {
   missing_capability?: string;
   validation?: any;
   evidences?: any[];
+  requirements?: ProjectRequirement[];
   user_match?: any;
   created_at: string;
 }
@@ -41,6 +61,10 @@ export const problemService = {
 
   submitProblem: async (data: any) => {
     return apiClient.post('/api/problems/submit/', data);
+  },
+
+  confirmRequirement: async (problemId: number | string, reqId: string, action: 'confirm' | 'reject') => {
+    return apiClient.post(`/api/problems/${problemId}/confirm-req/${reqId}/`, { action });
   },
 
   analyzeProblem: async (id: number | string) => {

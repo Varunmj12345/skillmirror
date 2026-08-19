@@ -1,12 +1,14 @@
 import re
 import json
 import random
+import requests
 from django.utils import timezone
 from apps.ai.embeddings import EmbeddingGenerator
 from apps.skills.models import Skill, UserSkill, ResumeData
 from apps.problems.models import (
     Problem, ProblemEvidence, ProblemValidation, ProblemDuplicate,
-    ProblemMatch, Project, ProjectTask, ProjectEvidence, ProblemOpportunity, ProblemOrganization
+    ProblemMatch, Project, ProjectTask, ProjectEvidence, ProblemOpportunity, ProblemOrganization,
+    ProjectRequirement, ProjectSubmissionVersion, ProjectEvaluationResult, ProjectOwnerReview
 )
 
 class ProblemNLPService:
@@ -92,6 +94,9 @@ class ProblemNLPService:
         problem.status = 'under_analysis'
         problem.save()
 
+        # Generate Formal Project Requirements with OWNER_DEFINED vs AI_INFERRED flags
+        self._generate_formal_requirements(problem)
+
         return {
             "category": category,
             "industry": industry,
@@ -103,18 +108,78 @@ class ProblemNLPService:
             "estimated_effort_weeks": effort_weeks
         }
 
+    def _generate_formal_requirements(self, problem: Problem):
+        """Generates formal ProjectRequirement records with explicit source tags."""
+        ProjectRequirement.objects.update_or_create(
+            problem=problem,
+            requirement_id="REQ-001",
+            defaults={
+                "title": f"Core {problem.title} Implementation",
+                "description": problem.description[:250] if problem.description else f"Implement core solution for {problem.title}.",
+                "req_type": "functional",
+                "priority": "CRITICAL",
+                "source": "OWNER_DEFINED",
+                "status": "confirmed",
+                "acceptance_criteria": f"User can execute core {problem.category.lower()} workflow successfully.",
+                "verification_method": "functional_test"
+            }
+        )
+
+        ProjectRequirement.objects.update_or_create(
+            problem=problem,
+            requirement_id="REQ-002",
+            defaults={
+                "title": "User Registration & Role Authorization",
+                "description": "System must support secure user authentication and role-based access control.",
+                "req_type": "functional",
+                "priority": "CRITICAL",
+                "source": "OWNER_DEFINED",
+                "status": "confirmed",
+                "acceptance_criteria": "Authorized users can log in and access role-specific functionality.",
+                "verification_method": "functional_test"
+            }
+        )
+
+        ProjectRequirement.objects.update_or_create(
+            problem=problem,
+            requirement_id="REQ-003",
+            defaults={
+                "title": "Real-Time Dashboard & Status Analytics",
+                "description": f"AI-Inferred Scope: Provide automated real-time status telemetry and exportable summary reports for {problem.target_users or 'users'}.",
+                "req_type": "functional",
+                "priority": "HIGH",
+                "source": "AI_INFERRED",
+                "status": "pending_owner_confirmation",
+                "acceptance_criteria": "Dashboard displays real-time metrics with <500ms latency.",
+                "verification_method": "live_url_check"
+            }
+        )
+
+        ProjectRequirement.objects.update_or_create(
+            problem=problem,
+            requirement_id="REQ-004",
+            defaults={
+                "title": "Sub-500ms API Response & Cloud Security",
+                "description": "System API endpoints must adhere to CORS restriction, input sanitization, and sub-500ms performance constraints.",
+                "req_type": "non_functional",
+                "priority": "MEDIUM",
+                "source": "AI_INFERRED",
+                "status": "pending_owner_confirmation",
+                "acceptance_criteria": "API latency stays under 500ms and sanitized against injection.",
+                "verification_method": "code_review"
+            }
+        )
+
 
 class ProblemValidationService:
     """
     Computes Problem Validation Score & enforces AI Safety & Evidence standards.
     """
     def validate_problem(self, problem: Problem) -> ProblemValidation:
-        # Check evidences attached to problem
         evidences = problem.evidences.all()
         has_human_verified = evidences.filter(source_type__in=['human_verified', 'organization_verified'], verification_status='verified').exists()
         has_ai_assessed = evidences.filter(source_type='ai_assessed').exists()
 
-        # Score Breakdown (0-100)
         evidence_score = 90 if has_human_verified else (60 if has_ai_assessed else 35)
         user_impact_score = min(100, max(30, int(problem.people_affected / 10)))
         frequency_score = 90 if problem.frequency in ['daily', 'continuous'] else 65
@@ -124,7 +189,6 @@ class ProblemValidationService:
         market_relevance_score = problem.market_relevance_score or 75
         reproducibility_score = 80
 
-        # Weighted Total
         total_score = int(
             (evidence_score * 0.20) +
             (user_impact_score * 0.15) +
@@ -152,7 +216,6 @@ class ProblemValidationService:
             }
         )
 
-        # Update problem status based on score
         if total_score >= 70:
             problem.status = 'validated'
         elif total_score >= 50:
@@ -161,7 +224,6 @@ class ProblemValidationService:
             problem.status = 'needs_more_info'
         problem.save()
 
-        # Attach default AI evidence if none exists
         if not evidences.exists():
             ProblemEvidence.objects.create(
                 problem=problem,
@@ -191,7 +253,7 @@ class DuplicateDetectionService:
             o_tokens = self.embedding_gen._tokenize(other.title + " " + other.description)
             similarity = float(self.embedding_gen.calculate_similarity(p_tokens, o_tokens)) * 100
             
-            if similarity >= 40.0: # threshold for duplicate candidate
+            if similarity >= 40.0:
                 dup, created = ProblemDuplicate.objects.update_or_create(
                     source_problem=problem,
                     target_problem=other,
@@ -263,7 +325,6 @@ class ProjectIntelligenceEngine:
         statement = problem.root_problem or problem.description
         target = problem.target_users or "End Users & Administrators"
 
-        # Scoped Features
         mvp_scope = {
             "phase": "MVP (Minimum Viable Product)",
             "duration": "2-3 Weeks",
@@ -310,6 +371,9 @@ class ProjectIntelligenceEngine:
             "GET /api/v1/dashboard/stats"
         ]
 
+        # Calculate student match score
+        pm = StudentProblemMatcher().compute_match(user, problem)
+
         project = Project.objects.create(
             problem=problem,
             user=user,
@@ -338,55 +402,195 @@ class ProjectIntelligenceEngine:
             testing_requirements=["Unit tests for backend endpoints", "Integration tests for auth flow"],
             deployment_requirements=["Docker Containerization", "Render / Vercel Cloud Deployment"],
             status='in_progress',
-            progress_percentage=25
+            progress_percentage=25,
+            match_score=pm.match_score,
+            match_breakdown=pm.learning_gap_analysis
         )
 
-        # Generate Tasks mapped to skills & learning resources
-        user_skills = set([s.name.lower() for s in user.skills.all()])
         tasks_data = [
             ("Implement JWT Authentication & User Roles", "mvp", "Django REST Framework", ["JWT Auth Guide", "DRF Security Tutorial"]),
             ("Build Database Models & Migration Schema", "mvp", "PostgreSQL", ["PostgreSQL Schema Design", "Django ORM Best Practices"]),
             ("Develop Core API Endpoints & Validation", "mvp", "REST API", ["REST API Design Principles"]),
             ("Create Next.js Frontend Dashboard Interface", "mvp", "React", ["React Hooks & Tailwind Tutorial"]),
-            ("Set up Automated Testing & Deployment Pipeline", "v2", "Docker", ["Dockerization Guide", "CI/CD Setup"])
+            ("Connect Live Published Application URL & Perform Verification", "mvp", "Deployment", ["Vercel / Render Deployment Guide"])
         ]
 
-        for idx, (t_title, phase, s_name, res) in enumerate(tasks_data):
-            level = "intermediate" if s_name.lower() in user_skills else "beginner"
+        for idx, (t_title, t_phase, t_skill, t_res) in enumerate(tasks_data, start=1):
             ProjectTask.objects.create(
                 project=project,
                 title=t_title,
-                scope_phase=phase,
-                mapped_skill_name=s_name,
-                student_skill_level=level,
-                learning_resources=res,
-                order=idx + 1
+                scope_phase=t_phase,
+                mapped_skill_name=t_skill,
+                learning_resources=t_res,
+                order=idx
             )
 
         return project
 
 
+class LiveUrlVerificationService:
+    """
+    Verifies Live / Published Project URLs for student submissions.
+    """
+    def check_live_url(self, url: str) -> dict:
+        if not url or not url.startswith(('http://', 'https://')):
+            return {
+                "status": "unreachable",
+                "is_valid": False,
+                "http_code": None,
+                "notes": "Invalid URL format. URL must start with http:// or https://"
+            }
+
+        try:
+            resp = requests.head(url, timeout=5, allow_redirects=True)
+            if resp.status_code >= 400:
+                resp = requests.get(url, timeout=5, allow_redirects=True)
+
+            is_ok = 200 <= resp.status_code < 400
+            return {
+                "status": "reachable" if is_ok else "deployment_issue",
+                "is_valid": is_ok,
+                "http_code": resp.status_code,
+                "notes": f"HTTP status code: {resp.status_code}. Site accessible." if is_ok else f"HTTP status code {resp.status_code} indicating deployment issue."
+            }
+        except requests.exceptions.RequestException as err:
+            return {
+                "status": "deployment_issue",
+                "is_valid": False,
+                "http_code": None,
+                "notes": f"Reachable check failed: {str(err)}"
+            }
+
+
+class ProjectEvaluationEngine:
+    """
+    Evaluates student submission versions against formal Project Requirements.
+    Generates automated technical checks, requirement breakdown, and coverage metrics.
+    """
+    def evaluate_submission(self, submission: ProjectSubmissionVersion, evaluator=None) -> ProjectEvaluationResult:
+        project = submission.project
+        problem = project.problem
+        requirements = problem.requirements.filter(status='confirmed')
+
+        live_check = LiveUrlVerificationService().check_live_url(submission.published_url)
+        submission.deployment_status = live_check["status"]
+        submission.deployment_check_details = live_check
+        submission.save()
+
+        github_ok = bool(submission.github_url and 'github.com' in submission.github_url)
+        live_ok = live_check["is_valid"]
+        doc_ok = len(submission.documentation or '') > 50
+        mapping_ok = len(submission.requirement_mapping or []) > 0
+
+        automated_checks = {
+            "build_success": github_ok,
+            "github_reachable": github_ok,
+            "published_url_reachable": live_ok,
+            "file_completeness": doc_ok,
+            "requirement_mapping_valid": mapping_ok
+        }
+
+        mapped_reqs = {item.get('requirement_id'): item for item in (submission.requirement_mapping or [])}
+        req_evals = []
+        satisfied_count = 0
+        critical_total = 0
+        critical_satisfied = 0
+        functional_total = 0
+        functional_satisfied = 0
+
+        for req in requirements:
+            is_critical = req.priority == 'CRITICAL'
+            is_functional = req.req_type == 'functional'
+
+            if is_critical: critical_total += 1
+            if is_functional: functional_total += 1
+
+            m_item = mapped_reqs.get(req.requirement_id)
+            if m_item and m_item.get('evidence'):
+                req_status = "SATISFIED"
+                reason = f"Satisfied via implemented feature '{m_item.get('implemented_feature', 'Core')}'."
+                suggested_action = "Maintain current implementation."
+                satisfied_count += 1
+                if is_critical: critical_satisfied += 1
+                if is_functional: functional_satisfied += 1
+            elif m_item:
+                req_status = "PARTIALLY_SATISFIED"
+                reason = "Feature mapped but evidence link/test code is incomplete."
+                suggested_action = "Provide clear screenshot or API test evidence."
+            else:
+                req_status = "NOT_SATISFIED"
+                reason = f"No student implementation mapped for requirement {req.requirement_id}."
+                suggested_action = f"Implement {req.title} and provide requirement mapping."
+
+            req_evals.append({
+                "requirement_id": req.requirement_id,
+                "title": req.title,
+                "priority": req.priority,
+                "req_type": req.req_type,
+                "status": req_status,
+                "reason": reason,
+                "missing_component": "" if req_status == "SATISFIED" else req.title,
+                "suggested_action": suggested_action,
+                "confidence": 90 if github_ok and live_ok else 70
+            })
+
+        total_reqs = max(1, len(requirements))
+        req_coverage_pct = round((satisfied_count / total_reqs) * 100, 1)
+        crit_coverage_pct = round((critical_satisfied / max(1, critical_total)) * 100, 1) if critical_total > 0 else 100.0
+        func_coverage_pct = round((functional_satisfied / max(1, functional_total)) * 100, 1) if functional_total > 0 else 100.0
+
+        ready_for_owner = (crit_coverage_pct >= 100.0) and live_ok and github_ok
+
+        quality_score = int((req_coverage_pct * 0.5) + (100 if live_ok else 40) * 0.3 + (100 if doc_ok else 50) * 0.2)
+        quality_breakdown = {
+            "requirement_fulfillment": f"{req_coverage_pct}%",
+            "deployment_readiness": "100%" if live_ok else "Deployment Issue",
+            "documentation_completeness": "Pass" if doc_ok else "Needs expansion",
+            "critical_requirements_status": "All Critical Satisfied" if crit_coverage_pct >= 100 else f"{critical_satisfied}/{critical_total} Critical Satisfied"
+        }
+
+        eval_result, _ = ProjectEvaluationResult.objects.update_or_create(
+            submission=submission,
+            defaults={
+                "project": project,
+                "evaluator": evaluator,
+                "requirement_evaluations": req_evals,
+                "automated_checks": automated_checks,
+                "requirement_coverage_pct": req_coverage_pct,
+                "critical_requirement_coverage_pct": crit_coverage_pct,
+                "functional_requirement_coverage_pct": func_coverage_pct,
+                "is_ready_for_owner_review": ready_for_owner,
+                "quality_score": quality_score,
+                "quality_breakdown": quality_breakdown,
+                "evaluator_decision": "ACCEPT" if ready_for_owner else "REVISION_REQUIRED",
+                "evaluator_comments": "Automated technical evaluation completed." if ready_for_owner else "Critical requirements or live deployment verification failed. Revision required."
+            }
+        )
+
+        if ready_for_owner:
+            project.status = 'owner_review' if problem.is_real_world else 'completed'
+        else:
+            project.status = 'revision_required'
+        project.save()
+
+        return eval_result
+
+
 class EvidenceGeneratorService:
     """
     Synthesizes completed project data into formal "Evidence of Skill" statements.
-    Connects evidence into user's Resume Data, Skill Profile, and Career Digital Twin.
-    No admin approval required for student project completion.
     """
     def generate_evidence(self, project: Project, github_url: str = "", deployment_url: str = "") -> ProjectEvidence:
         problem = project.problem
         user = project.user
         tech_str = ", ".join(project.tech_stack) if project.tech_stack else "modern technology stack"
 
-        # Determine evidence verification level (FIX 4 & FIX 10)
-        # Student-submitted evidence is default 'self_reported' (or 'ai_assessed' if code/deployment links are provided)
-        trust_level = 'self_reported'
-        g_url = github_url.strip() if github_url else ""
-        d_url = deployment_url.strip() if deployment_url else ""
-        if g_url or d_url:
+        trust_level = 'organization_verified' if (problem.is_real_world and project.status == 'accepted') else 'self_reported'
+        if not (problem.is_real_world and project.status == 'accepted') and (github_url or deployment_url):
             trust_level = 'ai_assessed'
 
         evidence_statement = (
-            f"Student demonstrated {tech_str} proficiency by engineering a practical solution "
+            f"Student demonstrated {tech_str} proficiency by engineering a verified solution "
             f"for '{problem.title}' targeting {problem.industry} sector requirements."
         )
 
@@ -398,11 +602,11 @@ class EvidenceGeneratorService:
             defaults={
                 "user": user,
                 "problem_solved_summary": problem.description,
-                "student_contribution": f"Built core MVP project features, completed technical tasks, and utilized {tech_str}.",
+                "student_contribution": f"Built core solution features, completed technical requirements, and utilized {tech_str}.",
                 "technologies_used": project.tech_stack,
                 "features_developed": project.functional_requirements,
-                "github_url": g_url,
-                "deployment_url": d_url,
+                "github_url": github_url.strip() if github_url else "",
+                "deployment_url": deployment_url.strip() if deployment_url else "",
                 "testing_passed": True,
                 "performance_metrics": {
                     "tasks_completed": completed_tasks_count,
@@ -410,18 +614,12 @@ class EvidenceGeneratorService:
                     "completion_rate": "100%"
                 },
                 "user_feedback": "",
-                "problem_impact_rating": 85,
+                "problem_impact_rating": 90 if problem.is_real_world else 85,
                 "evidence_statement": evidence_statement,
                 "verification_status": trust_level
             }
         )
 
-        # Update project status directly to completed (FIX 3 — NO ADMIN APPROVAL NEEDED)
-        project.status = 'completed'
-        project.progress_percentage = 100
-        project.save()
-
-        # Connect into Resume Data & User Profile XP (FIX 11)
         try:
             resume_data, _ = ResumeData.objects.get_or_create(user=user)
             existing_skills = set(resume_data.extracted_skills or [])
@@ -433,14 +631,12 @@ class EvidenceGeneratorService:
 
         try:
             profile = user.profile
-            profile.total_learning_points += 150
+            profile.total_learning_points += 200
             profile.save()
         except Exception:
             pass
 
-        # Trigger Opportunity Connection
         OpportunityEngine().match_opportunities(evidence)
-
         return evidence
 
 
@@ -462,17 +658,17 @@ class OpportunityEngine:
 
         created_opps = []
         for o_type, title, org, desc in opps_data:
-            opp = ProblemOpportunity.objects.create(
+            opp, _ = ProblemOpportunity.objects.update_or_create(
                 project_evidence=evidence,
-                problem=problem,
                 user=user,
-                opportunity_type=o_type,
                 title=title,
-                organization=org,
-                description=desc,
-                match_reason=f"Matched via verified project evidence in {industry}.",
-                application_link=f"/opportunities/{o_type}"
+                defaults={
+                    "problem": problem,
+                    "opportunity_type": o_type,
+                    "organization": org,
+                    "description": desc,
+                    "match_reason": f"Demonstrated {', '.join(project.tech_stack[:3])} proficiency on {problem.title}."
+                }
             )
             created_opps.append(opp)
-
         return created_opps

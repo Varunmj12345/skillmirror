@@ -38,7 +38,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 class UserProfile(models.Model):
+    ROLE_CHOICES = [
+        ('student', 'Student'),
+        ('problem_owner', 'Problem Owner / Requester'),
+        ('evaluator', 'Project Evaluator'),
+        ('admin', 'Platform Super Admin'),
+    ]
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    role = models.CharField(max_length=30, choices=ROLE_CHOICES, default='student')
     experience_level = models.CharField(max_length=50, blank=True)
     dream_job = models.CharField(max_length=255, blank=True)
     country = models.CharField(max_length=100, blank=True)

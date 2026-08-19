@@ -188,6 +188,8 @@ class ProfileView(APIView):
             'email': request.user.email,
             'first_name': request.user.first_name,
             'last_name': request.user.last_name,
+            'role': profile.role,
+            'is_staff': request.user.is_staff or profile.role in ['admin', 'evaluator'],
             'experience_level': profile.experience_level,
             'dream_job': profile.dream_job,
             'country': profile.country,
