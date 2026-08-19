@@ -69,13 +69,6 @@ const Signup: React.FC = () => {
       desc: 'Review code repos, verify requirement coverage & guide project iterations.',
       icon: 'fa-clipboard-check',
       color: 'from-emerald-600 to-teal-600'
-    },
-    {
-      id: 'admin',
-      title: 'Platform Admin',
-      desc: 'Moderate problem submissions, manage system roles & oversee operations.',
-      icon: 'fa-user-shield',
-      color: 'from-amber-600 to-orange-600'
     }
   ] as const;
 

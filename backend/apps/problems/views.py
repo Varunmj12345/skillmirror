@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from apps.users.permissions import IsPlatformAdmin, IsProjectEvaluator, IsProblemOwner, IsStudentUser, IsResourceOwner
 from rest_framework import status
 from django.db.models import Q
 from django.utils import timezone
@@ -213,7 +214,7 @@ class ProjectSubmissionView(APIView):
 
 
 class ProjectEvaluatorDashboardView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsProjectEvaluator]
 
     def get(self, request):
         # Allow evaluators or admin staff
@@ -270,7 +271,7 @@ class ProjectEvaluatorDashboardView(APIView):
 
 
 class ProjectOwnerDashboardView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsProblemOwner]
 
     def get(self, request):
         # Problem Owner isolated view: ONLY projects connected to problems submitted by this user/contact_email
@@ -441,9 +442,18 @@ class ProjectDetailView(APIView):
 
     def get(self, request, pk):
         try:
-            project = Project.objects.get(pk=pk, user=request.user)
+            project = Project.objects.get(pk=pk)
         except Project.DoesNotExist:
             return Response({'error': 'Project not found.'}, status=404)
+
+        user = request.user
+        role = getattr(getattr(user, 'profile', None), 'role', 'student')
+        is_owner = (project.user == user)
+        is_problem_owner = (project.problem.submitted_by == user or project.problem.contact_email.lower() == user.email.lower())
+        is_eval_or_admin = user.is_staff or role in ['admin', 'evaluator']
+
+        if not (is_owner or is_problem_owner or is_eval_or_admin):
+            return Response({'error': 'Forbidden: You do not have permission to access this project.'}, status=403)
 
         return Response(ProjectSerializer(project).data)
 
@@ -488,7 +498,7 @@ class ProjectCompleteView(APIView):
 
 
 class AdminProblemDashboardView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsPlatformAdmin]
 
     def get(self, request):
         problems = Problem.objects.all()

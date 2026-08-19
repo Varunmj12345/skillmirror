@@ -49,7 +49,46 @@ class LoginView(APIView):
         return Response({
             'access': str(refresh.access_token),
             'refresh': str(refresh),
-            'user': {'email': user.email, 'username': user.username or user.email},
+            'user': {'email': user.email, 'username': user.username or user.email, 'role': profile.role},
+        })
+
+
+class AdminLoginView(APIView):
+    """
+    Dedicated Platform Admin Login Endpoint.
+    Authenticates ONLY designated Platform Admin accounts (is_staff=True or profile.role='admin').
+    Rejects normal student users with HTTP 403 Forbidden.
+    """
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        email = request.data.get('email', '').strip().lower()
+        password = request.data.get('password', '').strip()
+
+        user = User.objects.filter(email__iexact=email).first()
+        if not user or not user.check_password(password):
+            return Response({'detail': 'Invalid admin credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        profile, _ = UserProfile.objects.get_or_create(user=user)
+        is_admin = user.is_staff or profile.role == 'admin'
+
+        if not is_admin:
+            return Response({
+                'detail': 'Access Denied: You do not have Platform Admin authorization.'
+            }, status=status.HTTP_403_FORBIDDEN)
+
+        from rest_framework_simplejwt.tokens import RefreshToken
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'access': str(refresh.access_token),
+            'refresh': str(refresh),
+            'user': {
+                'email': user.email,
+                'username': user.username or user.email,
+                'role': 'admin',
+                'is_staff': True
+            },
+            'redirect': '/admin/problems'
         })
 
 class Verify2FAView(APIView):
@@ -212,6 +251,12 @@ class ProfileView(APIView):
         u.save()
         if 'role' in request.data:
             new_role = request.data.get('role')
+            is_caller_admin = u.is_staff or profile.role == 'admin'
+            if new_role in ['admin', 'evaluator'] and not is_caller_admin:
+                return Response(
+                    {'detail': 'Forbidden: Only Platform Admins can assign administrative or evaluator roles.'},
+                    status=status.HTTP_403_FORBIDDEN
+                )
             if new_role in ['student', 'problem_owner', 'evaluator', 'admin']:
                 profile.role = new_role
         profile.dream_job = request.data.get('dream_job', profile.dream_job)

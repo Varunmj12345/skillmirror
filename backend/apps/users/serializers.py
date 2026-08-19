@@ -68,7 +68,8 @@ class RegisterSerializer(serializers.Serializer):
         user.set_password(validated_data['password'])
         user.save()
         role = validated_data.get('role', 'student')
-        if role not in ['student', 'problem_owner', 'evaluator', 'admin']:
+        # CRITICAL SECURITY RULE: Public registration CANNOT create Platform Admin accounts
+        if role not in ['student', 'problem_owner', 'evaluator']:
             role = 'student'
 
         profile, created = UserProfile.objects.get_or_create(

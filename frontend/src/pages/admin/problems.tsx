@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
+import { useRouter } from 'next/router';
 import Layout from '../../components/Layout';
 import { problemService } from '../../services/problemService';
 import { SkeletonCard } from '../../components/motion/Skeleton';
 import { ScrollReveal } from '../../components/motion/ScrollReveal';
 
 const AdminProblemPortalPage: React.FC = () => {
+  const router = useRouter();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -15,8 +16,13 @@ const AdminProblemPortalPage: React.FC = () => {
       setLoading(true);
       const res: any = await problemService.getAdminDashboard();
       setData(res?.data || res);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to load admin dashboard:', err);
+      if (err?.response?.status === 403) {
+        router.push('/403');
+      } else if (err?.response?.status === 401) {
+        router.push('/admin/login');
+      }
     } finally {
       setLoading(false);
     }

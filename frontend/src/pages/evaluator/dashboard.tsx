@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import Layout from '../../components/Layout';
 import { projectService, Project, ProjectSubmissionVersion } from '../../services/projectService';
 import { SkeletonCard } from '../../components/motion/Skeleton';
 import { ScrollReveal } from '../../components/motion/ScrollReveal';
 
 const EvaluatorDashboardPage: React.FC = () => {
+  const router = useRouter();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
@@ -22,8 +24,11 @@ const EvaluatorDashboardPage: React.FC = () => {
       if (projList.length > 0 && !selectedProject) {
         setSelectedProject(projList[0]);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to load evaluator queue:', err);
+      if (err?.response?.status === 403) {
+        router.push('/403');
+      }
     } finally {
       setLoading(false);
     }
