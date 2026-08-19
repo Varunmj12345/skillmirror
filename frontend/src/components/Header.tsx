@@ -9,6 +9,7 @@ interface NavItem {
   href: string;
   label: string;
   icon: string;
+  roleRequired?: string[];
 }
 
 interface NavSection {
@@ -24,6 +25,9 @@ const Header: React.FC = () => {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const userRole = user?.role || 'student';
+  const isStaff = user?.is_staff || userRole === 'admin' || userRole === 'evaluator';
 
   const navSections: NavSection[] = [
     {
@@ -53,9 +57,12 @@ const Header: React.FC = () => {
       items: [
         { href: '/problems', label: 'Discover Problems', icon: 'fa-earth-americas' },
         { href: '/problems/matches', label: 'My Matches', icon: 'fa-bullseye' },
-        { href: '/problems/submit', label: 'Submit Problem', icon: 'fa-paper-plane' },
         { href: '/projects', label: 'My Projects', icon: 'fa-diagram-project' },
-        { href: '/admin/problems', label: 'Admin Portal', icon: 'fa-shield' },
+        { href: '/projects/status-center', label: 'Status Center', icon: 'fa-chart-line' },
+        { href: '/problems/submit', label: 'Submit Problem', icon: 'fa-paper-plane' },
+        ...(isStaff || userRole === 'evaluator' ? [{ href: '/evaluator/dashboard', label: 'Evaluator Portal', icon: 'fa-clipboard-check' }] : []),
+        ...(userRole === 'problem_owner' || isStaff ? [{ href: '/owner/dashboard', label: 'Owner Portal', icon: 'fa-user-shield' }] : []),
+        ...(isStaff ? [{ href: '/admin/problems', label: 'Admin Management', icon: 'fa-shield' }] : []),
       ],
     },
     {
@@ -129,7 +136,7 @@ const Header: React.FC = () => {
                      <span className="text-sm font-bold text-white truncate">{user?.username || 'Elite User'}</span>
                      <div className="flex items-center gap-1.5 mt-0.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-brand-emerald animate-pulse" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-brand-emerald">Pro Active</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-brand-emerald">{userRole.toUpperCase()}</span>
                      </div>
                   </div>
                   <div className="ml-auto">

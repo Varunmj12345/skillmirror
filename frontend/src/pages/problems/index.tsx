@@ -81,21 +81,21 @@ const ProblemsDiscoveryPage: React.FC = () => {
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <Link href="/evaluator/dashboard">
+            <Link href="/problems/matches">
               <button className="px-4 py-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 font-bold text-xs hover:bg-indigo-500/20 transition-all flex items-center gap-2">
-                <i className="fa-solid fa-clipboard-check" />
-                <span>Evaluator Dashboard</span>
+                <i className="fa-solid fa-bullseye" />
+                <span>My Skill Matches</span>
               </button>
             </Link>
-            <Link href="/owner/dashboard">
+            <Link href="/projects">
               <button className="px-4 py-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 font-bold text-xs hover:bg-cyan-500/20 transition-all flex items-center gap-2">
-                <i className="fa-solid fa-user-shield" />
-                <span>Problem Owner Portal</span>
+                <i className="fa-solid fa-diagram-project" />
+                <span>My Projects</span>
               </button>
             </Link>
             <Link href="/projects/status-center">
               <button className="px-4 py-2.5 rounded-xl bg-slate-800 border border-white/10 text-slate-200 font-bold text-xs hover:bg-slate-700 transition-all flex items-center gap-2">
-                <i className="fa-solid fa-diagram-project" />
+                <i className="fa-solid fa-chart-line" />
                 <span>Status Center</span>
               </button>
             </Link>
