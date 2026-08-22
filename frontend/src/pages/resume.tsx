@@ -14,6 +14,7 @@ import TemplateGallery from '../components/Resume/TemplateGallery';
 import ResumePreview from '../components/Resume/ResumePreview';
 import { SkeletonCard } from '../components/motion/Skeleton';
 import { ScrollReveal } from '../components/motion/ScrollReveal';
+import { CyberPageShell, PageStatChip } from '../components/CyberPageShell';
 
 import type { BuilderFormData } from '../components/Resume/ResumeBuilderForm';
 import type { TemplateConfig } from '../components/Resume/TemplateGallery';
@@ -234,32 +235,40 @@ const ResumePage: React.FC = () => {
   return (
     <Layout>
       <Head>
-        <title>AI Resume Intelligence • SkillMirror</title>
+        <title>Resume Optimizer • SkillMirror OS</title>
         <meta name="description" content="Analyze, build, and optimize your resume with AI-powered tools." />
       </Head>
+      <CyberPageShell
+        moduleCode="MOD-03"
+        title="RESUME OPTIMIZER"
+        subtitle="AI-powered resume analysis, ATS scoring, job targeting, and instant improvement recommendations."
+        badge="AI POWERED"
+        badgeVariant="outline-cyan"
+        bulletVariant="cyan"
+        glowColor="emerald"
+        stats={
+          <>
+            <PageStatChip label="ATS Score" value={analysis ? `${analysis.readinessScore}%` : '—'} icon="fa-shield-check" color="emerald" />
+            <PageStatChip label="Job Match" value={analysis ? `${analysis.jobMatchScore}%` : '—'} icon="fa-bullseye" color="cyan" />
+            <PageStatChip label="Skills Found" value={analysis?.skills?.length || 0} icon="fa-microchip" color="slate" />
+          </>
+        }
+      />
+      <section className="px-6 pb-10 max-w-[1400px] mx-auto space-y-6">
 
-      <section className="space-y-6">
-        {/* Page header */}
-        <header className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-          <div>
-            <p className="text-[11px] uppercase tracking-[0.22em] text-slate-500 mb-1">Resume Module</p>
-            <h1 className="text-xl sm:text-2xl font-semibold text-slate-50">AI Resume Intelligence</h1>
-            <p className="mt-1 text-xs text-slate-400 max-w-xl">
-              Analyze, build, and optimize your resume with AI-powered tools and ATS scoring.
-            </p>
-          </div>
-        </header>
-
-
-        {/* Main Tab Switcher */}
-        <div className="flex gap-1 p-1 bg-slate-900/80 border border-slate-800 rounded-2xl w-fit">
+        {/* Main Tab Switcher — cyber style */}
+        <div className="flex gap-1 p-1 bg-pop border border-white/[0.06] rounded-xl w-fit">
           {TAB_ITEMS.map(t => (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all ${tab === t.key ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'text-slate-500 hover:text-slate-300'}`}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-[11px] font-mono font-bold uppercase tracking-wider transition-all ${
+                tab === t.key
+                  ? 'bg-cyan-500/15 border border-cyan-500/30 text-cyan-300'
+                  : 'text-slate-500 hover:text-slate-300'
+              }`}
             >
-              <i className={`fa-solid ${t.icon} text-[10px]`}></i>
+              <i className={`fa-solid ${t.icon} text-[10px]`} />
               {t.label}
             </button>
           ))}

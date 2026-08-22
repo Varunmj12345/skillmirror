@@ -1,149 +1,129 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Card, CardHeader, CardContent } from './ui/card';
+import { Bullet } from './ui/bullet';
+import { Badge } from './ui/badge';
 
 const features = [
   {
-    icon: '📊',
-    title: 'Intelligence Hub',
-    desc: 'Advanced AI analysis of your profile compared against 50k+ career paths.',
-    accent: 'from-indigo-500/10 to-indigo-500/5',
-    border: 'border-indigo-500/20',
-    glow: 'group-hover:shadow-indigo-500/10',
-    badge: 'Core',
-    badgeColor: 'bg-indigo-500/20 text-indigo-300',
+    code: 'MOD-01',
+    title: 'INTELLIGENCE HUB',
+    desc: 'Deep neural graph evaluation benchmarking user skills against 50,000+ real-time market roles.',
+    icon: 'fa-brain',
+    bulletVariant: 'cyan',
+    badge: 'CORE ENGINE',
+    badgeVariant: 'outline-cyan',
   },
   {
-    icon: '🗺️',
-    title: 'Path Discovery',
-    desc: 'AI-generated roadmaps that adapt in real-time as you hit milestones.',
-    accent: 'from-violet-500/10 to-violet-500/5',
-    border: 'border-violet-500/20',
-    glow: 'group-hover:shadow-violet-500/10',
-    badge: 'Smart',
-    badgeColor: 'bg-violet-500/20 text-violet-300',
+    code: 'MOD-02',
+    title: 'ADAPTIVE ROADMAPS',
+    desc: 'Dynamic learning curriculum synthesized by LLMs with video modules, milestones, and project goals.',
+    icon: 'fa-compass',
+    bulletVariant: 'default',
+    badge: 'AUTONOMOUS',
+    badgeVariant: 'default',
   },
   {
-    icon: '📄',
-    title: 'Resume Engine',
-    desc: 'Upload DOCX/PDF and get an ATS-optimized resume that scores 95%+.',
-    accent: 'from-blue-500/10 to-blue-500/5',
-    border: 'border-blue-500/20',
-    glow: 'group-hover:shadow-blue-500/10',
-    badge: 'ATS Ready',
-    badgeColor: 'bg-blue-500/20 text-blue-300',
+    code: 'MOD-03',
+    title: 'ATS RESUME OPTIMIZER',
+    desc: 'Automated keyword density mapping, parsing validation, and formatting calibration achieving 95%+ pass rates.',
+    icon: 'fa-file-shield',
+    bulletVariant: 'success',
+    badge: 'ATS READY',
+    badgeVariant: 'outline-success',
   },
   {
-    icon: '🎤',
-    title: 'Mock Interview',
-    desc: 'Practice with AI interviewers across technical, behavioral, and HR modes.',
-    accent: 'from-purple-500/10 to-purple-500/5',
-    border: 'border-purple-500/20',
-    glow: 'group-hover:shadow-purple-500/10',
-    badge: 'Live AI',
-    badgeColor: 'bg-purple-500/20 text-purple-300',
+    code: 'MOD-04',
+    title: 'AI MOCK INTERVIEWS',
+    desc: 'Voice and text simulations with role-tailored technical probes, STAR format feedback, and confidence indexing.',
+    icon: 'fa-headset',
+    bulletVariant: 'warning',
+    badge: 'REAL-TIME',
+    badgeVariant: 'outline-warning',
   },
   {
-    icon: '📈',
-    title: 'Market Readiness',
-    desc: 'Real-time job demand tracking and salary benchmarks for your skill stack.',
-    accent: 'from-sky-500/10 to-sky-500/5',
-    border: 'border-sky-500/20',
-    glow: 'group-hover:shadow-sky-500/10',
-    badge: 'Live Data',
-    badgeColor: 'bg-sky-500/20 text-sky-300',
+    code: 'MOD-05',
+    title: 'MARKET COMPENSATION RADAR',
+    desc: 'Salary distribution curves, demand heatmaps, and regional hiring velocity across engineering stacks.',
+    icon: 'fa-chart-line',
+    bulletVariant: 'cyan',
+    badge: 'TELEMETRY',
+    badgeVariant: 'outline-cyan',
   },
   {
-    icon: '🔔',
-    title: 'Smart Alerts',
-    desc: 'Instant notifications when job opportunities match your exact profile.',
-    accent: 'from-emerald-500/10 to-emerald-500/5',
-    border: 'border-emerald-500/20',
-    glow: 'group-hover:shadow-emerald-500/10',
-    badge: 'Instant',
-    badgeColor: 'bg-emerald-500/20 text-emerald-300',
+    code: 'MOD-06',
+    title: 'SMART CAREER ALERTS',
+    desc: 'Algorithmic notifications triggered when job matching score thresholds and hiring spikes intersect.',
+    icon: 'fa-bell',
+    bulletVariant: 'success',
+    badge: 'INSTANT DISPATCH',
+    badgeVariant: 'outline-success',
   },
 ];
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 32 },
-  show: (i) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.55, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] },
-  }),
-};
+const FeatureCards = () => {
+  return (
+    <section className="py-24 relative bg-background border-t border-white/[0.06]">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded border border-white/[0.08] bg-pop text-[11px] font-mono font-bold uppercase tracking-widest text-slate-400 mb-4">
+            <Bullet variant="cyan" size="sm" />
+            <span>ARCHITECTURE SPECIFICATION</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-black text-white tracking-tight mb-4">
+            INTELLIGENCE MODULE MATRIX
+          </h2>
+          <p className="sm-body-text max-w-2xl mx-auto text-slate-400">
+            A cohesive suite of autonomous machine-learning subsystems working together to calculate and accelerate your career trajectory.
+          </p>
+        </motion.div>
 
-const FeatureCards = () => (
-  <section className="py-28 relative bg-[#020617]">
-    {/* Subtle grid overlay */}
-    <div
-      className="absolute inset-0 pointer-events-none opacity-[0.03]"
-      style={{
-        backgroundImage: `linear-gradient(#6366f1 1px, transparent 1px), linear-gradient(to right, #6366f1 1px, transparent 1px)`,
-        backgroundSize: '72px 72px',
-      }}
-    />
+        {/* Feature Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {features.map((f, i) => (
+            <motion.div
+              key={f.code}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.08, duration: 0.5 }}
+            >
+              <Card glow className="h-full group">
+                <CardHeader
+                  title={f.title}
+                  bulletVariant={f.bulletVariant}
+                  addon={<Badge variant={f.badgeVariant}>{f.badge}</Badge>}
+                />
+                <CardContent className="flex flex-col justify-between h-[calc(100%-48px)] p-4">
+                  <div>
+                    <div className="flex items-center justify-between text-slate-500 font-mono text-[10px] mb-3">
+                      <span>{f.code}</span>
+                      <i className={`fa-solid ${f.icon} text-sm text-cyan-400 group-hover:scale-110 transition-transform`} />
+                    </div>
+                    <p className="text-xs font-mono text-slate-300 leading-relaxed">
+                      {f.desc}
+                    </p>
+                  </div>
 
-    <div className="max-w-7xl mx-auto px-6 relative z-10">
-      {/* Section header */}
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="text-center mb-16"
-      >
-        <span className="inline-block px-4 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-[11px] font-black uppercase tracking-[0.25em] mb-5">
-          Platform Features
-        </span>
-        <h2 className="text-4xl sm:text-5xl font-black text-white mb-4 tracking-tight">
-          Everything You Need to{' '}
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
-            Level Up
-          </span>
-        </h2>
-        <p className="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">
-          Six AI-powered modules working together to automate your career growth from Day 1.
-        </p>
-      </motion.div>
-
-      {/* Cards grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {features.map((f, i) => (
-          <motion.div
-            key={f.title}
-            custom={i}
-            variants={cardVariants}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            whileHover={{ y: -6, transition: { duration: 0.25 } }}
-            className={`group relative p-6 rounded-2xl bg-gradient-to-br ${f.accent} border ${f.border} shadow-lg hover:shadow-xl ${f.glow} transition-all duration-300 cursor-default overflow-hidden`}
-          >
-            {/* Corner glow on hover */}
-            <div className="absolute top-0 right-0 w-20 h-20 bg-white/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -translate-x-4 -translate-y-4" />
-
-            <div className="flex items-start justify-between mb-5">
-              <div className="text-3xl group-hover:scale-110 transition-transform duration-300">{f.icon}</div>
-              <span className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider ${f.badgeColor}`}>
-                {f.badge}
-              </span>
-            </div>
-
-            <h3 className="text-base font-black text-white mb-2 tracking-tight">{f.title}</h3>
-            <p className="text-slate-400 text-sm leading-relaxed">{f.desc}</p>
-
-            <div className="mt-4 flex items-center gap-1.5 text-[11px] font-bold text-slate-500 group-hover:text-indigo-400 transition-colors duration-300">
-              <span>Explore</span>
-              <svg className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </div>
-          </motion.div>
-        ))}
+                  <div className="pt-4 mt-4 border-t border-white/[0.04] flex items-center justify-between text-[10px] font-mono text-slate-400 group-hover:text-cyan-300 transition-colors">
+                    <span>INITIALIZE PROTOCOL</span>
+                    <i className="fa-solid fa-chevron-right text-[9px] group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 export default FeatureCards;

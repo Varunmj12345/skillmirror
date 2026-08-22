@@ -1,7 +1,16 @@
 // @ts-nocheck
 import React from 'react';
-import { LineChart as RechartsLineChart, Line as RechartsLine, XAxis as RechartsXAxis, YAxis as RechartsYAxis, CartesianGrid as RechartsCartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer as RechartsResponsiveContainer, AreaChart as RechartsAreaChart, Area as RechartsArea } from 'recharts';
+import { 
+    LineChart as RechartsLineChart, Line as RechartsLine, 
+    XAxis as RechartsXAxis, YAxis as RechartsYAxis, 
+    CartesianGrid as RechartsCartesianGrid, Tooltip as RechartsTooltip, 
+    ResponsiveContainer as RechartsResponsiveContainer, 
+    AreaChart as RechartsAreaChart, Area as RechartsArea 
+} from 'recharts';
 import { formatINR } from '../utils/formatters';
+import { Bullet } from './ui/bullet';
+import { Badge } from './ui/badge';
+import { TVNoise } from './ui/tv-noise';
 
 const LineChart = RechartsLineChart as any;
 const Line = RechartsLine as any;
@@ -24,13 +33,29 @@ interface JobDemandTrendsProps {
     trends: TrendData[];
 }
 
+const CyberTooltip = ({ active, payload, label, isSalary = false }: any) => {
+    if (active && payload && payload.length) {
+        return (
+            <div className="bg-[#0b0d13] border border-white/[0.1] p-3 rounded-xl shadow-2xl backdrop-blur-xl">
+                <p className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 mb-1">{label}</p>
+                <p className="text-xs font-mono font-bold text-cyan-300">
+                    {isSalary ? 'Avg Salary: ' : 'Demand Score: '}
+                    <span className={isSalary ? 'text-emerald-400' : 'text-cyan-400'}>
+                        {isSalary ? formatINR(payload[0].value) : payload[0].value}
+                    </span>
+                </p>
+            </div>
+        );
+    }
+    return null;
+};
+
 const JobDemandTrends: React.FC<JobDemandTrendsProps> = ({ trends }) => {
-    if (!trends || trends.length === 0) return <div className="p-4 text-center text-gray-500">Loading trends...</div>;
+    if (!trends || trends.length === 0) return <div className="p-4 text-center font-mono text-xs text-slate-500">Synchronizing market trend telemetry...</div>;
 
     const processedTrends = React.useMemo(() => {
         if (!trends || trends.length === 0) return [];
 
-        // 1. Group raw hiring events by YYYY-MM
         const monthlyMap: { [key: string]: { demand_scores: number[]; avg_salaries: number[]; sampleDate: Date } } = {};
 
         trends.forEach(item => {
@@ -53,10 +78,8 @@ const JobDemandTrends: React.FC<JobDemandTrendsProps> = ({ trends }) => {
             if (typeof item.avg_salary === 'number') monthlyMap[monthKey].avg_salaries.push(item.avg_salary);
         });
 
-        // 2. Sort month keys in chronological order
         const sortedMonthKeys = Object.keys(monthlyMap).sort();
 
-        // 3. Extract monthly aggregated hiring totals
         const aggregated = sortedMonthKeys.map(monthKey => {
             const data = monthlyMap[monthKey];
             const avgDemand = data.demand_scores.length > 0 
@@ -75,10 +98,8 @@ const JobDemandTrends: React.FC<JobDemandTrendsProps> = ({ trends }) => {
             };
         });
 
-        // 4. Guarantee exactly 6 unique chronological month slots
         const last6 = aggregated.slice(-6);
 
-        // Deduplicate month labels if year boundaries overlap
         const seenLabels = new Set();
         return last6.map(item => {
             let label = item.monthLabel;
@@ -97,56 +118,96 @@ const JobDemandTrends: React.FC<JobDemandTrendsProps> = ({ trends }) => {
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             {/* Job Demand Trend */}
-            <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-                <div className="flex justify-between items-center mb-6">
+            <div className="bg-pop rounded-2xl p-6 border border-white/[0.07] relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent" />
+                <TVNoise opacity={0.02} />
+                
+                <div className="relative z-10 flex justify-between items-center mb-6">
                     <div>
-                        <h3 className="text-lg font-bold text-gray-800">Job Demand Trend</h3>
-                        <p className="text-xs text-gray-500">6 Month hiring velocity</p>
+                        <div className="flex items-center gap-2 mb-1">
+                            <Bullet variant="cyan" size="sm" />
+                            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500">HIRING VELOCITY</span>
+                        </div>
+                        <h3 className="text-base font-display font-black text-white">Job Demand Trend</h3>
                     </div>
-                    <span className="bg-blue-100 text-blue-700 text-xs font-semibold px-2 py-1 rounded">+15% Growth</span>
+                    <Badge variant="outline-cyan">+15% Growth</Badge>
                 </div>
-                <div className="h-72">
+                <div className="h-72 relative z-10">
                     <ResponsiveContainer width="100%" height="100%">
                         <AreaChart data={processedTrends}>
                             <defs>
-                                <linearGradient id="colorDemand" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.3} />
-                                    <stop offset="95%" stopColor="#3B82F6" stopOpacity={0} />
+                                <linearGradient id="cyberDemandGrad" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="#00d9ff" stopOpacity={0.35} />
+                                    <stop offset="95%" stopColor="#00d9ff" stopOpacity={0} />
                                 </linearGradient>
                             </defs>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
-                            <XAxis dataKey="monthLabel" tick={{ fontSize: 12 }} />
-                            <YAxis tick={{ fontSize: 12 }} />
-                            <Tooltip
-                                contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
-                                labelStyle={{ color: '#6B7280', fontSize: '12px' }}
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+                            <XAxis 
+                                dataKey="monthLabel" 
+                                tick={{ fontSize: 11, fill: '#64748b', fontFamily: 'monospace' }} 
+                                axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
+                                tickLine={false}
                             />
-                            <Area type="monotone" dataKey="demand_score" stroke="#3B82F6" strokeWidth={3} fillOpacity={1} fill="url(#colorDemand)" />
+                            <YAxis 
+                                tick={{ fontSize: 11, fill: '#64748b', fontFamily: 'monospace' }} 
+                                axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
+                                tickLine={false}
+                            />
+                            <Tooltip content={<CyberTooltip />} />
+                            <Area 
+                                type="monotone" 
+                                dataKey="demand_score" 
+                                stroke="#00d9ff" 
+                                strokeWidth={2.5} 
+                                fillOpacity={1} 
+                                fill="url(#cyberDemandGrad)" 
+                            />
                         </AreaChart>
                     </ResponsiveContainer>
                 </div>
             </div>
 
             {/* Salary Trend */}
-            <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-                <div className="flex justify-between items-center mb-6">
+            <div className="bg-pop rounded-2xl p-6 border border-white/[0.07] relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent" />
+                <TVNoise opacity={0.02} />
+                
+                <div className="relative z-10 flex justify-between items-center mb-6">
                     <div>
-                        <h3 className="text-lg font-bold text-gray-800">Salary Trend</h3>
-                        <p className="text-xs text-gray-500">Monthly average compensation</p>
+                        <div className="flex items-center gap-2 mb-1">
+                            <Bullet variant="success" size="sm" />
+                            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500">COMPENSATION INDEX</span>
+                        </div>
+                        <h3 className="text-base font-display font-black text-white">Salary Curve</h3>
                     </div>
-                    <span className="bg-green-100 text-green-700 text-xs font-semibold px-2 py-1 rounded">+8% Growth</span>
+                    <Badge variant="outline-success">+8% YoY</Badge>
                 </div>
-                <div className="h-72">
+                <div className="h-72 relative z-10">
                     <ResponsiveContainer width="100%" height="100%">
                         <LineChart data={processedTrends}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
-                            <XAxis dataKey="monthLabel" tick={{ fontSize: 12 }} />
-                            <YAxis tick={{ fontSize: 12 }} domain={['auto', 'auto']} tickFormatter={(val: number) => formatINR(val)} />
-                            <Tooltip
-                                contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
-                                formatter={(val: any) => [val ? formatINR(Number(val)) : '₹0', 'Salary']}
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+                            <XAxis 
+                                dataKey="monthLabel" 
+                                tick={{ fontSize: 11, fill: '#64748b', fontFamily: 'monospace' }} 
+                                axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
+                                tickLine={false}
                             />
-                            <Line type="monotone" dataKey="avg_salary" stroke="#10B981" strokeWidth={3} dot={{ r: 4, fill: '#10B981' }} activeDot={{ r: 6 }} />
+                            <YAxis 
+                                tick={{ fontSize: 11, fill: '#64748b', fontFamily: 'monospace' }} 
+                                domain={['auto', 'auto']} 
+                                tickFormatter={(val: number) => formatINR(val)} 
+                                axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
+                                tickLine={false}
+                            />
+                            <Tooltip content={<CyberTooltip isSalary={true} />} />
+                            <Line 
+                                type="monotone" 
+                                dataKey="avg_salary" 
+                                stroke="#10b981" 
+                                strokeWidth={2.5} 
+                                dot={{ r: 4, fill: '#10b981', stroke: '#0b0d13', strokeWidth: 2 }} 
+                                activeDot={{ r: 6, fill: '#34d399', stroke: '#0b0d13', strokeWidth: 2 }} 
+                            />
                         </LineChart>
                     </ResponsiveContainer>
                 </div>

@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import Layout from '../../components/Layout';
 import { projectService, Project } from '../../services/projectService';
 import { SkeletonCard } from '../../components/motion/Skeleton';
-import { ScrollReveal } from '../../components/motion/ScrollReveal';
+import { ScrollReveal, StaggerChildren } from '../../components/motion/ScrollReveal';
+import { CyberPageShell, PageStatChip } from '../../components/CyberPageShell';
 
 const ProjectStatusCenterPage: React.FC = () => {
   const [data, setData] = useState<any>(null);
@@ -14,7 +15,7 @@ const ProjectStatusCenterPage: React.FC = () => {
   const loadStatusCenter = async () => {
     try {
       setLoading(true);
-      const res: any = await projectService.getStatusCenter();
+      const res: any = await projectService.getStatusCenter ? await (projectService as any).getStatusCenter() : await projectService.getUserProjects();
       setData(res?.data || res);
     } catch (err) {
       console.error('Failed to load status center:', err);
@@ -27,148 +28,194 @@ const ProjectStatusCenterPage: React.FC = () => {
     loadStatusCenter();
   }, []);
 
-  if (loading || !data) {
-    return (
-      <Layout>
-        <div className="p-8 max-w-6xl mx-auto space-y-6">
-          <SkeletonCard className="!h-[200px]" />
-          <SkeletonCard className="!h-[350px]" />
-        </div>
-      </Layout>
-    );
-  }
+  const projects: Project[] = Array.isArray(data) ? data : (data?.recent_projects || data?.projects || []);
 
-  const counts = data.status_counts || {};
-  const projects: Project[] = data.recent_projects || [];
+  const counts = useMemo(() => {
+    return {
+      all: projects.length,
+      in_progress: projects.filter(p => p.status === 'in_progress' || p.status === 'draft').length,
+      under_evaluation: projects.filter(p => p.status === 'under_evaluation').length,
+      owner_review: projects.filter(p => p.status === 'owner_review').length,
+      revision_required: projects.filter(p => p.status === 'revision_required').length,
+      accepted: projects.filter(p => p.status === 'accepted' || p.status === 'completed').length,
+    };
+  }, [projects]);
 
-  const filteredProjects = activeTab === 'all' 
-    ? projects 
-    : projects.filter(p => p.status === activeTab);
+  const filteredProjects = useMemo(() => {
+    if (activeTab === 'all') return projects;
+    if (activeTab === 'in_progress') return projects.filter(p => p.status === 'in_progress' || p.status === 'draft');
+    return projects.filter(p => p.status === activeTab);
+  }, [projects, activeTab]);
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'accepted':
       case 'completed':
-        return <span className="px-2.5 py-1 rounded-md text-[10px] font-black uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">Accepted</span>;
+        return <span className="px-3 py-1 rounded-xl text-[10px] font-mono font-black uppercase tracking-wider bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">Verified & Accepted</span>;
       case 'owner_review':
-        return <span className="px-2.5 py-1 rounded-md text-[10px] font-black uppercase bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">Owner Review</span>;
+        return <span className="px-3 py-1 rounded-xl text-[10px] font-mono font-black uppercase tracking-wider bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">Owner Review</span>;
       case 'under_evaluation':
-        return <span className="px-2.5 py-1 rounded-md text-[10px] font-black uppercase bg-indigo-500/10 text-indigo-300 border border-indigo-500/30">Under Evaluation</span>;
+        return <span className="px-3 py-1 rounded-xl text-[10px] font-mono font-black uppercase tracking-wider bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">Under Evaluation</span>;
       case 'revision_required':
-        return <span className="px-2.5 py-1 rounded-md text-[10px] font-black uppercase bg-rose-500/10 text-rose-400 border border-rose-500/30">Revision Required</span>;
+        return <span className="px-3 py-1 rounded-xl text-[10px] font-mono font-black uppercase tracking-wider bg-rose-500/15 text-rose-400 border border-rose-500/30">Revision Required</span>;
       default:
-        return <span className="px-2.5 py-1 rounded-md text-[10px] font-black uppercase bg-slate-800 text-slate-300 border border-white/5">{status.replace('_', ' ')}</span>;
+        return <span className="px-3 py-1 rounded-xl text-[10px] font-mono font-black uppercase tracking-wider bg-slate-800 text-slate-300 border border-white/10">{status?.replace('_', ' ') || 'In Development'}</span>;
     }
   };
 
   return (
     <Layout>
       <Head>
-        <title>Project Status Center • SkillMirror</title>
+        <title>Project Status & Lifecycle Center • SkillMirror OS</title>
+        <meta name="description" content="Lifecycle monitoring from development, evaluator check, to owner review and verified portfolio badge." />
       </Head>
 
-      <ScrollReveal className="space-y-10">
-        {/* Header Terminal */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-white/5">
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-              <span className="text-xs font-black uppercase tracking-[0.25em] text-cyan-400">Lifecycle Monitoring Center</span>
-            </div>
-            <h1 className="sm-h1 !text-4xl lg:!text-5xl">Project Status Center</h1>
-            <p className="sm-body-text mt-2 max-w-2xl">
-              Track project lifecycle progression across all stages: from initial discovery, student development, technical evaluation, owner review, to real-world acceptance.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Link href="/evaluator/dashboard">
-              <button className="px-4 py-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 font-bold text-xs hover:bg-indigo-500/20">
-                Evaluator Portal
+      <CyberPageShell
+        moduleCode="MOD-08"
+        section="PROJECTS & REAL-WORLD PORTFOLIO"
+        title="PROJECT STATUS CENTER"
+        subtitle="Track end-to-end lifecycle progression: from development, automated deployment checks, mentor evaluation, to organization acceptance."
+        badge="LIFECYCLE TELEMETRY"
+        badgeVariant="outline-cyan"
+        bulletVariant="cyan"
+        glowColor="cyan"
+        actions={
+          <div className="flex items-center gap-2.5">
+            <Link href="/projects">
+              <button className="px-3.5 py-2 rounded-xl bg-slate-900/80 border border-white/[0.08] text-slate-300 hover:text-white text-xs font-mono font-bold uppercase tracking-wider transition-all flex items-center gap-2">
+                <i className="fa-solid fa-diagram-project text-xs text-cyan-400" />
+                <span>My Projects</span>
               </button>
             </Link>
-            <Link href="/owner/dashboard">
-              <button className="px-4 py-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 font-bold text-xs hover:bg-cyan-500/20">
-                Problem Owner Portal
+            <Link href="/problems">
+              <button className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-mono font-black text-xs uppercase tracking-wider hover:brightness-110 shadow-[0_0_15px_rgba(0,217,255,0.3)] transition-all flex items-center gap-2">
+                <i className="fa-solid fa-plus text-xs" />
+                <span>New Problem</span>
               </button>
             </Link>
           </div>
-        </div>
+        }
+        stats={
+          <>
+            <PageStatChip label="Total Tracked" value={counts.all} icon="fa-list-check" color="cyan" />
+            <PageStatChip label="In Review" value={counts.under_evaluation + counts.owner_review} icon="fa-clock" color="amber" />
+            <PageStatChip label="Accepted" value={counts.accepted} icon="fa-award" color="emerald" />
+          </>
+        }
+      />
 
-        {/* Lifecycle Stage Cards Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
-          {[
-            { key: 'all', label: 'All Projects', count: projects.length, color: 'text-white' },
-            { key: 'in_progress', label: 'In Progress', count: counts.in_progress || 0, color: 'text-amber-400' },
-            { key: 'under_evaluation', label: 'Under Eval', count: counts.under_evaluation || 0, color: 'text-indigo-400' },
-            { key: 'revision_required', label: 'Revision Required', count: counts.revision_required || 0, color: 'text-rose-400' },
-            { key: 'owner_review', label: 'Owner Review', count: counts.owner_review || 0, color: 'text-cyan-400' },
-            { key: 'accepted', label: 'Accepted', count: (counts.accepted || 0) + (counts.completed || 0), color: 'text-emerald-400' },
-          ].map(stage => (
-            <div
-              key={stage.key}
-              onClick={() => setActiveTab(stage.key)}
-              className={`p-5 rounded-2xl border transition-all cursor-pointer space-y-1 ${
-                activeTab === stage.key ? 'bg-slate-900 border-cyan-500/40 shadow-lg' : 'bg-slate-950/60 border-white/5 hover:border-white/20'
-              }`}
-            >
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{stage.label}</span>
-              <p className={`text-2xl font-black ${stage.color}`}>{stage.count}</p>
+      <div className="px-4 sm:px-6 pb-24 max-w-[1400px] mx-auto space-y-8">
+        {/* ── Lifecycle Stage Progression Map ── */}
+        <ScrollReveal>
+          <div className="p-6 rounded-3xl bg-slate-900/80 border border-white/[0.08] backdrop-blur-xl shadow-xl space-y-4">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-slate-500">
+              PORTFOLIO VERIFICATION PIPELINE
+            </span>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {[
+                { step: '01', label: 'Development', desc: 'Tasks & MVP code building', icon: 'fa-code', count: counts.in_progress, color: 'cyan' },
+                { step: '02', label: 'Technical Evaluation', desc: 'Code quality & deployment test', icon: 'fa-microchip', count: counts.under_evaluation, color: 'indigo' },
+                { step: '03', label: 'Owner Review', desc: 'Requirement acceptance check', icon: 'fa-user-check', count: counts.owner_review, color: 'amber' },
+                { step: '04', label: 'Verified Portfolio', desc: 'Verifiable Evidence of Skill', icon: 'fa-award', count: counts.accepted, color: 'emerald' },
+              ].map((stage) => (
+                <div key={stage.step} className="p-4 rounded-2xl bg-black/40 border border-white/[0.05] relative overflow-hidden">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[10px] font-mono font-bold text-slate-500">{stage.step}</span>
+                    <i className={`fa-solid ${stage.icon} text-xs text-${stage.color}-400`} />
+                  </div>
+                  <h4 className="text-sm font-display font-black text-white">{stage.label}</h4>
+                  <p className="text-[10px] font-mono text-slate-400 mt-1">{stage.desc}</p>
+                  <div className="mt-3 pt-2 border-t border-white/[0.05] flex items-center justify-between text-xs font-mono">
+                    <span className="text-slate-500">Active</span>
+                    <span className="font-bold text-white">{stage.count}</span>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-
-        {/* Projects Monitoring Table */}
-        <div className="sm-glass p-8 rounded-3xl space-y-6 border border-white/10">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <i className="fa-solid fa-list-ul text-cyan-400" />
-              <span>Monitored Projects ({filteredProjects.length})</span>
-            </h3>
           </div>
+        </ScrollReveal>
 
-          {filteredProjects.length === 0 ? (
-            <p className="text-xs text-slate-400 py-6 text-center">No projects in this lifecycle stage.</p>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead>
-                  <tr className="border-b border-white/10 text-slate-400 font-bold uppercase text-[10px] tracking-wider">
-                    <th className="pb-3">Project Title</th>
-                    <th className="pb-3">Student</th>
-                    <th className="pb-3">Problem Source</th>
-                    <th className="pb-3">Progress</th>
-                    <th className="pb-3">Status</th>
-                    <th className="pb-3 text-right">Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5 text-slate-200">
-                  {filteredProjects.map((p) => (
-                    <tr key={p.id} className="hover:bg-slate-900/50 transition-colors">
-                      <td className="py-4 font-bold text-white max-w-xs truncate">{p.title}</td>
-                      <td className="py-4 text-slate-300">{p.student_email || 'Student'}</td>
-                      <td className="py-4">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${p.is_real_world ? 'bg-emerald-500/10 text-emerald-300' : 'bg-purple-500/10 text-purple-300'}`}>
-                          {p.is_real_world ? 'Real-World' : 'AI Practice'}
-                        </span>
-                      </td>
-                      <td className="py-4 font-bold text-cyan-400">{p.progress_percentage}%</td>
-                      <td className="py-4">{getStatusBadge(p.status)}</td>
-                      <td className="py-4 text-right">
-                        <Link href={`/projects/${p.id}`}>
-                          <button className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-cyan-500/20 text-slate-200 hover:text-cyan-300 font-bold text-[11px] transition-all">
-                            Workspace →
-                          </button>
-                        </Link>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      </ScrollReveal>
+        {/* ── Status Tabs ── */}
+        <ScrollReveal>
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+            {[
+              { id: 'all', label: 'All Stages', count: counts.all },
+              { id: 'in_progress', label: 'In Development', count: counts.in_progress },
+              { id: 'under_evaluation', label: 'Evaluation Queue', count: counts.under_evaluation },
+              { id: 'owner_review', label: 'Owner Review', count: counts.owner_review },
+              { id: 'revision_required', label: 'Revision Needed', count: counts.revision_required },
+              { id: 'accepted', label: 'Accepted & Verified', count: counts.accepted },
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-4 py-2 rounded-2xl text-xs font-mono font-bold uppercase tracking-wider whitespace-nowrap transition-all flex items-center gap-2 border ${
+                  activeTab === tab.id
+                    ? 'bg-cyan-500/20 border-cyan-400 text-cyan-200 shadow-[0_0_15px_rgba(0,217,255,0.3)]'
+                    : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <span>{tab.label}</span>
+                <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${activeTab === tab.id ? 'bg-cyan-400/20 text-cyan-300' : 'bg-slate-800 text-slate-500'}`}>
+                  {tab.count}
+                </span>
+              </button>
+            ))}
+          </div>
+        </ScrollReveal>
+
+        {/* ── Projects List Stream ── */}
+        {loading ? (
+          <div className="space-y-4">
+            <SkeletonCard className="!h-28" />
+            <SkeletonCard className="!h-28" />
+          </div>
+        ) : filteredProjects.length === 0 ? (
+          <div className="p-16 rounded-3xl bg-slate-900/40 border border-slate-800/80 text-center backdrop-blur-xl">
+            <i className="fa-solid fa-list-check text-3xl text-slate-600 mb-3" />
+            <h3 className="text-base font-display font-bold text-white">No Projects In This Stage</h3>
+            <p className="text-xs font-mono text-slate-400 mt-1">Select another filter tab or create a project from Problem Discovery.</p>
+          </div>
+        ) : (
+          <StaggerChildren className="space-y-4">
+            {filteredProjects.map((p) => (
+              <ScrollReveal stagger key={p.id}>
+                <div className="p-6 rounded-3xl bg-slate-900/70 border border-slate-800/80 hover:border-cyan-500/40 backdrop-blur-xl transition-all shadow-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                  <div className="space-y-2 flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      {getStatusBadge(p.status)}
+                      <span className="text-[11px] font-mono text-slate-500">
+                        Updated {new Date(p.created_at || Date.now()).toLocaleDateString()}
+                      </span>
+                    </div>
+
+                    <h3 className="text-base sm:text-lg font-display font-black text-white truncate">
+                      {p.title}
+                    </h3>
+                    <p className="text-xs font-sans text-slate-400 line-clamp-1">
+                      {p.problem_statement || 'Practical MVP workspace for verified organization requirements.'}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-4 shrink-0 w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 border-white/[0.05] pt-3 md:pt-0">
+                    <div className="text-right">
+                      <div className="text-sm font-mono font-bold text-cyan-300">{p.progress_percentage || 0}%</div>
+                      <div className="text-[10px] font-mono text-slate-500 uppercase">Progress</div>
+                    </div>
+
+                    <Link href={`/projects/${p.id}`}>
+                      <button className="px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 hover:border-cyan-500/40 hover:bg-cyan-500/10 text-slate-200 hover:text-cyan-300 font-mono font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2">
+                        <span>Workspace</span>
+                        <i className="fa-solid fa-arrow-right text-[10px]" />
+                      </button>
+                    </Link>
+                  </div>
+                </div>
+              </ScrollReveal>
+            ))}
+          </StaggerChildren>
+        )}
+      </div>
     </Layout>
   );
 };

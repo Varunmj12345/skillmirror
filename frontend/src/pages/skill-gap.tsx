@@ -15,6 +15,7 @@ import { skillService } from '../services/skillService';
 import { Skill, AIRecommendationsData, ActionPlan } from '../components/SkillGap/types';
 import { SkeletonCard } from '../components/motion/Skeleton';
 import { ScrollReveal } from '../components/motion/ScrollReveal';
+import { CyberPageShell, PageStatChip } from '../components/CyberPageShell';
 
 // Extended report type for the new UI
 interface EnhancedSkillGapReport {
@@ -188,33 +189,32 @@ const SkillGapPage: React.FC = () => {
 
     return (
         <Layout>
-            <Head>
-                <title>Intelligent Skill Gap • SkillMirror</title>
-            </Head>
-
+            <Head><title>Skill Gap Radar • SkillMirror OS</title></Head>
             <SmartNotifications />
-
-            <div className="space-y-8 pb-20">
-                {/* Gamification Strip */}
+            <CyberPageShell
+                moduleCode="MOD-02"
+                title="SKILL GAP RADAR"
+                subtitle="Deep neural graph evaluation benchmarking your skills against real-time market role requirements."
+                badge="AI ANALYSIS"
+                badgeVariant="outline-cyan"
+                bulletVariant="cyan"
+                glowColor="indigo"
+                stats={
+                    <>
+                        <PageStatChip label="Skills Detected" value={totalSkillCount} icon="fa-microchip" color="cyan" />
+                        <PageStatChip label="Target Role" value={role} icon="fa-briefcase" color="slate" />
+                        <PageStatChip label="Experience" value={expLevel} icon="fa-chart-bar" color="emerald" />
+                    </>
+                }
+            />
+            <div className="px-6 space-y-8 pb-20 max-w-[1400px] mx-auto">
                 <GamificationHeader
                     xp={analytics?.total_xp || 12500}
                     rank={analytics?.level === 1 ? 'Beginner' : analytics?.level > 5 ? 'Expert' : 'Intermediate'}
                     streak={7}
                 />
-
-                {/* Header Section */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-                    <div className="animate-in fade-in slide-in-from-left-4 duration-500">
-                        <div className="flex items-center gap-2 mb-2">
-                            <span className="w-2 h-2 rounded-full bg-sky-500 animate-pulse" />
-                            <p className="text-[10px] uppercase tracking-[0.3em] font-black text-sky-400">
-                                Career Intelligence 2.0
-                            </p>
-                        </div>
-                        <h1 className="text-4xl font-extrabold text-slate-50 tracking-tight">
-                            Smart Gap <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-indigo-500 text-glow">Analyser</span>
-                        </h1>
-                    </div>
+                    <div />
 
                     <button
                         onClick={handleAnalyze}

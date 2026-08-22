@@ -1,9 +1,9 @@
 import apiClient from './apiClient';
 
 export const jobService = {
-    fetchLiveJobs: async (role: string) => {
+    fetchLiveJobs: async (role: string, refresh: boolean = false) => {
         const response = await apiClient.get('/api/jobs/fetch-live-jobs/', {
-            params: { role }
+            params: { role, refresh: refresh ? 'true' : undefined }
         });
         return response as any;
     },

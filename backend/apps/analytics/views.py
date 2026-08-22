@@ -249,17 +249,10 @@ class MarketTrendViewSet(viewsets.ReadOnlyModelViewSet):
         role = request.query_params.get('role')
         trends = self.get_queryset()
         
-        if not trends.exists() and role:
-             trends_list = []
-             base_demand = 100
-             base_salary = 80000
-             for i in range(6):
-                 date = timezone.now() - timedelta(days=30 * (5-i))
-                 demand = base_demand + (i * 20) + (timezone.now().microsecond % 20)
-                 salary = base_salary + (i * 500)
-                 trends_list.append(MarketTrend(job_role=role, date=date, demand_score=demand, avg_salary=salary))
-             MarketTrend.objects.bulk_create(trends_list)
-             trends = self.get_queryset()
+        if (not trends.exists() or trends.count() < 6) and role:
+            from apps.jobs.services.agent_reach_service import AgentReachJobService
+            AgentReachJobService.get_or_refresh_market_data(role)
+            trends = self.get_queryset()
 
         serializer = self.get_serializer(trends, many=True)
         return Response(serializer.data)
@@ -281,22 +274,16 @@ class SalaryDataViewSet(viewsets.ReadOnlyModelViewSet):
 
     @action(detail=False, methods=['get'])
     def list_by_role(self, request):
-         role = request.query_params.get('role')
-         salaries = self.get_queryset()
-         
-         if not salaries.exists() and role:
-             SalaryData.objects.create(
-                 job_role=role, 
-                 location='India', 
-                 min_salary=400000, 
-                 max_salary=1500000, 
-                 median_salary=800000,
-                 experience_level='Mid'
-             )
-             salaries = self.get_queryset()
+        role = request.query_params.get('role')
+        salaries = self.get_queryset()
+        
+        if not salaries.exists() and role:
+            from apps.jobs.services.agent_reach_service import AgentReachJobService
+            AgentReachJobService.get_or_refresh_market_data(role)
+            salaries = self.get_queryset()
 
-         serializer = self.get_serializer(salaries, many=True)
-         return Response(serializer.data)
+        serializer = self.get_serializer(salaries, many=True)
+        return Response(serializer.data)
 
 class ActionPlanView(APIView):
     permission_classes = [IsAuthenticated]

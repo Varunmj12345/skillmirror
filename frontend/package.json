@@ -3,9 +3,9 @@
   "version": "1.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "node -r ./node-compat.js ./node_modules/next/dist/bin/next dev",
+    "build": "node -r ./node-compat.js ./node_modules/next/dist/bin/next build",
+    "start": "node -r ./node-compat.js ./node_modules/next/dist/bin/next start",
     "test": "jest"
   },
   "dependencies": {

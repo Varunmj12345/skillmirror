@@ -15,6 +15,7 @@ import apiClient from '../services/apiClient';
 import withAuth from '../components/withAuth';
 import { SkeletonCard } from '../components/motion/Skeleton';
 import { ScrollReveal, StaggerChildren } from '../components/motion/ScrollReveal';
+import { CyberPageShell, PageStatChip } from '../components/CyberPageShell';
 
 const GEN_BOOT_SEQUENCE = [
   'Profiling Student Domain & Degree...',
@@ -245,50 +246,33 @@ const Roadmap: React.FC = () => {
 
   return (
     <Layout>
-      <Head>
-        <title>Universal Domain Career Roadmap • SkillMirror</title>
-      </Head>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-slate-100 min-h-screen space-y-8">
-
-        {/* Analytics Top Bar */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="sm-glass p-4 flex items-center gap-4 border-white/5">
-            <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-400 border border-orange-500/20">
-              <i className="fa-solid fa-fire text-lg animate-pulse" />
-            </div>
-            <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Day Streak</p>
-              <p className="text-xl font-black text-white">{analytics?.streak || 0}</p>
-            </div>
-          </div>
-          <div className="sm-glass p-4 flex items-center gap-4 border-white/5">
-            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 border border-indigo-500/20">
-              <i className="fa-solid fa-star text-lg" />
-            </div>
-            <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Learning Points</p>
-              <p className="text-xl font-black text-white">{analytics?.points || 0} XP</p>
-            </div>
-          </div>
-          <div className="sm-glass p-4 flex items-center gap-4 border-white/5">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20">
-              <i className="fa-solid fa-graduation-cap text-lg" />
-            </div>
-            <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Completed Steps</p>
-              <p className="text-xl font-black text-white">{analytics?.completed_steps || 0}</p>
-            </div>
-          </div>
-          <div className="sm-glass p-4 flex items-center gap-4 border-white/5">
-            <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-400 border border-cyan-500/20">
-              <i className="fa-solid fa-award text-lg" />
-            </div>
-            <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Badges Earned</p>
-              <p className="text-xl font-black text-white">{analytics?.badges?.length || 0}</p>
-            </div>
-          </div>
-        </div>
+      <Head><title>Career Roadmap Engine • SkillMirror OS</title></Head>
+      <CyberPageShell
+        moduleCode="MOD-01"
+        title="CAREER ROADMAP ENGINE"
+        subtitle="Domain-aware AI learning sequencer mapping your skills to job readiness across any engineering or business field."
+        badge="AI GENERATED"
+        badgeVariant="outline-cyan"
+        bulletVariant="cyan"
+        glowColor="indigo"
+        actions={
+          <button
+            onClick={handleFetchRecommendations}
+            className="sm-btn-neon !py-2.5 !px-4 text-xs"
+          >
+            <i className="fa-solid fa-compass text-xs" /> Recommend Careers
+          </button>
+        }
+        stats={
+          <>
+            <PageStatChip label="Streak" value={`${analytics?.streak || 0} days`} icon="fa-fire" color="amber" />
+            <PageStatChip label="XP" value={`${analytics?.points || 0}`} icon="fa-star" color="cyan" />
+            <PageStatChip label="Steps Done" value={analytics?.completed_steps || 0} icon="fa-graduation-cap" color="emerald" />
+            <PageStatChip label="Badges" value={analytics?.badges?.length || 0} icon="fa-award" color="slate" />
+          </>
+        }
+      />
+      <div className="max-w-[1400px] mx-auto px-6 pb-10 text-slate-100 space-y-8">
 
         {!roadmap ? (
           /* Profile & Roadmap Generator Setup Form */

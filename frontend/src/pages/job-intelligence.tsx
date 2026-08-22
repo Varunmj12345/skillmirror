@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import Layout from '../components/Layout';
 import MarketOverview from '../components/MarketOverview';
 import JobDemandTrends from '../components/JobDemandTrends';
@@ -12,27 +13,33 @@ import { aiService } from '../services/aiService';
 import withAuth from '../components/withAuth';
 import { SkeletonCard } from '../components/motion/Skeleton';
 import { ScrollReveal } from '../components/motion/ScrollReveal';
+import { CyberPageShell, PageStatChip } from '../components/CyberPageShell';
+import { Bullet } from '../components/ui/bullet';
+import { useToast } from '../components/motion/Toast';
 
 const JobIntelligencePage: React.FC = () => {
     const router = useRouter();
-    const [selectedRole, setSelectedRole] = useState('Frontend Developer');
-    const [marketData, setMarketData] = useState(null);
+    const { addToast } = useToast();
+    const [selectedRole, setSelectedRole] = useState('Data Scientist');
+    const [marketData, setMarketData] = useState<any>(null);
     const [trendData, setTrendData] = useState([]);
     const [matchData, setMatchData] = useState(null);
     const [aiPrediction, setAiPrediction] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const [isRefreshing, setIsRefreshing] = useState(false);
     const [error, setError] = useState('');
 
     useEffect(() => {
         fetchData(selectedRole);
     }, [selectedRole]);
 
-    const fetchData = async (role: string) => {
-        setLoading(true);
+    const fetchData = async (role: string, forceRefresh: boolean = false) => {
+        if (forceRefresh) setIsRefreshing(true);
+        else setLoading(true);
         setError('');
         try {
             const [marketRes, trendRes, matchRes, aiRes] = await Promise.all([
-                jobService.fetchLiveJobs(role),
+                jobService.fetchLiveJobs(role, forceRefresh),
                 analyticsService.getJobTrends(role),
                 jobService.getJobMatch(role),
                 aiService.predictDemand(role)
@@ -43,11 +50,19 @@ const JobIntelligencePage: React.FC = () => {
             setMatchData(matchRes);
             setAiPrediction(aiRes);
 
+            if (forceRefresh) {
+                addToast({
+                    type: 'success',
+                    title: 'Live Market Intelligence Synced',
+                    message: `Indexed ${marketRes?.total_open_jobs?.toLocaleString() || 'real-time'} active openings for ${role}.`
+                });
+            }
         } catch (err) {
             console.error(err);
             setError('Failed to fetch job intelligence data. Please check your connection.');
         } finally {
             setLoading(false);
+            setIsRefreshing(false);
         }
     };
 
@@ -61,40 +76,60 @@ const JobIntelligencePage: React.FC = () => {
 
     return (
         <Layout>
-            <div className="container mx-auto px-4 py-8">
-                {/* Header Section */}
-                <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-                    <div>
-                        <h1 className="text-3xl font-bold text-slate-50">Live Job Intelligence Engine</h1>
-                        <p className="text-slate-400 mt-2">Real-time market insights & AI-driven career guidance.</p>
-                    </div>
-                    <div className="flex flex-wrap gap-4 mt-4 md:mt-0">
+            <Head><title>Job Intelligence Engine • SkillMirror OS</title></Head>
+            <CyberPageShell
+                moduleCode="MOD-05"
+                title="LIVE JOB INTELLIGENCE"
+                subtitle="Real-time market insights, hiring velocity, AI demand forecasts & smart role matching powered by Agent-Reach."
+                badge="LIVE FEED"
+                badgeVariant="outline-cyan"
+                bulletVariant="cyan"
+                glowColor="cyan"
+                actions={
+                    <>
                         <select
                             value={selectedRole}
                             onChange={handleRoleChange}
-                            className="sm-input px-4 py-2 w-full sm:w-auto min-w-[200px]"
+                            className="sm-input !py-2 !px-3 text-xs min-w-[180px]"
                         >
+                            <option value="Data Scientist">Data Scientist</option>
                             <option value="Frontend Developer">Frontend Developer</option>
                             <option value="Backend Developer">Backend Developer</option>
                             <option value="Full Stack Developer">Full Stack Developer</option>
-                            <option value="Data Scientist">Data Scientist</option>
                             <option value="DevOps Engineer">DevOps Engineer</option>
                             <option value="Product Manager">Product Manager</option>
                         </select>
-                        <button
-                            onClick={handleDownloadReport}
-                            className="sm-btn-primary px-4 py-2 flex items-center gap-2 font-bold text-sm bg-slate-800 hover:bg-slate-700 shadow-none border border-slate-700 text-slate-300"
+                        <button 
+                            onClick={() => fetchData(selectedRole, true)} 
+                            disabled={isRefreshing}
+                            className="sm-btn-neon !py-2.5 !px-3 text-xs flex items-center gap-1.5"
+                            title="Rescrape and sync live market intelligence"
                         >
-                            <i className="fa-solid fa-download"></i> Report
+                            <i className={`fa-solid fa-arrows-rotate text-xs ${isRefreshing ? 'animate-spin text-cyan-400' : ''}`} />
+                            <span>{isRefreshing ? 'Syncing...' : 'Sync Feed'}</span>
                         </button>
-                        <button
-                            onClick={() => router.push('/skill-gap')}
-                            className="sm-btn-primary px-4 py-2 flex items-center gap-2 font-bold text-sm"
-                        >
-                            <i className="fa-solid fa-magnifying-glass-chart"></i> Analyze Gap
+                        <button onClick={handleDownloadReport} className="sm-btn-neon !py-2.5 !px-4 text-xs">
+                            <i className="fa-solid fa-download text-xs" /> Report
                         </button>
-                    </div>
-                </div>
+                        <button onClick={() => router.push('/skill-gap')} className="sm-btn-primary !py-2.5 !px-4 text-xs">
+                            <i className="fa-solid fa-magnifying-glass-chart text-xs" /> Analyze Gap
+                        </button>
+                    </>
+                }
+                stats={
+                    <>
+                        <PageStatChip label="Role" value={selectedRole} icon="fa-briefcase" color="cyan" />
+                        <PageStatChip 
+                            label="Total Postings" 
+                            value={marketData?.total_open_jobs ? marketData.total_open_jobs.toLocaleString() : '50k+'} 
+                            icon="fa-database" 
+                            color="emerald" 
+                        />
+                        <PageStatChip label="Feed Status" value="Agent-Reach Active" icon="fa-circle" color="amber" />
+                    </>
+                }
+            />
+            <div className="px-6 pb-20 max-w-[1400px] mx-auto">
 
                 {loading ? (
                     <div className="space-y-6">
@@ -135,47 +170,50 @@ const JobIntelligencePage: React.FC = () => {
                             <div className="space-y-6">
                                 <SmartJobMatch matchData={matchData} />
 
-                                {/* AI Prediction Card */}
-                                <div className="bg-gradient-to-br from-indigo-900 to-purple-900 p-6 rounded-xl shadow-lg text-white relative overflow-hidden">
-                                    <div className="absolute top-0 right-0 p-4 opacity-10">
-                                        <i className="fa-solid fa-brain text-9xl"></i>
+                                {/* AI Prediction Card — cyber themed */}
+                                <div className="rounded-2xl bg-pop border border-indigo-500/25 p-5 relative overflow-hidden">
+                                    <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
+                                    <div className="absolute top-3 right-3 opacity-5">
+                                        <i className="fa-solid fa-brain text-8xl text-indigo-400" />
                                     </div>
-                                    <h3 className="text-lg font-bold mb-1 flex items-center gap-2">
-                                        <i className="fa-solid fa-robot"></i> AI Future Prediction
-                                    </h3>
-                                    <p className="text-indigo-200 text-xs mb-4">Market forecast for next 12 months</p>
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <Bullet variant="default" size="sm" />
+                                        <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500">AI FORECAST ENGINE</span>
+                                    </div>
+                                    <h3 className="text-sm font-display font-black text-white mb-1">12-Month Demand Prediction</h3>
+                                    <p className="text-[11px] font-mono text-slate-500 mb-4">Market forecast for {selectedRole}</p>
 
                                     <div className="mb-4">
                                         <div className="flex justify-between items-center mb-2">
-                                            <span className="text-sm text-indigo-100">Growth Forecast</span>
-                                            <span className="text-xl font-bold text-green-400">
+                                            <span className="text-[11px] font-mono text-slate-400">Growth Forecast</span>
+                                            <span className="text-lg font-display font-black text-emerald-400">
                                                 {aiPrediction?.predicted_growth > 0 ? '+' : ''}{aiPrediction?.predicted_growth}%
                                             </span>
                                         </div>
-                                        <div className="w-full bg-indigo-800/50 rounded-full h-1.5">
-                                            <div
-                                                className="bg-green-400 h-1.5 rounded-full"
-                                                style={{ width: `${Math.min(Math.max(aiPrediction?.predicted_growth + 50, 0), 100)}%` }}
-                                            ></div>
+                                        <div className="w-full bg-white/[0.04] rounded-full h-1">
+                                            <div className="bg-emerald-400 h-1 rounded-full transition-all duration-700"
+                                                style={{ width: `${Math.min(Math.max((aiPrediction?.predicted_growth || 0) + 50, 0), 100)}%` }}
+                                            />
                                         </div>
                                     </div>
 
-                                    <div className="flex justify-between items-center mb-4 text-sm">
-                                        <span className="text-indigo-100">Stability Score</span>
-                                        <span className="font-semibold">{aiPrediction?.stability_score}/100</span>
+                                    <div className="flex justify-between items-center mb-4 text-[11px] font-mono">
+                                        <span className="text-slate-400">Stability Score</span>
+                                        <span className="font-bold text-white">{aiPrediction?.stability_score}/100</span>
                                     </div>
 
-                                    <div className="bg-white/10 p-3 rounded-lg border border-white/10 mb-2">
-                                        <p className="text-sm italic leading-relaxed">"{aiPrediction?.insight}"</p>
+                                    <div className="p-3 rounded-xl bg-indigo-500/8 border border-indigo-500/20 mb-3">
+                                        <p className="text-xs font-mono text-indigo-300 italic leading-relaxed">"{aiPrediction?.insight}"</p>
                                     </div>
 
-                                    <div className="flex justify-between items-center mt-4">
-                                        <span className="text-xs text-indigo-300">Risk Assessment</span>
-                                        <span className={`px-2 py-1 rounded text-xs font-bold ${aiPrediction?.risk_level === 'Low' ? 'bg-green-500/20 text-green-300 border border-green-500/30' :
-                                            aiPrediction?.risk_level === 'Medium' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' :
-                                                'bg-red-500/20 text-red-300 border border-red-500/30'
-                                            }`}>
-                                            {aiPrediction?.risk_level} Risk
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-[10px] font-mono text-slate-500">RISK ASSESSMENT</span>
+                                        <span className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold border ${
+                                            aiPrediction?.risk_level === 'Low' ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30' :
+                                            aiPrediction?.risk_level === 'Medium' ? 'bg-amber-500/10 text-amber-300 border-amber-500/30' :
+                                            'bg-red-500/10 text-red-300 border-red-500/30'
+                                        }`}>
+                                            {aiPrediction?.risk_level || 'Low'} Risk
                                         </span>
                                     </div>
                                 </div>
