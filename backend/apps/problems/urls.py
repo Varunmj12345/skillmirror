@@ -5,7 +5,9 @@ from apps.problems.views import (
     ConfirmRequirementView, CheckLiveUrlView, ProjectSubmissionView,
     ProjectEvaluatorDashboardView, ProjectOwnerDashboardView, ProjectStatusCenterView,
     ProjectListView, ProjectDetailView, ProjectTaskUpdateView, ProjectCompleteView,
-    AdminProblemDashboardView, OpportunityListView
+    AdminProblemDashboardView, OpportunityListView,
+    AIEvaluateSubmissionView, AIGenerateGapChallengeView,
+    AIGetProgressiveHintView, AIPracticeSubmissionsListView
 )
 
 urlpatterns = [
@@ -18,6 +20,12 @@ urlpatterns = [
     path('<int:pk>/match/', ProblemMatchView.as_view(), name='problem_match'),
     path('<int:pk>/build/', ProjectBuildView.as_view(), name='project_build'),
     path('<int:pk>/confirm-req/<str:req_id>/', ConfirmRequirementView.as_view(), name='confirm_req'),
+    
+    # ── AI Assessment & Practice Endpoints ──
+    path('practice/<int:pk>/evaluate/', AIEvaluateSubmissionView.as_view(), name='ai_evaluate_submission'),
+    path('practice/generate-gap-challenge/', AIGenerateGapChallengeView.as_view(), name='ai_generate_gap_challenge'),
+    path('practice/<int:pk>/hint/', AIGetProgressiveHintView.as_view(), name='ai_get_hint'),
+    path('practice/submissions/', AIPracticeSubmissionsListView.as_view(), name='ai_submissions_list'),
     
     # Project Endpoints
     path('projects/list/', ProjectListView.as_view(), name='project_list'),

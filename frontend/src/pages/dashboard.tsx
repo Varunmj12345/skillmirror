@@ -26,29 +26,29 @@ import AIInsightPanel from '../components/dashboard/AIInsightPanel';
 import AchievementBadges from '../components/dashboard/AchievementBadges';
 import CareerDigitalTwinModal from '../components/CareerDigitalTwinModal';
 
-/* ── Cyber ambient background ─────────────────────────── */
+/* ── Ambient background ─────────────────────────── */
 const DashBg: React.FC = () => (
   <>
     <div
-      className="fixed inset-0 pointer-events-none opacity-[0.035] z-0"
+      className="fixed inset-0 pointer-events-none opacity-[0.035] dark:opacity-[0.035] z-0"
       style={{
-        backgroundImage: `linear-gradient(rgba(0,217,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(0,217,255,0.5) 1px, transparent 1px)`,
+        backgroundImage: `linear-gradient(rgba(59,130,246,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.3) 1px, transparent 1px)`,
         backgroundSize: '48px 48px',
       }}
     />
-    <div className="fixed top-0 right-1/4 w-[600px] h-[300px] bg-cyan-500/5 blur-[150px] rounded-full pointer-events-none z-0" />
-    <div className="fixed bottom-1/4 left-1/3 w-[400px] h-[250px] bg-indigo-600/5 blur-[130px] rounded-full pointer-events-none z-0" />
+    <div className="fixed top-0 right-1/4 w-[600px] h-[300px] bg-blue-500/5 dark:bg-cyan-500/5 blur-[150px] rounded-full pointer-events-none z-0" />
+    <div className="fixed bottom-1/4 left-1/3 w-[400px] h-[250px] bg-indigo-500/5 dark:bg-indigo-600/5 blur-[130px] rounded-full pointer-events-none z-0" />
   </>
 );
 
-/* ── Cyber section divider ────────────────────────────── */
+/* ── Section divider ────────────────────────────── */
 const SectionDivider: React.FC<{ label: string; bulletVariant?: any; badge?: string }> = ({
   label, bulletVariant = 'cyan', badge,
 }) => (
   <div className="flex items-center gap-3 mb-6">
     <Bullet variant={bulletVariant} />
-    <h2 className="text-xs font-mono font-bold uppercase tracking-[0.15em] text-white">{label}</h2>
-    <div className="flex-1 h-px bg-white/[0.05]" />
+    <h2 className="text-xs font-mono font-bold uppercase tracking-[0.15em] text-slate-900 dark:text-white">{label}</h2>
+    <div className="flex-1 h-px bg-slate-200 dark:bg-white/[0.05]" />
     {badge && <Badge variant="outline-cyan">{badge}</Badge>}
   </div>
 );
@@ -378,7 +378,7 @@ const Dashboard: React.FC = () => {
 
         {/* ── Page Header ─────────────────────────────────── */}
         <RevealWrapper type="heading">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10 pb-6 border-b border-white/[0.06]">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10 pb-6 border-b border-slate-200/80 dark:border-white/[0.06]">
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <Bullet variant="cyan" size="sm" />
@@ -387,20 +387,20 @@ const Dashboard: React.FC = () => {
                 </span>
                 <Badge variant="outline-cyan">LIVE</Badge>
               </div>
-              <h1 className="text-3xl sm:text-4xl font-display font-black text-white tracking-tight">
+              <h1 className="text-3xl sm:text-4xl font-display font-black text-slate-900 dark:text-white tracking-tight">
                 COMMAND CENTER
               </h1>
-              <p className="text-xs font-mono text-slate-500 mt-1">
-                Welcome back, <span className="text-cyan-400 font-bold">{data.username}</span> — Neural OS synchronized
+              <p className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-1">
+                Welcome back, <span className="text-blue-600 dark:text-cyan-400 font-bold">{data.username}</span> — Neural OS synchronized
               </p>
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
               {/* IQ Percentile chip */}
-              <div className="px-4 py-2.5 rounded-xl bg-pop border border-white/[0.06] hidden sm:block">
+              <div className="px-4 py-2.5 rounded-xl bg-card dark:bg-pop border border-border shadow-light-sm dark:shadow-none hidden sm:block">
                 <div className="text-[9px] font-mono text-slate-500 uppercase tracking-wider">Global IQ Percentile</div>
-                <div className="text-base font-display font-black text-white mt-0.5">
-                  Top 8.4% <span className="text-emerald-400 text-xs">↑</span>
+                <div className="text-base font-display font-black text-slate-900 dark:text-white mt-0.5">
+                  Top 8.4% <span className="text-emerald-600 dark:text-emerald-400 text-xs">↑</span>
                 </div>
               </div>
 
@@ -415,7 +415,7 @@ const Dashboard: React.FC = () => {
 
               {/* Identity Verified */}
               <Link href="/profile">
-                <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-pop border border-white/[0.06] text-[11px] font-mono font-bold text-slate-400 hover:text-white hover:border-white/[0.15] transition-all group">
+                <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-card dark:bg-pop border border-border text-[11px] font-mono font-bold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-white hover:border-blue-200 dark:hover:border-white/[0.15] transition-all shadow-light-sm dark:shadow-none group">
                   <span>Identity Verified</span>
                   <i className="fa-solid fa-chevron-right text-[9px] group-hover:translate-x-0.5 transition-transform" />
                 </button>
@@ -431,22 +431,22 @@ const Dashboard: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8 p-4 rounded-xl bg-amber-500/8 border border-amber-500/25 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+            className="mb-8 p-4 rounded-xl bg-amber-50 dark:bg-amber-500/8 border border-amber-200 dark:border-amber-500/25 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-light-sm"
           >
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/25 text-amber-400 flex items-center justify-center flex-shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-500/15 border border-amber-200 dark:border-amber-500/25 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0">
                 <i className="fa-solid fa-triangle-exclamation text-sm" />
               </div>
               <div>
-                <p className="text-xs font-mono font-bold text-amber-300">Career Risk Index Elevated</p>
-                <p className="text-[11px] font-mono text-slate-400 mt-0.5">
+                <p className="text-xs font-mono font-bold text-amber-800 dark:text-amber-300">Career Risk Index Elevated</p>
+                <p className="text-[11px] font-mono text-slate-600 dark:text-slate-400 mt-0.5">
                   Complete profile → Add skills → Upload resume → Set target career
                 </p>
               </div>
             </div>
             <button
               onClick={() => setIsWizardOpen(true)}
-              className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-mono font-bold text-xs transition-all flex-shrink-0"
+              className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white dark:text-slate-950 font-mono font-bold text-xs transition-all shadow-sm flex-shrink-0"
             >
               REDUCE RISK →
             </button>
@@ -471,13 +471,13 @@ const Dashboard: React.FC = () => {
           <div className="grid lg:grid-cols-12 gap-6">
             <div className="lg:col-span-8 space-y-6">
               <RevealWrapper type="card">
-                <div className="rounded-2xl bg-pop border border-white/[0.06] overflow-hidden relative">
-                  <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent" />
+                <div className="rounded-2xl bg-card dark:bg-pop border border-border shadow-light-card dark:shadow-none overflow-hidden relative">
+                  <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/30 dark:via-cyan-500/30 to-transparent" />
                   <AIStrategy strategy={data.ai_strategy} />
                 </div>
               </RevealWrapper>
               <RevealWrapper type="card">
-                <div className="rounded-2xl bg-pop border border-white/[0.06] overflow-hidden relative">
+                <div className="rounded-2xl bg-card dark:bg-pop border border-border shadow-light-card dark:shadow-none overflow-hidden relative">
                   <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
                   <XPSystem
                     level={data.xp_system.level}
@@ -492,7 +492,7 @@ const Dashboard: React.FC = () => {
             </div>
             <div className="lg:col-span-4">
               <RevealWrapper type="card">
-                <div className="rounded-2xl bg-pop border border-white/[0.06] overflow-hidden h-full relative">
+                <div className="rounded-2xl bg-card dark:bg-pop border border-border shadow-light-card dark:shadow-none overflow-hidden h-full relative">
                   <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
                   <AIInsightPanel />
                 </div>
@@ -506,20 +506,20 @@ const Dashboard: React.FC = () => {
           <SectionDivider label="SKILL MASTERY HEATMAP" bulletVariant="success" badge="LIVE ANALYSIS" />
           <div className="grid lg:grid-cols-3 gap-6">
             <RevealWrapper type="card" className="lg:col-span-2">
-              <div className="rounded-2xl bg-pop border border-white/[0.06] p-6 relative overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/25 to-transparent" />
+              <div className="rounded-2xl bg-card dark:bg-pop border border-border shadow-light-card dark:shadow-none p-6 relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/25 dark:via-cyan-500/25 to-transparent" />
                 <SkillRadar skills={data.skill_heatmap} />
               </div>
             </RevealWrapper>
             <div className="space-y-6">
               <RevealWrapper type="card">
-                <div className="rounded-2xl bg-pop border border-white/[0.06] overflow-hidden relative">
+                <div className="rounded-2xl bg-card dark:bg-pop border border-border shadow-light-card dark:shadow-none overflow-hidden relative">
                   <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/25 to-transparent" />
                   <GrowthForecast data={data.growth_forecast} />
                 </div>
               </RevealWrapper>
               <RevealWrapper type="card">
-                <div className="rounded-2xl bg-pop border border-white/[0.06] overflow-hidden relative">
+                <div className="rounded-2xl bg-card dark:bg-pop border border-border shadow-light-card dark:shadow-none overflow-hidden relative">
                   <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-500/25 to-transparent" />
                   <AchievementBadges badges={data.badges} />
                 </div>
@@ -533,7 +533,7 @@ const Dashboard: React.FC = () => {
           <div>
             <SectionDivider label="ENGINE MODULE STATUS" bulletVariant="warning" />
             <RevealWrapper type="card">
-              <div className="rounded-2xl bg-pop border border-white/[0.06] overflow-hidden relative">
+              <div className="rounded-2xl bg-card dark:bg-pop border border-border shadow-light-card dark:shadow-none overflow-hidden relative">
                 <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-500/25 to-transparent" />
                 <ModuleSummaries summaries={{
                   resume:           { score: data.has_resume ? 85 : 0 },
@@ -549,8 +549,8 @@ const Dashboard: React.FC = () => {
           <div>
             <SectionDivider label="GLOBAL BENCHMARKING" bulletVariant="cyan" badge="REAL-TIME" />
             <RevealWrapper type="card">
-              <div className="rounded-2xl bg-pop border border-white/[0.06] overflow-hidden relative">
-                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/25 to-transparent" />
+              <div className="rounded-2xl bg-card dark:bg-pop border border-border shadow-light-card dark:shadow-none overflow-hidden relative">
+                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/25 dark:via-cyan-500/25 to-transparent" />
                 <Benchmarking data={data.benchmarking} />
               </div>
             </RevealWrapper>

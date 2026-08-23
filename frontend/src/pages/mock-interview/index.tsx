@@ -105,14 +105,13 @@ const MockInterviewSetup: React.FC = () => {
                 }
             />
             <div className="max-w-[900px] mx-auto px-6 pb-10 space-y-8">
-                <div className="rounded-2xl bg-pop border border-white/[0.07] overflow-hidden relative">
-                    <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
+                <div className="rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none overflow-hidden relative">
                     <div className="p-8 space-y-8">
                         <div className="form-group">
-                            <label className="form-label text-xs uppercase tracking-wider text-slate-300 font-bold block mb-2">Target Job Role</label>
+                            <label className="form-label text-xs uppercase tracking-wider text-slate-700 dark:text-slate-300 font-bold block mb-2">Target Job Role</label>
                             <input
                                 type="text"
-                                className="sm-input px-4 py-3 text-sm w-full"
+                                className="sm-input px-4 py-3 text-sm w-full font-semibold"
                                 placeholder="e.g. Senior Frontend Developer"
                                 value={setup.role}
                                 onChange={(e) => setSetup({ ...setup, role: e.target.value })}
@@ -121,9 +120,9 @@ const MockInterviewSetup: React.FC = () => {
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             <div className="form-group">
-                                <label className="form-label text-xs uppercase tracking-wider text-slate-300 font-bold block mb-2">Experience Level</label>
+                                <label className="form-label text-xs uppercase tracking-wider text-slate-700 dark:text-slate-300 font-bold block mb-2">Experience Level</label>
                                 <select
-                                    className="sm-input px-4 py-3 text-sm w-full bg-slate-900"
+                                    className="sm-input px-4 py-3 text-sm w-full font-medium"
                                     value={setup.experience_level}
                                     onChange={(e) => setSetup({ ...setup, experience_level: e.target.value as any })}
                                 >
@@ -134,9 +133,9 @@ const MockInterviewSetup: React.FC = () => {
                             </div>
 
                             <div className="form-group">
-                                <label className="form-label text-xs uppercase tracking-wider text-slate-300 font-bold block mb-2">Interview Type</label>
+                                <label className="form-label text-xs uppercase tracking-wider text-slate-700 dark:text-slate-300 font-bold block mb-2">Interview Type</label>
                                 <select
-                                    className="sm-input px-4 py-3 text-sm w-full bg-slate-900"
+                                    className="sm-input px-4 py-3 text-sm w-full font-medium"
                                     value={setup.interview_type}
                                     onChange={(e) => setSetup({ ...setup, interview_type: e.target.value as any })}
                                 >
@@ -147,9 +146,9 @@ const MockInterviewSetup: React.FC = () => {
                             </div>
 
                             <div className="form-group">
-                                <label className="form-label text-xs uppercase tracking-wider text-slate-300 font-bold block mb-2">Difficulty</label>
+                                <label className="form-label text-xs uppercase tracking-wider text-slate-700 dark:text-slate-300 font-bold block mb-2">Difficulty</label>
                                 <select
-                                    className="sm-input px-4 py-3 text-sm w-full bg-slate-900"
+                                    className="sm-input px-4 py-3 text-sm w-full font-medium"
                                     value={setup.difficulty}
                                     onChange={(e) => setSetup({ ...setup, difficulty: e.target.value as any })}
                                 >
@@ -160,9 +159,9 @@ const MockInterviewSetup: React.FC = () => {
                             </div>
 
                             <div className="form-group">
-                                <label className="form-label text-xs uppercase tracking-wider text-slate-300 font-bold block mb-2">Interview Mode</label>
+                                <label className="form-label text-xs uppercase tracking-wider text-slate-700 dark:text-slate-300 font-bold block mb-2">Interview Mode</label>
                                 <select
-                                    className="sm-input px-4 py-3 text-sm w-full bg-slate-900"
+                                    className="sm-input px-4 py-3 text-sm w-full font-medium"
                                     value={setup.interview_mode}
                                     onChange={(e) => setSetup({ ...setup, interview_mode: e.target.value as any })}
                                 >
@@ -175,25 +174,25 @@ const MockInterviewSetup: React.FC = () => {
                             </div>
 
                             <div className="form-group">
-                                <label className="form-label text-xs uppercase tracking-wider text-slate-300 font-bold block mb-2">Instant Feedback</label>
+                                <label className="form-label text-xs uppercase tracking-wider text-slate-700 dark:text-slate-300 font-bold block mb-2">Instant Feedback</label>
                                 <div
                                     onClick={() => setSetup({ ...setup, instant_feedback: !setup.instant_feedback })}
-                                    className={`relative w-full h-11 rounded-xl border flex items-center px-4 cursor-pointer transition-all ${setup.instant_feedback ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400' : 'bg-slate-900 border-slate-800 text-slate-500'}`}
+                                    className={`relative w-full h-11 rounded-xl border flex items-center px-4 cursor-pointer transition-all shadow-sm ${setup.instant_feedback ? 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-300 dark:border-emerald-500/50 text-emerald-700 dark:text-emerald-400' : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-500'}`}
                                 >
-                                    <i className={`fa-solid ${setup.instant_feedback ? 'fa-toggle-on text-emerald-400' : 'fa-toggle-off'} mr-3 text-lg`}></i>
+                                    <i className={`fa-solid ${setup.instant_feedback ? 'fa-toggle-on text-emerald-600 dark:text-emerald-400' : 'fa-toggle-off'} mr-3 text-lg`}></i>
                                     <span className="text-xs font-bold uppercase tracking-wider">{setup.instant_feedback ? 'Enabled' : 'Disabled'}</span>
-                                    {setup.instant_feedback && <span className="ml-auto text-[9px] font-black text-emerald-300">TIPS AFTER EACH Q</span>}
+                                    {setup.instant_feedback && <span className="ml-auto text-[9px] font-black text-emerald-600 dark:text-emerald-300">TIPS AFTER EACH Q</span>}
                                 </div>
                             </div>
 
                             <div className="form-group">
-                                <label className="form-label text-xs uppercase tracking-wider text-slate-300 font-bold block mb-2">Question Count</label>
+                                <label className="form-label text-xs uppercase tracking-wider text-slate-700 dark:text-slate-300 font-bold block mb-2">Question Count</label>
                                 <div className="grid grid-cols-3 gap-2">
                                     {[5, 10, 15].map(c => (
                                         <button
                                             key={c}
                                             onClick={() => setSetup({ ...setup, question_count: c })}
-                                            className={`py-2.5 rounded-xl text-xs font-bold border transition-all ${setup.question_count === c ? 'bg-indigo-600 border-indigo-500 text-white shadow-lg' : 'bg-slate-900 border-slate-800 text-slate-500 hover:border-slate-700'}`}
+                                            className={`py-2.5 rounded-xl text-xs font-bold border transition-all ${setup.question_count === c ? 'bg-blue-600 border-blue-500 text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-500 hover:border-slate-300'}`}
                                         >
                                             {c} Qs
                                         </button>
@@ -203,7 +202,7 @@ const MockInterviewSetup: React.FC = () => {
                         </div>
 
                         <div className="form-group">
-                            <label className="form-label text-xs uppercase tracking-wider text-slate-300 font-bold block mb-2">Job Description (Optional Context)</label>
+                            <label className="form-label text-xs uppercase tracking-wider text-slate-700 dark:text-slate-300 font-bold block mb-2">Job Description (Optional Context)</label>
                             <textarea
                                 className="sm-input h-28 px-4 py-3 text-xs resize-none w-full"
                                 placeholder="Paste the JD here to generate custom questions matched to the role's specific requirements."
@@ -212,26 +211,26 @@ const MockInterviewSetup: React.FC = () => {
                             />
                         </div>
 
-                        <div className="p-5 rounded-2xl bg-slate-950/60 border border-slate-800 space-y-3">
-                            <h4 className="text-xs font-black uppercase tracking-wider text-slate-300 flex items-center gap-2">
-                                <i className="fa-solid fa-circle-info text-indigo-400" />
+                        <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 space-y-3">
+                            <h4 className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-300 flex items-center gap-2">
+                                <i className="fa-solid fa-circle-info text-blue-600 dark:text-indigo-400" />
                                 What happens next?
                             </h4>
-                            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs text-slate-400">
+                            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs text-slate-600 dark:text-slate-400">
                                 <div className="flex items-start gap-2">
-                                    <span className="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-[10px] shrink-0">1</span>
+                                    <span className="w-5 h-5 rounded-full bg-blue-50 text-blue-700 dark:bg-indigo-500/20 dark:text-indigo-400 flex items-center justify-center font-bold text-[10px] shrink-0 border border-blue-200 dark:border-transparent">1</span>
                                     <span>Select role & options</span>
                                 </div>
                                 <div className="flex items-start gap-2">
-                                    <span className="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-[10px] shrink-0">2</span>
+                                    <span className="w-5 h-5 rounded-full bg-blue-50 text-blue-700 dark:bg-indigo-500/20 dark:text-indigo-400 flex items-center justify-center font-bold text-[10px] shrink-0 border border-blue-200 dark:border-transparent">2</span>
                                     <span>Answer AI scenarios</span>
                                 </div>
                                 <div className="flex items-start gap-2">
-                                    <span className="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-[10px] shrink-0">3</span>
+                                    <span className="w-5 h-5 rounded-full bg-blue-50 text-blue-700 dark:bg-indigo-500/20 dark:text-indigo-400 flex items-center justify-center font-bold text-[10px] shrink-0 border border-blue-200 dark:border-transparent">3</span>
                                     <span>Real-time feedback</span>
                                 </div>
                                 <div className="flex items-start gap-2">
-                                    <span className="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-[10px] shrink-0">4</span>
+                                    <span className="w-5 h-5 rounded-full bg-blue-50 text-blue-700 dark:bg-indigo-500/20 dark:text-indigo-400 flex items-center justify-center font-bold text-[10px] shrink-0 border border-blue-200 dark:border-transparent">4</span>
                                     <span>Detailed score breakdown</span>
                                 </div>
                             </div>

@@ -70,23 +70,23 @@ const ICONS: Record<string, string> = {
 
 const ATSScorePanel: React.FC<Props> = ({ data, loading, onAnalyze }) => {
     return (
-        <div className="glass-panel p-6 border-slate-800/50">
+        <div className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none">
             <div className="flex items-center justify-between mb-6">
                 <div className="space-y-1">
-                    <h3 className="text-sm font-bold text-slate-50 flex items-center gap-2">
-                        <i className="fa-solid fa-robot text-emerald-400 text-xs"></i>
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
+                        <i className="fa-solid fa-robot text-emerald-600 dark:text-emerald-400 text-xs"></i>
                         ATS Optimization Engine
                     </h3>
                     {data && (
                         <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.1em]">
-                            Target: <span className="text-indigo-400">{data.target_job}</span>
+                            Target: <span className="text-blue-600 dark:text-indigo-400">{data.target_job}</span>
                         </p>
                     )}
                 </div>
                 <button
                     onClick={onAnalyze}
                     disabled={loading}
-                    className="text-[10px] font-black px-4 py-1.5 bg-emerald-600/20 border border-emerald-500/30 text-emerald-400 rounded-xl uppercase tracking-widest hover:bg-emerald-500/30 transition-all flex items-center gap-2 disabled:opacity-50"
+                    className="text-[10px] font-black px-4 py-1.5 bg-emerald-50 dark:bg-emerald-600/20 border border-emerald-200 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-400 rounded-xl uppercase tracking-widest hover:bg-emerald-100 dark:hover:bg-emerald-500/30 transition-all flex items-center gap-2 disabled:opacity-50 shadow-sm"
                 >
                     {loading ? <i className="fa-solid fa-circle-notch fa-spin text-[10px]"></i> : <i className="fa-solid fa-magnifying-glass text-[10px]"></i>}
                     {loading ? 'Scanning...' : 'Run ATS Scan'}
@@ -95,15 +95,15 @@ const ATSScorePanel: React.FC<Props> = ({ data, loading, onAnalyze }) => {
 
             {!data ? (
                 <div className="py-12 flex flex-col items-center gap-4 text-center">
-                    <div className="w-16 h-16 rounded-full bg-slate-900 flex items-center justify-center text-slate-700 text-2xl">
+                    <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-900 flex items-center justify-center text-slate-400 dark:text-slate-700 text-2xl">
                         <i className="fa-solid fa-shield-halved"></i>
                     </div>
-                    <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Run an ATS scan to see your optimization scores</p>
+                    <p className="text-[10px] font-black text-slate-500 dark:text-slate-600 uppercase tracking-widest">Run an ATS scan to see your optimization scores</p>
                 </div>
             ) : (
                 <div className="space-y-6">
                     {/* Score rings row */}
-                    <div className="flex justify-around py-4 px-2 bg-slate-900/50 rounded-2xl border border-slate-800/50">
+                    <div className="flex justify-around py-4 px-2 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800/50 shadow-sm">
                         <ScoreRing score={data.ats_score} label="ATS Score" color="indigo" />
                         <ScoreRing score={data.keyword_score} label="Keyword Match" color="emerald" />
                         <ScoreRing score={data.formatting_score} label="Formatting" color="amber" />
@@ -111,9 +111,9 @@ const ATSScorePanel: React.FC<Props> = ({ data, loading, onAnalyze }) => {
                     </div>
 
                     {/* Heatmap Section */}
-                    <div className="p-5 bg-slate-900/40 rounded-2xl border border-slate-800/60 space-y-4">
+                    <div className="p-5 bg-slate-50/70 dark:bg-slate-900/40 rounded-2xl border border-slate-200 dark:border-slate-800/60 space-y-4 shadow-sm">
                         <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                            <i className="fa-solid fa-layer-group text-indigo-400"></i> Keyword Coverage Heatmap
+                            <i className="fa-solid fa-layer-group text-blue-600 dark:text-indigo-400"></i> Keyword Coverage Heatmap
                         </h4>
                         <div className="grid grid-cols-1 gap-3">
                             {[

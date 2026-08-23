@@ -70,10 +70,10 @@ export const CyberPageShell: React.FC<CyberPageShellProps> = ({
         className="relative"
       >
         {/* ── Header card ── */}
-        <div className="rounded-2xl bg-pop border border-white/[0.07] overflow-hidden mb-8 relative">
+        <div className="rounded-2xl bg-card dark:bg-pop border border-border shadow-light-card dark:shadow-sm overflow-hidden mb-8 relative">
           <TVNoise opacity={0.02} intensity={0.12} speed={55} />
           {/* Top accent line */}
-          <div className={`absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent ${glowColor === 'cyan' ? 'via-cyan-500/60' : glowColor === 'emerald' ? 'via-emerald-500/60' : glowColor === 'amber' ? 'via-amber-500/60' : 'via-indigo-500/60'} to-transparent`} />
+          <div className={`absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent ${glowColor === 'cyan' ? 'via-blue-500/40 dark:via-cyan-500/60' : glowColor === 'emerald' ? 'via-emerald-500/40 dark:via-emerald-500/60' : glowColor === 'amber' ? 'via-amber-500/40 dark:via-amber-500/60' : 'via-indigo-500/40 dark:via-indigo-500/60'} to-transparent`} />
 
           <div className="px-6 py-5 relative z-10">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
@@ -81,18 +81,18 @@ export const CyberPageShell: React.FC<CyberPageShellProps> = ({
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <Bullet variant={bulletVariant} size="sm" />
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-[0.16em] text-slate-500">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-[0.16em] text-muted-foreground">
                     {section}
                   </span>
-                  <span className="text-[10px] font-mono text-slate-600">•</span>
-                  <span className="text-[10px] font-mono font-bold text-slate-500">{moduleCode}</span>
+                  <span className="text-[10px] font-mono text-muted-foreground">•</span>
+                  <span className="text-[10px] font-mono font-bold text-muted-foreground">{moduleCode}</span>
                   {badge && <Badge variant={badgeVariant}>{badge}</Badge>}
                 </div>
 
-                <h1 className="text-2xl sm:text-3xl font-display font-black text-white tracking-tight mb-1.5">
+                <h1 className="text-2xl sm:text-3xl font-display font-black text-foreground tracking-tight mb-1.5">
                   {title}
                 </h1>
-                <p className="text-xs font-mono text-slate-400 max-w-xl">{subtitle}</p>
+                <p className="text-xs font-mono text-muted-foreground max-w-xl">{subtitle}</p>
               </div>
 
               {/* Right: actions slot */}
@@ -105,7 +105,7 @@ export const CyberPageShell: React.FC<CyberPageShellProps> = ({
 
             {/* Stats / chips row */}
             {stats && (
-              <div className="mt-4 pt-4 border-t border-white/[0.05] flex flex-wrap items-center gap-3">
+              <div className="mt-4 pt-4 border-t border-border flex flex-wrap items-center gap-3">
                 {stats}
               </div>
             )}
@@ -126,16 +126,16 @@ export const PageStatChip: React.FC<{
   color?: 'cyan' | 'emerald' | 'amber' | 'slate';
 }> = ({ label, value, icon, color = 'slate' }) => {
   const colorMap = {
-    cyan:    'text-cyan-400 bg-cyan-500/8 border-cyan-500/20',
-    emerald: 'text-emerald-400 bg-emerald-500/8 border-emerald-500/20',
-    amber:   'text-amber-400 bg-amber-500/8 border-amber-500/20',
-    slate:   'text-slate-400 bg-white/[0.03] border-white/[0.06]',
+    cyan:    'text-blue-600 dark:text-cyan-400 bg-blue-50 dark:bg-cyan-500/8 border-blue-200 dark:border-cyan-500/20 shadow-light-sm dark:shadow-none',
+    emerald: 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/8 border-emerald-200 dark:border-emerald-500/20 shadow-light-sm dark:shadow-none',
+    amber:   'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/8 border-amber-200 dark:border-amber-500/20 shadow-light-sm dark:shadow-none',
+    slate:   'text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-white/[0.03] border-slate-200 dark:border-white/[0.06] shadow-light-sm dark:shadow-none',
   };
   return (
     <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border text-[11px] font-mono ${colorMap[color]}`}>
       {icon && <i className={`fa-solid ${icon} text-[10px]`} />}
       <span className="font-bold">{value}</span>
-      <span className="text-slate-500">{label}</span>
+      <span className="text-muted-foreground">{label}</span>
     </div>
   );
 };

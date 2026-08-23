@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { 
     LineChart as RechartsLineChart, Line as RechartsLine, 
@@ -11,6 +10,7 @@ import { formatINR } from '../utils/formatters';
 import { Bullet } from './ui/bullet';
 import { Badge } from './ui/badge';
 import { TVNoise } from './ui/tv-noise';
+import { useTheme } from '../context/ThemeContext';
 
 const LineChart = RechartsLineChart as any;
 const Line = RechartsLine as any;
@@ -36,11 +36,11 @@ interface JobDemandTrendsProps {
 const CyberTooltip = ({ active, payload, label, isSalary = false }: any) => {
     if (active && payload && payload.length) {
         return (
-            <div className="bg-[#0b0d13] border border-white/[0.1] p-3 rounded-xl shadow-2xl backdrop-blur-xl">
-                <p className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 mb-1">{label}</p>
-                <p className="text-xs font-mono font-bold text-cyan-300">
+            <div className="bg-white/95 dark:bg-[#0b0d13] border border-slate-200 dark:border-white/[0.1] p-3 rounded-xl shadow-light-float dark:shadow-2xl backdrop-blur-xl">
+                <p className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">{label}</p>
+                <p className="text-xs font-mono font-bold text-blue-600 dark:text-cyan-300">
                     {isSalary ? 'Avg Salary: ' : 'Demand Score: '}
-                    <span className={isSalary ? 'text-emerald-400' : 'text-cyan-400'}>
+                    <span className={isSalary ? 'text-emerald-600 dark:text-emerald-400' : 'text-blue-600 dark:text-cyan-400'}>
                         {isSalary ? formatINR(payload[0].value) : payload[0].value}
                     </span>
                 </p>
@@ -51,6 +51,9 @@ const CyberTooltip = ({ active, payload, label, isSalary = false }: any) => {
 };
 
 const JobDemandTrends: React.FC<JobDemandTrendsProps> = ({ trends }) => {
+    const { effectiveTheme } = useTheme();
+    const isDark = effectiveTheme === 'dark';
+
     if (!trends || trends.length === 0) return <div className="p-4 text-center font-mono text-xs text-slate-500">Synchronizing market trend telemetry...</div>;
 
     const processedTrends = React.useMemo(() => {
@@ -115,20 +118,26 @@ const JobDemandTrends: React.FC<JobDemandTrendsProps> = ({ trends }) => {
         });
     }, [trends]);
 
+    const gridColor = isDark ? 'rgba(255,255,255,0.05)' : '#F1F5F9';
+    const axisLineColor = isDark ? 'rgba(255,255,255,0.08)' : '#E2E8F0';
+    const tickColor = isDark ? '#64748b' : '#94a3b8';
+    const demandColor = isDark ? '#00d9ff' : '#2563eb';
+    const salaryColor = isDark ? '#10b981' : '#059669';
+
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             {/* Job Demand Trend */}
-            <div className="bg-pop rounded-2xl p-6 border border-white/[0.07] relative overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent" />
+            <div className="bg-card dark:bg-pop rounded-2xl p-6 border border-border shadow-light-card dark:shadow-none relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/40 dark:via-cyan-500/40 to-transparent" />
                 <TVNoise opacity={0.02} />
                 
                 <div className="relative z-10 flex justify-between items-center mb-6">
                     <div>
                         <div className="flex items-center gap-2 mb-1">
                             <Bullet variant="cyan" size="sm" />
-                            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500">HIRING VELOCITY</span>
+                            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">HIRING VELOCITY</span>
                         </div>
-                        <h3 className="text-base font-display font-black text-white">Job Demand Trend</h3>
+                        <h3 className="text-base font-display font-black text-slate-900 dark:text-white">Job Demand Trend</h3>
                     </div>
                     <Badge variant="outline-cyan">+15% Growth</Badge>
                 </div>
@@ -137,27 +146,27 @@ const JobDemandTrends: React.FC<JobDemandTrendsProps> = ({ trends }) => {
                         <AreaChart data={processedTrends}>
                             <defs>
                                 <linearGradient id="cyberDemandGrad" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#00d9ff" stopOpacity={0.35} />
-                                    <stop offset="95%" stopColor="#00d9ff" stopOpacity={0} />
+                                    <stop offset="5%" stopColor={demandColor} stopOpacity={isDark ? 0.35 : 0.25} />
+                                    <stop offset="95%" stopColor={demandColor} stopOpacity={0} />
                                 </linearGradient>
                             </defs>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={gridColor} />
                             <XAxis 
                                 dataKey="monthLabel" 
-                                tick={{ fontSize: 11, fill: '#64748b', fontFamily: 'monospace' }} 
-                                axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
+                                tick={{ fontSize: 11, fill: tickColor, fontFamily: 'monospace' }} 
+                                axisLine={{ stroke: axisLineColor }}
                                 tickLine={false}
                             />
                             <YAxis 
-                                tick={{ fontSize: 11, fill: '#64748b', fontFamily: 'monospace' }} 
-                                axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
+                                tick={{ fontSize: 11, fill: tickColor, fontFamily: 'monospace' }} 
+                                axisLine={{ stroke: axisLineColor }}
                                 tickLine={false}
                             />
                             <Tooltip content={<CyberTooltip />} />
                             <Area 
                                 type="monotone" 
                                 dataKey="demand_score" 
-                                stroke="#00d9ff" 
+                                stroke={demandColor} 
                                 strokeWidth={2.5} 
                                 fillOpacity={1} 
                                 fill="url(#cyberDemandGrad)" 
@@ -168,7 +177,7 @@ const JobDemandTrends: React.FC<JobDemandTrendsProps> = ({ trends }) => {
             </div>
 
             {/* Salary Trend */}
-            <div className="bg-pop rounded-2xl p-6 border border-white/[0.07] relative overflow-hidden">
+            <div className="bg-card dark:bg-pop rounded-2xl p-6 border border-border shadow-light-card dark:shadow-none relative overflow-hidden">
                 <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent" />
                 <TVNoise opacity={0.02} />
                 
@@ -176,37 +185,37 @@ const JobDemandTrends: React.FC<JobDemandTrendsProps> = ({ trends }) => {
                     <div>
                         <div className="flex items-center gap-2 mb-1">
                             <Bullet variant="success" size="sm" />
-                            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500">COMPENSATION INDEX</span>
+                            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">COMPENSATION INDEX</span>
                         </div>
-                        <h3 className="text-base font-display font-black text-white">Salary Curve</h3>
+                        <h3 className="text-base font-display font-black text-slate-900 dark:text-white">Salary Curve</h3>
                     </div>
                     <Badge variant="outline-success">+8% YoY</Badge>
                 </div>
                 <div className="h-72 relative z-10">
                     <ResponsiveContainer width="100%" height="100%">
                         <LineChart data={processedTrends}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={gridColor} />
                             <XAxis 
                                 dataKey="monthLabel" 
-                                tick={{ fontSize: 11, fill: '#64748b', fontFamily: 'monospace' }} 
-                                axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
+                                tick={{ fontSize: 11, fill: tickColor, fontFamily: 'monospace' }} 
+                                axisLine={{ stroke: axisLineColor }}
                                 tickLine={false}
                             />
                             <YAxis 
-                                tick={{ fontSize: 11, fill: '#64748b', fontFamily: 'monospace' }} 
+                                tick={{ fontSize: 11, fill: tickColor, fontFamily: 'monospace' }} 
                                 domain={['auto', 'auto']} 
                                 tickFormatter={(val: number) => formatINR(val)} 
-                                axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
+                                axisLine={{ stroke: axisLineColor }}
                                 tickLine={false}
                             />
                             <Tooltip content={<CyberTooltip isSalary={true} />} />
                             <Line 
                                 type="monotone" 
                                 dataKey="avg_salary" 
-                                stroke="#10b981" 
+                                stroke={salaryColor} 
                                 strokeWidth={2.5} 
-                                dot={{ r: 4, fill: '#10b981', stroke: '#0b0d13', strokeWidth: 2 }} 
-                                activeDot={{ r: 6, fill: '#34d399', stroke: '#0b0d13', strokeWidth: 2 }} 
+                                dot={{ r: 4, fill: salaryColor, stroke: isDark ? '#0b0d13' : '#ffffff', strokeWidth: 2 }} 
+                                activeDot={{ r: 6, fill: salaryColor, stroke: isDark ? '#0b0d13' : '#ffffff', strokeWidth: 2 }} 
                             />
                         </LineChart>
                     </ResponsiveContainer>

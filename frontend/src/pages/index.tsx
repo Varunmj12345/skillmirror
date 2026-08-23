@@ -17,6 +17,7 @@ import { LiveAlertsWidget } from '../components/ui/live-alerts-widget';
 import { Bullet } from '../components/ui/bullet';
 import { Badge } from '../components/ui/badge';
 import { Card, CardHeader, CardContent } from '../components/ui/card';
+import ThemeToggle from '../components/ThemeToggle';
 
 const Home: React.FC = () => {
   const { user } = useAuth();
@@ -94,9 +95,10 @@ const Home: React.FC = () => {
 
             {/* Actions */}
             <div className="flex items-center gap-3">
+              <ThemeToggle variant="compact" />
               {!user && (
                 <Link href="/login">
-                  <a className="hidden sm:block text-xs font-mono font-bold text-slate-400 hover:text-white uppercase tracking-wider transition-colors px-3 py-2">
+                  <a className="hidden sm:block text-xs font-mono font-bold text-muted-foreground hover:text-foreground uppercase tracking-wider transition-colors px-3 py-2">
                     Sign In
                   </a>
                 </Link>

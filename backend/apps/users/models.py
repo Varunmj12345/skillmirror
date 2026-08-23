@@ -39,9 +39,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class UserProfile(models.Model):
     ROLE_CHOICES = [
-        ('student', 'Student'),
-        ('problem_owner', 'Problem Owner / Requester'),
-        ('evaluator', 'Project Evaluator'),
+        ('student', 'Student / Developer'),
         ('admin', 'Platform Super Admin'),
     ]
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')

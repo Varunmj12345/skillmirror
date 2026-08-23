@@ -49,22 +49,22 @@ const AIImprovementPanel: React.FC<Props> = ({ skills = [], role = 'Software Dev
     };
 
     return (
-        <div className="glass-panel p-6 border-slate-800/50 space-y-6">
-            <h3 className="text-sm font-bold text-slate-50 flex items-center gap-2">
-                <i className="fa-solid fa-brain text-purple-400 text-xs"></i>
+        <div className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none space-y-6">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
+                <i className="fa-solid fa-brain text-purple-600 dark:text-purple-400 text-xs"></i>
                 AI Improvement Engine
             </h3>
 
             {/* Keyword Injections */}
             {injections.length > 0 && (
-                <div className="p-5 bg-indigo-500/10 border border-indigo-500/20 rounded-2xl space-y-3">
-                    <h4 className="text-[10px] font-black text-indigo-400 uppercase tracking-widest flex items-center gap-2">
+                <div className="p-5 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 rounded-2xl space-y-3 shadow-sm">
+                    <h4 className="text-[10px] font-black text-indigo-700 dark:text-indigo-400 uppercase tracking-widest flex items-center gap-2">
                         <i className="fa-solid fa-syringe text-xs"></i> High-Impact Keyword Injections
                     </h4>
                     <div className="space-y-2">
                         {injections.map((inj, idx) => (
-                            <div key={idx} className="flex items-start gap-3 text-[11px] text-slate-300 leading-relaxed group">
-                                <div className="w-5 h-5 rounded bg-indigo-500/20 flex items-center justify-center shrink-0 mt-0.5 text-[9px] font-black group-hover:bg-indigo-500 group-hover:text-white transition-all">
+                            <div key={idx} className="flex items-start gap-3 text-xs text-slate-700 dark:text-slate-300 leading-relaxed group">
+                                <div className="w-5 h-5 rounded bg-indigo-200 dark:bg-indigo-500/20 text-indigo-800 dark:text-indigo-300 flex items-center justify-center shrink-0 mt-0.5 text-[9px] font-black group-hover:bg-indigo-600 group-hover:text-white transition-all">
                                     {idx + 1}
                                 </div>
                                 <p>{inj}</p>
@@ -81,7 +81,7 @@ const AIImprovementPanel: React.FC<Props> = ({ skills = [], role = 'Software Dev
                         <button
                             key={m.key}
                             onClick={() => setMode(m.key)}
-                            className={`flex items-center gap-2 px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${mode === m.key ? activeMap[m.color] : colorMap[m.color]}`}
+                            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all shadow-sm ${mode === m.key ? activeMap[m.color] : colorMap[m.color]}`}
                         >
                             <i className={`fa-solid ${m.icon} text-[10px]`}></i>
                             {m.label}
@@ -92,7 +92,7 @@ const AIImprovementPanel: React.FC<Props> = ({ skills = [], role = 'Software Dev
                 {/* Input */}
                 <div className="space-y-3">
                     <div>
-                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">
+                        <label className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-2">
                             {mode === 'improve' ? 'Paste your resume section to improve' :
                                 mode === 'summary' ? 'Paste your skills / experience context' :
                                     'Paste your skills or target role text'}
@@ -106,14 +106,14 @@ const AIImprovementPanel: React.FC<Props> = ({ skills = [], role = 'Software Dev
                                     ? 'e.g. 5yr exp in React, Node.js, AWS, led team of 4...'
                                     : 'e.g. Frontend Developer with React, CSS, TypeScript...'}
                             rows={5}
-                            className="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 text-sm text-slate-300 placeholder:text-slate-700 outline-none focus:border-indigo-500/50 resize-none transition-all"
+                            className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 text-sm text-slate-900 dark:text-slate-300 placeholder:text-slate-400 dark:placeholder:text-slate-700 outline-none focus:border-indigo-500/50 resize-none transition-all shadow-sm"
                         />
                     </div>
 
                     <button
                         onClick={handleRun}
                         disabled={loading}
-                        className="w-full py-3 bg-purple-600 hover:bg-purple-500 text-white text-[11px] font-black uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-purple-600/20 disabled:opacity-50"
+                        className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 shadow-md disabled:opacity-50"
                     >
                         {loading
                             ? <><i className="fa-solid fa-circle-notch fa-spin"></i> AI is working...</>
@@ -126,15 +126,15 @@ const AIImprovementPanel: React.FC<Props> = ({ skills = [], role = 'Software Dev
             {result && (
                 <div className="animate-in fade-in duration-500 pt-2">
                     <div className="flex items-center justify-between mb-2">
-                        <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest">AI Output</h4>
+                        <h4 className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">AI Output</h4>
                         <button
                             onClick={() => navigator.clipboard.writeText(result)}
-                            className="text-[9px] font-black text-slate-600 hover:text-indigo-400 uppercase tracking-widest flex items-center gap-1 transition-colors"
+                            className="text-[9px] font-black text-slate-500 hover:text-indigo-600 dark:text-slate-600 dark:hover:text-indigo-400 uppercase tracking-widest flex items-center gap-1 transition-colors"
                         >
                             <i className="fa-solid fa-copy"></i> Copy result
                         </button>
                     </div>
-                    <div className="p-4 bg-slate-900 border border-indigo-500/20 rounded-xl text-[11px] text-slate-300 leading-relaxed whitespace-pre-wrap max-h-64 overflow-y-auto">
+                    <div className="p-4 bg-slate-50 dark:bg-slate-900 border border-indigo-200 dark:border-indigo-500/20 rounded-xl text-xs text-slate-800 dark:text-slate-300 leading-relaxed whitespace-pre-wrap max-h-64 overflow-y-auto shadow-sm">
                         {result}
                     </div>
                 </div>

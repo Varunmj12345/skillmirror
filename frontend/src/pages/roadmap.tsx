@@ -272,22 +272,22 @@ const Roadmap: React.FC = () => {
           </>
         }
       />
-      <div className="max-w-[1400px] mx-auto px-6 pb-10 text-slate-100 space-y-8">
+      <div className="max-w-[1400px] mx-auto px-6 pb-10 text-slate-900 dark:text-slate-100 space-y-8">
 
         {!roadmap ? (
           /* Profile & Roadmap Generator Setup Form */
-          <ScrollReveal className="sm-glass p-8 sm:p-10 rounded-3xl border border-white/10 space-y-8">
-            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-6">
+          <ScrollReveal className="p-8 sm:p-10 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none space-y-8">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 dark:border-white/10 pb-6">
               <div>
-                <span className="text-xs font-black uppercase tracking-widest text-cyan-400">Universal Career Engine</span>
-                <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">Domain-Aware Career Roadmap</h1>
-                <p className="mt-1 text-xs sm:text-sm text-slate-300">
+                <span className="text-xs font-black uppercase tracking-widest text-blue-600 dark:text-cyan-400">Universal Career Engine</span>
+                <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">Domain-Aware Career Roadmap</h1>
+                <p className="mt-1 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
                   Select your engineering or non-engineering domain to perform skill gap analysis and generate a personalized learning sequence.
                 </p>
               </div>
               <button
                 onClick={handleFetchRecommendations}
-                className="px-4 py-2.5 rounded-xl bg-cyan-500/20 text-cyan-300 font-bold text-xs hover:bg-cyan-500/30 border border-cyan-500/30 flex items-center gap-2"
+                className="px-4 py-2.5 rounded-xl bg-blue-50 dark:bg-cyan-500/20 text-blue-600 dark:text-cyan-300 font-bold text-xs hover:bg-blue-100 dark:hover:bg-cyan-500/30 border border-blue-200 dark:border-cyan-500/30 flex items-center gap-2 transition-all shadow-sm"
               >
                 <i className="fa-solid fa-compass" />
                 <span>Recommend Careers for Me</span>
@@ -312,7 +312,7 @@ const Roadmap: React.FC = () => {
                 <select
                   value={domain}
                   onChange={(e) => setDomain(e.target.value)}
-                  className="sm-input px-4 py-3 font-semibold text-cyan-300"
+                  className="sm-input px-4 py-3 font-semibold text-blue-600 dark:text-cyan-300"
                 >
                   {DOMAIN_OPTIONS.map((dom) => <option key={dom} value={dom}>{dom}</option>)}
                 </select>
@@ -337,16 +337,16 @@ const Roadmap: React.FC = () => {
                 placeholder="e.g. Structural Engineer, Embedded Engineer, Mechanical Design Engineer, Software Developer..."
                 value={targetRole}
                 onChange={(e) => setTargetRole(e.target.value)}
-                className="sm-input px-4 py-3 text-white font-bold"
+                className="sm-input px-4 py-3 text-slate-900 dark:text-white font-bold"
               />
             </div>
 
             {/* Skills & Tools Entry */}
             <div className="grid md:grid-cols-2 gap-6 text-xs">
-              <div className="space-y-3 p-5 rounded-2xl bg-slate-950/60 border border-white/5">
+              <div className="space-y-3 p-5 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-white/5">
                 <label className="sm-label flex items-center justify-between">
-                  <span>Known Domain & Technical Skills</span>
-                  <span className="text-[10px] text-slate-400">({userSkills.length} added)</span>
+                  <span className="text-slate-700 dark:text-slate-300 font-bold">Known Domain & Technical Skills</span>
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400">({userSkills.length} added)</span>
                 </label>
                 <div className="flex gap-2">
                   <input
@@ -357,24 +357,24 @@ const Roadmap: React.FC = () => {
                     onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddSkill())}
                     className="sm-input px-3 py-2 flex-1"
                   />
-                  <button onClick={handleAddSkill} className="px-4 py-2 bg-slate-800 text-slate-200 font-bold rounded-xl hover:bg-slate-700">
+                  <button onClick={handleAddSkill} className="px-4 py-2 bg-slate-900 dark:bg-slate-800 text-white dark:text-slate-200 font-bold rounded-xl hover:bg-blue-600 dark:hover:bg-slate-700 transition-colors shadow-sm">
                     + Add
                   </button>
                 </div>
                 <div className="flex flex-wrap gap-1.5 pt-2">
                   {userSkills.map((s) => (
-                    <span key={s} className="px-2.5 py-1 rounded-lg bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 flex items-center gap-1.5 text-[11px]">
+                    <span key={s} className="px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/30 flex items-center gap-1.5 text-[11px] font-mono font-medium">
                       <span>{s}</span>
-                      <button onClick={() => handleRemoveSkill(s)} className="hover:text-rose-400"><i className="fa-solid fa-xmark text-[10px]" /></button>
+                      <button onClick={() => handleRemoveSkill(s)} className="hover:text-rose-600 dark:hover:text-rose-400"><i className="fa-solid fa-xmark text-[10px]" /></button>
                     </span>
                   ))}
                 </div>
               </div>
 
-              <div className="space-y-3 p-5 rounded-2xl bg-slate-950/60 border border-white/5">
+              <div className="space-y-3 p-5 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-white/5">
                 <label className="sm-label flex items-center justify-between">
-                  <span>Software & Industry Tools Known</span>
-                  <span className="text-[10px] text-slate-400">({softwareTools.length} added)</span>
+                  <span className="text-slate-700 dark:text-slate-300 font-bold">Software & Industry Tools Known</span>
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400">({softwareTools.length} added)</span>
                 </label>
                 <div className="flex gap-2">
                   <input
@@ -385,15 +385,15 @@ const Roadmap: React.FC = () => {
                     onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTool())}
                     className="sm-input px-3 py-2 flex-1"
                   />
-                  <button onClick={handleAddTool} className="px-4 py-2 bg-slate-800 text-slate-200 font-bold rounded-xl hover:bg-slate-700">
+                  <button onClick={handleAddTool} className="px-4 py-2 bg-slate-900 dark:bg-slate-800 text-white dark:text-slate-200 font-bold rounded-xl hover:bg-blue-600 dark:hover:bg-slate-700 transition-colors shadow-sm">
                     + Add
                   </button>
                 </div>
                 <div className="flex flex-wrap gap-1.5 pt-2">
                   {softwareTools.map((t) => (
-                    <span key={t} className="px-2.5 py-1 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 flex items-center gap-1.5 text-[11px]">
+                    <span key={t} className="px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-cyan-500/20 text-blue-700 dark:text-cyan-300 border border-blue-200 dark:border-cyan-500/30 flex items-center gap-1.5 text-[11px] font-mono font-medium">
                       <span>{t}</span>
-                      <button onClick={() => handleRemoveTool(t)} className="hover:text-rose-400"><i className="fa-solid fa-xmark text-[10px]" /></button>
+                      <button onClick={() => handleRemoveTool(t)} className="hover:text-rose-600 dark:hover:text-rose-400"><i className="fa-solid fa-xmark text-[10px]" /></button>
                     </span>
                   ))}
                 </div>
@@ -401,7 +401,7 @@ const Roadmap: React.FC = () => {
             </div>
 
             {genError && (
-              <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-bold">
+              <div className="p-4 rounded-xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs font-bold">
                 {genError}
               </div>
             )}
@@ -409,7 +409,7 @@ const Roadmap: React.FC = () => {
             <button
               onClick={handleGenerate}
               disabled={genLoading}
-              className="w-full sm-btn-primary py-4 rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl shadow-cyan-500/20"
+              className="w-full sm-btn-primary py-4 rounded-2xl text-xs font-black uppercase tracking-widest shadow-md"
             >
               {genLoading ? (
                 <div className="flex items-center justify-center gap-3">
@@ -423,23 +423,23 @@ const Roadmap: React.FC = () => {
           /* Roadmap View Display */
           <ScrollReveal className="space-y-8">
             {/* Header Card */}
-            <div className="sm-glass p-8 rounded-3xl border border-white/10 space-y-6">
+            <div className="p-8 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none space-y-6">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center gap-2">
-                  <span className="px-3 py-1 rounded-lg text-xs font-black uppercase tracking-wider bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
+                  <span className="px-3 py-1 rounded-lg text-xs font-black uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200 dark:bg-cyan-500/10 dark:text-cyan-300 dark:border-cyan-500/20">
                     {roadmap.domain || domain}
                   </span>
-                  <span className="px-3 py-1 rounded-lg text-xs font-black uppercase tracking-wider bg-slate-800 text-slate-300 border border-white/5">
+                  <span className="px-3 py-1 rounded-lg text-xs font-black uppercase tracking-wider bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-white/5">
                     {roadmap.student_level || level} Level
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-xs font-bold text-slate-300">
-                    Job Readiness: <span className="text-emerald-400 font-black text-sm">{roadmap.job_readiness_score || 75}%</span>
+                  <span className="text-xs font-bold text-slate-600 dark:text-slate-300">
+                    Job Readiness: <span className="text-emerald-600 dark:text-emerald-400 font-black text-sm">{roadmap.job_readiness_score || 75}%</span>
                   </span>
                   <button
                     onClick={() => setRoadmap(null)}
-                    className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-all border border-white/5"
+                    className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition-all border border-slate-200 dark:border-white/5 shadow-sm"
                   >
                     + New Domain Roadmap
                   </button>
@@ -447,34 +447,34 @@ const Roadmap: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <h1 className="text-3xl font-black text-white">{roadmap.title}</h1>
-                <p className="text-xs text-slate-300">{roadmap.timeline_summary || 'Comprehensive domain sequence'}</p>
+                <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">{roadmap.title}</h1>
+                <p className="text-xs text-slate-600 dark:text-slate-300">{roadmap.timeline_summary || 'Comprehensive domain sequence'}</p>
               </div>
 
-              <div className="w-full h-2.5 rounded-full bg-slate-900 overflow-hidden border border-white/5">
-                <div className="h-full bg-gradient-to-r from-cyan-400 to-emerald-400 transition-all duration-500" style={{ width: `${roadmap.completion_percentage || 0}%` }} />
+              <div className="w-full h-2.5 rounded-full bg-slate-100 dark:bg-slate-900 overflow-hidden border border-slate-200 dark:border-white/5">
+                <div className="h-full bg-gradient-to-r from-blue-500 to-emerald-500 dark:from-cyan-400 dark:to-emerald-400 transition-all duration-500" style={{ width: `${roadmap.completion_percentage || 0}%` }} />
               </div>
             </div>
 
             {/* Categorized Skill Gap Breakdown */}
             {roadmap.categorized_gaps && (
-              <div className="sm-glass p-7 rounded-3xl border border-white/10 space-y-5">
-                <h3 className="text-base font-bold text-white flex items-center justify-between">
+              <div className="p-7 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none space-y-5">
+                <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center justify-between">
                   <span>Domain Skill Gap Classification</span>
-                  <span className="text-xs text-slate-400 font-normal">Prioritized for {targetRole}</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-normal">Prioritized for {targetRole}</span>
                 </h3>
 
                 <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
                   {/* Critical */}
-                  <div className="p-4 rounded-2xl bg-rose-500/5 border border-rose-500/30 space-y-2">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-rose-400">🔴 Critical Must-Have</span>
-                    <ul className="space-y-1 font-semibold text-slate-200">
+                  <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-500/5 border border-rose-200 dark:border-rose-500/30 space-y-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-rose-700 dark:text-rose-400">🔴 Critical Must-Have</span>
+                    <ul className="space-y-1 font-semibold text-slate-800 dark:text-slate-200">
                       {(roadmap.categorized_gaps.critical || []).length === 0 ? (
-                        <li className="text-slate-500 italic">No critical gaps!</li>
+                        <li className="text-slate-400 italic">No critical gaps!</li>
                       ) : (
                         roadmap.categorized_gaps.critical.map((sk: string, i: number) => (
                           <li key={i} className="flex items-center gap-1.5">
-                            <i className="fa-solid fa-circle-exclamation text-[10px] text-rose-400" />
+                            <i className="fa-solid fa-circle-exclamation text-[10px] text-rose-500 dark:text-rose-400" />
                             <span>{sk}</span>
                           </li>
                         ))
@@ -483,15 +483,15 @@ const Roadmap: React.FC = () => {
                   </div>
 
                   {/* High Priority */}
-                  <div className="p-4 rounded-2xl bg-amber-500/5 border border-amber-500/30 space-y-2">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-amber-400">🟠 High Priority</span>
-                    <ul className="space-y-1 font-semibold text-slate-200">
+                  <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-500/5 border border-amber-200 dark:border-amber-500/30 space-y-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-amber-700 dark:text-amber-400">🟠 High Priority</span>
+                    <ul className="space-y-1 font-semibold text-slate-800 dark:text-slate-200">
                       {(roadmap.categorized_gaps.high_priority || []).length === 0 ? (
-                        <li className="text-slate-500 italic">No high priority gaps!</li>
+                        <li className="text-slate-400 italic">No high priority gaps!</li>
                       ) : (
                         roadmap.categorized_gaps.high_priority.map((sk: string, i: number) => (
                           <li key={i} className="flex items-center gap-1.5">
-                            <i className="fa-solid fa-triangle-exclamation text-[10px] text-amber-400" />
+                            <i className="fa-solid fa-triangle-exclamation text-[10px] text-amber-500 dark:text-amber-400" />
                             <span>{sk}</span>
                           </li>
                         ))
@@ -500,15 +500,15 @@ const Roadmap: React.FC = () => {
                   </div>
 
                   {/* Medium Priority */}
-                  <div className="p-4 rounded-2xl bg-yellow-500/5 border border-yellow-500/30 space-y-2">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-yellow-300">🟡 Medium Priority</span>
-                    <ul className="space-y-1 font-semibold text-slate-200">
+                  <div className="p-4 rounded-2xl bg-yellow-50 dark:bg-yellow-500/5 border border-yellow-200 dark:border-yellow-500/30 space-y-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-yellow-700 dark:text-yellow-300">🟡 Medium Priority</span>
+                    <ul className="space-y-1 font-semibold text-slate-800 dark:text-slate-200">
                       {(roadmap.categorized_gaps.medium_priority || []).length === 0 ? (
-                        <li className="text-slate-500 italic">None</li>
+                        <li className="text-slate-400 italic">None</li>
                       ) : (
                         roadmap.categorized_gaps.medium_priority.map((sk: string, i: number) => (
                           <li key={i} className="flex items-center gap-1.5">
-                            <i className="fa-solid fa-circle-dot text-[10px] text-yellow-300" />
+                            <i className="fa-solid fa-circle-dot text-[10px] text-yellow-500 dark:text-yellow-300" />
                             <span>{sk}</span>
                           </li>
                         ))
@@ -517,15 +517,15 @@ const Roadmap: React.FC = () => {
                   </div>
 
                   {/* Optional */}
-                  <div className="p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/30 space-y-2">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400">🟢 Optional Edge</span>
-                    <ul className="space-y-1 font-semibold text-slate-200">
+                  <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-500/5 border border-emerald-200 dark:border-emerald-500/30 space-y-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-emerald-700 dark:text-emerald-400">🟢 Optional Edge</span>
+                    <ul className="space-y-1 font-semibold text-slate-800 dark:text-slate-200">
                       {(roadmap.categorized_gaps.optional || []).length === 0 ? (
-                        <li className="text-slate-500 italic">None</li>
+                        <li className="text-slate-400 italic">None</li>
                       ) : (
                         roadmap.categorized_gaps.optional.map((sk: string, i: number) => (
                           <li key={i} className="flex items-center gap-1.5">
-                            <i className="fa-solid fa-star text-[10px] text-emerald-400" />
+                            <i className="fa-solid fa-star text-[10px] text-emerald-500 dark:text-emerald-400" />
                             <span>{sk}</span>
                           </li>
                         ))
@@ -538,30 +538,30 @@ const Roadmap: React.FC = () => {
 
             {/* Recommended Projects & Certifications Grid */}
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="sm-glass p-6 rounded-3xl border border-white/10 space-y-4 text-xs">
-                <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                  <i className="fa-solid fa-diagram-project text-cyan-400" />
+              <div className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none space-y-4 text-xs">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <i className="fa-solid fa-diagram-project text-blue-600 dark:text-cyan-400" />
                   <span>Domain Projects to Build</span>
                 </h3>
                 <div className="space-y-2">
                   {(roadmap.projects_to_build || []).map((proj: string, i: number) => (
-                    <div key={i} className="p-3 rounded-xl bg-slate-950/60 border border-white/5 text-slate-200 font-semibold flex items-start gap-2">
-                      <span className="text-cyan-400 font-bold">{i+1}.</span>
+                    <div key={i} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200/70 dark:border-white/5 text-slate-800 dark:text-slate-200 font-semibold flex items-start gap-2">
+                      <span className="text-blue-600 dark:text-cyan-400 font-bold">{i+1}.</span>
                       <span>{proj}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="sm-glass p-6 rounded-3xl border border-white/10 space-y-4 text-xs">
-                <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                  <i className="fa-solid fa-certificate text-indigo-400" />
+              <div className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none space-y-4 text-xs">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <i className="fa-solid fa-certificate text-indigo-600 dark:text-indigo-400" />
                   <span>Industry Certifications to Pursue</span>
                 </h3>
                 <div className="space-y-2">
                   {(roadmap.certifications || []).map((cert: string, i: number) => (
-                    <div key={i} className="p-3 rounded-xl bg-slate-950/60 border border-white/5 text-indigo-300 font-semibold flex items-center gap-2">
-                      <i className="fa-solid fa-ribbon text-indigo-400" />
+                    <div key={i} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200/70 dark:border-white/5 text-indigo-700 dark:text-indigo-300 font-semibold flex items-center gap-2">
+                      <i className="fa-solid fa-ribbon text-indigo-600 dark:text-indigo-400" />
                       <span>{cert}</span>
                     </div>
                   ))}
@@ -571,27 +571,27 @@ const Roadmap: React.FC = () => {
 
             {/* 5-Phase Learning Sequence */}
             <div className="space-y-6">
-              <h3 className="text-lg font-bold text-white flex items-center justify-between">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center justify-between">
                 <span>Domain Learning & Execution Sequence</span>
-                <span className="text-xs text-slate-400 font-normal">Click checkmark to log completion</span>
+                <span className="text-xs text-slate-500 dark:text-slate-400 font-normal">Click checkmark to log completion</span>
               </h3>
 
               <StaggerChildren className="grid gap-6">
                 {(roadmap.steps || []).map((step: any, idx: number) => (
                   <ScrollReveal stagger key={step.id || idx}>
-                    <div className={`sm-glass p-6 rounded-3xl border transition-all space-y-4 ${step.completed ? 'bg-emerald-500/5 border-emerald-500/30' : 'border-white/5 hover:border-cyan-500/30'}`}>
+                    <div className={`p-6 rounded-3xl bg-card border transition-all space-y-4 shadow-light-card dark:shadow-none ${step.completed ? 'bg-emerald-50/50 dark:bg-emerald-500/5 border-emerald-200 dark:border-emerald-500/30' : 'border-border dark:border-white/5 hover:border-blue-300 dark:hover:border-cyan-500/30'}`}>
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex items-center gap-3">
-                          <span className={`w-8 h-8 rounded-xl flex items-center justify-center font-black text-xs ${step.completed ? 'bg-emerald-500 text-slate-950' : 'bg-slate-900 text-cyan-400 border border-white/10'}`}>
+                          <span className={`w-8 h-8 rounded-xl flex items-center justify-center font-black text-xs ${step.completed ? 'bg-emerald-500 text-white dark:text-slate-950' : 'bg-slate-100 text-blue-600 dark:bg-slate-900 dark:text-cyan-400 border border-slate-200 dark:border-white/10'}`}>
                             {idx + 1}
                           </span>
-                          <h4 className={`text-base font-bold ${step.completed ? 'line-through text-slate-400' : 'text-white'}`}>
+                          <h4 className={`text-base font-bold ${step.completed ? 'line-through text-slate-400' : 'text-slate-900 dark:text-white'}`}>
                             {step.title}
                           </h4>
                         </div>
                         <button
                           onClick={() => toggleStep(step.id, !!step.completed)}
-                          className={`w-8 h-8 rounded-xl border flex items-center justify-center transition-all ${step.completed ? 'bg-emerald-500 border-emerald-400 text-slate-950' : 'border-slate-700 bg-slate-900 text-slate-400 hover:text-white'}`}
+                          className={`w-8 h-8 rounded-xl border flex items-center justify-center transition-all shadow-sm ${step.completed ? 'bg-emerald-500 border-emerald-400 text-white dark:text-slate-950' : 'border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}`}
                         >
                           <i className="fa-solid fa-check text-xs font-black" />
                         </button>
@@ -599,17 +599,17 @@ const Roadmap: React.FC = () => {
 
                       <div className="flex flex-wrap gap-2 text-[10px] font-bold">
                         <AdaptiveDifficulty level={step.difficulty} />
-                        <span className="px-3 py-1 bg-indigo-500/10 text-indigo-300 rounded-lg border border-indigo-500/20">
+                        <span className="px-3 py-1 bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300 rounded-lg border border-indigo-200 dark:border-indigo-500/20">
                           ⏱️ {step.duration_weeks || 3} Weeks ({step.estimated_hours || 25} Hours)
                         </span>
                       </div>
 
-                      <p className="text-xs text-slate-300 leading-relaxed">{step.description}</p>
+                      <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-sans">{step.description}</p>
 
                       {(step.skills || step.skills_list) && (
                         <div className="flex flex-wrap gap-1.5 pt-1">
                           {(step.skills || step.skills_list).map((sk: string, i: number) => (
-                            <span key={i} className="text-[10px] px-2.5 py-0.5 rounded bg-slate-900 text-cyan-300 font-semibold border border-white/5">
+                            <span key={i} className="text-[10px] px-2.5 py-0.5 rounded bg-slate-100 text-slate-700 dark:bg-slate-900 dark:text-cyan-300 font-semibold border border-slate-200 dark:border-white/5">
                               {sk}
                             </span>
                           ))}
@@ -618,17 +618,17 @@ const Roadmap: React.FC = () => {
 
                       {/* Resources */}
                       {step.recommended_resources && step.recommended_resources.length > 0 && (
-                        <div className="pt-3 border-t border-white/5 space-y-2 text-xs">
-                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Recommended Learning Resources</span>
+                        <div className="pt-3 border-t border-slate-100 dark:border-white/5 space-y-2 text-xs">
+                          <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Recommended Learning Resources</span>
                           <div className="grid gap-2 sm:grid-cols-2">
                             {step.recommended_resources.map((res: any, rIdx: number) => (
-                              <div key={rIdx} className="p-3 rounded-xl bg-slate-950/60 border border-white/5 flex items-center justify-between gap-2">
+                              <div key={rIdx} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200/60 dark:border-white/5 flex items-center justify-between gap-2">
                                 <div className="min-w-0">
-                                  <p className="font-bold text-slate-200 truncate">{res.name}</p>
-                                  <p className="text-[10px] text-slate-400">{res.platform || res.author || res.type}</p>
+                                  <p className="font-bold text-slate-800 dark:text-slate-200 truncate">{res.name}</p>
+                                  <p className="text-[10px] text-slate-500 dark:text-slate-400">{res.platform || res.author || res.type}</p>
                                 </div>
                                 {res.url && (
-                                  <a href={res.url} target="_blank" rel="noreferrer" className="text-cyan-400 hover:text-cyan-300 font-bold">
+                                  <a href={res.url} target="_blank" rel="noreferrer" className="text-blue-600 dark:text-cyan-400 hover:underline font-bold">
                                     <i className="fa-solid fa-external-link text-xs" />
                                   </a>
                                 )}
@@ -644,7 +644,7 @@ const Roadmap: React.FC = () => {
             </div>
 
             {/* YouTube Learning Section */}
-            <div className="pt-8 border-t border-white/10">
+            <div className="pt-8 border-t border-slate-200 dark:border-white/10">
               <YouTubeLearning skills={roadmap.required_skills?.length ? roadmap.required_skills : [targetRole]} />
             </div>
           </ScrollReveal>
@@ -652,39 +652,39 @@ const Roadmap: React.FC = () => {
 
         {/* Recommended Careers Modal */}
         {showRecsModal && (
-          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="sm-glass p-8 rounded-3xl max-w-2xl w-full space-y-6 border border-cyan-500/30">
-              <div className="flex items-center justify-between border-b border-white/10 pb-4">
+          <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="p-8 rounded-3xl max-w-2xl w-full space-y-6 bg-card border border-border shadow-2xl">
+              <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4">
                 <div>
-                  <span className="text-[10px] font-black uppercase text-cyan-400">Career Intelligence Engine</span>
-                  <h3 className="text-xl font-bold text-white">Recommended Career Paths for {domain}</h3>
+                  <span className="text-[10px] font-black uppercase text-blue-600 dark:text-cyan-400">Career Intelligence Engine</span>
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white">Recommended Career Paths for {domain}</h3>
                 </div>
-                <button onClick={() => setShowRecsModal(false)} className="text-slate-400 hover:text-white">
+                <button onClick={() => setShowRecsModal(false)} className="text-slate-400 hover:text-slate-700 dark:hover:text-white">
                   <i className="fa-solid fa-xmark text-lg" />
                 </button>
               </div>
 
               {recsLoading ? (
-                <div className="p-8 text-center text-slate-400 space-y-3">
-                  <div className="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto" />
+                <div className="p-8 text-center text-slate-500 space-y-3">
+                  <div className="w-6 h-6 border-2 border-blue-600 dark:border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto" />
                   <p className="text-xs">Analyzing education, branch, and current skills...</p>
                 </div>
               ) : (
                 <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
                   {recommendations.map((rec, idx) => (
-                    <div key={idx} className="p-5 rounded-2xl bg-slate-950/80 border border-white/5 space-y-3 hover:border-cyan-500/30 transition-all">
+                    <div key={idx} className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-white/5 space-y-3 hover:border-blue-300 dark:hover:border-cyan-500/30 transition-all">
                       <div className="flex items-center justify-between">
-                        <h4 className="text-sm font-bold text-white">{rec.role}</h4>
-                        <span className="px-3 py-1 rounded-lg text-xs font-black bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                        <h4 className="text-sm font-bold text-slate-900 dark:text-white">{rec.role}</h4>
+                        <span className="px-3 py-1 rounded-lg text-xs font-black bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
                           {rec.match_score}% Match
                         </span>
                       </div>
-                      <p className="text-xs text-slate-300">{rec.description}</p>
+                      <p className="text-xs text-slate-600 dark:text-slate-300">{rec.description}</p>
 
                       <div className="flex flex-wrap gap-2 text-[10px]">
-                        <span className="font-bold text-slate-400">Top Skills:</span>
+                        <span className="font-bold text-slate-500 dark:text-slate-400">Top Skills:</span>
                         {(rec.top_skills || []).map((sk: string, sI: number) => (
-                          <span key={sI} className="bg-slate-800 text-cyan-300 px-2 py-0.5 rounded font-semibold">{sk}</span>
+                          <span key={sI} className="bg-slate-200/70 text-slate-800 dark:bg-slate-800 dark:text-cyan-300 px-2 py-0.5 rounded font-semibold">{sk}</span>
                         ))}
                       </div>
 
@@ -693,7 +693,7 @@ const Roadmap: React.FC = () => {
                           setTargetRole(rec.role);
                           setShowRecsModal(false);
                         }}
-                        className="w-full py-2 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 font-bold text-xs rounded-xl transition-all"
+                        className="w-full py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 dark:bg-cyan-500/20 dark:hover:bg-cyan-500/30 dark:text-cyan-300 font-bold text-xs rounded-xl transition-all border border-blue-200 dark:border-transparent"
                       >
                         Select "{rec.role}" & Generate Roadmap →
                       </button>

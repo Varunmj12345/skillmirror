@@ -68,12 +68,12 @@ const ExportPanel: React.FC = () => {
     };
 
     return (
-        <div className="glass-panel p-6 border-slate-800/50">
-            <h3 className="text-sm font-bold text-slate-50 mb-2 flex items-center gap-2">
-                <i className="fa-solid fa-download text-sky-400 text-xs"></i>
+        <div className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-50 mb-2 flex items-center gap-2">
+                <i className="fa-solid fa-download text-blue-600 dark:text-sky-400 text-xs"></i>
                 Export Options
             </h3>
-            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-5">Download your resume in multiple formats</p>
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest mb-5">Download your resume in multiple formats</p>
 
             <div className="grid grid-cols-2 gap-3">
                 {FORMATS.map(f => (
@@ -81,7 +81,7 @@ const ExportPanel: React.FC = () => {
                         key={f.key}
                         onClick={() => handleExport(f.key)}
                         disabled={!!exporting}
-                        className={`p-4 rounded-xl border flex flex-col items-center gap-2 transition-all group disabled:opacity-50 disabled:cursor-wait ${colorMap[f.color]}`}
+                        className={`p-4 rounded-2xl border flex flex-col items-center gap-2 transition-all group disabled:opacity-50 disabled:cursor-wait shadow-sm ${colorMap[f.color]}`}
                     >
                         {exporting === f.key ? (
                             <i className="fa-solid fa-circle-notch fa-spin text-lg"></i>
@@ -89,15 +89,15 @@ const ExportPanel: React.FC = () => {
                             <i className={`fa-${f.key === 'linkedin' ? 'brands' : 'solid'} ${f.icon} text-xl group-hover:scale-110 transition-transform`}></i>
                         )}
                         <div className="text-center">
-                            <div className="text-[11px] font-black uppercase tracking-widest">{f.label}</div>
-                            <div className="text-[9px] opacity-60 font-bold">{f.desc}</div>
+                            <div className="text-xs font-black uppercase tracking-widest">{f.label}</div>
+                            <div className="text-[9px] opacity-70 font-bold">{f.desc}</div>
                         </div>
                     </button>
                 ))}
             </div>
 
             {toast && (
-                <div className="mt-4 p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-400 text-[11px] font-black flex items-center gap-2">
+                <div className="mt-4 p-3 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 rounded-xl text-emerald-700 dark:text-emerald-400 text-[11px] font-black flex items-center gap-2 shadow-sm">
                     <i className="fa-solid fa-circle-check"></i>
                     {toast}
                 </div>

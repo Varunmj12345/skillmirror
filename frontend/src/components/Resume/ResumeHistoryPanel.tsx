@@ -48,50 +48,50 @@ const ResumeHistoryPanel: React.FC<Props> = ({ onView, refreshTrigger }) => {
     };
 
     if (loading) return (
-        <div className="glass-panel p-6 border-slate-800/50 animate-pulse">
-            <div className="h-5 w-40 bg-slate-800 rounded mb-4" />
-            {[1, 2, 3].map(i => <div key={i} className="h-14 bg-slate-900 rounded-xl mb-2" />)}
+        <div className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none animate-pulse">
+            <div className="h-5 w-40 bg-slate-200 dark:bg-slate-800 rounded mb-4" />
+            {[1, 2, 3].map(i => <div key={i} className="h-14 bg-slate-100 dark:bg-slate-900 rounded-xl mb-2" />)}
         </div>
     );
 
     return (
-        <div className="glass-panel p-6 border-slate-800/50">
+        <div className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none">
             <div className="flex items-center justify-between mb-5">
-                <h3 className="text-sm font-bold text-slate-50 flex items-center gap-2">
-                    <i className="fa-solid fa-clock-rotate-left text-indigo-400 text-xs"></i>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
+                    <i className="fa-solid fa-clock-rotate-left text-blue-600 dark:text-indigo-400 text-xs"></i>
                     Resume History
                 </h3>
                 {comparing.length === 2 && (
-                    <button className="text-[10px] font-black px-3 py-1.5 bg-indigo-600 text-white rounded-lg uppercase tracking-widest hover:bg-indigo-500 transition-all">
+                    <button className="text-[10px] font-black px-3 py-1.5 bg-blue-600 dark:bg-indigo-600 text-white rounded-lg uppercase tracking-widest hover:bg-blue-700 dark:hover:bg-indigo-500 transition-all shadow-sm">
                         Compare Selected
                     </button>
                 )}
             </div>
 
             {!history.length ? (
-                <div className="py-10 text-center text-slate-600 text-[11px] font-bold uppercase tracking-widest">
+                <div className="py-10 text-center text-slate-500 dark:text-slate-600 text-[11px] font-bold uppercase tracking-widest">
                     <i className="fa-solid fa-folder-open text-2xl mb-3 block"></i>
                     No resume history yet
                 </div>
             ) : (
                 <div className="space-y-2">
                     {/* Table Header */}
-                    <div className="grid grid-cols-12 px-4 pb-2 border-b border-slate-800">
-                        <span className="col-span-4 text-[9px] font-black text-slate-600 uppercase tracking-widest">File</span>
-                        <span className="col-span-2 text-[9px] font-black text-slate-600 uppercase tracking-widest text-center">Date</span>
-                        <span className="col-span-2 text-[9px] font-black text-slate-600 uppercase tracking-widest text-center">ATS</span>
-                        <span className="col-span-2 text-[9px] font-black text-slate-600 uppercase tracking-widest text-center">Match</span>
-                        <span className="col-span-2 text-[9px] font-black text-slate-600 uppercase tracking-widest text-right">Actions</span>
+                    <div className="grid grid-cols-12 px-4 pb-2 border-b border-slate-100 dark:border-slate-800">
+                        <span className="col-span-4 text-[9px] font-black text-slate-500 dark:text-slate-600 uppercase tracking-widest">File</span>
+                        <span className="col-span-2 text-[9px] font-black text-slate-500 dark:text-slate-600 uppercase tracking-widest text-center">Date</span>
+                        <span className="col-span-2 text-[9px] font-black text-slate-500 dark:text-slate-600 uppercase tracking-widest text-center">ATS</span>
+                        <span className="col-span-2 text-[9px] font-black text-slate-500 dark:text-slate-600 uppercase tracking-widest text-center">Match</span>
+                        <span className="col-span-2 text-[9px] font-black text-slate-500 dark:text-slate-600 uppercase tracking-widest text-right">Actions</span>
                     </div>
 
                     {history.map((entry, idx) => {
                         const diff = getScoreDiff(idx);
                         const isComparing = comparing.includes(entry.id);
                         return (
-                            <div key={entry.id} className={`grid grid-cols-12 items-center px-4 py-3 rounded-xl border transition-all ${isComparing ? 'bg-indigo-500/10 border-indigo-500/30' : 'bg-slate-900/50 border-slate-800/50 hover:border-slate-700'}`}>
+                            <div key={entry.id} className={`grid grid-cols-12 items-center px-4 py-3 rounded-xl border transition-all ${isComparing ? 'bg-indigo-50 dark:bg-indigo-500/10 border-indigo-300 dark:border-indigo-500/30' : 'bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800/50 hover:border-blue-300 dark:hover:border-slate-700'}`}>
                                 <div className="col-span-4 flex items-center gap-2">
-                                    <i className="fa-solid fa-file-pdf text-rose-400/60 text-xs shrink-0"></i>
-                                    <span className="text-[11px] font-bold text-slate-200 truncate">{entry.file_name}</span>
+                                    <i className="fa-solid fa-file-pdf text-rose-500 text-xs shrink-0"></i>
+                                    <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 truncate">{entry.file_name}</span>
                                 </div>
                                 <div className="col-span-2 text-center">
                                     <span className="text-[10px] text-slate-500">{new Date(entry.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}</span>

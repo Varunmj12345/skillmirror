@@ -12,6 +12,8 @@ import { Card, CardHeader, CardContent } from './card';
 import { Bullet } from './bullet';
 import { Badge } from './badge';
 
+import { useTheme } from '../../context/ThemeContext';
+
 const chartDatasets = {
   week: [
     { date: 'Mon', salary: 110, demand: 75, match: 82 },
@@ -43,11 +45,11 @@ const chartDatasets = {
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-[#0b0d13] border border-white/[0.12] p-3 rounded-lg shadow-xl text-xs font-mono">
-        <div className="text-slate-400 font-bold mb-1">{label}</div>
-        <div className="text-cyan-400">Salary Index: ${payload[0]?.value}k</div>
-        <div className="text-emerald-400">Demand Score: {payload[1]?.value}%</div>
-        <div className="text-indigo-400">ATS Match: {payload[2]?.value}%</div>
+      <div className="bg-white/95 dark:bg-[#0b0d13] border border-slate-200 dark:border-white/[0.12] p-3 rounded-xl shadow-light-float dark:shadow-xl text-xs font-mono">
+        <div className="text-slate-500 dark:text-slate-400 font-bold mb-1">{label}</div>
+        <div className="text-blue-600 dark:text-cyan-400">Salary Index: ${payload[0]?.value}k</div>
+        <div className="text-emerald-600 dark:text-emerald-400">Demand Score: {payload[1]?.value}%</div>
+        <div className="text-indigo-600 dark:text-indigo-400">ATS Match: {payload[2]?.value}%</div>
       </div>
     );
   }
@@ -56,7 +58,13 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 export const MarketChart: React.FC = () => {
   const [timeframe, setTimeframe] = useState<'week' | 'month' | 'year'>('month');
+  const { effectiveTheme } = useTheme();
+  const isDark = effectiveTheme === 'dark';
   const data = chartDatasets[timeframe];
+
+  const gridColor = isDark ? 'rgba(255,255,255,0.05)' : '#F1F5F9';
+  const axisColor = isDark ? 'rgba(255,255,255,0.3)' : '#94a3b8';
+  const salaryColor = isDark ? '#00d9ff' : '#2563eb';
 
   return (
     <Card className="w-full">
@@ -64,15 +72,15 @@ export const MarketChart: React.FC = () => {
         title="CAREER DEMAND & COMPENSATION TRAJECTORY"
         bulletVariant="cyan"
         addon={
-          <div className="flex items-center gap-1 bg-card p-1 rounded-md border border-white/[0.06]">
+          <div className="flex items-center gap-1 bg-slate-100 dark:bg-card p-1 rounded-lg border border-slate-200/80 dark:border-white/[0.06]">
             {(['week', 'month', 'year'] as const).map((t) => (
               <button
                 key={t}
                 onClick={() => setTimeframe(t)}
-                className={`px-2.5 py-1 text-[10px] font-mono font-bold uppercase rounded transition-all ${
+                className={`px-2.5 py-1 text-[10px] font-mono font-bold uppercase rounded-md transition-all ${
                   timeframe === t
-                    ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
-                    : 'text-slate-400 hover:text-white'
+                    ? 'bg-blue-50 text-blue-600 border border-blue-200 dark:bg-cyan-500/20 dark:text-cyan-300 dark:border-cyan-500/30 shadow-sm'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 {t}
@@ -81,9 +89,9 @@ export const MarketChart: React.FC = () => {
           </div>
         }
       />
-      <CardContent className="p-4 bg-card">
+      <CardContent className="p-4 bg-transparent">
         {/* Legend */}
-        <div className="flex flex-wrap items-center gap-5 mb-4 text-[11px] font-mono uppercase text-slate-400">
+        <div className="flex flex-wrap items-center gap-5 mb-4 text-[11px] font-mono uppercase text-slate-500 dark:text-slate-400">
           <div className="flex items-center gap-1.5">
             <Bullet variant="cyan" size="sm" />
             <span>Salary Benchmark ($k)</span>
@@ -104,28 +112,28 @@ export const MarketChart: React.FC = () => {
             <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="cyanGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#00d9ff" stopOpacity={0.35} />
-                  <stop offset="95%" stopColor="#00d9ff" stopOpacity={0} />
+                  <stop offset="5%" stopColor={salaryColor} stopOpacity={isDark ? 0.35 : 0.25} />
+                  <stop offset="95%" stopColor={salaryColor} stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="emeraldGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                  <stop offset="5%" stopColor="#10b981" stopOpacity={isDark ? 0.3 : 0.2} />
                   <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="indigoGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#6366f1" stopOpacity={0.25} />
+                  <stop offset="5%" stopColor="#6366f1" stopOpacity={isDark ? 0.25 : 0.15} />
                   <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
               <XAxis
                 dataKey="date"
-                stroke="rgba(255,255,255,0.3)"
+                stroke={axisColor}
                 fontSize={11}
                 tickLine={false}
                 fontFamily="Roboto Mono"
               />
               <YAxis
-                stroke="rgba(255,255,255,0.3)"
+                stroke={axisColor}
                 fontSize={11}
                 tickLine={false}
                 fontFamily="Roboto Mono"
@@ -134,7 +142,7 @@ export const MarketChart: React.FC = () => {
               <Area
                 type="monotone"
                 dataKey="salary"
-                stroke="#00d9ff"
+                stroke={salaryColor}
                 strokeWidth={2}
                 fillOpacity={1}
                 fill="url(#cyanGrad)"

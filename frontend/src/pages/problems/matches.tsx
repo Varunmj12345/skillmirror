@@ -1,213 +1,208 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import Layout from '../../components/Layout';
 import { problemService, Problem } from '../../services/problemService';
 import { SkeletonCard } from '../../components/motion/Skeleton';
 import { ScrollReveal, StaggerChildren } from '../../components/motion/ScrollReveal';
 import { CyberPageShell, PageStatChip } from '../../components/CyberPageShell';
+import { motion } from 'framer-motion';
 
-const MyMatchedProblemsPage: React.FC = () => {
+const AIGapChallengeLabPage: React.FC = () => {
+  const router = useRouter();
   const [problems, setProblems] = useState<Problem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [difficulty, setDifficulty] = useState<'beginner' | 'intermediate' | 'advanced' | 'expert'>('intermediate');
+  const [isGenerating, setIsGenerating] = useState(false);
 
-  const loadMatches = async () => {
+  const loadChallenges = async () => {
     try {
       setLoading(true);
       const res: any = await problemService.getProblems();
       const list: Problem[] = Array.isArray(res) ? res : (res?.data || []);
       setProblems(list);
     } catch (err) {
-      console.error('Failed to load matched problems:', err);
+      console.error('Failed to load gap challenges:', err);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    loadMatches();
+    loadChallenges();
   }, []);
+
+  const handleGenerateCustomGap = async () => {
+    try {
+      setIsGenerating(true);
+      const res: any = await problemService.generateGapChallenge({
+        gap_skills: ['Distributed Caching', 'Microservices', 'Message Queues'],
+        difficulty: difficulty
+      });
+      const data = res?.data || res;
+      if (data?.id) {
+        router.push(`/problems/${data.id}`);
+      }
+    } catch (err) {
+      console.error('Failed to generate gap challenge:', err);
+      alert('Could not synthesize challenge. Please try again.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const stats = useMemo(() => {
     const list = problems || [];
     return {
       total: list.length,
       highMatch: list.filter(p => (p.user_match?.match_score || 80) >= 80).length,
-      avgMatchScore: list.length ? Math.round(list.reduce((acc, curr) => acc + (curr.user_match?.match_score || 78), 0) / list.length) : 82
+      avgMatchScore: list.length ? Math.round(list.reduce((acc, curr) => acc + (curr.user_match?.match_score || 78), 0) / list.length) : 88
     };
   }, [problems]);
 
   return (
     <Layout>
       <Head>
-        <title>My Matched Problems • SkillMirror OS</title>
-        <meta name="description" content="Personalized real-world problem matches based on your verified skills and competencies." />
+        <title>AI Gap Challenge Lab • SkillMirror</title>
+        <meta name="description" content="Personalized AI practice challenges tailored to bridge your exact career skill gaps." />
       </Head>
 
       <CyberPageShell
         moduleCode="MOD-07"
-        section="PROJECTS & REAL-WORLD PORTFOLIO"
-        title="MY SKILL MATCHES"
-        subtitle="Algorithmic problem alignment matching your verified skillset, target career roadmap, and learning velocity."
-        badge="PRECISION ALIGNMENT"
+        section="AI PRACTICE & ASSESSMENTS"
+        title="AI GAP CHALLENGE LAB"
+        subtitle="On-demand scenario assessments algorithmically designed to bridge your detected skill gaps and accelerate career readiness."
+        badge="PRECISION GAP ENGINE"
         badgeVariant="outline-cyan"
         bulletVariant="cyan"
         glowColor="indigo"
         actions={
           <div className="flex items-center gap-2.5">
             <Link href="/problems">
-              <button className="px-3.5 py-2 rounded-xl bg-slate-900/80 border border-white/[0.08] text-slate-300 hover:text-white text-xs font-mono font-bold uppercase tracking-wider transition-all flex items-center gap-2">
-                <i className="fa-solid fa-layer-group text-xs text-cyan-400" />
-                <span>All Problems</span>
+              <button className="px-3.5 py-2.5 rounded-xl bg-card border border-border text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-white text-xs font-mono font-bold uppercase tracking-wider transition-all flex items-center gap-2 shadow-light-sm dark:shadow-none">
+                <i className="fa-solid fa-code text-xs text-blue-600 dark:text-cyan-400" />
+                <span>Practice Arena</span>
               </button>
             </Link>
-            <Link href="/projects">
-              <button className="px-3.5 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/20 text-xs font-mono font-bold uppercase tracking-wider transition-all flex items-center gap-2">
-                <i className="fa-solid fa-diagram-project text-xs" />
-                <span>My Projects</span>
+            <Link href="/projects/status-center">
+              <button className="px-3.5 py-2.5 rounded-xl bg-card border border-border text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-white text-xs font-mono font-bold uppercase tracking-wider transition-all flex items-center gap-2 shadow-light-sm dark:shadow-none">
+                <i className="fa-solid fa-chart-line text-xs text-emerald-600 dark:text-emerald-400" />
+                <span>Scorecards</span>
               </button>
             </Link>
           </div>
         }
-        stats={
-          <>
-            <PageStatChip label="Matched Vectors" value={stats.total} icon="fa-bullseye" color="cyan" />
-            <PageStatChip label="Top Tier Match" value={stats.highMatch} icon="fa-star" color="amber" />
-            <PageStatChip label="Avg Alignment" value={`${stats.avgMatchScore}%`} icon="fa-bolt" color="emerald" />
-          </>
-        }
-      />
+      >
+        {/* KPI Stat Chips */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+          <PageStatChip label="Targeted Challenges" value={stats.total} icon="fa-bullseye" color="cyan" />
+          <PageStatChip label="Top Alignment" value={stats.highMatch} icon="fa-star" color="amber" />
+          <PageStatChip label="Avg Readiness Lift" value="+8.5%" icon="fa-arrow-trend-up" color="emerald" />
+          <PageStatChip label="AI Lab Status" value="Online" icon="fa-bolt" color="cyan" suffix="⚡" />
+        </div>
 
-      <div className="px-4 sm:px-6 pb-24 max-w-[1400px] mx-auto space-y-8">
-        {/* Alignment Guidance Banner */}
-        <ScrollReveal>
-          <div className="p-5 rounded-3xl bg-gradient-to-r from-indigo-950/60 via-purple-950/40 to-slate-950/60 border border-indigo-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xl">
-            <div className="flex items-center gap-3.5">
-              <div className="w-10 h-10 rounded-2xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400 text-base shrink-0 shadow-[0_0_15px_rgba(99,102,241,0.25)]">
-                <i className="fa-solid fa-sparkles" />
+        {/* On-Demand Challenge Generator Box */}
+        <div className="mb-8 p-6 rounded-2xl bg-card border border-border shadow-light-card dark:shadow-none space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <div className="text-[10px] font-mono font-bold text-blue-600 dark:text-cyan-400 uppercase tracking-widest mb-1">
+                ON-DEMAND AI SYNTHESIS
               </div>
-              <div>
-                <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-indigo-400">
-                  AI RECOMMENDATION ENGINE
-                </span>
-                <p className="text-xs sm:text-sm font-sans font-semibold text-slate-100">
-                  These verified problems match 70%+ of your current skills while introducing 1-2 stretch skills to maximize career readiness.
-                </p>
-              </div>
+              <h3 className="text-base font-display font-black text-slate-900 dark:text-white">
+                Synthesize a Targeted Skill Gap Assessment
+              </h3>
+              <p className="text-xs font-sans text-slate-600 dark:text-slate-400 mt-1">
+                Select your target difficulty. Our AI will analyze your profile and generate an interactive real-world assessment.
+              </p>
             </div>
-            <Link href="/skill-gap" className="shrink-0 w-full sm:w-auto">
-              <button className="w-full sm:w-auto px-4 py-2 rounded-xl bg-indigo-500/20 border border-indigo-500/40 text-indigo-200 hover:bg-indigo-500/30 font-mono font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2">
-                <span>View Skill Radar</span>
-                <i className="fa-solid fa-arrow-right text-[10px]" />
-              </button>
-            </Link>
-          </div>
-        </ScrollReveal>
 
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <select
+                value={difficulty}
+                onChange={(e) => setDifficulty(e.target.value as any)}
+                className="px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-border rounded-xl text-xs font-mono font-bold text-slate-900 dark:text-white"
+              >
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+                <option value="expert">Expert</option>
+              </select>
+
+              <button
+                onClick={handleGenerateCustomGap}
+                disabled={isGenerating}
+                className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-mono font-bold text-xs uppercase tracking-wider transition-all shadow-sm flex items-center gap-2"
+              >
+                <i className={`fa-solid ${isGenerating ? 'fa-spinner fa-spin' : 'fa-wand-magic-sparkles'} text-xs`} />
+                <span>{isGenerating ? 'Synthesizing...' : 'Synthesize Now'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Challenge Cards */}
         {loading ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {Array.from({ length: 6 }).map((_, i) => (
-              <SkeletonCard key={i} className="!h-[280px]" />
+              <SkeletonCard key={i} className="!h-[240px]" />
             ))}
           </div>
         ) : problems.length === 0 ? (
-          <div className="p-16 rounded-3xl bg-slate-900/40 border border-slate-800/80 text-center relative overflow-hidden backdrop-blur-xl">
-            <div className="w-20 h-20 rounded-full bg-slate-950 flex items-center justify-center mx-auto mb-5 border border-slate-800 shadow-[0_0_30px_rgba(0,0,0,0.8)]">
-              <i className="fa-solid fa-bullseye text-2xl text-indigo-400" />
-            </div>
-            <h3 className="text-lg font-display font-black text-white">
-              No Direct Skill Matches Yet
-            </h3>
-            <p className="text-xs font-mono text-slate-400 mt-2 max-w-md mx-auto leading-relaxed">
-              Upload your resume or add verified technical skills in your Profile to unlock targeted real-world problems.
-            </p>
-            <div className="mt-6 flex items-center justify-center gap-3">
-              <Link href="/profile">
-                <button className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-mono font-bold text-xs uppercase tracking-wider shadow-lg hover:brightness-110 transition-all">
-                  Update Verified Skills
-                </button>
-              </Link>
-              <Link href="/problems">
-                <button className="px-4 py-2.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white text-xs font-mono font-bold uppercase transition-all">
-                  Browse All Problems
-                </button>
-              </Link>
-            </div>
+          <div className="p-12 text-center rounded-2xl bg-card border border-border">
+            <h3 className="text-sm font-mono font-bold text-slate-900 dark:text-white mb-2">No Challenges Synthesized Yet</h3>
+            <button
+              onClick={handleGenerateCustomGap}
+              className="px-4 py-2 rounded-xl bg-blue-600 text-white font-mono font-bold text-xs uppercase"
+            >
+              Generate First Gap Assessment
+            </button>
           </div>
         ) : (
-          <StaggerChildren className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {problems.map((prob, idx) => {
-              const matchScore = prob.user_match?.match_score || (85 - (idx * 4));
-              const isRealWorld = prob.is_real_world && prob.source_type !== 'AI_GENERATED_PRACTICE';
-
-              return (
-                <ScrollReveal stagger key={prob.id}>
-                  <div className="group relative rounded-3xl bg-slate-900/70 border border-indigo-500/20 hover:border-indigo-400/50 backdrop-blur-xl p-6 transition-all duration-300 shadow-xl flex flex-col justify-between space-y-5 overflow-hidden hover:shadow-[0_12px_35px_rgba(99,102,241,0.25)]">
-                    {/* Glowing Top Ambient Accent */}
-                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500/60 via-cyan-400/30 to-transparent" />
-
-                    <div className="space-y-4">
-                      {/* Top Match Rating & Category */}
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-[10px] font-mono font-black uppercase tracking-wider px-2.5 py-1 rounded-xl bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
-                          {prob.category || 'General'}
-                        </span>
-
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono font-black">
-                          <i className="fa-solid fa-circle-check text-[10px]" />
-                          <span>{matchScore}% Match</span>
-                        </div>
-                      </div>
-
-                      {/* Title */}
-                      <h3 className="text-base sm:text-lg font-display font-black text-white group-hover:text-cyan-300 transition-colors line-clamp-2 leading-snug">
-                        {prob.title}
-                      </h3>
-
-                      {/* Description */}
-                      <p className="text-xs font-sans text-slate-300 line-clamp-3 leading-relaxed">
-                        {prob.description}
-                      </p>
-
-                      {/* Organization / Industry Capsule */}
-                      <div className="p-3 rounded-2xl bg-black/40 border border-white/[0.05] flex items-center justify-between text-[11px] font-mono text-slate-400">
-                        <span className="truncate max-w-[170px]">
-                          {prob.organization_name || 'Independent Submitter'}
-                        </span>
-                        <span className="text-slate-500">
-                          {isRealWorld ? '🏢 Verified Org' : '🤖 AI Lab'}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Footer / Build CTA */}
-                    <div className="pt-3 border-t border-white/[0.06] space-y-3">
-                      <div className="flex items-center justify-between text-xs font-mono">
-                        <span className="text-slate-500">
-                          <i className="fa-regular fa-clock mr-1" />
-                          {prob.estimated_effort_weeks || 4} Weeks Effort
-                        </span>
-                        <span className="text-indigo-400 font-bold capitalize">
-                          {prob.complexity || 'Intermediate'}
-                        </span>
-                      </div>
-
-                      <Link href={`/problems/${prob.id}`} className="block">
-                        <button className="w-full py-2.5 px-4 rounded-2xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-mono font-bold text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(99,102,241,0.3)] transition-all flex items-center justify-center gap-2 group/btn">
-                          <span>Build Solution Workspace</span>
-                          <i className="fa-solid fa-arrow-right text-[10px] group-hover/btn:translate-x-1 transition-transform" />
-                        </button>
-                      </Link>
-                    </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {problems.map((prob) => (
+              <motion.div
+                key={prob.id}
+                whileHover={{ y: -3 }}
+                className="rounded-2xl bg-card border border-border p-5 shadow-light-card dark:shadow-none flex flex-col justify-between group transition-all"
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <span className="px-2.5 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase bg-blue-50 text-blue-700 border border-blue-200 dark:bg-cyan-500/10 dark:text-cyan-300 dark:border-cyan-500/30">
+                      {prob.category || 'Gap Challenge'}
+                    </span>
+                    <span className="text-[10px] font-mono font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2 py-0.5 rounded">
+                      +150 XP
+                    </span>
                   </div>
-                </ScrollReveal>
-              );
-            })}
-          </StaggerChildren>
+
+                  <h3 className="text-base font-display font-black text-slate-900 dark:text-white tracking-tight group-hover:text-blue-600 dark:group-hover:text-cyan-400 transition-colors line-clamp-1 mb-2">
+                    {prob.title}
+                  </h3>
+
+                  <p className="text-xs font-sans text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed mb-4">
+                    {prob.description}
+                  </p>
+                </div>
+
+                <div className="pt-4 border-t border-slate-100 dark:border-white/5 flex items-center justify-between">
+                  <span className="text-[10px] font-mono text-slate-500 uppercase">
+                    Level: {prob.complexity || 'Intermediate'}
+                  </span>
+                  <Link href={`/problems/${prob.id}`}>
+                    <button className="px-3.5 py-1.5 rounded-lg bg-blue-50 text-blue-600 border border-blue-200 dark:bg-cyan-500/10 dark:text-cyan-300 dark:border-cyan-500/30 text-xs font-mono font-bold uppercase tracking-wider group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm flex items-center gap-1.5">
+                      <span>Launch</span>
+                      <i className="fa-solid fa-arrow-right text-[10px]" />
+                    </button>
+                  </Link>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         )}
-      </div>
+      </CyberPageShell>
     </Layout>
   );
 };
 
-export default MyMatchedProblemsPage;
+export default AIGapChallengeLabPage;

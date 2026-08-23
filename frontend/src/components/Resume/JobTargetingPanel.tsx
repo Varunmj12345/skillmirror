@@ -59,12 +59,12 @@ const JobTargetingPanel: React.FC = () => {
     const matchBg = !result ? '' : result.match_pct >= 75 ? 'bg-emerald-500/10 border-emerald-500/20' : result.match_pct >= 50 ? 'bg-amber-500/10 border-amber-500/20' : 'bg-rose-500/10 border-rose-500/20';
 
     return (
-        <div className="glass-panel p-6 border-slate-800/50">
-            <h3 className="text-sm font-bold text-slate-50 mb-2 flex items-center gap-2">
-                <i className="fa-solid fa-bullseye text-rose-400 text-xs"></i>
+        <div className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-50 mb-2 flex items-center gap-2">
+                <i className="fa-solid fa-bullseye text-rose-500 dark:text-rose-400 text-xs"></i>
                 Job Targeting Mode
             </h3>
-            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-5">
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest mb-5">
                 Paste a job description to see how well your resume matches
             </p>
 
@@ -74,13 +74,13 @@ const JobTargetingPanel: React.FC = () => {
                     onChange={e => setJD(e.target.value)}
                     placeholder="Paste the full job description here..."
                     rows={6}
-                    className="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 text-sm text-slate-300 placeholder:text-slate-700 outline-none focus:border-indigo-500/50 resize-none transition-all"
+                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 text-sm text-slate-900 dark:text-slate-300 placeholder:text-slate-400 dark:placeholder:text-slate-700 outline-none focus:border-blue-500 dark:focus:border-indigo-500/50 resize-none transition-all shadow-sm"
                 />
 
                 <button
                     onClick={handleCompare}
                     disabled={loading || !jd.trim()}
-                    className="w-full py-3 bg-slate-800 hover:bg-slate-700 text-[11px] font-black text-slate-300 uppercase tracking-widest rounded-xl border border-slate-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="w-full py-3 bg-slate-900 dark:bg-slate-800 hover:bg-blue-600 dark:hover:bg-slate-700 text-xs font-bold text-white dark:text-slate-300 uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-sm"
                 >
                     {loading ? <i className="fa-solid fa-circle-notch fa-spin"></i> : <i className="fa-solid fa-magnifying-glass-chart"></i>}
                     {loading ? 'Analyzing...' : 'Compare with My Resume'}
@@ -92,10 +92,10 @@ const JobTargetingPanel: React.FC = () => {
                         <div className={`p-5 rounded-2xl border ${matchBg} flex items-center gap-6`}>
                             <div className="text-center shrink-0">
                                 <div className={`text-4xl font-black ${matchColor}`}>{result.match_pct}%</div>
-                                <div className="text-[9px] font-black text-slate-600 uppercase tracking-widest mt-1">Match</div>
+                                <div className="text-[9px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest mt-1">Match</div>
                             </div>
                             <div className="flex-1 space-y-1.5">
-                                <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                                <div className="h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
                                     <div
                                         className={`h-full rounded-full transition-all duration-700 ${result.match_pct >= 75 ? 'bg-emerald-500' : result.match_pct >= 50 ? 'bg-amber-500' : 'bg-rose-500'}`}
                                         style={{ width: `${result.match_pct}%` }}

@@ -6,12 +6,20 @@ window.SMCareerTheme = (function () {
 
   function applyTheme(theme) {
     const root = document.documentElement;
+    const body = document.body;
+    if (!root) return;
+    root.classList.remove('light', 'dark');
+    if (body) body.classList.remove('light', 'dark');
     if (theme === 'dark') {
       root.classList.add('dark');
-      document.body.classList.add('dark');
+      if (body) body.classList.add('dark');
+      root.setAttribute('data-theme', 'dark');
+      root.style.colorScheme = 'dark';
     } else {
-      root.classList.remove('dark');
-      document.body.classList.remove('dark');
+      root.classList.add('light');
+      if (body) body.classList.add('light');
+      root.setAttribute('data-theme', 'light');
+      root.style.colorScheme = 'light';
     }
   }
 
@@ -20,7 +28,7 @@ window.SMCareerTheme = (function () {
     if (!loadLocal || !saveLocal || !onReady) return;
 
     onReady(function () {
-      const stored = loadLocal(STORAGE_KEY, null);
+      const stored = loadLocal(STORAGE_KEY, null) || loadLocal('sm_theme_mode', null);
       const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
       const theme = stored || (prefersDark ? 'dark' : 'light');
       applyTheme(theme);
@@ -32,6 +40,7 @@ window.SMCareerTheme = (function () {
           const next = current === 'dark' ? 'light' : 'dark';
           applyTheme(next);
           saveLocal(STORAGE_KEY, next);
+          saveLocal('sm_theme_mode', next);
         });
       });
     });

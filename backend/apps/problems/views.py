@@ -546,3 +546,243 @@ class OpportunityListView(APIView):
     def get(self, request):
         opps = ProblemOpportunity.objects.filter(user=request.user)
         return Response(ProblemOpportunitySerializer(opps, many=True).data)
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# AUTONOMOUS AI ASSESSMENT PORTAL ENDPOINTS
+# ═══════════════════════════════════════════════════════════════════════
+
+from apps.problems.ai_assessment_engine import AIAssessmentEngine
+from apps.users.models import UserSkill, ActivityLog, UserProfile
+
+class AIEvaluateSubmissionView(APIView):
+    """
+    POST /api/problems/practice/<pk>/evaluate/
+    Evaluates a candidate's practice challenge submission using AIAssessmentEngine.
+    Computes dimension scores, criteria status, line-by-line critique, refactored code,
+    and automatically awards XP and skill growth points.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        try:
+            problem = Problem.objects.get(pk=pk)
+        except Problem.DoesNotExist:
+            return Response({'error': 'Challenge not found.'}, status=404)
+
+        submission_data = {
+            'code_snippet': request.data.get('code_snippet', ''),
+            'github_url': request.data.get('github_url', ''),
+            'published_url': request.data.get('published_url', ''),
+            'documentation': request.data.get('documentation', '')
+        }
+
+        challenge_data = {
+            'title': problem.title,
+            'description': problem.description,
+            'complexity': problem.complexity,
+            'category': problem.category,
+            'requirements': [r.description for r in problem.requirements.all()] or [problem.required_solution or problem.description],
+            'constraints': problem.constraints or ["Optimize time and space complexity"]
+        }
+
+        engine = AIAssessmentEngine()
+        evaluation_result = engine.evaluate_submission(challenge_data, submission_data)
+
+        # Record or update Project & Submission Version
+        project, _ = Project.objects.get_or_create(
+            problem=problem,
+            user=request.user,
+            defaults={
+                'title': problem.title,
+                'problem_statement': problem.description,
+                'target_users': problem.target_users or 'Developers',
+                'status': 'completed' if evaluation_result.get('decision') == 'PASS' else 'in_progress',
+                'progress_percentage': evaluation_result.get('overall_score', 80)
+            }
+        )
+
+        # Version bump
+        latest_version = project.submissions.count() + 1
+        sub_ver = ProjectSubmissionVersion.objects.create(
+            project=project,
+            student=request.user,
+            version_number=latest_version,
+            github_url=submission_data['github_url'] or 'https://github.com/practice-submission',
+            published_url=submission_data['published_url'] or 'https://preview.practice-sandbox.internal',
+            documentation=submission_data['documentation'] or submission_data['code_snippet'][:500],
+            requirement_mapping=evaluation_result.get('criteria_evaluations', [])
+        )
+
+        ProjectEvaluationResult.objects.create(
+            submission=sub_ver,
+            project=project,
+            requirement_evaluations=evaluation_result.get('criteria_evaluations', []),
+            automated_checks=evaluation_result.get('dimension_scores', {}),
+            quality_score=evaluation_result.get('overall_score', 80),
+            quality_breakdown=evaluation_result.get('dimension_scores', {}),
+            evaluator_decision='ACCEPT' if evaluation_result.get('decision') == 'PASS' else 'REVISION_REQUIRED',
+            evaluator_comments=evaluation_result.get('code_critique', '')
+        )
+
+        # Award XP and log user activity
+        xp_points = evaluation_result.get('xp_awarded', 100)
+        profile, _ = UserProfile.objects.get_or_create(user=request.user)
+        profile.total_learning_points = (profile.total_learning_points or 0) + xp_points
+        profile.job_readiness_score = min(100, (profile.job_readiness_score or 50) + 2)
+        profile.save()
+
+        ActivityLog.objects.create(
+            user=request.user,
+            action_type='project',
+            description=f"Completed AI Assessment: {problem.title} (Score: {evaluation_result.get('overall_score', 0)}/100, +{xp_points} XP)",
+            impact_score=xp_points
+        )
+
+        # Increment skills
+        for growth in evaluation_result.get('skills_growth', []):
+            skill_name = growth.get('skill')
+            if skill_name:
+                user_skill, _ = UserSkill.objects.get_or_create(
+                    user=request.user,
+                    name=skill_name,
+                    defaults={'category': 'Technical', 'level': 2, 'verified': True}
+                )
+                user_skill.level = min(5, user_skill.level + 1)
+                user_skill.save()
+
+        return Response({
+            'evaluation': evaluation_result,
+            'project_id': project.id,
+            'submission_version': latest_version,
+            'user_stats': {
+                'total_xp': profile.total_learning_points,
+                'readiness_score': profile.job_readiness_score
+            }
+        })
+
+
+class AIGenerateGapChallengeView(APIView):
+    """
+    POST /api/problems/practice/generate-gap-challenge/
+    Synthesizes a tailored, real-world practice challenge targeting the user's detected skill gaps.
+    Saves and returns the challenge as a persistent Problem record.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        profile, _ = UserProfile.objects.get_or_create(user=user)
+        target_role = profile.dream_job or "Senior Full-Stack Engineer"
+        
+        user_skills = list(user.skills.values_list('name', flat=True))
+        gap_skills = request.data.get('gap_skills')
+        if not gap_skills:
+            # Pick from career interests or default
+            gap_skills = request.data.get('skills', ['System Architecture', 'API Resilience', 'Distributed Caching'])
+
+        difficulty = request.data.get('difficulty', 'intermediate')
+
+        engine = AIAssessmentEngine()
+        challenge_spec = engine.generate_gap_challenge(user_skills, target_role, gap_skills, difficulty)
+
+        # Persist as Problem record
+        org, _ = ProblemOrganization.objects.get_or_create(
+            name="SkillMirror AI Lab",
+            defaults={'org_type': 'startup', 'is_verified': True}
+        )
+
+        problem = Problem.objects.create(
+            title=challenge_spec.get('title', 'Targeted Skill Gap Challenge'),
+            description=f"{challenge_spec.get('scenario', '')}\n\n**Problem Statement:**\n{challenge_spec.get('problem_statement', '')}",
+            original_description=challenge_spec.get('problem_statement', ''),
+            source_type='AI_GENERATED_PRACTICE',
+            is_real_world=True,
+            problem_owner_name="AI Challenge Engine",
+            organization=org,
+            organization_name="SkillMirror AI Lab",
+            industry=challenge_spec.get('domain', 'Technology'),
+            category=challenge_spec.get('category', 'Full-Stack Architecture'),
+            complexity=difficulty,
+            estimated_effort_weeks=1,
+            market_relevance_score=95,
+            required_solution=json.dumps(challenge_spec.get('requirements', [])),
+            constraints=challenge_spec.get('constraints', []),
+            required_skills_list=challenge_spec.get('target_skills', gap_skills),
+            status='validated',
+            submitted_by=user
+        )
+
+        # Create Requirements
+        for idx, req_text in enumerate(challenge_spec.get('requirements', []), 1):
+            ProjectRequirement.objects.create(
+                problem=problem,
+                requirement_id=f"REQ-{idx:03d}",
+                title=f"Requirement {idx}",
+                description=req_text,
+                acceptance_criteria=req_text,
+                source='AI_INFERRED',
+                status='confirmed'
+            )
+
+        serialized = ProblemSerializer(problem).data
+        serialized['starter_code'] = challenge_spec.get('starter_code', '')
+        serialized['test_cases'] = challenge_spec.get('test_cases', [])
+        serialized['hints'] = challenge_spec.get('hints', [])
+        serialized['xp_reward'] = challenge_spec.get('xp_reward', 150)
+
+        return Response(serialized, status=201)
+
+
+class AIGetProgressiveHintView(APIView):
+    """
+    POST /api/problems/practice/<pk>/hint/
+    Body: { "level": 1 | 2 | 3 }
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        try:
+            problem = Problem.objects.get(pk=pk)
+        except Problem.DoesNotExist:
+            return Response({'error': 'Challenge not found.'}, status=404)
+
+        hint_level = int(request.data.get('level', 1))
+        challenge_data = {
+            'title': problem.title,
+            'description': problem.description,
+            'category': problem.category
+        }
+
+        engine = AIAssessmentEngine()
+        hint = engine.generate_progressive_hint(challenge_data, hint_level)
+        return Response(hint)
+
+
+class AIPracticeSubmissionsListView(APIView):
+    """
+    GET /api/problems/practice/submissions/
+    Returns all submitted assessments for the current user.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        submissions = ProjectSubmissionVersion.objects.filter(student=request.user).select_related('project', 'evaluation')
+        results = []
+        for s in submissions:
+            eval_record = getattr(s, 'evaluation', None)
+            results.append({
+                'id': s.id,
+                'project_id': s.project.id,
+                'challenge_title': s.project.title,
+                'version_number': s.version_number,
+                'submitted_at': s.created_at,
+                'github_url': s.github_url,
+                'published_url': s.published_url,
+                'quality_score': eval_record.quality_score if eval_record else 0,
+                'decision': eval_record.evaluator_decision if eval_record else 'PENDING',
+                'comments': eval_record.evaluator_comments if eval_record else '',
+                'dimension_scores': eval_record.quality_breakdown if eval_record else {}
+            })
+        return Response(results)
+

@@ -286,12 +286,12 @@ const ResumePage: React.FC = () => {
                   onDragOver={e => { e.preventDefault(); setDragActive(true); }}
                   onDragLeave={() => setDragActive(false)}
                   onClick={() => fileInputRef.current?.click()}
-                  className={`flex flex-col items-center justify-center border-2 border-dashed rounded-2xl p-10 cursor-pointer transition-all ${dragActive ? 'border-indigo-400 bg-indigo-500/10' : 'border-slate-700 bg-slate-950/60 hover:bg-slate-900'}`}
+                  className={`flex flex-col items-center justify-center border-2 border-dashed rounded-2xl p-10 cursor-pointer transition-all ${dragActive ? 'border-blue-500 bg-blue-500/10' : 'border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950/60 hover:bg-slate-100 dark:hover:bg-slate-900'}`}
                 >
                   <input ref={fileInputRef} type="file" accept=".pdf,.doc,.docx" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) void handleFile(f); }} />
-                  <i className="fa-solid fa-file-arrow-up text-indigo-400 text-2xl mb-3" />
-                  <p className="text-sm text-slate-50 font-medium">Drop resume or click to browse</p>
-                  <p className="text-[10px] text-slate-600 mt-1">PDF, DOC, DOCX · Max 5MB</p>
+                  <i className="fa-solid fa-file-arrow-up text-blue-600 dark:text-indigo-400 text-2xl mb-3" />
+                  <p className="text-sm text-slate-900 dark:text-slate-50 font-medium">Drop resume or click to browse</p>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1">PDF, DOC, DOCX · Max 5MB</p>
                 </div>
                 {(uploading || analyzing) && (
                   <div className="space-y-2">
@@ -378,13 +378,13 @@ const ResumePage: React.FC = () => {
                   <div className="space-y-4">
                     <div className="flex flex-wrap gap-2">
                       {analysis.skills.map(s => (
-                        <span key={s.name} className="px-3 py-1 rounded-full text-[10px] bg-slate-900 border border-slate-700 text-slate-300 hover:border-indigo-500/50 transition-all">
-                          {s.name} <span className="text-slate-500">· {s.proficiency}%</span>
+                        <span key={s.name} className="px-3 py-1 rounded-full text-[10px] bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-300 hover:border-blue-500/50 transition-all font-mono font-medium">
+                          {s.name} <span className="text-slate-400 dark:text-slate-500">· {s.proficiency}%</span>
                         </span>
                       ))}
                     </div>
-                    <div className="pt-3 border-t border-slate-800 flex justify-between items-center">
-                      <span className="text-[10px] text-amber-300 font-medium flex items-center gap-1">
+                    <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                      <span className="text-[10px] text-amber-600 dark:text-amber-300 font-medium flex items-center gap-1">
                         <i className="fa-solid fa-triangle-exclamation" /> Review your skill gaps
                       </span>
                       <button onClick={() => router.push('/skill-gap')} className="sm-btn-primary text-[10px] py-1.5 px-3">Go to Roadmap</button>
@@ -394,27 +394,27 @@ const ResumePage: React.FC = () => {
               </div>
 
               <div className="sm-glass p-5 space-y-4 overflow-hidden">
-                <h2 className="text-sm font-medium text-slate-50">Strength Breakdown</h2>
+                <h2 className="text-sm font-medium text-slate-900 dark:text-slate-50">Strength Breakdown</h2>
                 <div className="h-56 -mx-4">
                   {analyzing ? (
-                    <div className="h-full flex items-center justify-center text-indigo-400 text-xs font-semibold animate-pulse">
+                    <div className="h-full flex items-center justify-center text-blue-600 dark:text-indigo-400 text-xs font-semibold animate-pulse">
                       Analyzing your resume...
                     </div>
                   ) : analysis ? (
                     <ResponsiveContainer width="100%" height="100%">
                       <RadarChart cx="50%" cy="50%" outerRadius="70%" data={breakdownData}>
-                        <PolarGrid stroke="#334155" />
-                        <PolarAngleAxis dataKey="subject" tick={{ fill: '#94a3b8', fontSize: 10 }} />
-                        <Radar name="Score" dataKey="value" stroke="#6366f1" fill="#6366f1" fillOpacity={0.6} />
-                        <RechartsTooltip contentStyle={{ background: '#0f172a', border: '1px solid #334155', fontSize: '10px' }} />
+                        <PolarGrid stroke="#cbd5e1" className="dark:stroke-slate-700" />
+                        <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 10 }} />
+                        <Radar name="Score" dataKey="value" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.5} />
+                        <RechartsTooltip contentStyle={{ background: '#ffffff', border: '1px solid #e2e8f0', fontSize: '10px', borderRadius: '8px' }} />
                       </RadarChart>
                     </ResponsiveContainer>
                   ) : error ? (
-                    <div className="h-full flex items-center justify-center text-rose-400 text-xs p-4 text-center">
+                    <div className="h-full flex items-center justify-center text-rose-500 text-xs p-4 text-center">
                       We couldn't complete the analysis. Please try analyzing your resume again.
                     </div>
                   ) : (
-                    <div className="h-full flex items-center justify-center text-slate-400 text-xs p-4 text-center">
+                    <div className="h-full flex items-center justify-center text-slate-500 dark:text-slate-400 text-xs p-4 text-center">
                       Upload and analyze your resume to see your strongest career areas.
                     </div>
                   )}
@@ -432,18 +432,18 @@ const ResumePage: React.FC = () => {
             {analysis && (
               <div className="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
                 <div className="sm-glass p-5 space-y-3">
-                  <h2 className="text-sm font-medium text-slate-50">AI Optimization Suggestions</h2>
+                  <h2 className="text-sm font-medium text-slate-900 dark:text-slate-50">AI Optimization Suggestions</h2>
                   {analysis.aiSuggestions && analysis.aiSuggestions.length > 0 ? (
                     <ul className="space-y-2">
                       {analysis.aiSuggestions.map((s, i) => (
-                        <li key={i} className="flex items-start gap-2 text-[11px] text-slate-400">
-                          <i className="fa-solid fa-circle-check text-indigo-400 text-[10px] mt-0.5 shrink-0"></i>
+                        <li key={i} className="flex items-start gap-2 text-[11px] text-slate-600 dark:text-slate-400">
+                          <i className="fa-solid fa-circle-check text-blue-600 dark:text-indigo-400 text-[10px] mt-0.5 shrink-0"></i>
                           {s}
                         </li>
                       ))}
                     </ul>
                   ) : (
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                       No optimization suggestions yet. Your resume currently has no detected improvement items.
                     </p>
                   )}
@@ -476,12 +476,12 @@ const ResumePage: React.FC = () => {
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-400">
             {/* Build sub-tab switcher + Save Button */}
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-              <div className="flex gap-1 p-1 bg-slate-900/80 border border-slate-800 rounded-xl w-fit">
+              <div className="flex gap-1 p-1 bg-slate-100 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-xl w-fit">
                 {BUILD_TABS.map(bt => (
                   <button
                     key={bt.key}
                     onClick={() => setBuildSubTab(bt.key)}
-                    className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${buildSubTab === bt.key ? 'bg-slate-700 text-slate-100' : 'text-slate-600 hover:text-slate-400'}`}
+                    className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${buildSubTab === bt.key ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'}`}
                   >
                     <i className={`fa-solid ${bt.icon} text-[9px]`}></i>
                     {bt.label}

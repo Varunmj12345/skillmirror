@@ -236,14 +236,14 @@ const SkillGapPage: React.FC = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Left: Configuration */}
                     <div className="lg:col-span-1 space-y-6">
-                        <div className="sm-glass p-6 border-slate-800/50">
-                            <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-6 flex items-center gap-2">
-                                <i className="fa-solid fa-bullseye text-sky-400"></i> Target Goal
+                        <div className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none">
+                            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-widest mb-6 flex items-center gap-2">
+                                <i className="fa-solid fa-bullseye text-blue-600 dark:text-sky-400"></i> Target Goal
                             </h3>
 
                             <div className="space-y-5">
                                 <div className="space-y-2">
-                                    <label className="text-xs font-semibold text-slate-500 ml-1">Job Role</label>
+                                    <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 ml-1">Job Role</label>
                                     <select
                                         value={role}
                                         onChange={(e) => setRole(e.target.value)}
@@ -260,7 +260,7 @@ const SkillGapPage: React.FC = () => {
                                             <button
                                                 key={lvl}
                                                 onClick={() => setExpLevel(lvl)}
-                                                className={`py-2 rounded-lg text-xs font-bold border transition-all ${expLevel === lvl ? 'bg-indigo-600/10 border-indigo-500/50 text-indigo-400' : 'bg-slate-900 border-slate-800 text-slate-500 hover:border-slate-700'
+                                                className={`py-2 rounded-lg text-xs font-bold border transition-all ${expLevel === lvl ? 'bg-indigo-50 border-indigo-300 text-indigo-700 dark:bg-indigo-600/10 dark:border-indigo-500/50 dark:text-indigo-400 shadow-sm' : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-500 hover:border-slate-400'
                                                     }`}
                                             >
                                                 {lvl}
@@ -282,11 +282,11 @@ const SkillGapPage: React.FC = () => {
                             </div>
                         </div>
 
-                        <div className="sm-glass p-6 border-slate-800/50 bg-indigo-600/5">
-                            <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                                <i className="fa-solid fa-file-invoice text-indigo-400"></i> Job Description Scan
+                        <div className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none">
+                            <h3 className="text-sm font-bold text-slate-700 dark:text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <i className="fa-solid fa-file-invoice text-indigo-600 dark:text-indigo-400"></i> Job Description Scan
                             </h3>
-                            <p className="text-[11px] text-slate-500 mb-4 leading-relaxed font-medium uppercase tracking-tighter">
+                            <p className="text-[11px] text-slate-500 mb-4 leading-relaxed font-medium">
                                 Paste a specific job description to find niche requirements and tools.
                             </p>
                             <div className="space-y-4">
@@ -299,7 +299,7 @@ const SkillGapPage: React.FC = () => {
                                 <button
                                     onClick={handleExtractJD}
                                     disabled={extracting || !jobDescription.trim()}
-                                    className="w-full py-2 bg-slate-800 hover:bg-slate-700 text-[10px] font-black text-slate-400 uppercase tracking-widest rounded-lg border border-slate-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                                    className="w-full py-2.5 bg-slate-900 dark:bg-slate-800 hover:bg-blue-600 dark:hover:bg-slate-700 text-xs font-bold text-white dark:text-slate-300 uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-sm"
                                 >
                                     {extracting ? <i className="fa-solid fa-circle-notch fa-spin"></i> : <i className="fa-solid fa-wand-sparkles"></i>}
                                     Extract Skills
@@ -309,31 +309,31 @@ const SkillGapPage: React.FC = () => {
                     </div>
 
                     <div className="lg:col-span-2 space-y-6">
-                        <div className="sm-glass p-6 border-slate-800/50">
+                        <div className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none">
                             <div className="flex items-center justify-between mb-6">
-                                <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                                    <i className="fa-solid fa-brain text-emerald-400"></i> Active Profile Skills
+                                <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-widest flex items-center gap-2">
+                                    <i className="fa-solid fa-brain text-emerald-500 dark:text-emerald-400"></i> Active Profile Skills
                                 </h3>
                                 <div className="flex items-center gap-4">
                                     <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-                                        Count: <span className="text-slate-300 font-black">{totalSkillCount}</span>
+                                        Count: <span className="text-slate-900 dark:text-slate-300 font-black">{totalSkillCount}</span>
                                     </span>
                                 </div>
                             </div>
 
-                            <div className="flex flex-wrap gap-2 mb-6 min-h-[100px] p-4 bg-slate-900/30 rounded-2xl border border-dashed border-slate-800">
+                            <div className="flex flex-wrap gap-2 mb-6 min-h-[100px] p-4 bg-slate-50 dark:bg-slate-900/30 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
                                 {(resumeStatus?.skills || []).map(s => (
-                                    <div key={s} className="px-3 py-1.5 bg-slate-800 text-slate-300 rounded-xl text-xs font-semibold flex items-center gap-2 border border-slate-700/50 group">
-                                        <i className="fa-solid fa-star text-[10px] text-emerald-500/50"></i>
+                                    <div key={s} className="px-3 py-1.5 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-300 rounded-xl text-xs font-semibold flex items-center gap-2 border border-slate-200 dark:border-slate-700/50 shadow-sm group">
+                                        <i className="fa-solid fa-star text-[10px] text-emerald-500"></i>
                                         {s}
-                                        <span className="text-[9px] text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity italic">CV</span>
+                                        <span className="text-[9px] text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity italic">CV</span>
                                     </div>
                                 ))}
                                 {manualSkills.map(s => (
-                                    <div key={s.name} className="px-3 py-1.5 bg-indigo-500/10 text-indigo-300 rounded-xl text-xs font-semibold flex items-center gap-2 border border-indigo-500/30 group">
+                                    <div key={s.name} className="px-3 py-1.5 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 rounded-xl text-xs font-semibold flex items-center gap-2 border border-indigo-200 dark:border-indigo-500/30 shadow-sm group">
                                         {s.name}
-                                        <span className="text-[9px] px-1.5 py-0.5 bg-indigo-500/20 rounded-md font-bold uppercase tracking-tighter">{s.level[0]}</span>
-                                        <button onClick={() => removeManualSkill(s.name)} className="text-slate-500 hover:text-rose-400 transition-colors">
+                                        <span className="text-[9px] px-1.5 py-0.5 bg-indigo-100 dark:bg-indigo-500/20 rounded-md font-bold uppercase tracking-tighter">{s.level[0]}</span>
+                                        <button onClick={() => removeManualSkill(s.name)} className="text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors">
                                             <i className="fa-solid fa-xmark text-[10px]"></i>
                                         </button>
                                     </div>
@@ -342,13 +342,13 @@ const SkillGapPage: React.FC = () => {
 
                             <div className="flex flex-col sm:flex-row gap-3 relative">
                                 <div className="flex-1 relative">
-                                    <i className="fa-solid fa-plus absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 text-xs"></i>
+                                    <i className="fa-solid fa-plus absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                                     <input
                                         type="text"
                                         value={newSkillName}
                                         onChange={(e) => {
-                                            setNewSkillName(e.target.value);
-                                            setShowSuggestions(true);
+                                             setNewSkillName(e.target.value);
+                                             setShowSuggestions(true);
                                         }}
                                         onFocus={() => setShowSuggestions(true)}
                                         onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
@@ -357,12 +357,12 @@ const SkillGapPage: React.FC = () => {
                                         className="sm-input pl-10 pr-4 py-3 text-sm"
                                     />
                                     {showSuggestions && filteredSuggestions.length > 0 && (
-                                        <div className="absolute z-50 bottom-full left-0 w-full mb-2 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-2">
+                                        <div className="absolute z-50 bottom-full left-0 w-full mb-2 bg-card border border-border rounded-xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-2">
                                             {filteredSuggestions.map(s => (
                                                 <button
                                                     key={s}
                                                     onClick={() => addManualSkill(s)}
-                                                    className="w-full px-4 py-2.5 text-left text-xs font-bold text-slate-300 hover:bg-indigo-600/10 hover:text-indigo-400 border-b border-slate-800/50 last:border-0 transition-colors"
+                                                    className="w-full px-4 py-2.5 text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-600/10 hover:text-indigo-600 dark:hover:text-indigo-400 border-b border-slate-100 dark:border-slate-800/50 last:border-0 transition-colors"
                                                 >
                                                     {s}
                                                 </button>
@@ -381,7 +381,7 @@ const SkillGapPage: React.FC = () => {
                                 </select>
                                 <button
                                     onClick={() => addManualSkill()}
-                                    className="px-6 py-3 bg-slate-800 text-slate-300 rounded-xl font-bold text-sm hover:bg-slate-700 transition-all border border-slate-700/50"
+                                    className="px-6 py-3 bg-slate-900 dark:bg-slate-800 text-white dark:text-slate-300 rounded-xl font-bold text-sm hover:bg-blue-600 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700/50 shadow-sm"
                                 >
                                     Add
                                 </button>
@@ -420,9 +420,9 @@ const SkillGapPage: React.FC = () => {
                                 <div className="flex justify-center pt-8">
                                     <button
                                         onClick={handleExportToRoadmap}
-                                        className="flex items-center gap-3 px-8 py-4 bg-slate-900 border border-slate-800 rounded-2xl font-black text-slate-300 hover:text-white hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all group uppercase tracking-[0.2em] text-[11px]"
+                                        className="flex items-center gap-3 px-8 py-4 bg-card border border-border rounded-2xl font-black text-slate-800 dark:text-slate-300 hover:text-blue-600 dark:hover:text-white hover:border-blue-300 dark:hover:border-indigo-500/50 transition-all group uppercase tracking-[0.2em] text-[11px] shadow-light-card dark:shadow-none"
                                     >
-                                        <i className="fa-solid fa-map-location-dot text-indigo-400 group-hover:scale-110 transition-transform"></i>
+                                        <i className="fa-solid fa-map-location-dot text-blue-600 dark:text-indigo-400 group-hover:scale-110 transition-transform"></i>
                                         Export Gaps to Roadmap
                                     </button>
                                 </div>
@@ -440,14 +440,14 @@ const SkillGapPage: React.FC = () => {
                         )}
 
                         {!report && !loading && (
-                            <div className="py-24 flex flex-col items-center justify-center text-center space-y-6 sm-glass border-dashed border-slate-800 bg-transparent">
-                                <div className="w-20 h-20 rounded-full bg-slate-900 flex items-center justify-center text-slate-700 text-3xl">
+                            <div className="py-24 flex flex-col items-center justify-center text-center space-y-6 rounded-3xl bg-card border border-dashed border-border shadow-light-card dark:shadow-none">
+                                <div className="w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-900 flex items-center justify-center text-slate-400 dark:text-slate-700 text-3xl">
                                     <i className="fa-solid fa-magnifying-glass-chart"></i>
                                 </div>
                                 <div className="max-w-xs">
-                                    <h4 className="text-slate-300 font-bold text-lg mb-2">Ready to Analyze?</h4>
+                                    <h4 className="text-slate-900 dark:text-slate-300 font-bold text-lg mb-2">Ready to Analyze?</h4>
                                     <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest leading-relaxed">
-                                        Run the <strong className="text-indigo-400">Readiness Analysis</strong> to unlock deep intelligence and learning strategies.
+                                        Run the <strong className="text-blue-600 dark:text-indigo-400">Readiness Analysis</strong> to unlock deep intelligence and learning strategies.
                                     </p>
                                 </div>
                             </div>

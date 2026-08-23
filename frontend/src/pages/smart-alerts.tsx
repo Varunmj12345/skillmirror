@@ -312,38 +312,38 @@ const SmartAlertsPage: React.FC = () => {
                 {/* ── 1. Weekly AI Intelligence Hub & Next Best Action ── */}
                 {summary && (
                     <ScrollReveal>
-                        <div className="relative rounded-3xl bg-gradient-to-b from-[#121624] via-[#0d101a] to-[#0a0c14] border border-indigo-500/25 p-6 sm:p-7 overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.6)] group">
+                        <div className="relative rounded-3xl bg-gradient-to-b from-indigo-50/80 via-white to-blue-50/50 dark:from-[#121624] dark:via-[#0d101a] dark:to-[#0a0c14] border border-indigo-200/80 dark:border-indigo-500/25 p-6 sm:p-7 overflow-hidden shadow-light-card dark:shadow-[0_12px_40px_rgba(0,0,0,0.6)] group">
                             {/* Ambient Top Glow Wave */}
-                            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/80 to-transparent" />
-                            <div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none group-hover:bg-indigo-600/15 transition-all duration-700" />
-                            <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-cyan-600/10 rounded-full blur-3xl pointer-events-none" />
+                            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/60 dark:via-indigo-500/80 to-transparent" />
+                            <div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-500/5 dark:bg-indigo-600/10 rounded-full blur-3xl pointer-events-none group-hover:bg-indigo-500/10 dark:group-hover:bg-indigo-600/15 transition-all duration-700" />
+                            <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-blue-500/5 dark:bg-cyan-600/10 rounded-full blur-3xl pointer-events-none" />
 
                             <div className="relative z-10 space-y-6">
                                 {/* Header badge + title */}
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/[0.06] pb-5">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-white/[0.06] pb-5">
                                     <div className="flex items-center gap-3.5">
-                                        <div className="w-11 h-11 rounded-2xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shadow-[0_0_20px_rgba(99,102,241,0.25)]">
+                                        <div className="w-11 h-11 rounded-2xl bg-indigo-50 text-indigo-600 border border-indigo-200 dark:bg-indigo-500/15 dark:border-indigo-500/30 dark:text-indigo-400 flex items-center justify-center shadow-sm">
                                             <i className="fa-solid fa-brain-circuit text-lg animate-pulse" />
                                         </div>
                                         <div>
                                             <div className="flex items-center gap-2">
-                                                <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-indigo-400">
+                                                <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-indigo-600 dark:text-indigo-400">
                                                     AUTONOMOUS CAREER COPILOT
                                                 </span>
-                                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-ping" />
+                                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20">
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 mr-1.5 animate-ping" />
                                                     SYNCHRONIZED
                                                 </span>
                                             </div>
-                                            <h2 className="text-lg sm:text-xl font-display font-black text-white tracking-tight">
+                                            <h2 className="text-lg sm:text-xl font-display font-black text-slate-900 dark:text-white tracking-tight">
                                                 Weekly Intelligence & Predictive Trajectory
                                             </h2>
                                         </div>
                                     </div>
                                     
                                     <div className="flex items-center gap-2 self-start sm:self-auto">
-                                        <span className="text-[11px] font-mono text-slate-400 bg-black/40 px-3 py-1.5 rounded-xl border border-white/[0.06]">
-                                            <i className="fa-regular fa-clock text-indigo-400 mr-1.5" />
+                                        <span className="text-[11px] font-mono text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-black/40 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-white/[0.06]">
+                                            <i className="fa-regular fa-clock text-indigo-600 dark:text-indigo-400 mr-1.5" />
                                             Active Horizon: 7 Days
                                         </span>
                                     </div>
@@ -351,82 +351,82 @@ const SmartAlertsPage: React.FC = () => {
 
                                 {/* 4 Telemetry Metrics Grid */}
                                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
-                                    <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-indigo-500/30 hover:bg-white/[0.04] transition-all">
+                                    <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/[0.06] hover:border-indigo-300 dark:hover:border-indigo-500/30 transition-all shadow-sm">
                                         <div className="flex items-center justify-between mb-2">
-                                            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">Roadmap Momentum</span>
-                                            <i className="fa-solid fa-route text-indigo-400 text-xs" />
+                                            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Roadmap Momentum</span>
+                                            <i className="fa-solid fa-route text-indigo-600 dark:text-indigo-400 text-xs" />
                                         </div>
-                                        <div className="text-xl sm:text-2xl font-display font-black text-white">
+                                        <div className="text-xl sm:text-2xl font-display font-black text-slate-900 dark:text-white">
                                             {summary.roadmap_completion_rate} <span className="text-xs font-mono font-normal text-slate-400">milestones</span>
                                         </div>
-                                        <div className="w-full bg-slate-800/80 h-1.5 rounded-full mt-2.5 overflow-hidden">
+                                        <div className="w-full bg-slate-200 dark:bg-slate-800/80 h-1.5 rounded-full mt-2.5 overflow-hidden">
                                             <div 
-                                                className="h-full bg-gradient-to-r from-indigo-500 to-cyan-400 rounded-full" 
+                                                className="h-full bg-gradient-to-r from-indigo-500 to-blue-500 dark:to-cyan-400 rounded-full" 
                                                 style={{ width: `${Math.min(100, (summary.roadmap_completion_rate / 8) * 100)}%` }} 
                                             />
                                         </div>
                                     </div>
 
-                                    <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-cyan-500/30 hover:bg-white/[0.04] transition-all">
+                                    <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/[0.06] hover:border-blue-300 dark:hover:border-cyan-500/30 transition-all shadow-sm">
                                         <div className="flex items-center justify-between mb-2">
-                                            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">Interview Accuracy</span>
-                                            <i className="fa-solid fa-microphone-lines text-cyan-400 text-xs" />
+                                            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Interview Accuracy</span>
+                                            <i className="fa-solid fa-microphone-lines text-blue-600 dark:text-cyan-400 text-xs" />
                                         </div>
-                                        <div className="text-xl sm:text-2xl font-display font-black text-cyan-300">
+                                        <div className="text-xl sm:text-2xl font-display font-black text-blue-600 dark:text-cyan-300">
                                             {summary.interview_avg}% <span className="text-xs font-mono font-normal text-slate-400">benchmark</span>
                                         </div>
-                                        <div className="w-full bg-slate-800/80 h-1.5 rounded-full mt-2.5 overflow-hidden">
+                                        <div className="w-full bg-slate-200 dark:bg-slate-800/80 h-1.5 rounded-full mt-2.5 overflow-hidden">
                                             <div 
-                                                className="h-full bg-cyan-400 rounded-full shadow-[0_0_10px_rgba(6,182,212,0.5)]" 
+                                                className="h-full bg-blue-600 dark:bg-cyan-400 rounded-full shadow-sm" 
                                                 style={{ width: `${summary.interview_avg}%` }} 
                                             />
                                         </div>
                                     </div>
 
-                                    <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-emerald-500/30 hover:bg-white/[0.04] transition-all">
+                                    <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/[0.06] hover:border-emerald-300 dark:hover:border-emerald-500/30 transition-all shadow-sm">
                                         <div className="flex items-center justify-between mb-2">
-                                            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">Dominant Vector</span>
-                                            <i className="fa-solid fa-shield-halved text-emerald-400 text-xs" />
+                                            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Dominant Vector</span>
+                                            <i className="fa-solid fa-shield-halved text-emerald-600 dark:text-emerald-400 text-xs" />
                                         </div>
-                                        <div className="text-base sm:text-lg font-display font-black text-emerald-400 truncate" title={summary.strongest_skill}>
+                                        <div className="text-base sm:text-lg font-display font-black text-emerald-600 dark:text-emerald-400 truncate" title={summary.strongest_skill}>
                                             {summary.strongest_skill || 'Core Architecture'}
                                         </div>
-                                        <span className="inline-block text-[10px] font-mono text-emerald-500/90 mt-1 font-bold">
+                                        <span className="inline-block text-[10px] font-mono text-emerald-600 dark:text-emerald-500/90 mt-1 font-bold">
                                             ★ Top 10% Candidate Tier
                                         </span>
                                     </div>
 
-                                    <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-violet-500/30 hover:bg-white/[0.04] transition-all">
+                                    <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/[0.06] hover:border-violet-300 dark:hover:border-violet-500/30 transition-all shadow-sm">
                                         <div className="flex items-center justify-between mb-2">
-                                            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">Market Delta</span>
-                                            <i className="fa-solid fa-arrow-trend-up text-violet-400 text-xs" />
+                                            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Market Delta</span>
+                                            <i className="fa-solid fa-arrow-trend-up text-violet-600 dark:text-violet-400 text-xs" />
                                         </div>
-                                        <div className="text-xl sm:text-2xl font-display font-black text-violet-300">
+                                        <div className="text-xl sm:text-2xl font-display font-black text-violet-600 dark:text-violet-300">
                                             {summary.readiness_delta || '+12.5%'}
                                         </div>
-                                        <span className="inline-block text-[10px] font-mono text-slate-400 mt-1">
+                                        <span className="inline-block text-[10px] font-mono text-slate-500 dark:text-slate-400 mt-1">
                                             Readiness velocity lift
                                         </span>
                                     </div>
                                 </div>
 
                                 {/* Next Best Action Callout Banner */}
-                                <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-indigo-950/60 via-purple-950/40 to-slate-950/60 border border-indigo-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative overflow-hidden shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
+                                <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-indigo-50 via-purple-50 to-blue-50 dark:from-indigo-950/60 dark:via-purple-950/40 dark:to-slate-950/60 border border-indigo-200 dark:border-indigo-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative overflow-hidden shadow-sm">
                                     <div className="flex items-center gap-3.5">
-                                        <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+                                        <div className="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-500/15 border border-amber-200 dark:border-amber-500/30 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0 shadow-sm">
                                             <i className="fa-solid fa-bolt-lightning text-sm" />
                                         </div>
                                         <div>
-                                            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-amber-400/90">
+                                            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-amber-700 dark:text-amber-400/90">
                                                 RECOMMENDED HIGH-IMPACT ACTION
                                             </span>
-                                            <p className="text-xs sm:text-sm font-sans font-semibold text-slate-100">
+                                            <p className="text-xs sm:text-sm font-sans font-semibold text-slate-800 dark:text-slate-100">
                                                 {summary.next_best_action || 'Complete your active roadmap milestones to boost target readiness.'}
                                             </p>
                                         </div>
                                     </div>
                                     <Link href="/roadmap" className="shrink-0 w-full sm:w-auto">
-                                        <button className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-cyan-500 text-white font-mono font-black text-xs uppercase tracking-wider hover:brightness-110 shadow-[0_0_20px_rgba(99,102,241,0.4)] transition-all flex items-center justify-center gap-2">
+                                        <button className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-mono font-black text-xs uppercase tracking-wider hover:brightness-110 shadow-sm transition-all flex items-center justify-center gap-2">
                                             <span>Accelerate</span>
                                             <i className="fa-solid fa-arrow-right text-[10px]" />
                                         </button>
@@ -441,22 +441,21 @@ const SmartAlertsPage: React.FC = () => {
                 <StaggerChildren className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-3">
                     {/* Signal Volume Card */}
                     <ScrollReveal stagger>
-                        <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800/80 hover:border-cyan-500/40 transition-all duration-300 relative overflow-hidden group shadow-lg">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-full blur-2xl group-hover:bg-cyan-500/10 transition-all" />
+                        <div className="p-6 rounded-3xl bg-card border border-border hover:border-blue-300 dark:hover:border-cyan-500/40 transition-all duration-300 relative overflow-hidden group shadow-light-card dark:shadow-lg">
                             <div className="flex items-start justify-between mb-3">
                                 <div>
-                                    <span className="text-[10px] font-mono font-bold uppercase tracking-[0.16em] text-slate-400">
+                                    <span className="text-[10px] font-mono font-bold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
                                         SIGNAL VOLUME
                                     </span>
-                                    <div className="text-4xl font-display font-black text-white mt-1">
+                                    <div className="text-4xl font-display font-black text-slate-900 dark:text-white mt-1">
                                         {stats.total}
                                     </div>
                                 </div>
-                                <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 text-lg shadow-[0_0_15px_rgba(6,182,212,0.2)]">
+                                <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-cyan-500/10 border border-blue-200 dark:border-cyan-500/20 flex items-center justify-center text-blue-600 dark:text-cyan-400 text-lg shadow-sm">
                                     <i className="fa-solid fa-satellite-dish" />
                                 </div>
                             </div>
-                            <p className="text-xs font-mono text-slate-400 mt-2">
+                            <p className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-2">
                                 Continuous real-time indexing of 12,500+ market telemetry vectors.
                             </p>
                         </div>
@@ -466,36 +465,35 @@ const SmartAlertsPage: React.FC = () => {
                     <ScrollReveal stagger>
                         <div 
                             onClick={() => setUnreadOnly(!unreadOnly)}
-                            className={`p-6 rounded-3xl bg-slate-900/60 border transition-all duration-300 relative overflow-hidden group shadow-lg cursor-pointer ${
+                            className={`p-6 rounded-3xl bg-card border transition-all duration-300 relative overflow-hidden group shadow-light-card dark:shadow-lg cursor-pointer ${
                                 unreadOnly 
-                                    ? 'border-amber-400/80 bg-amber-500/[0.07] ring-1 ring-amber-400/40' 
-                                    : 'border-slate-800/80 hover:border-amber-500/40'
+                                    ? 'border-amber-400 bg-amber-50/50 dark:bg-amber-500/[0.07] ring-1 ring-amber-400' 
+                                    : 'border-border hover:border-amber-400/80'
                             }`}
                         >
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-2xl group-hover:bg-amber-500/10 transition-all" />
                             <div className="flex items-start justify-between mb-3">
                                 <div>
                                     <div className="flex items-center gap-2">
-                                        <span className="text-[10px] font-mono font-bold uppercase tracking-[0.16em] text-slate-400">
+                                        <span className="text-[10px] font-mono font-bold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
                                             UNCHECKED SIGNALS
                                         </span>
                                         {unreadOnly && (
-                                            <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                                            <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-500/30">
                                                 ACTIVE FILTER
                                             </span>
                                         )}
                                     </div>
-                                    <div className="text-4xl font-display font-black text-amber-400 mt-1">
+                                    <div className="text-4xl font-display font-black text-amber-600 dark:text-amber-400 mt-1">
                                         {stats.unread}
                                     </div>
                                 </div>
-                                <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-lg shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+                                <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400 text-lg shadow-sm">
                                     <i className="fa-solid fa-lightbulb" />
                                 </div>
                             </div>
-                            <div className="flex items-center justify-between text-xs font-mono text-slate-400 mt-2">
+                            <div className="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 mt-2">
                                 <span>{unreadOnly ? 'Showing unread only' : 'Click to filter unacknowledged'}</span>
-                                <i className={`fa-solid fa-arrow-right text-[10px] text-amber-400 group-hover:translate-x-1 transition-transform`} />
+                                <i className={`fa-solid fa-arrow-right text-[10px] text-amber-600 dark:text-amber-400 group-hover:translate-x-1 transition-transform`} />
                             </div>
                         </div>
                     </ScrollReveal>
@@ -504,27 +502,26 @@ const SmartAlertsPage: React.FC = () => {
                     <ScrollReveal stagger>
                         <div 
                             onClick={() => setFilter(filter === 'predictive_risk' ? 'all' : 'predictive_risk')}
-                            className={`p-6 rounded-3xl bg-slate-900/60 border transition-all duration-300 relative overflow-hidden group shadow-lg cursor-pointer ${
+                            className={`p-6 rounded-3xl bg-card border transition-all duration-300 relative overflow-hidden group shadow-light-card dark:shadow-lg cursor-pointer ${
                                 filter === 'predictive_risk'
-                                    ? 'border-rose-500 bg-rose-500/[0.07] ring-1 ring-rose-500/40'
-                                    : 'border-slate-800/80 hover:border-rose-500/40'
+                                    ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-500/[0.07] ring-1 ring-rose-500/40'
+                                    : 'border-border hover:border-rose-400'
                             }`}
                         >
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/5 rounded-full blur-2xl group-hover:bg-rose-500/10 transition-all" />
                             <div className="flex items-start justify-between mb-3">
                                 <div>
-                                    <span className="text-[10px] font-mono font-bold uppercase tracking-[0.16em] text-slate-400">
+                                    <span className="text-[10px] font-mono font-bold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
                                         CRITICAL RISK VECTORS
                                     </span>
-                                    <div className={`text-4xl font-display font-black mt-1 ${stats.critical > 0 ? 'text-rose-400' : 'text-slate-300'}`}>
+                                    <div className={`text-4xl font-display font-black mt-1 ${stats.critical > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-700 dark:text-slate-300'}`}>
                                         {stats.critical}
                                     </div>
                                 </div>
-                                <div className="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400 text-lg shadow-[0_0_15px_rgba(244,63,94,0.2)]">
+                                <div className="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 flex items-center justify-center text-rose-600 dark:text-rose-400 text-lg shadow-sm">
                                     <i className="fa-solid fa-triangle-exclamation" />
                                 </div>
                             </div>
-                            <p className="text-xs font-mono text-slate-400 mt-2">
+                            <p className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-2">
                                 {stats.critical === 0 ? 'Optimal trajectory. No critical regressions detected.' : 'Skill volatility detected. Immediate intervention recommended.'}
                             </p>
                         </div>
@@ -533,7 +530,7 @@ const SmartAlertsPage: React.FC = () => {
 
                 {/* ── 3. Cyber Intelligence Dock (Filters, Search, Sorting) ── */}
                 <div className="space-y-4">
-                    <div className="p-4 sm:p-5 rounded-3xl bg-slate-900/80 border border-white/[0.08] backdrop-blur-xl shadow-xl flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+                    <div className="p-4 sm:p-5 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-xl flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
                         {/* Category Pills */}
                         <div className="flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0 scrollbar-none">
                             {filterOptions.map(opt => {
@@ -544,14 +541,14 @@ const SmartAlertsPage: React.FC = () => {
                                         onClick={() => setFilter(opt.id)}
                                         className={`px-3.5 py-2 rounded-2xl text-xs font-mono font-bold uppercase tracking-wider whitespace-nowrap transition-all flex items-center gap-2 border ${
                                             isActive
-                                                ? 'bg-indigo-600 border-indigo-400 text-white shadow-[0_0_18px_rgba(99,102,241,0.4)]'
-                                                : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                                                ? 'bg-blue-600 border-blue-500 text-white shadow-sm'
+                                                : 'bg-slate-100 dark:bg-slate-950/60 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:border-slate-300'
                                         }`}
                                     >
-                                        <i className={`fa-solid ${opt.icon} text-[11px] ${isActive ? 'text-white' : 'text-slate-500'}`} />
+                                        <i className={`fa-solid ${opt.icon} text-[11px] ${isActive ? 'text-white' : 'text-slate-400'}`} />
                                         <span>{opt.label}</span>
                                         {opt.count > 0 && (
-                                            <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono ${isActive ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-400'}`}>
+                                            <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono ${isActive ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-400'}`}>
                                                 {opt.count}
                                             </span>
                                         )}
@@ -564,18 +561,18 @@ const SmartAlertsPage: React.FC = () => {
                         <div className="flex flex-wrap items-center gap-3 shrink-0">
                             {/* Search Input */}
                             <div className="relative flex-1 sm:w-60">
-                                <i className="fa-solid fa-magnifying-glass text-slate-500 text-xs absolute left-3.5 top-1/2 -translate-y-1/2" />
+                                <i className="fa-solid fa-magnifying-glass text-slate-400 text-xs absolute left-3.5 top-1/2 -translate-y-1/2" />
                                 <input
                                     type="text"
                                     placeholder="Filter signals..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="w-full pl-9 pr-8 py-2 rounded-xl bg-slate-950/80 border border-slate-800 text-xs font-mono text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/60 transition-all"
+                                    className="w-full pl-9 pr-8 py-2 rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 text-xs font-mono text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-blue-500 transition-all"
                                 />
                                 {searchQuery && (
                                     <button
                                         onClick={() => setSearchQuery('')}
-                                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-xs"
+                                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 text-xs"
                                     >
                                         <i className="fa-solid fa-xmark" />
                                     </button>
@@ -583,16 +580,16 @@ const SmartAlertsPage: React.FC = () => {
                             </div>
 
                             {/* Sort Selector */}
-                            <div className="flex items-center gap-1.5 bg-slate-950/80 border border-slate-800 rounded-xl px-2.5 py-1.5">
+                            <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 rounded-xl px-2.5 py-1.5">
                                 <span className="text-[10px] font-mono text-slate-500 font-bold uppercase">Sort:</span>
                                 <select
                                     value={sortBy}
                                     onChange={(e: any) => setSortBy(e.target.value)}
-                                    className="bg-transparent text-xs font-mono text-slate-300 font-bold outline-none cursor-pointer"
+                                    className="bg-transparent text-xs font-mono text-slate-700 dark:text-slate-300 font-bold outline-none cursor-pointer"
                                 >
-                                    <option value="impact" className="bg-slate-900 text-white">Impact Level</option>
-                                    <option value="confidence" className="bg-slate-900 text-white">AI Confidence</option>
-                                    <option value="newest" className="bg-slate-900 text-white">Newest First</option>
+                                    <option value="impact" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Impact Level</option>
+                                    <option value="confidence" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">AI Confidence</option>
+                                    <option value="newest" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Newest First</option>
                                 </select>
                             </div>
                         </div>
@@ -609,29 +606,29 @@ const SmartAlertsPage: React.FC = () => {
                         </div>
                     ) : filteredAlerts.length === 0 ? (
                         /* Empty State with Cyber Scanner */
-                        <div className="p-16 rounded-3xl bg-slate-900/40 border border-slate-800/80 text-center relative overflow-hidden backdrop-blur-xl">
-                            <div className="w-20 h-20 rounded-full bg-slate-950 flex items-center justify-center mx-auto mb-5 border border-slate-800 shadow-[0_0_30px_rgba(0,0,0,0.8)] relative">
-                                <div className="absolute inset-0 rounded-full border border-cyan-500/20 animate-ping" />
-                                <i className="fa-solid fa-radar text-2xl text-cyan-400 animate-pulse" />
+                        <div className="p-16 rounded-3xl bg-card border border-border text-center relative overflow-hidden shadow-light-card dark:shadow-none">
+                            <div className="w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-950 flex items-center justify-center mx-auto mb-5 border border-slate-200 dark:border-slate-800 shadow-sm relative">
+                                <div className="absolute inset-0 rounded-full border border-blue-400 dark:border-cyan-500/20 animate-ping" />
+                                <i className="fa-solid fa-radar text-2xl text-blue-600 dark:text-cyan-400 animate-pulse" />
                             </div>
-                            <h3 className="text-lg font-display font-black text-white">
+                            <h3 className="text-lg font-display font-black text-slate-900 dark:text-white">
                                 All Clear • Trajectory Stabilized
                             </h3>
-                            <p className="text-xs font-mono text-slate-400 mt-2 max-w-md mx-auto leading-relaxed">
+                            <p className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-2 max-w-md mx-auto leading-relaxed">
                                 No active warnings or pending vectors found matching your current filter. Continuous neural monitoring remains active.
                             </p>
                             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
                                 {(filter !== 'all' || unreadOnly || searchQuery) && (
                                     <button
                                         onClick={() => { setFilter('all'); setUnreadOnly(false); setSearchQuery(''); }}
-                                        className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white text-xs font-mono font-bold uppercase transition-all"
+                                        className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:hover:text-white text-xs font-mono font-bold uppercase transition-all"
                                     >
                                         Clear Active Filters
                                     </button>
                                 )}
                                 <button
                                     onClick={() => loadData(true)}
-                                    className="px-4 py-2 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/25 text-xs font-mono font-bold uppercase transition-all flex items-center gap-2"
+                                    className="px-4 py-2 rounded-xl bg-blue-50 border border-blue-200 text-blue-600 hover:bg-blue-100 dark:bg-cyan-500/15 dark:border-cyan-500/30 dark:text-cyan-300 dark:hover:bg-cyan-500/25 text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 shadow-sm"
                                 >
                                     <i className="fa-solid fa-arrows-rotate" />
                                     <span>Run Deep Market Sweep</span>
@@ -654,10 +651,10 @@ const SmartAlertsPage: React.FC = () => {
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, scale: 0.96 }}
                                         transition={{ duration: 0.25 }}
-                                        className={`group relative rounded-3xl bg-slate-900/70 border backdrop-blur-xl p-6 sm:p-7 transition-all duration-300 shadow-xl overflow-hidden ${
+                                        className={`group relative rounded-3xl bg-card border p-6 sm:p-7 transition-all duration-300 shadow-light-card dark:shadow-xl overflow-hidden ${
                                             !alert.is_read 
-                                                ? 'border-white/[0.12] shadow-[0_4px_30px_rgba(0,0,0,0.5)]' 
-                                                : 'border-slate-800/80 opacity-90 hover:opacity-100'
+                                                ? 'border-blue-200 dark:border-white/[0.12] ring-1 ring-blue-400/20' 
+                                                : 'border-border opacity-95 hover:opacity-100'
                                         } ${ui.borderClass}`}
                                     >
                                         {/* Dynamic Gradient Corner Accent */}
@@ -665,24 +662,24 @@ const SmartAlertsPage: React.FC = () => {
                                         
                                         {/* Unread Left Border Highlight */}
                                         {!alert.is_read && (
-                                            <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.8)]" />
+                                            <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-600 dark:bg-cyan-400 shadow-sm" />
                                         )}
 
                                         <div className="flex flex-col lg:flex-row gap-6 items-start">
                                             {/* Left Icon Capsule & Live Impact Gauge */}
                                             <div className="flex lg:flex-col items-center gap-4 shrink-0">
-                                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-xl shadow-lg border relative ${ui.badgeColor}`}>
+                                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-xl shadow-sm border relative ${ui.badgeColor}`}>
                                                     <i className={`fa-solid ${ui.icon}`} />
                                                     {!alert.is_read && (
-                                                        <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-cyan-400 border-2 border-slate-950 animate-pulse" />
+                                                        <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-blue-600 dark:bg-cyan-400 border-2 border-white dark:border-slate-950 animate-pulse" />
                                                     )}
                                                 </div>
 
                                                 <div className="flex lg:flex-col items-center gap-1.5">
-                                                    <div className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-500">
+                                                    <div className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                                                         IMPACT
                                                     </div>
-                                                    <div className="w-16 lg:w-2 bg-slate-950 rounded-full h-2 lg:h-12 overflow-hidden p-0.5 border border-white/[0.06] flex items-end">
+                                                    <div className="w-16 lg:w-2 bg-slate-100 dark:bg-slate-950 rounded-full h-2 lg:h-12 overflow-hidden p-0.5 border border-slate-200 dark:border-white/[0.06] flex items-end">
                                                         <div 
                                                             className={`w-full ${ui.accentBg} rounded-full transition-all duration-500`}
                                                             style={{ 
@@ -691,7 +688,7 @@ const SmartAlertsPage: React.FC = () => {
                                                             }}
                                                         />
                                                     </div>
-                                                    <span className="text-[10px] font-mono font-black text-slate-300">
+                                                    <span className="text-[10px] font-mono font-black text-slate-700 dark:text-slate-300">
                                                         {impactScore}
                                                     </span>
                                                 </div>
@@ -708,27 +705,27 @@ const SmartAlertsPage: React.FC = () => {
 
                                                     {/* Priority Badge */}
                                                     {(alert.priority === 'high' || alert.category === 'critical') && (
-                                                        <span className="text-[10px] font-mono font-black uppercase tracking-wider px-2.5 py-1 rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/40 flex items-center gap-1.5">
+                                                        <span className="text-[10px] font-mono font-black uppercase tracking-wider px-2.5 py-1 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-500/20 dark:text-rose-300 dark:border-rose-500/40 flex items-center gap-1.5">
                                                             <i className="fa-solid fa-triangle-exclamation text-[10px]" />
                                                             Priority Action
                                                         </span>
                                                     )}
 
                                                     {/* AI Confidence Meter */}
-                                                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5">
-                                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                                                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20 flex items-center gap-1.5">
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400" />
                                                         {confidence}% Confidence
                                                     </span>
 
                                                     {/* Risk Level Badge */}
                                                     {alert.predicted_risk_level && (
-                                                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-xl bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                                                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-xl bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-500/15 dark:text-amber-300 dark:border-amber-500/30">
                                                             Risk: {alert.predicted_risk_level}
                                                         </span>
                                                     )}
 
                                                     {/* Timestamp */}
-                                                    <span className="text-[11px] font-mono text-slate-500 ml-auto flex items-center gap-1.5">
+                                                    <span className="text-[11px] font-mono text-slate-400 dark:text-slate-500 ml-auto flex items-center gap-1.5">
                                                         <i className="fa-regular fa-clock text-[10px]" />
                                                         {new Date(alert.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                                                     </span>
@@ -736,19 +733,19 @@ const SmartAlertsPage: React.FC = () => {
 
                                                 {/* Headline */}
                                                 <div>
-                                                    <h3 className={`text-base sm:text-lg font-display font-black leading-snug tracking-tight ${!alert.is_read ? 'text-white' : 'text-slate-300'}`}>
+                                                    <h3 className={`text-base sm:text-lg font-display font-black leading-snug tracking-tight ${!alert.is_read ? 'text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'}`}>
                                                         {alert.message}
                                                     </h3>
                                                 </div>
 
                                                 {/* AI Synthesis Reasoning Capsule */}
                                                 {alert.ai_reasoning && (
-                                                    <div className="p-4 rounded-2xl bg-black/40 border border-white/[0.06] relative overflow-hidden group-hover:border-white/[0.1] transition-all">
+                                                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-black/40 border border-slate-200 dark:border-white/[0.06] relative overflow-hidden shadow-sm">
                                                         <div className="flex items-start gap-3">
-                                                            <div className="w-6 h-6 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 text-xs shrink-0 mt-0.5">
+                                                            <div className="w-6 h-6 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 text-xs shrink-0 mt-0.5">
                                                                 <i className="fa-solid fa-sparkles text-[10px]" />
                                                             </div>
-                                                            <div className="space-y-1 text-xs font-sans text-slate-300 leading-relaxed">
+                                                            <div className="space-y-1 text-xs font-sans text-slate-700 dark:text-slate-300 leading-relaxed">
                                                                 <p className="font-medium">{alert.ai_reasoning}</p>
                                                             </div>
                                                         </div>
@@ -762,14 +759,14 @@ const SmartAlertsPage: React.FC = () => {
                                                             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500">
                                                                 Projected Career Lift:
                                                             </span>
-                                                            <span className="text-xs font-mono font-black text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 rounded-lg">
+                                                            <span className="text-xs font-mono font-black text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/15 border border-emerald-200 dark:border-emerald-500/30 px-2.5 py-0.5 rounded-lg">
                                                                 +{alert.improvement_projection}% Match Boost
                                                             </span>
                                                         </div>
                                                     )}
 
                                                     {alert.behavioral_flag && (
-                                                        <div className="flex items-center gap-1.5 text-[11px] font-mono text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-lg font-bold">
+                                                        <div className="flex items-center gap-1.5 text-[11px] font-mono text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 px-2.5 py-0.5 rounded-lg font-bold">
                                                             <i className="fa-solid fa-shield-virus text-[10px]" />
                                                             <span>Vector: {alert.behavioral_flag}</span>
                                                         </div>
@@ -778,7 +775,7 @@ const SmartAlertsPage: React.FC = () => {
                                                     {alert.data_reference_snapshot && (
                                                         <button
                                                             onClick={() => toggleExpand(alert.id)}
-                                                            className="text-[11px] font-mono font-bold text-indigo-400 hover:text-indigo-300 flex items-center gap-1.5 ml-auto transition-colors"
+                                                            className="text-[11px] font-mono font-bold text-blue-600 dark:text-indigo-400 hover:underline flex items-center gap-1.5 ml-auto transition-colors"
                                                         >
                                                             <span>{isExpanded ? 'Hide Intel Snapshot' : 'Inspect Neural Data'}</span>
                                                             <i className={`fa-solid fa-chevron-${isExpanded ? 'up' : 'down'} text-[9px]`} />
@@ -792,13 +789,13 @@ const SmartAlertsPage: React.FC = () => {
                                                         initial={{ opacity: 0, height: 0 }}
                                                         animate={{ opacity: 1, height: 'auto' }}
                                                         exit={{ opacity: 0, height: 0 }}
-                                                        className="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-xs font-mono overflow-x-auto text-slate-400 space-y-2"
+                                                        className="p-4 rounded-2xl bg-slate-900 border border-slate-800 text-xs font-mono overflow-x-auto text-slate-400 space-y-2"
                                                     >
                                                         <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
                                                             <i className="fa-solid fa-database text-cyan-400" />
                                                             <span>Neural Telemetry Data Snapshot</span>
                                                         </div>
-                                                        <pre className="text-[11px] text-cyan-300/90 whitespace-pre-wrap">
+                                                        <pre className="text-[11px] text-cyan-300 whitespace-pre-wrap font-mono">
                                                             {JSON.stringify(alert.data_reference_snapshot, null, 2)}
                                                         </pre>
                                                     </motion.div>
@@ -806,12 +803,12 @@ const SmartAlertsPage: React.FC = () => {
                                             </div>
 
                                             {/* Right Action Matrix */}
-                                            <div className="flex flex-row lg:flex-col gap-2.5 shrink-0 justify-end w-full lg:w-44 pt-2 lg:pt-0 border-t lg:border-t-0 border-white/[0.06]">
+                                            <div className="flex flex-row lg:flex-col gap-2.5 shrink-0 justify-end w-full lg:w-44 pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-100 dark:border-white/[0.06]">
                                                 {/* Primary Action Button */}
                                                 <Link href={alert.action_link || '#'} className="flex-1 lg:w-full">
                                                     <button 
                                                         onClick={() => !alert.is_read && handleAction(alert.id, 'read')}
-                                                        className="w-full px-4 py-3 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-mono font-bold text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(59,130,246,0.35)] hover:shadow-[0_0_25px_rgba(59,130,246,0.55)] transition-all flex items-center justify-center gap-2"
+                                                        className="w-full px-4 py-3 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-mono font-bold text-xs uppercase tracking-wider shadow-sm hover:brightness-110 transition-all flex items-center justify-center gap-2"
                                                     >
                                                         <span>Execute Action</span>
                                                         <i className="fa-solid fa-bolt text-[10px] text-amber-300" />
@@ -821,7 +818,7 @@ const SmartAlertsPage: React.FC = () => {
                                                 {/* Secondary Action Link */}
                                                 {alert.secondary_action_link && (
                                                     <Link href={alert.secondary_action_link} className="flex-1 lg:w-full">
-                                                        <button className="w-full px-3 py-2 rounded-xl bg-slate-950/60 border border-slate-800 hover:border-slate-600 text-slate-300 hover:text-white font-mono font-bold text-[10px] uppercase tracking-wider transition-all text-center">
+                                                        <button className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 hover:border-slate-300 text-slate-700 dark:text-slate-300 font-mono font-bold text-[10px] uppercase tracking-wider transition-all text-center">
                                                             {alert.secondary_action_text || 'Secondary Vector'}
                                                         </button>
                                                     </Link>
@@ -832,7 +829,7 @@ const SmartAlertsPage: React.FC = () => {
                                                     {!alert.is_read && (
                                                         <button
                                                             onClick={() => handleAction(alert.id, 'read')}
-                                                            className="flex-1 px-2.5 py-2 rounded-xl bg-slate-950/80 border border-slate-800 text-slate-400 hover:text-emerald-400 hover:border-emerald-500/40 transition-all text-xs flex items-center justify-center"
+                                                            className="flex-1 px-2.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-emerald-600 hover:border-emerald-300 transition-all text-xs flex items-center justify-center"
                                                             title="Mark as Read"
                                                         >
                                                             <i className="fa-solid fa-check" />
@@ -840,14 +837,14 @@ const SmartAlertsPage: React.FC = () => {
                                                     )}
                                                     <button
                                                         onClick={() => handleAction(alert.id, 'snooze')}
-                                                        className="flex-1 px-2.5 py-2 rounded-xl bg-slate-950/80 border border-slate-800 text-slate-400 hover:text-amber-400 hover:border-amber-500/40 transition-all text-xs flex items-center justify-center"
+                                                        className="flex-1 px-2.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-amber-600 hover:border-amber-300 transition-all text-xs flex items-center justify-center"
                                                         title="Snooze for 24 Hours"
                                                     >
                                                         <i className="fa-regular fa-clock" />
                                                     </button>
                                                     <button
                                                         onClick={() => handleAction(alert.id, 'dismiss')}
-                                                        className="flex-1 px-2.5 py-2 rounded-xl bg-slate-950/80 border border-slate-800 text-slate-400 hover:text-rose-400 hover:border-rose-500/40 transition-all text-xs flex items-center justify-center"
+                                                        className="flex-1 px-2.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-rose-600 hover:border-rose-300 transition-all text-xs flex items-center justify-center"
                                                         title="Dismiss Signal"
                                                     >
                                                         <i className="fa-regular fa-trash-can" />

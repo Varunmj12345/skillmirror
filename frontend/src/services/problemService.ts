@@ -97,5 +97,30 @@ export const problemService = {
 
   getOpportunities: async () => {
     return apiClient.get('/api/problems/opportunities/list/');
+  },
+
+  // ── Autonomous AI Assessment Portal Methods ──
+  evaluateSubmission: async (problemId: number | string, data: {
+    code_snippet?: string;
+    github_url?: string;
+    published_url?: string;
+    documentation?: string;
+  }) => {
+    return apiClient.post(`/api/problems/practice/${problemId}/evaluate/`, data);
+  },
+
+  generateGapChallenge: async (data?: {
+    gap_skills?: string[];
+    difficulty?: string;
+  }) => {
+    return apiClient.post('/api/problems/practice/generate-gap-challenge/', data || {});
+  },
+
+  getProgressiveHint: async (problemId: number | string, level: number = 1) => {
+    return apiClient.post(`/api/problems/practice/${problemId}/hint/`, { level });
+  },
+
+  getAIPracticeSubmissions: async () => {
+    return apiClient.get('/api/problems/practice/submissions/');
   }
 };

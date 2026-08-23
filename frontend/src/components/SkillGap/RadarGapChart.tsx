@@ -18,41 +18,41 @@ function RadarGapChart({ data }: RadarProps): React.ReactElement {
     }));
 
     return (
-        <div className="glass-panel p-6 border-slate-800/50 h-[450px] flex flex-col">
-            <h4 className="text-sm font-bold text-slate-400 mb-6 flex items-center gap-2">
-                <i className="fa-solid fa-crosshairs text-sky-400"></i> Skill Level Comparison
+        <div className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none h-[450px] flex flex-col">
+            <h4 className="text-sm font-bold text-slate-900 dark:text-slate-400 mb-6 flex items-center gap-2">
+                <i className="fa-solid fa-crosshairs text-blue-600 dark:text-sky-400"></i> Skill Level Comparison
             </h4>
             <div className="flex-1 w-full pb-8">
                 <ResponsiveContainer width="100%" height="100%">
                     <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
-                        <PolarGrid stroke="#1e293b" />
-                        <PolarAngleAxis dataKey="subject" tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 600 }} />
+                        <PolarGrid stroke="#cbd5e1" className="dark:stroke-slate-800" />
+                        <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 10, fontWeight: 600 }} />
                         <PolarRadiusAxis angle={30} domain={[0, 5]} tick={false} axisLine={false} />
                         <Tooltip
                             content={({ active, payload }: any) => {
                                 if (active && payload && payload.length && payload[0]) {
                                     const p = payload[0].payload;
                                     return (
-                                        <div className="bg-slate-900 p-4 shadow-2xl rounded-2xl border border-slate-700 text-slate-200 min-w-[180px]">
-                                            <p className="text-xs font-black text-slate-50 mb-3 pb-2 border-b border-slate-800">{p.subject}</p>
+                                        <div className="bg-card p-4 shadow-2xl rounded-2xl border border-border text-slate-800 dark:text-slate-200 min-w-[180px]">
+                                            <p className="text-xs font-black text-slate-900 dark:text-slate-50 mb-3 pb-2 border-b border-slate-100 dark:border-slate-800">{p.subject}</p>
                                             <div className="space-y-2">
                                                 <div className="flex justify-between items-center text-[10px]">
                                                     <span className="text-slate-500 font-bold uppercase">Your Level</span>
-                                                    <span className="font-black text-sky-400">{p.A} / 5</span>
+                                                    <span className="font-black text-blue-600 dark:text-sky-400">{p.A} / 5</span>
                                                 </div>
                                                 <div className="flex justify-between items-center text-[10px]">
                                                     <span className="text-slate-500 font-bold uppercase">Required</span>
-                                                    <span className="font-black text-indigo-400">{p.B} / 5</span>
+                                                    <span className="font-black text-indigo-600 dark:text-indigo-400">{p.B} / 5</span>
                                                 </div>
-                                                <div className="flex justify-between items-center text-[10px] pt-1 border-t border-slate-800/50">
+                                                <div className="flex justify-between items-center text-[10px] pt-1 border-t border-slate-100 dark:border-slate-800/50">
                                                     <span className="text-slate-500 font-bold uppercase">Gap Size</span>
-                                                    <span className={`font-black ${p.gap > 2 ? 'text-rose-400' : p.gap > 0 ? 'text-amber-400' : 'text-emerald-400'}`}>
+                                                    <span className={`font-black ${p.gap > 2 ? 'text-rose-600 dark:text-rose-400' : p.gap > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
                                                         {p.gap} Levels
                                                     </span>
                                                 </div>
                                                 <div className="flex justify-between items-center text-[10px]">
                                                     <span className="text-slate-500 font-bold uppercase">Est. Learning</span>
-                                                    <span className="font-black text-slate-300">{p.hours} Hours</span>
+                                                    <span className="font-black text-slate-700 dark:text-slate-300">{p.hours} Hours</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -64,9 +64,9 @@ function RadarGapChart({ data }: RadarProps): React.ReactElement {
                         <Radar
                             name="You"
                             dataKey="A"
-                            stroke="#38bdf8"
-                            fill="#38bdf8"
-                            fillOpacity={0.5}
+                            stroke="#3b82f6"
+                            fill="#3b82f6"
+                            fillOpacity={0.4}
                         />
                         <Radar
                             name="Required"

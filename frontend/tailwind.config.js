@@ -57,7 +57,44 @@ module.exports = {
           danger: 'var(--accent-danger, #EF4444)',
           gold: 'var(--accent-gold, #F59E0B)',
           purple: 'var(--accent-purple, #7C3AED)',
-        }
+        },
+        pastel: {
+          blue: {
+            bg: '#EEF4FF',
+            border: '#DBEAFE',
+            text: '#1E40AF',
+            badge: '#2563EB',
+            hover: '#E0EDFF',
+          },
+          coral: {
+            bg: '#FFE8EC',
+            border: '#FFE4E6',
+            text: '#9F1239',
+            badge: '#E11D48',
+            hover: '#FDE8E8',
+          },
+          amber: {
+            bg: '#FFF7ED',
+            border: '#FEF08A',
+            text: '#92400E',
+            badge: '#D97706',
+            hover: '#FEF3C7',
+          },
+          emerald: {
+            bg: '#ECFDF5',
+            border: '#D1FAE5',
+            text: '#065F46',
+            badge: '#059669',
+            hover: '#DCFCE7',
+          },
+          purple: {
+            bg: '#F5F3FF',
+            border: '#EDE9FE',
+            text: '#5B21B6',
+            badge: '#7C3AED',
+            hover: '#E9D5FF',
+          },
+        },
       },
       fontSize: {
         'nano': ['10px', { lineHeight: '1', letterSpacing: '0.08em' }],
@@ -72,6 +109,9 @@ module.exports = {
         'premium-sm': '0 2px 4px rgba(0,0,0,0.1), 0 1px 2px rgba(99, 102, 241, 0.05)',
         'premium-lg': '0 20px 50px -12px rgba(0, 0, 0, 0.5), 0 0 1px 1px rgba(255, 255, 255, 0.03)',
         'glass-glow': '0 8px 32px 0 rgba(99, 102, 241, 0.2)',
+        'light-sm': '0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 3px 0 rgba(0, 0, 0, 0.02)',
+        'light-card': '0 1px 3px 0 rgba(0, 0, 0, 0.03), 0 6px 18px -2px rgba(15, 23, 42, 0.04)',
+        'light-float': '0 12px 32px -4px rgba(15, 23, 42, 0.06), 0 4px 12px -2px rgba(15, 23, 42, 0.03)',
       },
       letterSpacing: {
         'ultra-tight': '-0.05em',

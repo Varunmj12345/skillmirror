@@ -5,13 +5,13 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 }
 
 const badgeVariants: Record<string, string> = {
-  default: 'bg-primary/20 border border-primary/40 text-primary-foreground text-blue-300',
-  secondary: 'bg-white/[0.06] border border-white/[0.08] text-slate-300',
-  'outline-success': 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400',
-  'outline-warning': 'bg-amber-500/10 border border-amber-500/30 text-amber-400',
-  'outline-cyan': 'bg-cyan-500/10 border border-cyan-500/40 text-cyan-300',
-  'outline-destructive': 'bg-rose-500/10 border border-rose-500/30 text-rose-400',
-  pill: 'bg-white/10 text-white rounded-full',
+  default: 'bg-blue-50 border border-blue-200 text-blue-700 dark:bg-primary/20 dark:border-primary/40 dark:text-blue-300',
+  secondary: 'bg-slate-100 border border-slate-200 text-slate-700 dark:bg-white/[0.06] dark:border-white/[0.08] dark:text-slate-300',
+  'outline-success': 'bg-emerald-50 border border-emerald-200 text-emerald-700 dark:bg-emerald-500/10 dark:border-emerald-500/30 dark:text-emerald-400',
+  'outline-warning': 'bg-amber-50 border border-amber-200 text-amber-700 dark:bg-amber-500/10 dark:border-amber-500/30 dark:text-amber-400',
+  'outline-cyan': 'bg-blue-50 border border-blue-200 text-blue-700 dark:bg-cyan-500/10 dark:border-cyan-500/40 dark:text-cyan-300',
+  'outline-destructive': 'bg-rose-50 border border-rose-200 text-rose-700 dark:bg-rose-500/10 dark:border-rose-500/30 dark:text-rose-400',
+  pill: 'bg-slate-100 text-slate-700 border border-slate-200 dark:bg-white/10 dark:text-white dark:border-transparent rounded-full',
 };
 
 export const Badge: React.FC<BadgeProps> = ({

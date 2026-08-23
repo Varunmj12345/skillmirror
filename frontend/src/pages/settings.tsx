@@ -6,6 +6,8 @@ import apiClient from '../services/apiClient';
 import { CyberPageShell, PageStatChip } from '../components/CyberPageShell';
 import { ScrollReveal, StaggerChildren } from '../components/motion/ScrollReveal';
 import { useToast } from '../components/motion/Toast';
+import ThemeToggle from '../components/ThemeToggle';
+import { useTheme } from '../context/ThemeContext';
 import Link from 'next/link';
 
 type SettingsPrefs = {
@@ -16,7 +18,6 @@ type SettingsPrefs = {
   notifyEmail: boolean;
   notifyProduct: boolean;
   notifyTips: boolean;
-  appearanceTheme: 'system' | 'light' | 'dark';
   twoFactor: boolean;
   privacyTelemetry: boolean;
   enableSmartAlerts: boolean;
@@ -32,7 +33,8 @@ const SETTINGS_KEY = 'sm_settings_prefs';
 
 const SettingsPage: React.FC = () => {
   const { addToast } = useToast();
-  const [activeTab, setActiveTab] = useState<'all' | 'account' | 'ai' | 'alerts' | 'security'>('all');
+  const { theme, effectiveTheme, setTheme } = useTheme();
+  const [activeTab, setActiveTab] = useState<'all' | 'account' | 'theme' | 'ai' | 'alerts' | 'security'>('all');
   const [prefs, setPrefs] = useState<SettingsPrefs>({
     accountName: '',
     accountTimezone: 'UTC',
@@ -41,7 +43,6 @@ const SettingsPage: React.FC = () => {
     notifyEmail: true,
     notifyProduct: true,
     notifyTips: false,
-    appearanceTheme: 'dark',
     twoFactor: false,
     privacyTelemetry: true,
     enableSmartAlerts: true,
@@ -118,39 +119,51 @@ const SettingsPage: React.FC = () => {
   };
 
   const persist = (next: SettingsPrefs) => {
-    setPrefs(next);
-    if (typeof window !== 'undefined') {
+    try {
       window.localStorage.setItem(SETTINGS_KEY, JSON.stringify(next));
+    } catch {
+      // ignore
     }
   };
 
+  const toggle = (key: keyof SettingsPrefs) => {
+    setPrefs((prev) => {
+      const next = { ...prev, [key]: !prev[key] };
+      persist(next);
+      return next;
+    });
+  };
+
   const handleSave = async () => {
+    setIsSaving(true);
     try {
-      setIsSaving(true);
       await apiClient.put('/users/profile/', {
+        username: prefs.accountName,
         dream_job: prefs.dreamJob,
+        two_factor_enabled: prefs.twoFactor,
+        profile_visibility: prefs.profileVisibility
       });
       persist(prefs);
       addToast({
         type: 'success',
-        title: 'Settings Synchronized',
-        message: 'Workspace configurations and AI preferences have been saved.'
+        title: 'Settings Saved',
+        message: 'Your system preferences and AI copilot configurations are fully synchronized.'
       });
     } catch (err) {
-      addToast({ type: 'error', title: 'Failed to save settings' });
+      addToast({
+        type: 'error',
+        title: 'Error Saving Settings',
+        message: 'Could not sync settings with the server. Local state was preserved.'
+      });
     } finally {
       setIsSaving(false);
     }
   };
 
-  const toggle = <K extends keyof SettingsPrefs>(key: K) => {
-    const next = { ...prefs, [key]: !prefs[key] } as SettingsPrefs;
-    persist(next);
-  };
-
   const tabs = [
     { id: 'all', label: 'All Settings', icon: 'fa-layer-group' },
     { id: 'account', label: 'Identity & Target', icon: 'fa-id-card' },
+    { id: 'theme', label: 'Theme & Display', icon: 'fa-palette' },
     { id: 'ai', label: 'AI Copilot Tuning', icon: 'fa-brain' },
     { id: 'alerts', label: 'Signals & Telemetry', icon: 'fa-bell' },
     { id: 'security', label: 'Security & Privacy', icon: 'fa-shield-halved' }
@@ -160,14 +173,14 @@ const SettingsPage: React.FC = () => {
     <Layout>
       <Head>
         <title>System Settings & AI Preferences • SkillMirror OS</title>
-        <meta name="description" content="Workspace preferences, AI copilot tuning, alert sensitivity, and security configuration." />
+        <meta name="description" content="Workspace preferences, AI copilot tuning, theme switcher, and security configuration." />
       </Head>
 
       <CyberPageShell
         moduleCode="MOD-10"
         section="IDENTITY & SYSTEM PREFERENCES"
         title="SYSTEM CONFIGURATION & PREFERENCES"
-        subtitle="Tune the autonomous AI copilot's personality, configure real-time alert sensitivity, and manage workspace security protocols."
+        subtitle="Tune the autonomous AI copilot's personality, switch visual display themes, and configure security protocols."
         badge="NEURAL ENGINE PREFS"
         badgeVariant="outline-cyan"
         bulletVariant="cyan"
@@ -185,9 +198,9 @@ const SettingsPage: React.FC = () => {
         }
         stats={
           <>
-            <PageStatChip label="AI Personality" value={prefs.aiTone.toUpperCase()} icon="fa-brain" color="cyan" />
+            <PageStatChip label="Visual Theme" value={effectiveTheme.toUpperCase()} icon="fa-palette" color="cyan" />
+            <PageStatChip label="AI Personality" value={prefs.aiTone.toUpperCase()} icon="fa-brain" color="emerald" />
             <PageStatChip label="Alert Sensitivity" value={prefs.alertSensitivity.toUpperCase()} icon="fa-bolt" color="amber" />
-            <PageStatChip label="Security Level" value={prefs.twoFactor ? 'MAX (2FA)' : 'STANDARD'} icon="fa-shield-check" color="emerald" />
           </>
         }
       />
@@ -195,15 +208,15 @@ const SettingsPage: React.FC = () => {
       <div className="px-4 sm:px-6 pb-24 max-w-[1400px] mx-auto space-y-8">
         {/* Navigation Category Switcher */}
         <ScrollReveal>
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none p-2 rounded-2xl bg-slate-900/80 border border-white/[0.08] backdrop-blur-xl">
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none p-2 rounded-2xl bg-card border border-border backdrop-blur-xl">
             {tabs.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
                 className={`px-4 py-2 rounded-xl text-xs font-mono font-bold uppercase tracking-wider whitespace-nowrap transition-all flex items-center gap-2 border ${
                   activeTab === tab.id
-                    ? 'bg-cyan-500/20 border-cyan-400 text-cyan-200 shadow-[0_0_15px_rgba(0,217,255,0.25)]'
-                    : 'border-transparent text-slate-400 hover:text-slate-200'
+                    ? 'bg-cyan-500/20 border-cyan-400 text-cyan-600 dark:text-cyan-200 shadow-[0_0_15px_rgba(0,217,255,0.25)]'
+                    : 'border-transparent text-muted-foreground hover:text-foreground'
                 }`}
               >
                 <i className={`fa-solid ${tab.icon} text-xs`} />
@@ -219,16 +232,16 @@ const SettingsPage: React.FC = () => {
             {/* ── 1. Account & Career Identity Settings ── */}
             {(activeTab === 'all' || activeTab === 'account') && (
               <ScrollReveal>
-                <div className="p-6 sm:p-7 rounded-3xl bg-slate-900/80 border border-white/[0.08] backdrop-blur-xl shadow-xl space-y-6">
-                  <div className="flex items-center gap-3 pb-4 border-b border-white/[0.06]">
-                    <div className="w-10 h-10 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 text-base">
+                <div className="p-6 sm:p-7 rounded-3xl bg-card border border-border backdrop-blur-xl shadow-xl space-y-6">
+                  <div className="flex items-center gap-3 pb-4 border-b border-border">
+                    <div className="w-10 h-10 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-500 dark:text-cyan-400 text-base">
                       <i className="fa-solid fa-id-card" />
                     </div>
                     <div>
-                      <h2 className="text-base sm:text-lg font-display font-black text-white">
+                      <h2 className="text-base sm:text-lg font-display font-black text-foreground">
                         Career Identity & Target Role
                       </h2>
-                      <p className="text-[11px] font-mono text-slate-400">
+                      <p className="text-[11px] font-mono text-muted-foreground">
                         Configures target benchmark models and job match parameters.
                       </p>
                     </div>
@@ -236,20 +249,20 @@ const SettingsPage: React.FC = () => {
 
                   <div className="space-y-4">
                     <div className="space-y-1.5">
-                      <label className="block text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">
+                      <label className="block text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-wider">
                         Display Handle
                       </label>
                       <input
                         type="text"
                         value={prefs.accountName}
                         onChange={(e) => setPrefs(prev => ({ ...prev, accountName: e.target.value }))}
-                        className="w-full px-4 py-3 rounded-xl bg-slate-950/80 border border-slate-800 text-xs font-mono text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/60 transition-all"
+                        className="w-full px-4 py-3 rounded-xl bg-pop border border-border text-xs font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-cyan-500/60 transition-all"
                         placeholder="Your username handle..."
                       />
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="block text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">
+                      <label className="block text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-wider">
                         Target Dream Job Role
                       </label>
                       <input
@@ -257,21 +270,21 @@ const SettingsPage: React.FC = () => {
                         value={prefs.dreamJob}
                         onChange={(e) => setPrefs(prev => ({ ...prev, dreamJob: e.target.value }))}
                         placeholder="e.g. Senior Full-Stack AI Engineer..."
-                        className="w-full px-4 py-3 rounded-xl bg-slate-950/80 border border-slate-800 text-xs font-mono text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/60 transition-all"
+                        className="w-full px-4 py-3 rounded-xl bg-pop border border-border text-xs font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-cyan-500/60 transition-all"
                       />
-                      <p className="text-[10px] font-mono text-slate-500">
+                      <p className="text-[10px] font-mono text-muted-foreground">
                         The AI engine continuously indexes real-time hiring trends matching this specific position.
                       </p>
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="block text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">
+                      <label className="block text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-wider">
                         Workspace Timezone
                       </label>
                       <select
                         value={prefs.accountTimezone}
                         onChange={(e) => setPrefs(prev => ({ ...prev, accountTimezone: e.target.value }))}
-                        className="w-full px-4 py-3 rounded-xl bg-slate-950/80 border border-slate-800 text-xs font-mono text-slate-200 outline-none cursor-pointer"
+                        className="w-full px-4 py-3 rounded-xl bg-pop border border-border text-xs font-mono text-foreground outline-none cursor-pointer"
                       >
                         <option value="UTC">UTC (Coordinated Universal Time)</option>
                         <option value="America/New_York">Eastern Time (US / New York)</option>
@@ -286,19 +299,90 @@ const SettingsPage: React.FC = () => {
               </ScrollReveal>
             )}
 
-            {/* ── 2. AI Copilot Personality Tuning ── */}
+            {/* ── 2. Visual Theme & Display Mode ── */}
+            {(activeTab === 'all' || activeTab === 'theme') && (
+              <ScrollReveal>
+                <div className="p-6 sm:p-7 rounded-3xl bg-card border border-border backdrop-blur-xl shadow-xl space-y-6">
+                  <div className="flex items-center gap-3 pb-4 border-b border-border">
+                    <div className="w-10 h-10 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-500 dark:text-cyan-400 text-base">
+                      <i className="fa-solid fa-palette" />
+                    </div>
+                    <div>
+                      <h2 className="text-base sm:text-lg font-display font-black text-foreground">
+                        Visual Theme & Display Mode
+                      </h2>
+                      <p className="text-[11px] font-mono text-muted-foreground">
+                        Switch seamlessly between dark obsidian cyber theme and clean light workspace.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl bg-pop border border-border gap-4">
+                      <div>
+                        <p className="text-xs font-mono font-bold text-foreground">Active Interface Theme</p>
+                        <p className="text-[10px] font-mono text-muted-foreground">Instant global mode transition</p>
+                      </div>
+                      <ThemeToggle variant="pill" />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setTheme('dark')}
+                        className={`p-4 rounded-2xl border text-left transition-all relative overflow-hidden ${
+                          effectiveTheme === 'dark'
+                            ? 'border-cyan-500 bg-slate-950 text-white shadow-[0_0_20px_rgba(0,217,255,0.2)]'
+                            : 'border-border bg-slate-900/40 text-slate-400 hover:border-slate-700'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <i className="fa-solid fa-moon text-base text-cyan-400" />
+                          {effectiveTheme === 'dark' && (
+                            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                          )}
+                        </div>
+                        <div className="text-xs font-mono font-bold">Dark Obsidian</div>
+                        <div className="text-[10px] font-mono text-slate-400">Cyber-industrial high-contrast</div>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setTheme('light')}
+                        className={`p-4 rounded-2xl border text-left transition-all relative overflow-hidden ${
+                          effectiveTheme === 'light'
+                            ? 'border-blue-500 bg-white text-slate-900 shadow-[0_0_20px_rgba(59,130,246,0.2)]'
+                            : 'border-border bg-slate-100/50 text-slate-600 hover:border-slate-300'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <i className="fa-solid fa-sun text-base text-amber-500" />
+                          {effectiveTheme === 'light' && (
+                            <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                          )}
+                        </div>
+                        <div className="text-xs font-mono font-bold">Clean Light</div>
+                        <div className="text-[10px] font-mono text-slate-500">Crisp daytime readability</div>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </ScrollReveal>
+            )}
+
+            {/* ── 3. AI Copilot Personality Tuning ── */}
             {(activeTab === 'all' || activeTab === 'ai') && (
               <ScrollReveal>
-                <div className="p-6 sm:p-7 rounded-3xl bg-slate-900/80 border border-white/[0.08] backdrop-blur-xl shadow-xl space-y-6">
-                  <div className="flex items-center gap-3 pb-4 border-b border-white/[0.06]">
-                    <div className="w-10 h-10 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400 text-base">
+                <div className="p-6 sm:p-7 rounded-3xl bg-card border border-border backdrop-blur-xl shadow-xl space-y-6">
+                  <div className="flex items-center gap-3 pb-4 border-b border-border">
+                    <div className="w-10 h-10 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-500 dark:text-violet-400 text-base">
                       <i className="fa-solid fa-brain" />
                     </div>
                     <div>
-                      <h2 className="text-base sm:text-lg font-display font-black text-white">
+                      <h2 className="text-base sm:text-lg font-display font-black text-foreground">
                         AI Copilot Personality Tuning
                       </h2>
-                      <p className="text-[11px] font-mono text-slate-400">
+                      <p className="text-[11px] font-mono text-muted-foreground">
                         Adjust mentorship tone, feedback depth, and prompt style.
                       </p>
                     </div>
@@ -306,7 +390,7 @@ const SettingsPage: React.FC = () => {
 
                   <div className="space-y-5">
                     <div className="space-y-2">
-                      <label className="block text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">
+                      <label className="block text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-wider">
                         Copilot Mentorship Tone
                       </label>
                       <div className="grid grid-cols-3 gap-2.5">
@@ -317,8 +401,8 @@ const SettingsPage: React.FC = () => {
                             onClick={() => setPrefs(prev => ({ ...prev, aiTone: tone }))}
                             className={`py-2.5 px-3 rounded-xl border text-xs font-mono font-bold uppercase tracking-wider transition-all ${
                               prefs.aiTone === tone
-                                ? 'border-violet-500/60 bg-violet-500/20 text-violet-200 shadow-[0_0_15px_rgba(168,85,247,0.25)]'
-                                : 'border-slate-800 bg-slate-950/60 text-slate-400 hover:text-slate-200'
+                                ? 'border-violet-500/60 bg-violet-500/20 text-violet-600 dark:text-violet-200 shadow-[0_0_15px_rgba(168,85,247,0.25)]'
+                                : 'border-border bg-pop text-muted-foreground hover:text-foreground'
                             }`}
                           >
                             {tone}
@@ -328,7 +412,7 @@ const SettingsPage: React.FC = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="block text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">
+                      <label className="block text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-wider">
                         Response & Analysis Depth
                       </label>
                       <div className="grid grid-cols-3 gap-2.5">
@@ -339,8 +423,8 @@ const SettingsPage: React.FC = () => {
                             onClick={() => setPrefs(p => ({ ...p, aiDetail: lvl }))}
                             className={`py-2.5 px-3 rounded-xl border text-xs font-mono font-bold uppercase tracking-wider transition-all ${
                               prefs.aiDetail === lvl
-                                ? 'border-indigo-500/60 bg-indigo-500/20 text-indigo-200 shadow-[0_0_15px_rgba(99,102,241,0.25)]'
-                                : 'border-slate-800 bg-slate-950/60 text-slate-400 hover:text-slate-200'
+                                ? 'border-indigo-500/60 bg-indigo-500/20 text-indigo-600 dark:text-indigo-200 shadow-[0_0_15px_rgba(99,102,241,0.25)]'
+                                : 'border-border bg-pop text-muted-foreground hover:text-foreground'
                             }`}
                           >
                             {lvl}
@@ -356,67 +440,67 @@ const SettingsPage: React.FC = () => {
 
           {/* Right Column */}
           <div className="space-y-8">
-            {/* ── 3. Signals & Smart Alerts Intelligence ── */}
+            {/* ── 4. Signals & Smart Alerts Intelligence ── */}
             {(activeTab === 'all' || activeTab === 'alerts') && (
               <ScrollReveal>
-                <div className="p-6 sm:p-7 rounded-3xl bg-slate-900/80 border border-white/[0.08] backdrop-blur-xl shadow-xl space-y-6">
-                  <div className="flex items-center gap-3 pb-4 border-b border-white/[0.06]">
-                    <div className="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-base">
+                <div className="p-6 sm:p-7 rounded-3xl bg-card border border-border backdrop-blur-xl shadow-xl space-y-6">
+                  <div className="flex items-center gap-3 pb-4 border-b border-border">
+                    <div className="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 dark:text-amber-400 text-base">
                       <i className="fa-solid fa-satellite-dish" />
                     </div>
                     <div>
-                      <h2 className="text-base sm:text-lg font-display font-black text-white">
+                      <h2 className="text-base sm:text-lg font-display font-black text-foreground">
                         Signals & Predictive Alerts Engine
                       </h2>
-                      <p className="text-[11px] font-mono text-slate-400">
+                      <p className="text-[11px] font-mono text-muted-foreground">
                         Configure predictive hiring spike detection and drift warnings.
                       </p>
                     </div>
                   </div>
 
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between p-3.5 rounded-2xl bg-black/40 border border-white/[0.05]">
+                    <div className="flex items-center justify-between p-3.5 rounded-2xl bg-pop border border-border">
                       <div>
-                        <p className="text-xs font-mono font-bold text-white">Autonomous Smart Signals</p>
-                        <p className="text-[10px] font-mono text-slate-400">Evaluate hiring surges & skill drift</p>
+                        <p className="text-xs font-mono font-bold text-foreground">Autonomous Smart Signals</p>
+                        <p className="text-[10px] font-mono text-muted-foreground">Evaluate hiring surges & skill drift</p>
                       </div>
                       <button
                         type="button"
                         onClick={() => toggle('enableSmartAlerts')}
                         className={`w-10 h-5 rounded-full relative p-0.5 flex items-center transition-all ${
-                          prefs.enableSmartAlerts ? 'bg-cyan-500 justify-end' : 'bg-slate-800 justify-start'
+                          prefs.enableSmartAlerts ? 'bg-cyan-500 justify-end' : 'bg-slate-700 justify-start'
                         }`}
                       >
                         <div className="w-4 h-4 bg-white rounded-full shadow-sm" />
                       </button>
                     </div>
 
-                    <div className="flex items-center justify-between p-3.5 rounded-2xl bg-black/40 border border-white/[0.05]">
+                    <div className="flex items-center justify-between p-3.5 rounded-2xl bg-pop border border-border">
                       <div>
-                        <p className="text-xs font-mono font-bold text-white">Predictive Risk Analysis</p>
-                        <p className="text-[10px] font-mono text-slate-400">Warn before competency gaps widen</p>
+                        <p className="text-xs font-mono font-bold text-foreground">Predictive Risk Analysis</p>
+                        <p className="text-[10px] font-mono text-muted-foreground">Warn before competency gaps widen</p>
                       </div>
                       <button
                         type="button"
                         onClick={() => toggle('enablePredictive')}
                         className={`w-10 h-5 rounded-full relative p-0.5 flex items-center transition-all ${
-                          prefs.enablePredictive ? 'bg-indigo-500 justify-end' : 'bg-slate-800 justify-start'
+                          prefs.enablePredictive ? 'bg-indigo-500 justify-end' : 'bg-slate-700 justify-start'
                         }`}
                       >
                         <div className="w-4 h-4 bg-white rounded-full shadow-sm" />
                       </button>
                     </div>
 
-                    <div className="flex items-center justify-between p-3.5 rounded-2xl bg-black/40 border border-white/[0.05]">
+                    <div className="flex items-center justify-between p-3.5 rounded-2xl bg-pop border border-border">
                       <div>
-                        <p className="text-xs font-mono font-bold text-white">Behavioral Consistency Tracking</p>
-                        <p className="text-[10px] font-mono text-slate-400">Momentum drop & stagnation alerts</p>
+                        <p className="text-xs font-mono font-bold text-foreground">Behavioral Consistency Tracking</p>
+                        <p className="text-[10px] font-mono text-muted-foreground">Momentum drop & stagnation alerts</p>
                       </div>
                       <button
                         type="button"
                         onClick={() => toggle('enableBehavioral')}
                         className={`w-10 h-5 rounded-full relative p-0.5 flex items-center transition-all ${
-                          prefs.enableBehavioral ? 'bg-indigo-500 justify-end' : 'bg-slate-800 justify-start'
+                          prefs.enableBehavioral ? 'bg-indigo-500 justify-end' : 'bg-slate-700 justify-start'
                         }`}
                       >
                         <div className="w-4 h-4 bg-white rounded-full shadow-sm" />
@@ -425,7 +509,7 @@ const SettingsPage: React.FC = () => {
 
                     {/* Alert Sensitivity */}
                     <div className="space-y-2 pt-2">
-                      <label className="block text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">
+                      <label className="block text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-wider">
                         Signal Engine Sensitivity
                       </label>
                       <div className="grid grid-cols-3 gap-2">
@@ -436,8 +520,8 @@ const SettingsPage: React.FC = () => {
                             onClick={() => setPrefs(p => ({ ...p, alertSensitivity: s }))}
                             className={`py-2 rounded-xl border text-[10px] font-mono font-bold uppercase tracking-wider transition-all ${
                               prefs.alertSensitivity === s
-                                ? 'bg-amber-500/20 border-amber-500/50 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.2)]'
-                                : 'bg-slate-950/60 border-slate-800 text-slate-500 hover:text-slate-400'
+                                ? 'bg-amber-500/20 border-amber-500/50 text-amber-600 dark:text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.2)]'
+                                : 'bg-pop border-border text-muted-foreground hover:text-foreground'
                             }`}
                           >
                             {s}
@@ -450,51 +534,51 @@ const SettingsPage: React.FC = () => {
               </ScrollReveal>
             )}
 
-            {/* ── 4. Security & Privacy Matrix ── */}
+            {/* ── 5. Security & Privacy Matrix ── */}
             {(activeTab === 'all' || activeTab === 'security') && (
               <ScrollReveal>
-                <div className="p-6 sm:p-7 rounded-3xl bg-slate-900/80 border border-white/[0.08] backdrop-blur-xl shadow-xl space-y-6">
-                  <div className="flex items-center gap-3 pb-4 border-b border-white/[0.06]">
-                    <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-base">
+                <div className="p-6 sm:p-7 rounded-3xl bg-card border border-border backdrop-blur-xl shadow-xl space-y-6">
+                  <div className="flex items-center gap-3 pb-4 border-b border-border">
+                    <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 dark:text-emerald-400 text-base">
                       <i className="fa-solid fa-shield-halved" />
                     </div>
                     <div>
-                      <h2 className="text-base sm:text-lg font-display font-black text-white">
+                      <h2 className="text-base sm:text-lg font-display font-black text-foreground">
                         Security & Data Privacy
                       </h2>
-                      <p className="text-[11px] font-mono text-slate-400">
+                      <p className="text-[11px] font-mono text-muted-foreground">
                         Identity protection, two-factor auth, and data privacy controls.
                       </p>
                     </div>
                   </div>
 
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between p-3.5 rounded-2xl bg-black/40 border border-white/[0.05]">
+                    <div className="flex items-center justify-between p-3.5 rounded-2xl bg-pop border border-border">
                       <div>
-                        <p className="text-xs font-mono font-bold text-white">Two-Factor Authentication (2FA)</p>
-                        <p className="text-[10px] font-mono text-slate-400">Enforce second-factor security check</p>
+                        <p className="text-xs font-mono font-bold text-foreground">Two-Factor Authentication (2FA)</p>
+                        <p className="text-[10px] font-mono text-muted-foreground">Enforce second-factor security check</p>
                       </div>
                       <button
                         type="button"
                         onClick={handleTwoFactorToggle}
                         className={`w-10 h-5 rounded-full relative p-0.5 flex items-center transition-all ${
-                          prefs.twoFactor ? 'bg-cyan-500 justify-end' : 'bg-slate-800 justify-start'
+                          prefs.twoFactor ? 'bg-cyan-500 justify-end' : 'bg-slate-700 justify-start'
                         }`}
                       >
                         <div className="w-4 h-4 bg-white rounded-full shadow-sm" />
                       </button>
                     </div>
 
-                    <div className="flex items-center justify-between p-3.5 rounded-2xl bg-black/40 border border-white/[0.05]">
+                    <div className="flex items-center justify-between p-3.5 rounded-2xl bg-pop border border-border">
                       <div>
-                        <p className="text-xs font-mono font-bold text-white">Recruiter Discovery</p>
-                        <p className="text-[10px] font-mono text-slate-400">Allow verified partner recruiters to find twin</p>
+                        <p className="text-xs font-mono font-bold text-foreground">Recruiter Discovery</p>
+                        <p className="text-[10px] font-mono text-muted-foreground">Allow verified partner recruiters to find twin</p>
                       </div>
                       <button
                         type="button"
                         onClick={handleVisibilityToggle}
                         className={`w-10 h-5 rounded-full relative p-0.5 flex items-center transition-all ${
-                          prefs.profileVisibility ? 'bg-emerald-500 justify-end' : 'bg-slate-800 justify-start'
+                          prefs.profileVisibility ? 'bg-emerald-500 justify-end' : 'bg-slate-700 justify-start'
                         }`}
                       >
                         <div className="w-4 h-4 bg-white rounded-full shadow-sm" />
@@ -505,7 +589,7 @@ const SettingsPage: React.FC = () => {
                       <Link href="/profile" className="flex-1">
                         <button
                           type="button"
-                          className="w-full py-2.5 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-700 text-xs font-mono font-bold text-slate-300 uppercase tracking-wider transition-all"
+                          className="w-full py-2.5 rounded-xl bg-pop border border-border hover:border-slate-400 dark:hover:border-slate-700 text-xs font-mono font-bold text-foreground uppercase tracking-wider transition-all"
                         >
                           View Identity Profile
                         </button>
@@ -513,7 +597,7 @@ const SettingsPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={handleSave}
-                        className="flex-1 py-2.5 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/25 text-xs font-mono font-bold uppercase tracking-wider transition-all"
+                        className="flex-1 py-2.5 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-600 dark:text-cyan-300 hover:bg-cyan-500/25 text-xs font-mono font-bold uppercase tracking-wider transition-all"
                       >
                         Save All Preferences
                       </button>

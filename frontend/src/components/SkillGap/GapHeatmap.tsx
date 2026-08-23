@@ -31,18 +31,18 @@ function GapHeatmap({ data }: HeatmapProps): React.ReactElement {
     };
 
     return (
-        <div className="glass-panel p-6 border-slate-800/50 h-[450px] flex flex-col relative">
+        <div className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none h-[450px] flex flex-col relative">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                <h4 className="text-sm font-bold text-slate-400 flex items-center gap-2">
+                <h4 className="text-sm font-bold text-slate-900 dark:text-slate-400 flex items-center gap-2">
                     <i className="fa-solid fa-fire text-rose-500"></i> Gap Severity Heatmap
                 </h4>
 
-                <div className="flex bg-slate-900/80 p-1 rounded-lg border border-slate-800 self-stretch sm:self-auto overflow-x-auto no-scrollbar">
+                <div className="flex bg-slate-100 dark:bg-slate-900/80 p-1 rounded-xl border border-slate-200 dark:border-slate-800 self-stretch sm:self-auto overflow-x-auto no-scrollbar shadow-sm">
                     {(['all', 'critical', 'technical', 'soft'] as const).map(f => (
                         <button
                             key={f}
                             onClick={() => setFilter(f)}
-                            className={`px-3 py-1 rounded-md text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${filter === f ? 'bg-indigo-600/20 text-indigo-400 shadow-[0_0_10px_rgba(99,102,241,0.2)]' : 'text-slate-600 hover:text-slate-400'
+                            className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${filter === f ? 'bg-white dark:bg-indigo-600/20 text-blue-600 dark:text-indigo-400 shadow-sm' : 'text-slate-600 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-400'
                                 }`}
                         >
                             {f}
