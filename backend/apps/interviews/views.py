@@ -8,9 +8,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from apps.users.permissions import CanAccessEngine
 from django.shortcuts import get_object_or_404
-from groq import Groq
 from apps.interviews.models import MockInterview, MockInterviewQuestion, LiveInterviewSession
 from apps.interviews.serializers import MockInterviewSerializer, MockInterviewQuestionSerializer, LiveInterviewSessionSerializer
+from apps.ai.llm_client import chat_completion, get_active_provider_and_key
 
 # Audio Analysis Placeholder Logic
 def analyze_audio_metrics(audio_file):
@@ -90,8 +90,8 @@ class StartMockInterviewView(APIView):
         }, status=status.HTTP_201_CREATED)
 
     def _generate_questions(self, role, exp, type, diff, count, jd, mode):
-        api_key = os.environ.get('GROQ_API_KEY')
-        if not api_key or api_key == 'gsk_your_key_here':
+        provider, api_key = get_active_provider_and_key()
+        if not provider or not api_key:
             return [{"question": f"Question {i+1}", "category": "General", "difficulty": diff} for i in range(count)]
 
         # --- UNIQUENESS: Pick a random variation directive each session ---
@@ -116,7 +116,6 @@ class StartMockInterviewView(APIView):
         session_seed = datetime.now().strftime("%Y%m%d%H%M%S%f")
 
         try:
-            client = Groq(api_key=api_key)
             prompt = f"""
             You are a senior hiring manager. Generate {count} COMPLETELY UNIQUE interview questions for:
             Role: {role}
@@ -142,14 +141,20 @@ class StartMockInterviewView(APIView):
             Example: {{"questions": [{{ "question": "...", "category": "...", "difficulty": "..." }}]}}
             """
 
-            completion = client.chat.completions.create(
-                messages=[{"role": "user", "content": prompt}],
-                model="llama-3.3-70b-versatile",
+            completion = chat_completion(
+                messages=[
+                    {"role": "system", "content": "You are a hiring manager. Output pure JSON."},
+                    {"role": "user", "content": prompt}
+                ],
                 response_format={"type": "json_object"}
             )
-            data = json.loads(completion.choices[0].message.content)
+            raw = completion.content.strip()
+            if raw.startswith("```"):
+                raw = raw.split("```")[1]
+                if raw.startswith("json"):
+                    raw = raw[4:]
+            data = json.loads(raw)
             questions = data.get('questions', [])
-            # Shuffle for extra variety in ordering
             random.shuffle(questions)
             return questions[:count]
         except Exception as e:
@@ -215,8 +220,8 @@ class EvaluateAnswerView(APIView):
         })
 
     def _evaluate(self, q, a, interview):
-        api_key = os.environ.get('GROQ_API_KEY')
-        if not api_key or api_key == 'gsk_your_key_here':
+        provider, api_key = get_active_provider_and_key()
+        if not provider or not api_key:
             return {
                 'score': 7.5, 
                 'feedback': 'Good answer. (Mock Eval)',
@@ -224,7 +229,6 @@ class EvaluateAnswerView(APIView):
             }
 
         try:
-            client = Groq(api_key=api_key)
             prompt = f"""
             You are a professional technical interviewer.
             Evaluate this answer. 
@@ -251,12 +255,19 @@ class EvaluateAnswerView(APIView):
             }}
             """
             
-            completion = client.chat.completions.create(
-                messages=[{"role": "user", "content": prompt}],
-                model="llama-3.3-70b-versatile",
+            completion = chat_completion(
+                messages=[
+                    {"role": "system", "content": "You are a professional interviewer. Always return valid JSON."},
+                    {"role": "user", "content": prompt}
+                ],
                 response_format={"type": "json_object"}
             )
-            return json.loads(completion.choices[0].message.content)
+            raw = completion.content.strip()
+            if raw.startswith("```"):
+                raw = raw.split("```")[1]
+                if raw.startswith("json"):
+                    raw = raw[4:]
+            return json.loads(raw)
         except Exception as e:
             print(f"Evaluation Error: {e}")
             return {
@@ -462,10 +473,7 @@ class LiveQuestionGenerationView(APIView):
         last_answer = request.data.get('last_answer', '')
         context = request.data.get('context', '')
         
-        # Call Groq for next dynamic question
-        api_key = os.environ.get('GROQ_API_KEY')
-        client = Groq(api_key=api_key)
-        
+        # Call AI for next dynamic question
         prompt = f"""
         Adaptive Live Interviewer:
         State: {context}
@@ -476,13 +484,14 @@ class LiveQuestionGenerationView(APIView):
         Keep it concise as it will be spoken by AI.
         """
         
-        completion = client.chat.completions.create(
-            messages=[{"role": "user", "content": prompt}],
-            model="llama-3.1-8b-instant",
-            max_tokens=150
-        )
-        
-        question_text = completion.choices[0].message.content.strip()
+        try:
+            completion = chat_completion(
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=150
+            )
+            question_text = completion.content.strip()
+        except Exception as e:
+            question_text = f"Can you elaborate on your experience as a {interview.role}?"
         
         new_q = MockInterviewQuestion.objects.create(
             interview=interview,
@@ -679,15 +688,18 @@ class AICareerEngineView(APIView):
             """
 
         try:
-            client = Groq(api_key=api_key)
-            completion = client.chat.completions.create(
+            completion = chat_completion(
                 messages=[{"role": "system", "content": "You are a professional hiring engine. Respond ONLY in valid JSON."},
                           {"role": "user", "content": prompt}],
-                model="llama-3.3-70b-versatile",
                 response_format={"type": "json_object"},
                 temperature=0.7
             )
-            return json.loads(completion.choices[0].message.content)
+            raw = completion.content.strip()
+            if raw.startswith("```"):
+                raw = raw.split("```")[1]
+                if raw.startswith("json"):
+                    raw = raw[4:]
+            return json.loads(raw)
         except Exception as e:
             print(f"AI Career Engine Error: {e}")
             return self._fallback_response(has_answer, is_final, index, total)

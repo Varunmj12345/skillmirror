@@ -83,12 +83,8 @@ def generate_ai_roadmap(profile_data: Dict[str, Any]) -> Dict[str, Any]:
     # Perform gap analysis first
     gap_analysis = perform_domain_skill_gap_analysis(domain, target_job, user_skills, software_tools)
 
-    api_key = os.environ.get("GROQ_API_KEY")
-    if not api_key or api_key.startswith('your_'):
-        return generate_domain_fallback_roadmap(profile_data, gap_analysis)
-
     try:
-        client = Groq(api_key=api_key)
+        from apps.ai.llm_client import chat_completion
         
         prompt = f"""
         You are an expert Career Intelligence Engine for ALL engineering and non-engineering domains.
@@ -143,14 +139,20 @@ def generate_ai_roadmap(profile_data: Dict[str, Any]) -> Dict[str, Any]:
         Return ONLY valid JSON.
         """
 
-        completion = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=[{"role": "user", "content": prompt}],
+        completion = chat_completion(
+            messages=[
+                {"role": "system", "content": "You are a career intelligence engine. Always return valid JSON."},
+                {"role": "user", "content": prompt}
+            ],
             temperature=0.7,
             response_format={"type": "json_object"}
         )
         
-        content = completion.choices[0].message.content
+        content = completion.content.strip()
+        if content.startswith("```"):
+            content = content.split("```")[1]
+            if content.startswith("json"):
+                content = content[4:]
         data = json.loads(content)
         
         steps = data.get("steps")
@@ -166,7 +168,7 @@ def generate_ai_roadmap(profile_data: Dict[str, Any]) -> Dict[str, Any]:
         raise ValueError("No steps in AI response")
 
     except Exception as e:
-        print(f"Groq API Error: {e}")
+        print(f"AI Roadmap Generator Error: {e}")
         return generate_domain_fallback_roadmap(profile_data, gap_analysis)
 
 

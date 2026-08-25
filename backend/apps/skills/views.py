@@ -380,8 +380,6 @@ class ResumeAIImproveView(APIView):
         action = request.data.get('action', 'improve')
         content = request.data.get('content', '')
         role = request.data.get('role', 'Professional')
-        api_key = os.environ.get('GROQ_API_KEY')
-        client = Groq(api_key=api_key)
         prompts = {
             'improve': f'Rewrite this resume content for a {role} role to be more impact-oriented and professional: {content}',
             'summary': f'Generate a professional resume summary for a {role} with these skills: {content}',
@@ -389,8 +387,9 @@ class ResumeAIImproveView(APIView):
         }
         prompt = prompts.get(action, prompts['improve'])
         try:
-            completion = client.chat.completions.create(model='llama-3.1-8b-instant', messages=[{'role': 'user', 'content': prompt}])
-            return Response({'result': completion.choices[0].message.content})
+            from apps.ai.llm_client import chat_completion
+            completion = chat_completion(messages=[{'role': 'user', 'content': prompt}])
+            return Response({'result': completion.content})
         except Exception as e: return Response({'error': str(e)}, status=500)
 
 class ATSInsightView(APIView):
@@ -540,10 +539,8 @@ class ResumeExtractProfileView(APIView):
         if not text and not skills_list:
             return Response({'error': 'Resume text could not be extracted.'}, status=400)
 
-        # Use Groq to extract structured data
-        api_key = os.environ.get('GROQ_API_KEY')
-        if api_key and text:
-            client = Groq(api_key=api_key)
+        # Use AI to extract structured data
+        if text:
             prompt = f"""Extract the following information from this resume text as a valid JSON object.
 Return ONLY valid JSON. Use these exact keys:
 {{
@@ -561,12 +558,16 @@ Resume text:
 {text[:4000]}
 """
             try:
-                completion = client.chat.completions.create(
-                    model='llama-3.1-8b-instant',
-                    messages=[{'role': 'user', 'content': prompt}],
+                from apps.ai.llm_client import chat_completion
+                completion = chat_completion(
+                    messages=[
+                        {"role": "system", "content": "You are a resume parsing engine. Always return valid JSON."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    response_format={"type": "json_object"},
                     temperature=0.1,
                 )
-                raw = completion.choices[0].message.content.strip()
+                raw = completion.content.strip()
                 # Strip code block markers if present
                 if raw.startswith('```'):
                     raw = raw.split('```')[1]

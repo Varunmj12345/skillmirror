@@ -1,7 +1,7 @@
 import os
 import json
 import logging
-from groq import Groq
+from apps.ai.llm_client import chat_completion, get_active_provider_and_key
 
 logger = logging.getLogger(__name__)
 
@@ -9,12 +9,11 @@ class AIAssessmentEngine:
     """
     Autonomous AI Practice & Assessment Engine.
     Provides instant multi-dimensional code grading, on-demand gap challenge generation,
-    and progressive architectural hints using Groq LLaMA-3.3-70B.
+    and progressive architectural hints using xAI Grok / Groq LLaMA-3.3-70B.
     """
 
     def __init__(self):
-        self.api_key = os.environ.get('GROQ_API_KEY')
-        self.client = Groq(api_key=self.api_key) if self.api_key and self.api_key != 'gsk_your_key_here' else None
+        self.provider, self.api_key = get_active_provider_and_key()
 
     def evaluate_submission(self, challenge_data: dict, submission_data: dict) -> dict:
         """
@@ -49,44 +48,48 @@ CHALLENGE SPECIFICATIONS:
 CANDIDATE SUBMISSION:
 - Code Snippet:
 ```
-{code_snippet[:4000] if code_snippet else 'No inline code provided; evaluated via repository & documentation.'}
+{code_snippet[:4000]}
 ```
-- GitHub Repository: {github_url or 'N/A'}
-- Live Deployment URL: {published_url or 'N/A'}
-- Architectural & Implementation Documentation:
-{documentation[:2000] if documentation else 'N/A'}
+- GitHub Repository URL: {github_url or 'None provided'}
+- Live Deployment URL: {published_url or 'None provided'}
+- Architectural Notes / Documentation: {documentation[:1000] if documentation else 'None provided'}
 
 EVALUATION RUBRIC:
-1. Functional Correctness (0-100): Are all requirements and acceptance criteria satisfied?
-2. Code Quality & Design (0-100): Clean code, naming conventions, separation of concerns, modularity.
-3. Complexity & Performance (0-100): Big-O time and space efficiency, algorithmic optimization.
-4. Security & Edge Cases (0-100): Input validation, exception handling, null-safety, security best practices.
-5. Production Readiness (0-100): Architecture, clarity, testability.
+Score each dimension from 0 to 10:
+1. functional_correctness (0-10)
+2. code_quality_architecture (0-10)
+3. algorithmic_efficiency (0-10)
+4. resilience_edge_cases (0-10)
+5. testing_documentation (0-10)
+
+CALCULATE OVERALL SCORE: (Weighted mean * 10) => Integer 0 to 100.
+STATUS: 'passed' (score >= 70), 'needs_work' (score 45-69), 'failed' (score < 45).
 
 OUTPUT IN STRICT JSON FORMAT ONLY:
 {{
   "overall_score": <number 0-100>,
-  "decision": "<PASS | NEEDS_IMPROVEMENT | FAIL>",
-  "dimension_scores": {{
-    "correctness": <number 0-100>,
-    "code_quality": <number 0-100>,
-    "complexity": <number 0-100>,
-    "security": <number 0-100>,
-    "production_readiness": <number 0-100>
+  "status": "<'passed'|'needs_work'|'failed'>",
+  "dimensions": {{
+    "functional_correctness": {{ "score": <0-10>, "feedback": "<detailed feedback>" }},
+    "code_quality_architecture": {{ "score": <0-10>, "feedback": "<detailed feedback>" }},
+    "algorithmic_efficiency": {{ "score": <0-10>, "feedback": "<detailed feedback>" }},
+    "resilience_edge_cases": {{ "score": <0-10>, "feedback": "<detailed feedback>" }},
+    "testing_documentation": {{ "score": <0-10>, "feedback": "<detailed feedback>" }}
   }},
-  "criteria_evaluations": [
-    {{ "criterion": "<string>", "status": "<PASSED|PARTIAL|FAILED>", "notes": "<string>" }}
-  ],
   "strengths": [
-    "<string key strength 1>",
-    "<string key strength 2>"
+    "<specific strength 1 with code reference>",
+    "<specific strength 2>"
   ],
   "areas_for_improvement": [
-    "<string key improvement 1>",
-    "<string key improvement 2>"
+    "<specific area 1 with exact recommendation>",
+    "<specific area 2>"
   ],
-  "code_critique": "<string detailed technical review and line-by-line feedback>",
-  "refactored_example": "<string formatted code snippet demonstrating optimal implementation>",
+  "architectural_review": "<detailed 2-3 paragraph senior engineer architectural evaluation>",
+  "complexity_analysis": {{
+    "time_complexity": "<e.g. O(N log N)>",
+    "space_complexity": "<e.g. O(N)>",
+    "optimization_verdict": "<explanation of bottlenecks and possible optimizations>"
+  }},
   "xp_awarded": <number between 50 and 200 based on score>,
   "skills_growth": [
     {{ "skill": "<skill_name>", "delta": <number 1-5> }}
@@ -94,12 +97,11 @@ OUTPUT IN STRICT JSON FORMAT ONLY:
 }}
 """
 
-        if not self.client:
+        if not self.api_key:
             return self._fallback_evaluation(challenge_data, submission_data)
 
         try:
-            completion = self.client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
+            completion = chat_completion(
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": "Execute assessment and return the strict JSON evaluation report."}
@@ -108,8 +110,12 @@ OUTPUT IN STRICT JSON FORMAT ONLY:
                 temperature=0.15,
                 response_format={"type": "json_object"}
             )
-            res_text = completion.choices[0].message.content
-            return json.loads(res_text)
+            raw = completion.content.strip()
+            if raw.startswith("```"):
+                raw = raw.split("```")[1]
+                if raw.startswith("json"):
+                    raw = raw[4:]
+            return json.loads(raw)
         except Exception as e:
             logger.error(f"AI Assessment Evaluation Error: {e}")
             return self._fallback_evaluation(challenge_data, submission_data)
@@ -161,12 +167,11 @@ OUTPUT IN STRICT JSON FORMAT ONLY:
 }}
 """
 
-        if not self.client:
+        if not self.api_key:
             return self._fallback_gap_challenge(gap_skills, target_role, difficulty)
 
         try:
-            completion = self.client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
+            completion = chat_completion(
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": "Generate the targeted AI Practice Challenge in valid JSON."}
@@ -175,7 +180,12 @@ OUTPUT IN STRICT JSON FORMAT ONLY:
                 temperature=0.3,
                 response_format={"type": "json_object"}
             )
-            return json.loads(completion.choices[0].message.content)
+            raw = completion.content.strip()
+            if raw.startswith("```"):
+                raw = raw.split("```")[1]
+                if raw.startswith("json"):
+                    raw = raw[4:]
+            return json.loads(raw)
         except Exception as e:
             logger.error(f"Gap Challenge Generation Error: {e}")
             return self._fallback_gap_challenge(gap_skills, target_role, difficulty)
@@ -207,7 +217,7 @@ Return JSON:
   "key_takeaway": "<string 1-line concept to remember>"
 }}
 """
-        if not self.client:
+        if not self.api_key:
             return {
                 "level": hint_level,
                 "title": f"Hint Level {hint_level}",
@@ -216,8 +226,7 @@ Return JSON:
             }
 
         try:
-            completion = self.client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
+            completion = chat_completion(
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": "Generate the hint in JSON."}
@@ -226,7 +235,12 @@ Return JSON:
                 temperature=0.3,
                 response_format={"type": "json_object"}
             )
-            return json.loads(completion.choices[0].message.content)
+            raw = completion.content.strip()
+            if raw.startswith("```"):
+                raw = raw.split("```")[1]
+                if raw.startswith("json"):
+                    raw = raw[4:]
+            return json.loads(raw)
         except Exception as e:
             logger.error(f"Hint Generation Error: {e}")
             return {

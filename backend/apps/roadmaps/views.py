@@ -130,18 +130,15 @@ class AIRecommendationView(APIView):
             if not next_step:
                 return Response({"suggestion": "You have completed this roadmap! Try a more advanced role.", "type": "finish"})
 
-            api_key = os.environ.get("GROQ_API_KEY")
-            client = Groq(api_key=api_key)
             prompt = f"Based on this roadmap phase: '{next_step.title}' ({next_step.description}), what is the most critical single skill or tool the user should focus on today? Answer in 1 short sentence."
-            
-            completion = client.chat.completions.create(
-                model="llama-3.1-8b-instant",
+            from apps.ai.llm_client import chat_completion
+            completion = chat_completion(
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=50
             )
             
             return Response({
-                "suggestion": completion.choices[0].message.content,
+                "suggestion": completion.content.strip(),
                 "target_step": next_step.title,
                 "type": "skill"
             })
@@ -155,21 +152,17 @@ class VideoSummaryView(APIView):
         title = request.data.get('title')
         video_id = request.data.get('video_id')
         
-        api_key = os.environ.get("GROQ_API_KEY")
-        if not api_key: return Response({"summary": "AI Summaries require a Groq API Key."})
-
-        client = Groq(api_key=api_key)
         prompt = f"Summarize why this learning video tilted '{title}' is important for a career in technology. Provide 3 key bullet points. Keep it professional and concise."
         
         try:
-            completion = client.chat.completions.create(
-                model="llama-3.1-8b-instant",
+            from apps.ai.llm_client import chat_completion
+            completion = chat_completion(
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=150
             )
-            return Response({"summary": completion.choices[0].message.content})
+            return Response({"summary": completion.content.strip()})
         except Exception as e:
-            print(f"Groq Summary Error: {e}")
+            print(f"AI Summary Error: {e}")
             return Response({"detail": "AI summarization unavailable. Please watch the video for details."}, status=503)
 
 class UserAnalyticsView(APIView):

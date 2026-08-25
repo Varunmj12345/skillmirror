@@ -308,58 +308,63 @@ class AgentReachJobService:
     @classmethod
     def synthesize_with_groq_or_default(cls, role: str, scraped_jobs: list) -> dict:
         """
-        Use Groq LLM to parse raw job signals into structured intelligence,
-        or fallback to curated real-world telemetry if Groq is offline.
+        Use AI LLM (xAI Grok / Groq / OpenAI) to parse raw job signals into structured intelligence,
+        or fallback to curated real-world telemetry if AI is offline.
         """
-        api_key = os.environ.get("GROQ_API_KEY")
-        if api_key:
-            try:
-                from groq import Groq
-                client = Groq(api_key=api_key)
-                
-                scraped_titles = [f"{j.get('title')} at {j.get('company')} ({j.get('location')})" for j in scraped_jobs[:6]]
-                prompt = f"""
-                You are a Real-Time Job Market Intelligence Engine analyzing the current 2026 tech job market for the role: "{role}".
-                Scraped live postings context: {json.dumps(scraped_titles)}
+        try:
+            from apps.ai.llm_client import chat_completion
+            scraped_titles = [f"{j.get('title')} at {j.get('company')} ({j.get('location')})" for j in scraped_jobs[:6]]
+            prompt = f"""
+            You are a Real-Time Job Market Intelligence Engine analyzing the current tech job market for the role: "{role}".
+            Scraped live postings context: {json.dumps(scraped_titles)}
 
-                Generate an authentic, highly accurate market telemetry profile in JSON format:
-                {{
-                    "total_open_jobs": <realistic integer total active openings in market e.g. 3500-7500>,
-                    "avg_salary_min": <realistic minimum INR annual CTC in rupees e.g. 700000>,
-                    "avg_salary_max": <realistic maximum INR annual CTC in rupees e.g. 2400000>,
-                    "remote_ratio": <percentage float 0-100 of remote openings e.g. 42.5>,
-                    "onsite_ratio": <percentage float 0-100 of onsite openings e.g. 57.5>,
-                    "growth_rate": <YoY hiring velocity percentage float e.g. 14.8>,
-                    "top_companies": ["Company1", "Company2", "Company3", "Company4", "Company5", "Company6"],
-                    "top_required_skills": [
-                        {{"name": "Skill1", "count": 95}},
-                        {{"name": "Skill2", "count": 88}},
-                        {{"name": "Skill3", "count": 82}},
-                        {{"name": "Skill4", "count": 75}},
-                        {{"name": "Skill5", "count": 70}},
-                        {{"name": "Skill6", "count": 64}}
-                    ],
-                    "location_heatmap": {{
-                        "Bengaluru": <int count>,
-                        "Hyderabad": <int count>,
-                        "Pune": <int count>,
-                        "Delhi NCR": <int count>,
-                        "Remote": <int count>
-                    }}
+            Generate an authentic, highly accurate market telemetry profile in JSON format:
+            {{
+                "total_open_jobs": 4500,
+                "avg_salary_min": 700000,
+                "avg_salary_max": 2400000,
+                "remote_ratio": 42.5,
+                "onsite_ratio": 57.5,
+                "growth_rate": 14.8,
+                "top_companies": ["Company1", "Company2", "Company3", "Company4", "Company5", "Company6"],
+                "top_required_skills": [
+                    {{"name": "Skill1", "count": 95}},
+                    {{"name": "Skill2", "count": 88}},
+                    {{"name": "Skill3", "count": 82}},
+                    {{"name": "Skill4", "count": 75}},
+                    {{"name": "Skill5", "count": 70}},
+                    {{"name": "Skill6", "count": 64}}
+                ],
+                "location_heatmap": {{
+                    "Bengaluru": 1800,
+                    "Hyderabad": 950,
+                    "Pune": 600,
+                    "Delhi NCR": 500,
+                    "Remote": 450
                 }}
-                Return ONLY pure JSON.
-                """
-                completion = client.chat.completions.create(
-                    model="llama-3.1-8b-instant",
-                    messages=[{"role": "user", "content": prompt}],
-                    response_format={"type": "json_object"},
-                    temperature=0.3
-                )
-                parsed = json.loads(completion.choices[0].message.content)
-                if parsed.get('total_open_jobs') and parsed.get('top_companies'):
-                    return parsed
-            except Exception as e:
-                logger.warning(f"Groq market synthesis fallback to default profile: {e}")
+            }}
+            Return ONLY valid JSON.
+            """
+            
+            completion = chat_completion(
+                messages=[
+                    {"role": "system", "content": "You are a job market intelligence engine. Always output pure valid JSON."},
+                    {"role": "user", "content": prompt}
+                ],
+                response_format={"type": "json_object"},
+                temperature=0.3
+            )
+            
+            raw_content = completion.content.strip()
+            if raw_content.startswith("```"):
+                raw_content = raw_content.split("```")[1]
+                if raw_content.startswith("json"):
+                    raw_content = raw_content[4:]
+            parsed = json.loads(raw_content)
+            if parsed.get('total_open_jobs') and parsed.get('top_companies'):
+                return parsed
+        except Exception as e:
+            logger.warning(f"AI market synthesis fallback to default profile: {e}")
 
         # Fallback to default real-world curated market profiles
         base = DEFAULT_MARKET_PROFILES.get(role, DEFAULT_MARKET_PROFILES["Data Scientist"])

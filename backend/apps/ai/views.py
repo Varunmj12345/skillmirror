@@ -146,11 +146,10 @@ class GenerateRoadmapView(APIView):
         })
 
 
-import os
-from groq import Groq
+from apps.ai.llm_client import chat_completion, get_active_provider_and_key
 
 class CareerChatView(APIView):
-    """AI Career Assistant - returns real AI career advice using Groq Llama 3."""
+    """AI Career Assistant - returns real AI career advice using xAI Grok / Groq Llama 3."""
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
@@ -158,25 +157,21 @@ class CareerChatView(APIView):
         if not msg:
             return Response({'reply': "I'm listening! Ask me anything about your career."})
 
-        api_key = os.environ.get('GROQ_API_KEY')
-        if not api_key or api_key == 'gsk_your_key_here':
-            # Fallback to mock logic if no real key provided
+        provider, api_key = get_active_provider_and_key()
+        if not provider or not api_key:
             return self._mock_response(msg, request.user)
 
         try:
-            client = Groq(api_key=api_key)
-            
             # Get user context
             user_context = ""
             try:
                 from apps.users.models import UserProfile
                 profile = UserProfile.objects.get(user=request.user)
                 user_context = f"User is aiming for: {profile.dream_job or 'Unknown'}. Experience level: {profile.experience_level or 'Unknown'}."
-            except:
+            except Exception:
                 pass
 
-            completion = client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
+            completion = chat_completion(
                 messages=[
                     {"role": "system", "content": f"You are SkillMirror AI, a helpful career assistant. {user_context} Provide concise, actionable career advice. If the user asks for a roadmap, guide them to use our dedicated Analyzer section."},
                     {"role": "user", "content": msg}
@@ -184,11 +179,11 @@ class CareerChatView(APIView):
                 max_tokens=500,
                 temperature=0.7,
             )
-            reply = completion.choices[0].message.content
+            reply = completion.content
             return Response({'reply': reply})
         except Exception as e:
-            print(f"Groq API Error: {e}")
-            return Response({'reply': "I'm having trouble connecting to my brain right now. Please try again later."}, status=500)
+            print(f"AI Chat Error: {e}")
+            return self._mock_response(msg, request.user)
 
     def _mock_response(self, msg, user):
         msg = msg.lower()
@@ -300,22 +295,20 @@ STRICT RULES:
 - No fluff, only insights
 """
 
-        api_key = os.environ.get('GROQ_API_KEY')
-        if not api_key or api_key == 'gsk_your_key_here':
+        provider, api_key = get_active_provider_and_key()
+        if not provider or not api_key:
             return Response({'report': self._get_fallback_report(data), 'metrics': data})
 
         try:
-            client = Groq(api_key=api_key)
-            completion = client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
+            completion = chat_completion(
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": "Generate the full Career Intelligence Dashboard Report based on the provided system inputs."}
                 ],
                 max_tokens=2000,
-                temperature=0.3, # Low temperature for analytical consistency
+                temperature=0.3,
             )
-            report = completion.choices[0].message.content
+            report = completion.content
             return Response({'report': report, 'metrics': data})
         except Exception as e:
             print(f"Career Intelligence View Error: {e}")
@@ -572,22 +565,20 @@ FINAL OUTPUT STYLE:
 - Must feel like a SYSTEM-GENERATED INTELLIGENCE REPORT
 """
 
-        api_key = os.environ.get('GROQ_API_KEY')
-        if not api_key or api_key == 'gsk_your_key_here':
+        provider, api_key = get_active_provider_and_key()
+        if not provider or not api_key:
             return Response({'report': self._get_fallback_report(data), 'metrics': data})
 
         try:
-            client = Groq(api_key=api_key)
-            completion = client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
+            completion = chat_completion(
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": "Generate the full Resume Intelligence Report based on the provided system inputs. Ensure it is analytical and strict."}
                 ],
                 max_tokens=2000,
-                temperature=0.2, # Extremely analytical and strict
+                temperature=0.2,
             )
-            report = completion.choices[0].message.content
+            report = completion.content
             return Response({'report': report, 'metrics': data})
         except Exception as e:
             print(f"Resume Intelligence View Error: {e}")
@@ -733,14 +724,12 @@ FINAL OUTPUT STYLE:
 - NOT a chatbot response
 """
 
-        api_key = os.environ.get('GROQ_API_KEY')
-        if not api_key or api_key == 'gsk_your_key_here':
+        provider, api_key = get_active_provider_and_key()
+        if not provider or not api_key:
             return Response({'report': self._get_fallback_twin(data), 'metrics': data})
 
         try:
-            client = Groq(api_key=api_key)
-            completion = client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
+            completion = chat_completion(
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": "Run the Career Digital Twin simulation and generate the full output report based on system inputs."}
@@ -748,7 +737,7 @@ FINAL OUTPUT STYLE:
                 max_tokens=2000,
                 temperature=0.2,
             )
-            report = completion.choices[0].message.content
+            report = completion.content
             return Response({'report': report, 'metrics': data})
         except Exception as e:
             print(f"Career Digital Twin Error: {e}")

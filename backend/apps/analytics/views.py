@@ -290,13 +290,22 @@ class ActionPlanView(APIView):
     def post(self, request):
         role = request.data.get('role', 'Developer')
         gaps = request.data.get('gaps', [])
-        api_key = os.environ.get("GROQ_API_KEY")
-        if not api_key: return Response({"detail": "Missing API Key"}, status=400)
-        client = Groq(api_key=api_key)
         prompt = f"Generate a smart learning action plan for a {role} to bridge these skill gaps: {', '.join(gaps)}. Provide a 7-day breakdown, daily commitment (hours), 3 specific projects (Beginner, Intermediate, Advanced), and 2 industry certificates. Return ONLY a JSON object."
         try:
-            completion = client.chat.completions.create(model="llama-3.1-8b-instant", messages=[{"role": "user", "content": prompt}], response_format={"type": "json_object"})
-            plan_data = json.loads(completion.choices[0].message.content)
+            from apps.ai.llm_client import chat_completion
+            completion = chat_completion(
+                messages=[
+                    {"role": "system", "content": "You are a learning plan engine. Always return valid JSON."},
+                    {"role": "user", "content": prompt}
+                ],
+                response_format={"type": "json_object"}
+            )
+            raw = completion.content.strip()
+            if raw.startswith("```"):
+                raw = raw.split("```")[1]
+                if raw.startswith("json"):
+                    raw = raw[4:]
+            plan_data = json.loads(raw)
             LearningPlan.objects.create(user=request.user, title=f"Action Plan for {role}", weekly_breakdown=plan_data.get('weekly_breakdown', []), daily_commitment=plan_data.get('daily_commitment', 2), projects=plan_data.get('projects', []), certifications=plan_data.get('certifications', []))
             return Response(plan_data)
         except Exception as e: return Response({"detail": str(e)}, status=500)
