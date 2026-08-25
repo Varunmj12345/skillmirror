@@ -7,9 +7,11 @@ from django.utils import timezone
 
 def api_root(request):
     return JsonResponse({
-        'message': 'SkillMirror API',
-        'docs': 'Visit http://localhost:3000 for the app',
-        'endpoints': ['/users/', '/roadmaps/', '/skills/', '/analytics/', '/admin/', '/health/'],
+        'service': 'SkillMirror Backend API (Django REST Framework)',
+        'status': 'online',
+        'frontend_app': 'https://skillmirror-puce.vercel.app',
+        'docs': 'Visit https://skillmirror-puce.vercel.app to access the SkillMirror web application',
+        'endpoints': ['/users/', '/roadmaps/', '/skills/', '/jobs/', '/ai/', '/analytics/', '/admin/', '/health/'],
     })
 
 def health_check(request):

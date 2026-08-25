@@ -1,6 +1,15 @@
 import apiClient from './apiClient';
 
-export const registerUser = async (userData: { username: string; email: string; password: string; role?: string }) => {
+export const registerUser = async (userData: {
+    username: string;
+    email: string;
+    password: string;
+    role?: string;
+    dream_job?: string;
+    domain?: string;
+    experience_level?: string;
+    [key: string]: any;
+}) => {
     return apiClient.post('/users/register/', userData);
 };
 
