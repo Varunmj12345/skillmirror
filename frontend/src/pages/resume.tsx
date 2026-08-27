@@ -169,7 +169,7 @@ const ResumePage: React.FC = () => {
       const opt = {
         margin: 0,
         filename: `${(formData.personal?.name || 'SkillMirror_Resume').replace(/\s+/g, '_')}_Resume.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
+        image: { type: 'jpeg' as const, quality: 0.98 },
         html2canvas: {
           scale: 2,
           useCORS: true,
@@ -182,7 +182,7 @@ const ResumePage: React.FC = () => {
         },
         jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' as const },
       };
-      await html2pdf().set(opt).from(element).save();
+      await (html2pdf() as any).set(opt).from(element).save();
       startToast('✓ PDF saved to your downloads!');
     } catch (err) {
       console.error(err);
