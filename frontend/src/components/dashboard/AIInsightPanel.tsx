@@ -155,14 +155,14 @@ const AIInsightPanel = () => {
       document.body.appendChild(reportElement);
 
       const opt = {
-        margin: [0.3, 0.3, 0.3, 0.3],
+        margin: [0.3, 0.3, 0.3, 0.3] as [number, number, number, number],
         filename: 'SkillMirror_Career_Readiness_Report.pdf',
         image: { type: 'jpeg' as const, quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true, letterRendering: true },
         jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' as const }
       };
 
-      await html2pdf().set(opt).from(reportElement).save();
+      await (html2pdf() as any).set(opt).from(reportElement).save();
       document.body.removeChild(reportElement);
 
       setToast('✓ Readiness report downloaded successfully!');
