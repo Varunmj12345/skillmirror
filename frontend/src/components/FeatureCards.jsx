@@ -63,7 +63,7 @@ const features = [
 
 const FeatureCards = () => {
   return (
-    <section className="py-24 relative bg-background border-t border-white/[0.06]">
+    <section className="py-24 relative bg-background border-t border-slate-200/80 dark:border-white/[0.06]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
         {/* Section Header */}
         <motion.div
@@ -73,14 +73,14 @@ const FeatureCards = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded border border-white/[0.08] bg-pop text-[11px] font-mono font-bold uppercase tracking-widest text-slate-400 mb-4">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-slate-200 dark:border-white/[0.08] bg-card dark:bg-pop text-[11px] font-mono font-bold uppercase tracking-widest text-slate-700 dark:text-slate-300 shadow-light-sm dark:shadow-none mb-4">
             <Bullet variant="cyan" size="sm" />
             <span>ARCHITECTURE SPECIFICATION</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-black text-white tracking-tight mb-4">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-black text-slate-900 dark:text-white tracking-tight mb-4">
             INTELLIGENCE MODULE MATRIX
           </h2>
-          <p className="sm-body-text max-w-2xl mx-auto text-slate-400">
+          <p className="sm-body-text max-w-2xl mx-auto text-slate-600 dark:text-slate-400 font-mono text-sm leading-relaxed">
             A cohesive suite of autonomous machine-learning subsystems working together to calculate and accelerate your career trajectory.
           </p>
         </motion.div>
@@ -103,16 +103,16 @@ const FeatureCards = () => {
                 />
                 <CardContent className="flex flex-col justify-between h-[calc(100%-48px)] p-4">
                   <div>
-                    <div className="flex items-center justify-between text-slate-500 font-mono text-[10px] mb-3">
-                      <span>{f.code}</span>
-                      <i className={`fa-solid ${f.icon} text-sm text-cyan-400 group-hover:scale-110 transition-transform`} />
+                    <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 font-mono text-[10px] mb-3">
+                      <span className="font-bold">{f.code}</span>
+                      <i className={`fa-solid ${f.icon} text-sm text-blue-600 dark:text-cyan-400 group-hover:scale-110 transition-transform`} />
                     </div>
-                    <p className="text-xs font-mono text-slate-300 leading-relaxed">
+                    <p className="text-xs font-mono text-slate-600 dark:text-slate-300 leading-relaxed">
                       {f.desc}
                     </p>
                   </div>
 
-                  <div className="pt-4 mt-4 border-t border-white/[0.04] flex items-center justify-between text-[10px] font-mono text-slate-400 group-hover:text-cyan-300 transition-colors">
+                  <div className="pt-4 mt-4 border-t border-slate-200/80 dark:border-white/[0.04] flex items-center justify-between text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-cyan-300 transition-colors">
                     <span>INITIALIZE PROTOCOL</span>
                     <i className="fa-solid fa-chevron-right text-[9px] group-hover:translate-x-1 transition-transform" />
                   </div>

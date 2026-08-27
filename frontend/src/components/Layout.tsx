@@ -18,7 +18,7 @@ function Layout({ children }: { children: React.ReactNode }): React.ReactElement
       <Header />
 
       {/* ── Mobile Top Navigation Bar (Shown on small screens) ── */}
-      <div className="lg:hidden sticky top-0 z-40 bg-card/90 backdrop-blur-xl border-b border-border px-4 py-3 flex items-center justify-between shadow-sm">
+      <div className="lg:hidden sticky top-0 z-40 bg-white/90 dark:bg-[#12151e]/90 backdrop-blur-xl border-b border-border px-4 py-3 flex items-center justify-between shadow-sm">
         <Link href="/">
           <div className="flex items-center gap-2.5 cursor-pointer">
             <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center font-display font-black text-white text-xs shadow-[0_0_12px_rgba(0,217,255,0.35)]">

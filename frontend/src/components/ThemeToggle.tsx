@@ -29,7 +29,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
           return (
             <button
               key={m.id}
-              onClick={() => setTheme(m.id)}
+              onClick={(e) => setTheme(m.id, e)}
               className={`relative px-3 py-1.5 rounded-lg text-xs font-mono font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
                 isActive
                   ? 'text-blue-600 dark:text-cyan-300 shadow-light-sm dark:shadow-[0_0_12px_rgba(0,217,255,0.25)]'
@@ -56,7 +56,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
 
   return (
     <button
-      onClick={toggleTheme}
+      onClick={(e) => toggleTheme(e)}
       type="button"
       className={`relative group inline-flex items-center justify-center gap-2 p-2 rounded-xl transition-all duration-300 border ${
         isDark

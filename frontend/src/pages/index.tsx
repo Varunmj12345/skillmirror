@@ -47,8 +47,8 @@ const Home: React.FC = () => {
           transition={{ duration: 0.5 }}
           className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
             scrolled
-              ? 'bg-[#0b0d13]/95 backdrop-blur-xl border-b border-white/[0.08] shadow-2xl'
-              : 'bg-transparent border-b border-white/[0.03]'
+              ? 'bg-white/90 dark:bg-[#0b0d13]/95 backdrop-blur-xl border-b border-slate-200/80 dark:border-white/[0.08] shadow-light-card dark:shadow-2xl'
+              : 'bg-white/60 dark:bg-[#0b0d13]/60 backdrop-blur-md border-b border-slate-200/40 dark:border-white/[0.03]'
           }`}
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
@@ -60,8 +60,8 @@ const Home: React.FC = () => {
                     SM
                   </div>
                   <div className="flex flex-col">
-                    <span className="font-display font-black text-white tracking-widest uppercase text-sm">
-                      SkillMirror <span className="text-cyan-400">OS</span>
+                    <span className="font-display font-black text-slate-900 dark:text-white tracking-widest uppercase text-sm">
+                      SkillMirror <span className="text-blue-600 dark:text-cyan-400">OS</span>
                     </span>
                     <span className="text-[9px] font-mono text-slate-500 hidden sm:block">
                       v2.4-NEURAL CORE
@@ -71,25 +71,25 @@ const Home: React.FC = () => {
               </Link>
 
               {/* Status Pill */}
-              <div className="hidden lg:flex items-center gap-2 px-2.5 py-1 rounded bg-card border border-white/[0.06] text-[10px] text-slate-400 font-mono">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <div className="hidden lg:flex items-center gap-2 px-2.5 py-1 rounded bg-slate-100 dark:bg-card border border-slate-200 dark:border-white/[0.06] text-[10px] text-slate-600 dark:text-slate-400 font-mono">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 <span>MESH: ONLINE</span>
               </div>
             </div>
 
             {/* Navigation Links */}
-            <div className="hidden md:flex items-center gap-8 text-xs font-mono font-bold uppercase tracking-wider text-slate-400">
-              <a href="#telemetry" className="hover:text-cyan-300 transition-colors">
+            <div className="hidden md:flex items-center gap-8 text-xs font-mono font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+              <a href="#telemetry" className="hover:text-blue-600 dark:hover:text-cyan-300 transition-colors">
                 [Telemetry]
               </a>
-              <a href="#features" className="hover:text-cyan-300 transition-colors">
+              <a href="#features" className="hover:text-blue-600 dark:hover:text-cyan-300 transition-colors">
                 [Modules]
               </a>
-              <a href="#ai-modes" className="hover:text-cyan-300 transition-colors">
+              <a href="#ai-modes" className="hover:text-blue-600 dark:hover:text-cyan-300 transition-colors">
                 [AI Modes]
               </a>
               <Link href="/dashboard">
-                <a className="hover:text-white transition-colors">[Command Hub]</a>
+                <a className="hover:text-blue-600 dark:hover:text-white transition-colors">[Command Hub]</a>
               </Link>
             </div>
 
@@ -98,7 +98,7 @@ const Home: React.FC = () => {
               <ThemeToggle variant="compact" />
               {!user && (
                 <Link href="/login">
-                  <a className="hidden sm:block text-xs font-mono font-bold text-muted-foreground hover:text-foreground uppercase tracking-wider transition-colors px-3 py-2">
+                  <a className="hidden sm:block text-xs font-mono font-bold text-slate-600 dark:text-muted-foreground hover:text-slate-900 dark:hover:text-foreground uppercase tracking-wider transition-colors px-3 py-2">
                     Sign In
                   </a>
                 </Link>

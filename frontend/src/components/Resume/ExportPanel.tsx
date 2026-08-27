@@ -28,17 +28,75 @@ const ExportPanel: React.FC = () => {
             }
             setExporting(key);
             try {
-                // @ts-ignore - Dynamic import to bypass SSR restrictions
-                const html2pdf = (await import('html2pdf.js')).default;
-                const opt = {
-                    margin:       0,
-                    filename:     'SkillMirror_Resume.pdf',
-                    image:        { type: 'jpeg' as const, quality: 0.98 },
-                    html2canvas:  { scale: 2, useCORS: true },
-                    jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' as const }
-                };
-                await html2pdf().set(opt).from(element).save();
-                setToast('PDF saved to local machine!');
+                const existing = document.getElementById('resume-print-iframe');
+                if (existing) existing.remove();
+
+                const printIframe = document.createElement('iframe');
+                printIframe.id = 'resume-print-iframe';
+                printIframe.style.position = 'fixed';
+                printIframe.style.right = '0';
+                printIframe.style.bottom = '0';
+                printIframe.style.width = '0';
+                printIframe.style.height = '0';
+                printIframe.style.border = '0';
+                document.body.appendChild(printIframe);
+
+                const styles = Array.from(document.querySelectorAll('link[rel="stylesheet"], style'))
+                    .map((el) => el.outerHTML)
+                    .join('\n');
+
+                const doc = printIframe.contentWindow?.document;
+                if (!doc) {
+                    window.print();
+                    return;
+                }
+
+                doc.open();
+                doc.write(`
+                  <!DOCTYPE html>
+                  <html>
+                    <head>
+                      <title>SkillMirror_Resume</title>
+                      ${styles}
+                      <style>
+                        @page { size: A4 portrait; margin: 0; }
+                        html, body {
+                          margin: 0 !important;
+                          padding: 0 !important;
+                          background: #ffffff !important;
+                          color: #000000 !important;
+                          width: 100% !important;
+                          height: 100% !important;
+                          -webkit-print-color-adjust: exact !important;
+                          print-color-adjust: exact !important;
+                        }
+                        #resume-export-container {
+                          width: 100% !important;
+                          max-width: 100% !important;
+                          margin: 0 !important;
+                          box-shadow: none !important;
+                          border: none !important;
+                          border-radius: 0 !important;
+                          background: #ffffff !important;
+                        }
+                      </style>
+                    </head>
+                    <body>
+                      ${element.outerHTML}
+                    </body>
+                  </html>
+                `);
+                doc.close();
+
+                setTimeout(() => {
+                    try {
+                        printIframe.contentWindow?.focus();
+                        printIframe.contentWindow?.print();
+                    } catch {
+                        window.print();
+                    }
+                    setToast('Vector PDF print ready!');
+                }, 350);
             } catch (err) {
                 console.error(err);
                 setToast('Failed to generate PDF');

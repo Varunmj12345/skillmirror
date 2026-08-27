@@ -27,31 +27,33 @@ def extract_text_from_file(file_obj):
         
     return content
 
-# Common technical and soft skills for extraction matching
+# Common technical, domain, and soft skills for extraction matching
 SKILL_DB = [
     # Programming Languages
-    "Python", "JavaScript", "JS", "TypeScript", "TS", "Java", "C++", "C#", "Ruby", "PHP", "Swift", "Kotlin", "Go", "Golang", "Rust", "Scala", "Dart", "Objective-C", "R", "Shell", "PowerShell",
-    # Frontend
-    "React", "React.js", "ReactJS", "Next.js", "NextJS", "Vue.js", "VueJS", "Vue", "Angular", "AngularJS", "Svelte", "HTML", "HTML5", "CSS", "CSS3", "Tailwind CSS", "TailwindCSS", "Bootstrap", "SASS", "SCSS", "LESS", "Redux", "Zustand", "Vuex", "GraphQL", "Apollo", "jQuery", "Web Performance", "Responsive Design",
-    # Backend & Frameworks
-    "Django", "Flask", "FastAPI", "Node.js", "NodeJS", "Express.js", "Express", "Spring Boot", "Spring", "Laravel", "Ruby on Rails", "Rails", "ASP.NET", "Dotnet", "NestJS", "Fastify", "Koa",
-    # Databases
-    "SQL", "PostgreSQL", "Postgres", "MySQL", "MongoDB", "Redis", "Elasticsearch", "Cassandra", "DynamoDB", "SQLite", "Oracle", "MariaDB", "Firebase", "Firestore", "Prisma", "TypeORM", "Sequelize",
-    # DevOps & Cloud
-    "Docker", "Kubernetes", "K8s", "AWS", "Amazon Web Services", "Azure", "GCP", "Google Cloud", "Terraform", "Ansible", "Jenkins", "CI/CD", "CircleCI", "GitHub Actions", "Linux", "Nginx", "Apache", "Prometheus", "Grafana", "Cloudflare",
+    "Python", "JavaScript", "JS", "TypeScript", "TS", "Java", "C++", "C#", "Ruby", "PHP", "Swift", "Kotlin", "Go", "Golang", "Rust", "Scala", "Dart", "Objective-C", "R", "Shell", "PowerShell", "MATLAB", "SQL", "HTML", "CSS",
+    # Frontend & Fullstack
+    "React", "React.js", "ReactJS", "Next.js", "NextJS", "Vue.js", "VueJS", "Vue", "Angular", "AngularJS", "Svelte", "Tailwind CSS", "TailwindCSS", "Bootstrap", "SASS", "SCSS", "LESS", "Redux", "Zustand", "Vuex", "GraphQL", "Apollo", "jQuery", "Web Performance", "Responsive Design", "Webpack", "Vite", "Babel",
+    # Backend & Microservices
+    "Django", "Flask", "FastAPI", "Node.js", "NodeJS", "Express.js", "Express", "Spring Boot", "Spring", "Laravel", "Ruby on Rails", "Rails", "ASP.NET", ".NET", "Dotnet", "NestJS", "Fastify", "Koa", "Microservices", "REST API", "gRPC", "GraphQL", "Kafka", "RabbitMQ", "Event-Driven Architecture", "System Design",
+    # Databases & Storage
+    "PostgreSQL", "Postgres", "MySQL", "MongoDB", "Redis", "Elasticsearch", "Cassandra", "DynamoDB", "SQLite", "Oracle", "MariaDB", "Firebase", "Firestore", "Prisma", "TypeORM", "Sequelize", "Vector DB", "Pinecone", "Milvus", "ChromaDB",
+    # DevOps, Cloud & Infrastructure
+    "Docker", "Kubernetes", "K8s", "AWS", "Amazon Web Services", "Azure", "GCP", "Google Cloud", "Terraform", "Ansible", "Jenkins", "CI/CD", "CircleCI", "GitHub Actions", "Linux", "Nginx", "Apache", "Prometheus", "Grafana", "Cloudflare", "OpenShift", "Helm",
     # Mobile
     "React Native", "Flutter", "Ionic", "SwiftUI", "Android SDK", "iOS SDK", "Expo",
-    # AI & Data
-    "Machine Learning", "ML", "AI", "Artificial Intelligence", "Deep Learning", "Data Analysis", "TensorFlow", "PyTorch", "Pandas", "NumPy", "Scikit-learn", "NLP", "Natural Language Processing", "Computer Vision", "Tableau", "Power BI", "Data Engineering",
-    # Tools & Other
-    "Git", "GitHub", "Bitbucket", "GitLab", "Jira", "Confluence", "Figma", "Adobe XD", "Unity", "Unreal Engine", "WebGL", "REST API", "Microservices", "System Design", "Unit Testing", "Jest", "Cypress", "Selenium", "Babel", "Webpack", "Vite",
-    # Soft Skills
-    "Communication", "Leadership", "Problem Solving", "Agile", "Scrum", "Teamwork", "Time Management", "Critical Thinking", "Project Management", "Stakeholder Management", "Mentorship"
+    # AI, ML & Data Engineering
+    "Machine Learning", "ML", "AI", "Artificial Intelligence", "Deep Learning", "Data Analysis", "TensorFlow", "PyTorch", "Pandas", "NumPy", "Scikit-learn", "NLP", "Natural Language Processing", "Computer Vision", "Tableau", "Power BI", "Data Engineering", "Apache Spark", "Spark", "Hadoop", "Airflow", "dbt", "LangChain", "LlamaIndex", "Hugging Face", "LLM", "Prompt Engineering",
+    # Engineering & Hardware
+    "AutoCAD", "SolidWorks", "MATLAB", "Simulink", "Embedded Systems", "Embedded C", "IoT", "PLC", "SCADA", "PCB Design", "Verilog", "VHDL", "FPGA",
+    # Tools, QA & Architecture
+    "Git", "GitHub", "Bitbucket", "GitLab", "Jira", "Confluence", "Figma", "Adobe XD", "Unity", "Unreal Engine", "WebGL", "Unit Testing", "Jest", "Cypress", "Selenium", "Playwright", "Mocha", "Postman", "Swagger",
+    # Soft & Management Skills
+    "Communication", "Leadership", "Problem Solving", "Agile", "Scrum", "Teamwork", "Time Management", "Critical Thinking", "Project Management", "Stakeholder Management", "Mentorship", "Collaboration"
 ]
 
 def extract_skills_from_text(text):
     """
-    Extracts skills from text using regex and a predefined skill list.
+    Extracts skills from text using regex and an extensive skill taxonomy.
     """
     if not text:
         return []
@@ -60,8 +62,8 @@ def extract_skills_from_text(text):
     text_lower = text.lower()
     
     for skill in SKILL_DB:
-        # Match as whole word to avoid sub-word matches (e.g. "go" in "google")
-        pattern = r'\b' + re.escape(skill.lower()) + r'\b'
+        # Match as whole word/boundary
+        pattern = r'(?:^|[\s,;:\(\)\[\]/\.\n])' + re.escape(skill.lower()) + r'(?:$|[\s,;:\(\)\[\]/\.\n])'
         if re.search(pattern, text_lower):
             extracted.append(skill)
             

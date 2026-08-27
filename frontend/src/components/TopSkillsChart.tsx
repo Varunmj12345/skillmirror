@@ -48,22 +48,22 @@ const TopSkillsChart: React.FC = () => {
     };
 
     return (
-        <div className="bg-pop rounded-2xl p-6 border border-white/[0.07] mb-6 relative overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent" />
+        <div className="bg-card dark:bg-pop rounded-2xl p-6 border border-border shadow-light-card dark:shadow-none mb-6 relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/40 dark:via-cyan-500/40 to-transparent" />
             <TVNoise opacity={0.02} />
 
             <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
                     <div className="flex items-center gap-2 mb-1">
                         <Bullet variant="cyan" size="sm" />
-                        <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500">MARKET FREQUENCY</span>
+                        <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">MARKET FREQUENCY</span>
                     </div>
-                    <h3 className="text-base font-display font-black text-white">Top Required Skills</h3>
-                    <p className="text-[11px] font-mono text-slate-500 mt-0.5">Skills most frequently extracted from active job feeds</p>
+                    <h3 className="text-base font-display font-black text-slate-900 dark:text-white">Top Required Skills</h3>
+                    <p className="text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-0.5">Skills most frequently extracted from active job feeds</p>
                 </div>
                 <div className="flex gap-2">
                     <Badge variant="outline-success">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span> Rising
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span> Rising
                     </Badge>
                     <Badge variant="secondary">
                         <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mr-1.5"></span> Stable
@@ -74,25 +74,25 @@ const TopSkillsChart: React.FC = () => {
             <div className="h-72 relative z-10">
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart layout="vertical" data={skillData} margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
-                        <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="rgba(255,255,255,0.05)" />
+                        <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="rgba(148, 163, 184, 0.15)" />
                         <XAxis type="number" hide />
                         <YAxis
                             dataKey="name"
                             type="category"
                             width={100}
-                            tick={{ fontSize: 11, fill: '#94a3b8', fontFamily: 'monospace', fontWeight: 600 }}
+                            tick={{ fontSize: 11, fill: '#64748b', fontFamily: 'monospace', fontWeight: 600 }}
                             axisLine={false}
                             tickLine={false}
                         />
-                        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+                        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(148, 163, 184, 0.08)' }} />
                         <Bar dataKey="demand" radius={[0, 6, 6, 0]} barSize={20} animationDuration={1200}>
                             {skillData.map((entry, index) => (
                                 <Cell
                                     key={`cell-${index}`}
                                     fill={
-                                        entry.status === 'rising' ? '#00d9ff' :
+                                        entry.status === 'rising' ? '#2563eb' :
                                             entry.status === 'declining' ? '#f43f5e' :
-                                                '#475569'
+                                                '#64748b'
                                     }
                                 />
                             ))}

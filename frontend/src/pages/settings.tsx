@@ -329,7 +329,7 @@ const SettingsPage: React.FC = () => {
                     <div className="grid grid-cols-2 gap-3">
                       <button
                         type="button"
-                        onClick={() => setTheme('dark')}
+                        onClick={(e) => setTheme('dark', e)}
                         className={`p-4 rounded-2xl border text-left transition-all relative overflow-hidden ${
                           effectiveTheme === 'dark'
                             ? 'border-cyan-500 bg-slate-950 text-white shadow-[0_0_20px_rgba(0,217,255,0.2)]'
@@ -348,7 +348,7 @@ const SettingsPage: React.FC = () => {
 
                       <button
                         type="button"
-                        onClick={() => setTheme('light')}
+                        onClick={(e) => setTheme('light', e)}
                         className={`p-4 rounded-2xl border text-left transition-all relative overflow-hidden ${
                           effectiveTheme === 'light'
                             ? 'border-blue-500 bg-white text-slate-900 shadow-[0_0_20px_rgba(59,130,246,0.2)]'

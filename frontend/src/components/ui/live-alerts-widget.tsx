@@ -47,23 +47,23 @@ export const LiveAlertsWidget: React.FC = () => {
         bulletVariant="warning"
         addon={<Badge variant="outline-warning">3 NEW</Badge>}
       />
-      <CardContent className="p-3 bg-card space-y-2.5">
+      <CardContent className="p-3 bg-card dark:bg-transparent space-y-2.5">
         {sampleAlerts.map((alert) => (
           <div
             key={alert.id}
-            className="p-3 rounded-lg bg-pop/60 border border-white/[0.04] hover:border-cyan-500/30 transition-all text-xs font-mono"
+            className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-white/[0.06] hover:border-blue-400 dark:hover:border-cyan-500/30 transition-all text-xs font-mono shadow-light-sm dark:shadow-none"
           >
             <div className="flex items-center justify-between mb-1.5">
-              <div className="flex items-center gap-1.5 font-bold text-white text-[11px] truncate">
+              <div className="flex items-center gap-1.5 font-bold text-slate-900 dark:text-white text-[11px] truncate">
                 <Bullet
                   variant={alert.priority === 'high' ? 'warning' : 'cyan'}
                   size="sm"
                 />
                 <span className="truncate">{alert.title}</span>
               </div>
-              <span className="text-[10px] text-slate-500 shrink-0">{alert.time}</span>
+              <span className="text-[10px] text-slate-500 font-bold shrink-0">{alert.time}</span>
             </div>
-            <p className="text-[11px] text-slate-400 leading-relaxed">
+            <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
               {alert.message}
             </p>
           </div>

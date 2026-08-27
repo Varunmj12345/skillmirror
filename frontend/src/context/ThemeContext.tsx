@@ -5,8 +5,8 @@ export type ThemeMode = 'dark' | 'light' | 'system';
 interface ThemeContextType {
   theme: ThemeMode;
   effectiveTheme: 'dark' | 'light';
-  setTheme: (mode: ThemeMode) => void;
-  toggleTheme: () => void;
+  setTheme: (mode: ThemeMode, event?: React.MouseEvent | MouseEvent | { clientX: number; clientY: number }) => void;
+  toggleTheme: (event?: React.MouseEvent | MouseEvent | { clientX: number; clientY: number }) => void;
 }
 
 const THEME_STORAGE_KEY = 'sm_theme';
@@ -55,11 +55,89 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return mode;
   };
 
-  const setTheme = (mode: ThemeMode) => {
-    setThemeState(mode);
+  /** Minimal water wave ripple effect */
+  const spawnWaterWaveRipple = (x: number, y: number, isToDark: boolean) => {
+    if (typeof document === 'undefined') return;
+    const ripple = document.createElement('div');
+    ripple.className = 'water-wave-ripple';
+    const size = Math.max(window.innerWidth, window.innerHeight) * 2.4;
+    ripple.style.width = `${size}px`;
+    ripple.style.height = `${size}px`;
+    ripple.style.left = `${x}px`;
+    ripple.style.top = `${y}px`;
+    if (isToDark) {
+      ripple.style.borderColor = 'rgba(0, 217, 255, 0.7)';
+      ripple.style.boxShadow = '0 0 50px rgba(0, 217, 255, 0.35), inset 0 0 35px rgba(99, 102, 241, 0.3)';
+    } else {
+      ripple.style.borderColor = 'rgba(37, 99, 235, 0.6)';
+      ripple.style.boxShadow = '0 0 50px rgba(37, 99, 235, 0.3), inset 0 0 35px rgba(14, 165, 233, 0.25)';
+    }
+
+    document.body.appendChild(ripple);
+    setTimeout(() => {
+      if (ripple.parentNode) {
+        ripple.parentNode.removeChild(ripple);
+      }
+    }, 850);
+  };
+
+  const setTheme = (
+    mode: ThemeMode,
+    event?: React.MouseEvent | MouseEvent | { clientX: number; clientY: number }
+  ) => {
     const resolved = computeEffectiveTheme(mode);
-    setEffectiveTheme(resolved);
-    applyThemeToDOM(resolved);
+    const isToDark = resolved === 'dark';
+
+    // Extract coordinates of click for circular wave origin
+    let x = typeof window !== 'undefined' ? window.innerWidth - 60 : 0;
+    let y = 40;
+    if (event && 'clientX' in event && 'clientY' in event && event.clientX && event.clientY) {
+      x = event.clientX;
+      y = event.clientY;
+    }
+
+    // Spawn minimal water wave ripple
+    spawnWaterWaveRipple(x, y, isToDark);
+
+    // Modern View Transitions API for seamless circular wave reveal
+    const doc = document as any;
+    if (
+      typeof window !== 'undefined' &&
+      typeof doc.startViewTransition === 'function' &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      const endRadius = Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y)
+      );
+
+      const transition = doc.startViewTransition(() => {
+        setThemeState(mode);
+        setEffectiveTheme(resolved);
+        applyThemeToDOM(resolved);
+      });
+
+      transition.ready.then(() => {
+        document.documentElement.animate(
+          {
+            clipPath: [
+              `circle(0px at ${x}px ${y}px)`,
+              `circle(${endRadius}px at ${x}px ${y}px)`,
+            ],
+          },
+          {
+            duration: 750,
+            easing: 'cubic-bezier(0.25, 1, 0.4, 1)',
+            pseudoElement: '::view-transition-new(root)',
+          }
+        );
+      });
+    } else {
+      // Fallback
+      setThemeState(mode);
+      setEffectiveTheme(resolved);
+      applyThemeToDOM(resolved);
+    }
 
     if (typeof window !== 'undefined') {
       try {
@@ -71,9 +149,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
-  const toggleTheme = () => {
+  const toggleTheme = (event?: React.MouseEvent | MouseEvent | { clientX: number; clientY: number }) => {
     const next: ThemeMode = effectiveTheme === 'dark' ? 'light' : 'dark';
-    setTheme(next);
+    setTheme(next, event);
   };
 
   useEffect(() => {

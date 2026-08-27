@@ -112,13 +112,13 @@ const ResumeHistoryPanel: React.FC<Props> = ({ onView, refreshTrigger }) => {
                                     <span className="text-xs font-black text-indigo-400">{Math.round(entry.job_match_score)}%</span>
                                 </div>
                                 <div className="col-span-2 flex items-center justify-end gap-1">
-                                    <button onClick={() => onView(entry)} title="View" className="w-6 h-6 flex items-center justify-center rounded-lg bg-slate-800 hover:bg-indigo-500/20 text-slate-400 hover:text-indigo-400 transition-all">
+                                    <button onClick={() => onView(entry)} title="View" className="w-6 h-6 flex items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-800 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-slate-700 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all">
                                         <i className="fa-solid fa-eye text-[10px]"></i>
                                     </button>
-                                    <button onClick={() => toggleCompare(entry.id)} title="Compare" className={`w-6 h-6 flex items-center justify-center rounded-lg transition-all ${isComparing ? 'bg-indigo-500/30 text-indigo-400' : 'bg-slate-800 text-slate-500 hover:text-amber-400 hover:bg-amber-500/10'}`}>
+                                    <button onClick={() => toggleCompare(entry.id)} title="Compare" className={`w-6 h-6 flex items-center justify-center rounded-lg transition-all ${isComparing ? 'bg-indigo-100 dark:bg-indigo-500/30 text-indigo-600 dark:text-indigo-400' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-500 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-500/10'}`}>
                                         <i className="fa-solid fa-code-compare text-[10px]"></i>
                                     </button>
-                                    <button onClick={() => handleDelete(entry.id)} title="Delete" className="w-6 h-6 flex items-center justify-center rounded-lg bg-slate-800 hover:bg-rose-500/20 text-slate-500 hover:text-rose-400 transition-all">
+                                    <button onClick={() => handleDelete(entry.id)} title="Delete" className="w-6 h-6 flex items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-800 hover:bg-rose-100 dark:hover:bg-rose-500/20 text-slate-600 dark:text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 transition-all">
                                         <i className="fa-solid fa-trash text-[9px]"></i>
                                     </button>
                                 </div>

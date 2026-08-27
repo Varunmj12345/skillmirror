@@ -127,17 +127,17 @@ export const PageStatChip: React.FC<{
   suffix?: string;
 }> = ({ label, value, icon, color = 'slate', suffix }) => {
   const colorMap = {
-    cyan:    'text-blue-600 dark:text-cyan-400 bg-blue-50 dark:bg-cyan-500/8 border-blue-200 dark:border-cyan-500/20 shadow-light-sm dark:shadow-none',
-    emerald: 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/8 border-emerald-200 dark:border-emerald-500/20 shadow-light-sm dark:shadow-none',
-    amber:   'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/8 border-amber-200 dark:border-amber-500/20 shadow-light-sm dark:shadow-none',
-    rose:    'text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/8 border-rose-200 dark:border-rose-500/20 shadow-light-sm dark:shadow-none',
-    slate:   'text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-white/[0.03] border-slate-200 dark:border-white/[0.06] shadow-light-sm dark:shadow-none',
+    cyan:    'text-blue-700 dark:text-cyan-300 bg-blue-50/90 dark:bg-slate-900/90 dark:border-cyan-500/30 border-blue-200 shadow-light-sm dark:shadow-none',
+    emerald: 'text-emerald-700 dark:text-emerald-300 bg-emerald-50/90 dark:bg-slate-900/90 dark:border-emerald-500/30 border-emerald-200 shadow-light-sm dark:shadow-none',
+    amber:   'text-amber-700 dark:text-amber-300 bg-amber-50/90 dark:bg-slate-900/90 dark:border-amber-500/30 border-amber-200 shadow-light-sm dark:shadow-none',
+    rose:    'text-rose-700 dark:text-rose-300 bg-rose-50/90 dark:bg-slate-900/90 dark:border-rose-500/30 border-rose-200 shadow-light-sm dark:shadow-none',
+    slate:   'text-slate-700 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-900/90 dark:border-white/[0.08] border-slate-200 shadow-light-sm dark:shadow-none',
   };
   return (
-    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border text-[11px] font-mono ${colorMap[color]}`}>
+    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border text-[11px] font-mono transition-colors ${colorMap[color]}`}>
       {icon && <i className={`fa-solid ${icon} text-[10px]`} />}
-      <span className="font-bold">{value}{suffix ? ` ${suffix}` : ''}</span>
-      <span className="text-muted-foreground">{label}</span>
+      <span className="font-bold text-slate-900 dark:text-white">{value}{suffix ? ` ${suffix}` : ''}</span>
+      <span className="text-slate-600 dark:text-slate-400 font-medium">{label}</span>
     </div>
   );
 };

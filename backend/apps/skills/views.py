@@ -326,11 +326,79 @@ class ExtractSkillsView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        text = request.data.get('text', '')
+        text = request.data.get('text', '').strip()
         if not text:
-            return Response({'skills': []})
+            return Response({
+                'skills': [],
+                'required_skills': [],
+                'matched_skills': [],
+                'gapped_skills': [],
+                'match_percentage': 0
+            })
+
+        # 1. Extract raw skills using enhanced taxonomy
         skills = extract_skills_from_text(text)
-        return Response({'skills': skills})
+
+        # 2. Try Groq AI extraction for deeper contextual accuracy if available
+        api_key = os.environ.get("GROQ_API_KEY")
+        if api_key and len(text) > 30:
+            try:
+                from groq import Groq
+                client = Groq(api_key=api_key)
+                prompt = f"""Extract all required technical skills, software tools, frameworks, and domain knowledge from this job description:
+\"\"\"{text[:2000]}\"\"\"
+Return ONLY a valid JSON object with a key 'skills' containing a list of concise skill names (e.g. ["React", "PostgreSQL", "Docker"]). Do not include conversational text."""
+                completion = client.chat.completions.create(
+                    model="llama-3.1-8b-instant",
+                    messages=[{"role": "user", "content": prompt}],
+                    response_format={"type": "json_object"},
+                    max_tokens=300
+                )
+                ai_data = json.loads(completion.choices[0].message.content)
+                ai_skills = ai_data.get('skills', [])
+                if isinstance(ai_skills, list) and ai_skills:
+                    # Merge & deduplicate
+                    merged = list(set(skills + [s.strip() for s in ai_skills if isinstance(s, str) and len(s) < 40]))
+                    skills = sorted(merged)
+            except Exception as e:
+                print(f"AI skill extraction error fallback: {e}")
+
+        # 3. Retrieve user's current known skills (from ResumeData + UserSkill + UserProfile)
+        user_skills_set = set()
+        try:
+            if hasattr(request.user, 'resume_data') and request.user.resume_data:
+                for s in (request.user.resume_data.extracted_skills or []):
+                    user_skills_set.add(s.lower().strip())
+        except Exception:
+            pass
+
+        try:
+            for us in request.user.skills_owned.select_related('skill'):
+                if us.skill and us.skill.name:
+                    user_skills_set.add(us.skill.name.lower().strip())
+        except Exception:
+            pass
+
+        # 4. Cross reference into Matched vs Gapped
+        matched = []
+        gapped = []
+        for s in skills:
+            s_lower = s.lower().strip()
+            if any(s_lower == u or s_lower in u or u in s_lower for u in user_skills_set):
+                matched.append(s)
+            else:
+                gapped.append(s)
+
+        total_req = len(skills)
+        match_pct = round((len(matched) / total_req * 100)) if total_req > 0 else 0
+
+        return Response({
+            'skills': skills,
+            'required_skills': skills,
+            'matched_skills': matched,
+            'gapped_skills': gapped,
+            'match_percentage': match_pct
+        })
 
 class ResumeHistoryViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]

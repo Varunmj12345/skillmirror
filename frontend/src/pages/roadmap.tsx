@@ -643,9 +643,16 @@ const Roadmap: React.FC = () => {
               </StaggerChildren>
             </div>
 
-            {/* YouTube Learning Section */}
+            {/* YouTube & Elite Courses Learning Section */}
             <div className="pt-8 border-t border-slate-200 dark:border-white/10">
-              <YouTubeLearning skills={roadmap.required_skills?.length ? roadmap.required_skills : [targetRole]} />
+              <YouTubeLearning
+                skills={Array.from(new Set([
+                  ...(roadmap.required_skills || []),
+                  ...((roadmap.steps || []).flatMap((s: any) => s.skills || s.skills_list || [])),
+                  targetRole,
+                  domain
+                ].filter(Boolean))).slice(0, 10)}
+              />
             </div>
           </ScrollReveal>
         )}

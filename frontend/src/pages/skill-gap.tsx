@@ -75,7 +75,13 @@ const SkillGapPage: React.FC = () => {
     const [analytics, setAnalytics] = useState<any>(null);
     const [loading, setLoading] = useState(false);
     const [extracting, setExtracting] = useState(false);
-    const [extractedJDSkills, setExtractedJDSkills] = useState<string[]>([]);
+    const [jdExtraction, setJdExtraction] = useState<{
+        skills: string[];
+        required_skills: string[];
+        matched_skills: string[];
+        gapped_skills: string[];
+        match_percentage: number;
+    } | null>(null);
     const [showSuggestions, setShowSuggestions] = useState(false);
 
     const filteredSuggestions = newSkillName.length > 0
@@ -118,10 +124,30 @@ const SkillGapPage: React.FC = () => {
     const handleExtractJD = async () => {
         if (!jobDescription.trim()) return;
         setExtracting(true);
-        setExtractedJDSkills([]);
+        setJdExtraction(null);
         try {
             const res = await skillService.extractSkills(jobDescription) as any;
-            setExtractedJDSkills(res.skills);
+            const required = res.required_skills || res.skills || [];
+            const userSkillsLower = [
+                ...(resumeStatus?.skills || []),
+                ...manualSkills.map(m => m.name)
+            ].map(s => s.toLowerCase().trim());
+
+            const matched = required.filter((s: string) => 
+                userSkillsLower.some(u => u === s.toLowerCase().trim() || u.includes(s.toLowerCase().trim()) || s.toLowerCase().trim().includes(u))
+            );
+            const gapped = required.filter((s: string) => 
+                !userSkillsLower.some(u => u === s.toLowerCase().trim() || u.includes(s.toLowerCase().trim()) || s.toLowerCase().trim().includes(u))
+            );
+            const matchPct = required.length > 0 ? Math.round((matched.length / required.length) * 100) : 0;
+
+            setJdExtraction({
+                skills: required,
+                required_skills: required,
+                matched_skills: matched,
+                gapped_skills: gapped,
+                match_percentage: matchPct
+            });
         } catch (err) {
             console.error('Extraction failed', err);
         } finally {
@@ -282,29 +308,131 @@ const SkillGapPage: React.FC = () => {
                             </div>
                         </div>
 
-                        <div className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none">
-                            <h3 className="text-sm font-bold text-slate-700 dark:text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                                <i className="fa-solid fa-file-invoice text-indigo-600 dark:text-indigo-400"></i> Job Description Scan
+                        <div className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none space-y-4">
+                            <h3 className="text-sm font-bold text-slate-700 dark:text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                <i className="fa-solid fa-file-invoice text-indigo-600 dark:text-indigo-400"></i> Job Description Scanner
                             </h3>
-                            <p className="text-[11px] text-slate-500 mb-4 leading-relaxed font-medium">
-                                Paste a specific job description to find niche requirements and tools.
+                            <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
+                                Paste a specific job description to extract required skills and automatically identify skill gaps.
                             </p>
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 <textarea
                                     value={jobDescription}
                                     onChange={(e) => setJobDescription(e.target.value)}
-                                    placeholder="Paste JD here..."
+                                    placeholder="Paste JD here (e.g., We are looking for a Senior React & Node.js Engineer with Kafka, Redis, and AWS...)"
                                     className="sm-input h-32 px-4 py-3 text-sm resize-none"
                                 />
                                 <button
                                     onClick={handleExtractJD}
                                     disabled={extracting || !jobDescription.trim()}
-                                    className="w-full py-2.5 bg-slate-900 dark:bg-slate-800 hover:bg-blue-600 dark:hover:bg-slate-700 text-xs font-bold text-white dark:text-slate-300 uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-sm"
+                                    className="w-full py-2.5 bg-slate-900 dark:bg-slate-800 hover:bg-blue-600 dark:hover:bg-indigo-600 text-xs font-bold text-white uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-sm"
                                 >
-                                    {extracting ? <i className="fa-solid fa-circle-notch fa-spin"></i> : <i className="fa-solid fa-wand-sparkles"></i>}
-                                    Extract Skills
+                                    {extracting ? (
+                                        <>
+                                            <i className="fa-solid fa-circle-notch fa-spin text-xs" />
+                                            <span>Scanning Job Description...</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <i className="fa-solid fa-wand-sparkles text-xs" />
+                                            <span>Extract Required & Gapped Skills</span>
+                                        </>
+                                    )}
                                 </button>
                             </div>
+
+                            {/* Extracted Skills Categorization Display */}
+                            {jdExtraction && (
+                                <div className="mt-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-white/10 space-y-4 animate-in fade-in">
+                                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-2">
+                                        <div className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
+                                            <i className="fa-solid fa-chart-pie text-blue-500" />
+                                            <span>JD Match: {jdExtraction.match_percentage}%</span>
+                                        </div>
+                                        <span className="text-[10px] text-slate-500 font-bold">
+                                            {jdExtraction.skills.length} Required Skills Detected
+                                        </span>
+                                    </div>
+
+                                    {/* 1. Required Skills from JD */}
+                                    <div className="space-y-1.5">
+                                        <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-blue-600 dark:text-cyan-400 flex items-center justify-between">
+                                            <span>Required Skills (From JD)</span>
+                                            <span>({jdExtraction.required_skills.length})</span>
+                                        </div>
+                                        <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto custom-scrollbar pr-1">
+                                            {jdExtraction.required_skills.map((sk, idx) => (
+                                                <span key={idx} className="text-[10px] px-2 py-0.5 rounded-lg bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-cyan-300 font-bold border border-blue-200 dark:border-blue-500/20 flex items-center gap-1">
+                                                    <span>{sk}</span>
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* 2. Gapped / Missing Skills */}
+                                    <div className="space-y-1.5">
+                                        <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400 flex items-center justify-between">
+                                            <span>🔴 Gapped Skills (Missing)</span>
+                                            <span>({jdExtraction.gapped_skills.length})</span>
+                                        </div>
+                                        {jdExtraction.gapped_skills.length === 0 ? (
+                                            <div className="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1">
+                                                <i className="fa-solid fa-circle-check" />
+                                                <span>No skill gaps! You match all JD requirements.</span>
+                                            </div>
+                                        ) : (
+                                            <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto custom-scrollbar pr-1">
+                                                {jdExtraction.gapped_skills.map((sk, idx) => (
+                                                    <span key={idx} className="text-[10px] px-2 py-0.5 rounded-lg bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-300 font-bold border border-rose-200 dark:border-rose-500/20 flex items-center gap-1">
+                                                        <i className="fa-solid fa-triangle-exclamation text-[8px]" />
+                                                        <span>{sk}</span>
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* 3. Matched Skills */}
+                                    {jdExtraction.matched_skills.length > 0 && (
+                                        <div className="space-y-1.5">
+                                            <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 flex items-center justify-between">
+                                                <span>🟢 Matched In Your Profile</span>
+                                                <span>({jdExtraction.matched_skills.length})</span>
+                                            </div>
+                                            <div className="flex flex-wrap gap-1.5 max-h-20 overflow-y-auto custom-scrollbar pr-1">
+                                                {jdExtraction.matched_skills.map((sk, idx) => (
+                                                    <span key={idx} className="text-[10px] px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300 font-bold border border-emerald-200 dark:border-emerald-500/20 flex items-center gap-1">
+                                                        <i className="fa-solid fa-check text-[8px]" />
+                                                        <span>{sk}</span>
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Action Buttons */}
+                                    <div className="pt-2 flex flex-col gap-2">
+                                        {jdExtraction.gapped_skills.length > 0 && (
+                                            <button
+                                                onClick={() => {
+                                                    jdExtraction.gapped_skills.forEach(s => addManualSkill(s, 'Beginner'));
+                                                }}
+                                                className="w-full py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:hover:bg-rose-500/30 dark:text-rose-300 rounded-xl text-[11px] font-bold transition-all flex items-center justify-center gap-1.5 border border-rose-200 dark:border-rose-500/30"
+                                            >
+                                                <i className="fa-solid fa-plus" />
+                                                <span>Add All {jdExtraction.gapped_skills.length} Gapped Skills to Profile</span>
+                                            </button>
+                                        )}
+                                        <button
+                                            onClick={handleAnalyze}
+                                            className="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-[11px] font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm"
+                                        >
+                                            <i className="fa-solid fa-bolt" />
+                                            <span>Run Readiness Analysis for This JD</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
 

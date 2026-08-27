@@ -50,7 +50,7 @@ const AIFeatureSection = () => {
   const activeMode = aiModes.find((m) => m.id === activeId) || aiModes[0];
 
   return (
-    <section className="py-24 relative bg-background border-t border-white/[0.06] overflow-hidden">
+    <section className="py-24 relative bg-background border-t border-slate-200/80 dark:border-white/[0.06] overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
         {/* Header */}
         <motion.div
@@ -60,14 +60,14 @@ const AIFeatureSection = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded border border-white/[0.08] bg-pop text-[11px] font-mono font-bold uppercase tracking-widest text-slate-400 mb-4">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-slate-200 dark:border-white/[0.08] bg-card dark:bg-pop text-[11px] font-mono font-bold uppercase tracking-widest text-slate-700 dark:text-slate-300 shadow-light-sm dark:shadow-none mb-4">
             <Bullet variant="warning" size="sm" />
             <span>NEURAL INTERACTION SUITE</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-black text-white tracking-tight mb-4">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-black text-slate-900 dark:text-white tracking-tight mb-4">
             AI COPILOT RUNTIME MODES
           </h2>
-          <p className="sm-body-text max-w-2xl mx-auto text-slate-400">
+          <p className="sm-body-text max-w-2xl mx-auto text-slate-600 dark:text-slate-400 font-mono text-sm leading-relaxed">
             Switch reasoning context on demand. Tailored neural prompt templates optimized for software engineering and technical growth.
           </p>
         </motion.div>
@@ -82,22 +82,22 @@ const AIFeatureSection = () => {
                 <button
                   key={mode.id}
                   onClick={() => setActiveId(mode.id)}
-                  className={`w-full text-left p-4 rounded-xl border transition-all duration-300 ${
+                  className={`w-full text-left p-4 rounded-2xl border transition-all duration-300 ${
                     isActive
-                      ? 'bg-pop border-cyan-500/50 shadow-[0_0_20px_rgba(0,217,255,0.15)]'
-                      : 'bg-card/60 border-white/[0.06] hover:border-white/[0.15] hover:bg-card'
+                      ? 'bg-blue-50/90 dark:bg-slate-900 border-blue-500 dark:border-cyan-500/50 shadow-light-card dark:shadow-[0_0_20px_rgba(0,217,255,0.15)] ring-1 ring-blue-500/20 dark:ring-transparent'
+                      : 'bg-card dark:bg-slate-900/60 border-border dark:border-white/[0.06] hover:border-blue-300 dark:hover:border-white/[0.15] shadow-light-sm dark:shadow-none'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1.5">
                     <div className="flex items-center gap-2">
                       <Bullet variant={mode.bulletVariant} size="sm" />
-                      <span className="text-xs font-mono font-bold text-white tracking-wide">
+                      <span className="text-xs font-mono font-bold text-slate-900 dark:text-white tracking-wide">
                         {mode.label}
                       </span>
                     </div>
                     <Badge variant={mode.badgeVariant}>{mode.code}</Badge>
                   </div>
-                  <p className="text-[11px] font-mono text-slate-400 pl-4">
+                  <p className="text-[11px] font-mono text-slate-600 dark:text-slate-400 pl-4">
                     {mode.title}
                   </p>
                 </button>
@@ -123,35 +123,35 @@ const AIFeatureSection = () => {
                 bulletVariant={activeMode.bulletVariant}
                 addon={<Badge variant="outline-cyan">ONLINE • 24ms</Badge>}
               />
-              <CardContent className="p-5 bg-card min-h-[360px] flex flex-col justify-between relative z-20">
+              <CardContent className="p-5 bg-card dark:bg-slate-950/60 min-h-[360px] flex flex-col justify-between relative z-20">
                 {/* Prompt Section */}
                 <div className="space-y-4">
                   <div>
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500 block mb-1.5">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 block mb-1.5">
                       INPUT PROMPT QUERY:
                     </span>
-                    <div className="p-3 rounded bg-pop/80 border border-white/[0.06] text-xs font-mono text-cyan-300">
+                    <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-white/[0.06] text-xs font-mono text-blue-700 dark:text-cyan-300 font-semibold leading-relaxed">
                       &gt; {activeMode.promptSample}
                     </div>
                   </div>
 
                   {/* Output Simulation */}
                   <div>
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500 block mb-1.5">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 block mb-1.5">
                       SYNTHESIZED NEURAL TELEMETRY:
                     </span>
-                    <div className="p-3.5 rounded bg-background/90 border border-white/[0.06] text-xs font-mono text-slate-300 whitespace-pre-line leading-relaxed">
+                    <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-white/[0.06] text-xs font-mono text-slate-800 dark:text-slate-300 whitespace-pre-line leading-relaxed">
                       {activeMode.outputSample}
                     </div>
                   </div>
                 </div>
 
                 {/* Capability Tags */}
-                <div className="pt-4 mt-4 border-t border-white/[0.06] flex flex-wrap gap-2">
+                <div className="pt-4 mt-4 border-t border-slate-200/80 dark:border-white/[0.06] flex flex-wrap gap-2">
                   {activeMode.highlights.map((h) => (
                     <span
                       key={h}
-                      className="px-2.5 py-1 rounded bg-pop border border-white/[0.06] text-[10px] font-mono text-slate-400"
+                      className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-white/[0.06] text-[10px] font-mono font-bold text-slate-700 dark:text-slate-300 shadow-light-sm dark:shadow-none"
                     >
                       ✓ {h}
                     </span>
