@@ -413,10 +413,12 @@ const ResumePage: React.FC = () => {
       </Head>
 
       <CyberPageShell
-        badge="AI CAREER ENGINE • MOD-03"
+        moduleCode="MOD-03"
+        section="AI CAREER ENGINE"
+        badge="NEURAL MESH: ACTIVE"
         title="RESUME OPTIMIZER"
-        description="AI-powered resume analysis, ATS scoring, interactive live split-view builder, and verified template engine."
-        extraHeader={
+        subtitle="AI-powered resume analysis, ATS scoring, interactive live split-view builder, and verified template engine."
+        stats={
           <div className="flex flex-wrap gap-2.5 pt-1">
             <PageStatChip
               label="ATS Score"

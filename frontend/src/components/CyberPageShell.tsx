@@ -15,13 +15,15 @@ import { TVNoise } from './ui/tv-noise';
 
 interface CyberPageShellProps {
   /** Module code shown in breadcrumb, e.g. "MOD-02" */
-  moduleCode: string;
+  moduleCode?: string;
   /** Section breadcrumb label, e.g. "AI CAREER ENGINE" */
   section?: string;
   /** Main page title */
   title: string;
   /** Subtitle / description */
-  subtitle: string;
+  subtitle?: string;
+  /** Alias for subtitle */
+  description?: string;
   /** Badge text shown next to breadcrumb */
   badge?: string;
   /** Badge variant */
@@ -32,6 +34,8 @@ interface CyberPageShellProps {
   actions?: React.ReactNode;
   /** Optional bottom stats/chips row */
   stats?: React.ReactNode;
+  /** Alias for stats */
+  extraHeader?: React.ReactNode;
   /** Ambient glow color (tailwind class fragment like 'cyan' | 'indigo' | 'emerald' | 'amber') */
   glowColor?: 'cyan' | 'indigo' | 'emerald' | 'amber';
   children?: React.ReactNode;
@@ -45,18 +49,22 @@ const GLOW_MAP = {
 };
 
 export const CyberPageShell: React.FC<CyberPageShellProps> = ({
-  moduleCode,
+  moduleCode = 'MOD-03',
   section = 'AI CAREER ENGINE',
   title,
   subtitle,
+  description,
   badge,
   badgeVariant = 'outline-cyan',
   bulletVariant = 'cyan',
   actions,
   stats,
+  extraHeader,
   glowColor = 'cyan',
   children,
 }) => {
+  const displaySubtitle = subtitle || description || '';
+  const displayStats = stats || extraHeader;
   return (
     <div className="relative z-10 px-6 pt-8 pb-4 max-w-[1400px] mx-auto">
       {/* Ambient radial glow */}
@@ -92,7 +100,9 @@ export const CyberPageShell: React.FC<CyberPageShellProps> = ({
                 <h1 className="text-2xl sm:text-3xl font-display font-black text-foreground tracking-tight mb-1.5">
                   {title}
                 </h1>
-                <p className="text-xs font-mono text-muted-foreground max-w-xl">{subtitle}</p>
+                {displaySubtitle && (
+                  <p className="text-xs font-mono text-muted-foreground max-w-xl">{displaySubtitle}</p>
+                )}
               </div>
 
               {/* Right: actions slot */}
@@ -104,9 +114,9 @@ export const CyberPageShell: React.FC<CyberPageShellProps> = ({
             </div>
 
             {/* Stats / chips row */}
-            {stats && (
+            {displayStats && (
               <div className="mt-4 pt-4 border-t border-border flex flex-wrap items-center gap-3">
-                {stats}
+                {displayStats}
               </div>
             )}
           </div>
