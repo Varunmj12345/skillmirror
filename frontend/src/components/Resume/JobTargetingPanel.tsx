@@ -115,56 +115,58 @@ const JobTargetingPanel: React.FC = () => {
         }
     };
 
-    const matchColor = !result ? '' : result.match_pct >= 75 ? 'text-emerald-500 dark:text-emerald-400' : result.match_pct >= 50 ? 'text-amber-500 dark:text-amber-400' : 'text-rose-500 dark:text-rose-400';
-    const matchBg = !result ? '' : result.match_pct >= 75 ? 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/20' : result.match_pct >= 50 ? 'bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/20' : 'bg-rose-50 dark:bg-rose-500/10 border-rose-200 dark:border-rose-500/20';
+    const matchColor = !result ? '' : result.match_pct >= 75 ? 'text-emerald-400' : result.match_pct >= 50 ? 'text-amber-400' : 'text-rose-400';
+    const matchBg = !result ? '' : result.match_pct >= 75 ? 'bg-emerald-500/10 border-emerald-500/20' : result.match_pct >= 50 ? 'bg-amber-500/10 border-amber-500/20' : 'bg-rose-500/10 border-rose-500/20';
 
     return (
-        <div className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none space-y-5">
+        <div className="p-6 rounded-2xl bg-zinc-900/90 border border-zinc-800 space-y-4">
             <div>
-                <h3 className="text-sm font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
-                    <i className="fa-solid fa-bullseye text-rose-500 dark:text-rose-400 text-xs"></i>
-                    <span>Job Targeting & AI Optimizer</span>
-                </h3>
-                <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest mt-1">
-                    Paste a job description to analyze compatibility and tailor your resume
+                <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-sm bg-amber-400"></span>
+                    <h3 className="text-xs font-mono font-bold text-white uppercase tracking-widest">
+                        Job Targeting & AI Optimizer
+                    </h3>
+                </div>
+                <p className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider mt-1">
+                    Paste a target job specification to evaluate keyword alignment
                 </p>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3.5">
                 <textarea
                     value={jd}
                     onChange={e => setJD(e.target.value)}
-                    placeholder="Paste the full job description here (e.g. We are looking for a Senior Developer with React, Kafka, Redis, AWS...)..."
+                    placeholder="Paste job description text here (e.g., We are looking for a Senior Developer with React, Kafka, Redis, AWS...)..."
                     rows={5}
-                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 text-xs text-slate-900 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-600 outline-none focus:border-blue-500 dark:focus:border-indigo-500/50 resize-none transition-all shadow-sm"
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3.5 text-xs font-mono text-zinc-200 placeholder:text-zinc-600 outline-none focus:border-amber-400 resize-none transition-all"
                 />
 
                 <button
                     onClick={handleCompare}
                     disabled={loading || !jd.trim()}
-                    className="w-full py-3 bg-slate-900 dark:bg-slate-800 hover:bg-blue-600 dark:hover:bg-indigo-600 text-xs font-bold text-white uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-sm"
+                    className="w-full py-2.5 bg-zinc-800 hover:bg-zinc-700 text-xs font-mono font-bold text-white uppercase tracking-wider rounded-lg border border-zinc-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                 >
-                    {loading ? <i className="fa-solid fa-circle-notch fa-spin"></i> : <i className="fa-solid fa-magnifying-glass-chart"></i>}
-                    <span>{loading ? 'Analyzing Target Role...' : 'Compare Resume Against This Job'}</span>
+                    {loading ? <i className="fa-solid fa-circle-notch fa-spin text-amber-400"></i> : <i className="fa-solid fa-magnifying-glass-chart text-amber-400"></i>}
+                    <span>{loading ? 'Analyzing Target Role...' : 'Compare Resume Against Job'}</span>
                 </button>
 
                 {result && (
-                    <div className="space-y-4 animate-in fade-in duration-500 pt-2">
+                    <div className="space-y-4 animate-in fade-in duration-300 pt-2 font-mono">
                         {/* Match Score */}
-                        <div className={`p-4 rounded-2xl border ${matchBg} flex items-center gap-5`}>
+                        <div className={`p-4 rounded-xl border ${matchBg} flex items-center gap-4`}>
                             <div className="text-center shrink-0">
-                                <div className={`text-3xl font-black ${matchColor}`}>{result.match_pct}%</div>
-                                <div className="text-[9px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Match Score</div>
+                                <div className={`text-2xl font-bold font-mono ${matchColor}`}>{result.match_pct}%</div>
+                                <div className="text-[9px] font-mono text-zinc-500 uppercase tracking-wider">Match Score</div>
                             </div>
                             <div className="flex-1 space-y-1.5">
-                                <div className="h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                                <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
                                     <div
-                                        className={`h-full rounded-full transition-all duration-700 ${result.match_pct >= 75 ? 'bg-emerald-500' : result.match_pct >= 50 ? 'bg-amber-500' : 'bg-rose-500'}`}
+                                        className={`h-full rounded-full transition-all duration-700 ${result.match_pct >= 75 ? 'bg-emerald-400' : result.match_pct >= 50 ? 'bg-amber-400' : 'bg-rose-400'}`}
                                         style={{ width: `${result.match_pct}%` }}
                                     />
                                 </div>
-                                <p className="text-[10px] text-slate-600 dark:text-slate-400 font-medium">
-                                    {result.match_pct >= 75 ? 'Strong candidate alignment with job keywords.' : result.match_pct >= 50 ? 'Moderate match. Tailoring keywords will boost ATS ranking.' : 'Skill gaps identified. Optimize to bridge missing requirements.'}
+                                <p className="text-[10px] text-zinc-400">
+                                    {result.match_pct >= 75 ? 'High alignment with detected job keywords.' : result.match_pct >= 50 ? 'Moderate match. Keyword adaptation recommended.' : 'Noticeable competency delta identified.'}
                                 </p>
                             </div>
                         </div>
@@ -172,12 +174,12 @@ const JobTargetingPanel: React.FC = () => {
                         {/* Missing Skills */}
                         {result.missing_skills.length > 0 && (
                             <div className="space-y-1.5">
-                                <h4 className="text-[10px] font-mono font-bold text-rose-600 dark:text-rose-400 uppercase tracking-wider">
-                                    Missing Targeted Skills ({result.missing_skills.length})
+                                <h4 className="text-[10px] font-mono font-bold text-rose-400 uppercase tracking-wider">
+                                    Target Delta Skills ({result.missing_skills.length})
                                 </h4>
                                 <div className="flex flex-wrap gap-1.5">
                                     {result.missing_skills.map(s => (
-                                        <span key={s} className="px-2.5 py-1 bg-rose-50 text-rose-700 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 dark:text-rose-300 text-[10px] font-bold rounded-lg uppercase tracking-tight">
+                                        <span key={s} className="px-2 py-0.5 bg-zinc-950 border border-rose-500/20 text-rose-300 text-[10px] font-mono rounded">
                                             {s}
                                         </span>
                                     ))}
@@ -187,11 +189,11 @@ const JobTargetingPanel: React.FC = () => {
 
                         {/* Suggestions */}
                         <div className="space-y-1.5">
-                            <h4 className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">ATS Optimization Suggestions</h4>
+                            <h4 className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-wider">Optimization Actions</h4>
                             <div className="space-y-1.5">
                                 {result.suggestions.map((s, i) => (
-                                    <div key={i} className="flex items-start gap-2 text-xs text-slate-600 dark:text-slate-400">
-                                        <i className="fa-solid fa-check text-blue-500 text-[10px] mt-0.5 shrink-0" />
+                                    <div key={i} className="flex items-start gap-2 text-xs text-zinc-400">
+                                        <span className="w-1.5 h-1.5 rounded-sm bg-amber-400 mt-1.5 shrink-0"></span>
                                         <span>{s}</span>
                                     </div>
                                 ))}
@@ -202,42 +204,42 @@ const JobTargetingPanel: React.FC = () => {
                         <button
                             onClick={handleOptimize}
                             disabled={optimizing}
-                            className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/20"
+                            className="w-full py-2.5 bg-amber-400 hover:bg-amber-300 text-zinc-950 text-xs font-mono font-bold uppercase tracking-wider rounded-lg transition-all flex items-center justify-center gap-2"
                         >
                             {optimizing ? <i className="fa-solid fa-circle-notch fa-spin" /> : <i className="fa-solid fa-wand-magic-sparkles" />}
-                            <span>{optimizing ? 'Generating AI Tailored Resume...' : 'Generate AI Tailored Resume for This Job'}</span>
+                            <span>{optimizing ? 'Synthesizing Tailored Content...' : 'Generate AI Tailored Resume'}</span>
                         </button>
 
                         {/* Tailored Output Display */}
                         {optimizedData && (
-                            <div className="p-4 rounded-2xl bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-500/30 space-y-4 animate-in fade-in">
-                                <div className="flex items-center justify-between border-b border-indigo-200 dark:border-indigo-500/20 pb-2">
+                            <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-3 animate-in fade-in">
+                                <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
                                     <div className="flex items-center gap-2">
-                                        <i className="fa-solid fa-sparkles text-indigo-600 dark:text-indigo-400" />
-                                        <span className="text-xs font-bold text-slate-900 dark:text-white">AI Tailored Content Generated</span>
+                                        <span className="w-1.5 h-1.5 rounded-sm bg-amber-400"></span>
+                                        <span className="text-xs font-mono font-bold text-white uppercase tracking-wider">Tailored Content Synthesized</span>
                                     </div>
-                                    <span className="px-2.5 py-0.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 rounded-full text-[10px] font-black">
+                                    <span className="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded text-[10px] font-mono font-bold">
                                         Projected Match: {optimizedData.projected_match_pct}%
                                     </span>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <span className="text-[10px] font-mono font-bold text-indigo-700 dark:text-indigo-300 uppercase tracking-wider">
-                                        Targeted Professional Summary:
+                                <div className="space-y-1.5">
+                                    <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider">
+                                        Targeted Summary:
                                     </span>
-                                    <p className="text-xs text-slate-700 dark:text-slate-200 leading-relaxed bg-white dark:bg-slate-900/80 p-3 rounded-xl border border-indigo-100 dark:border-white/5">
+                                    <p className="text-xs text-zinc-300 leading-relaxed bg-zinc-900 p-3 rounded-lg border border-zinc-800">
                                         {optimizedData.tailored_summary}
                                     </p>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <span className="text-[10px] font-mono font-bold text-indigo-700 dark:text-indigo-300 uppercase tracking-wider">
-                                        Tailored Experience Bullet Points:
+                                <div className="space-y-1.5">
+                                    <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider">
+                                        Tailored Bullet Points:
                                     </span>
-                                    <ul className="space-y-1.5 text-xs text-slate-700 dark:text-slate-200">
+                                    <ul className="space-y-1.5 text-xs text-zinc-300">
                                         {optimizedData.optimized_bullets.map((b, idx) => (
-                                            <li key={idx} className="flex items-start gap-2 bg-white dark:bg-slate-900/80 p-2.5 rounded-xl border border-indigo-100 dark:border-white/5">
-                                                <i className="fa-solid fa-circle-arrow-right text-indigo-500 text-[10px] mt-0.5 shrink-0" />
+                                            <li key={idx} className="flex items-start gap-2 bg-zinc-900 p-2.5 rounded-lg border border-zinc-800">
+                                                <i className="fa-solid fa-arrow-right text-amber-400 text-[10px] mt-0.5 shrink-0" />
                                                 <span>{b}</span>
                                             </li>
                                         ))}
@@ -246,16 +248,16 @@ const JobTargetingPanel: React.FC = () => {
 
                                 <button
                                     onClick={handleApplyToBuilder}
-                                    className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm"
+                                    className="w-full py-2.5 bg-white hover:bg-zinc-200 text-zinc-950 rounded-lg text-xs font-mono font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2"
                                 >
-                                    <i className="fa-solid fa-check-double" />
-                                    <span>Apply Tailored Content to Resume Builder</span>
+                                    <i className="fa-solid fa-check-double text-[10px]" />
+                                    <span>Apply Content to Resume Builder</span>
                                 </button>
                             </div>
                         )}
 
                         {appliedToast && (
-                            <div className="p-3 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 rounded-xl text-emerald-700 dark:text-emerald-400 text-xs font-bold flex items-center gap-2 shadow-sm animate-in fade-in">
+                            <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-lg text-emerald-400 text-xs font-mono flex items-center gap-2">
                                 <i className="fa-solid fa-circle-check" />
                                 <span>{appliedToast}</span>
                             </div>

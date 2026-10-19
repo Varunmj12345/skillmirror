@@ -17,18 +17,18 @@ interface SkillRadarProps {
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white/95 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 backdrop-blur-xl p-3 rounded-2xl shadow-light-float dark:shadow-2xl">
-        <p className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2 border-b border-slate-100 dark:border-white/5 pb-1">
+      <div className="bg-zinc-950 border border-zinc-800 p-3 shadow-xl">
+        <p className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 mb-2 border-b border-zinc-800 pb-1">
           {payload[0].payload.name}
         </p>
         <div className="space-y-1">
           <div className="flex items-center justify-between gap-4">
-            <span className="text-[9px] font-mono font-bold uppercase text-blue-600 dark:text-indigo-400">Market Demand</span>
-            <span className="text-xs font-mono font-bold text-slate-900 dark:text-white">{payload[0].value}%</span>
+            <span className="text-[10px] font-mono text-amber-500">Market Demand</span>
+            <span className="text-xs font-mono font-medium text-white">{payload[0].value}%</span>
           </div>
           <div className="flex items-center justify-between gap-4">
-            <span className="text-[9px] font-mono font-bold uppercase text-emerald-600 dark:text-emerald-400">Your Match</span>
-            <span className="text-xs font-mono font-bold text-slate-900 dark:text-white">{payload[1]?.value}%</span>
+            <span className="text-[10px] font-mono text-emerald-400">Your Match</span>
+            <span className="text-xs font-mono font-medium text-white">{payload[1]?.value}%</span>
           </div>
         </div>
       </div>
@@ -38,52 +38,35 @@ const CustomTooltip = ({ active, payload }: any) => {
 };
 
 const SkillRadar: React.FC<SkillRadarProps> = ({ skills }) => {
-  const { effectiveTheme } = useTheme();
-  const isDark = effectiveTheme === 'dark';
-
   return (
-    <div className="p-6 rounded-2xl border border-slate-200/80 dark:border-white/5 bg-white dark:bg-slate-900/40 shadow-light-card dark:shadow-none relative overflow-hidden group min-h-[400px]">
-      {/* Decorative background effects */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 dark:bg-indigo-500/5 blur-[60px] -mr-16 -mt-16 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-32 h-32 bg-emerald-500/5 blur-[60px] -ml-16 -mb-16 pointer-events-none" />
-
-      <div className="flex justify-between items-center mb-6 relative z-10">
-        <h2 className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2.5">
-          <div className="w-6 h-6 rounded-lg bg-blue-50 dark:bg-indigo-500/10 flex items-center justify-center">
-            <i className="fa-solid fa-compass-drafting text-[10px] text-blue-600 dark:text-indigo-400 animate-pulse"></i>
-          </div>
-          Skill Intelligence Radar
-        </h2>
+    <div className="p-6 border border-zinc-800 bg-zinc-900/90 relative min-h-[380px]">
+      <div className="flex justify-between items-center mb-6 pb-3 border-b border-zinc-800/80">
+        <div className="flex items-center gap-2.5">
+          <div className="w-1.5 h-1.5 bg-amber-500" />
+          <h2 className="text-xs font-mono uppercase tracking-wider text-zinc-300">
+            Skill Intelligence Radar
+          </h2>
+        </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1.5">
-            <div className="w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-indigo-500 shadow-sm" />
-            <span className="text-[9px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Market</span>
+            <div className="w-2 h-2 bg-amber-500" />
+            <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400">Market</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-sm" />
-            <span className="text-[9px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Match</span>
+            <div className="w-2 h-2 bg-emerald-500" />
+            <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400">Match</span>
           </div>
         </div>
       </div>
 
-      <div className="w-full h-72 relative z-10">
+      <div className="w-full h-64 relative z-10">
         <ResponsiveContainer width="100%" height="100%">
           <RadarChart cx="50%" cy="50%" outerRadius="80%" data={skills}>
-            <defs>
-              <linearGradient id="gradientDemand" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={isDark ? "#6366f1" : "#2563eb"} stopOpacity={0.8}/>
-                <stop offset="95%" stopColor={isDark ? "#818cf8" : "#60a5fa"} stopOpacity={0.1}/>
-              </linearGradient>
-              <linearGradient id="gradientMatch" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
-                <stop offset="95%" stopColor="#34d399" stopOpacity={0.1}/>
-              </linearGradient>
-            </defs>
-            <PolarGrid stroke={isDark ? "#ffffff10" : "#e2e8f0"} strokeDasharray="3 3" />
+            <PolarGrid stroke="#27272a" strokeDasharray="3 3" />
             <PolarAngleAxis 
               dataKey="name" 
-              tick={{ fill: isDark ? '#94a3b8' : '#475569', fontSize: 10, fontWeight: 700, textAnchor: 'middle' }}
-              dy={5}
+              tick={{ fill: '#a1a1aa', fontSize: 10, fontFamily: 'monospace' }}
+              dy={4}
             />
             <PolarRadiusAxis 
               angle={30} 
@@ -94,35 +77,31 @@ const SkillRadar: React.FC<SkillRadarProps> = ({ skills }) => {
             <Radar
               name="Market Demand"
               dataKey="demand"
-              stroke={isDark ? "#6366f1" : "#2563eb"}
-              strokeWidth={2}
-              fill="url(#gradientDemand)"
-              fillOpacity={0.5}
-              animationDuration={1500}
-              animationEasing="ease-in-out"
+              stroke="#f59e0b"
+              strokeWidth={1.5}
+              fill="#f59e0b"
+              fillOpacity={0.2}
+              animationDuration={1000}
             />
             <Radar
               name="Your Match"
               dataKey="match"
               stroke="#10b981"
-              strokeWidth={2}
-              fill="url(#gradientMatch)"
-              fillOpacity={0.5}
-              animationDuration={2000}
-              animationEasing="ease-in-out"
+              strokeWidth={1.5}
+              fill="#10b981"
+              fillOpacity={0.25}
+              animationDuration={1200}
             />
             <Tooltip content={<CustomTooltip />} />
           </RadarChart>
         </ResponsiveContainer>
       </div>
 
-      <div className="mt-6 pt-4 border-t border-slate-100 dark:border-white/5 relative z-10">
-        <div className="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200/60 dark:border-white/5">
-          <div className="w-5 h-5 rounded-full bg-blue-50 dark:bg-indigo-500/10 flex items-center justify-center shrink-0">
-            <i className="fa-solid fa-circle-nodes text-[10px] text-blue-600 dark:text-indigo-400" />
-          </div>
-          <p className="text-[10px] font-mono text-slate-600 dark:text-slate-400 leading-relaxed italic">
-            Wedge analysis shows a <span className="text-slate-900 dark:text-white font-bold">14% delta</span> in core architectural alignment. Predicted efficiency will increase as your <span className="text-emerald-700 dark:text-emerald-400 font-bold">match wedge</span> expands.
+      <div className="mt-4 pt-3 border-t border-zinc-800">
+        <div className="p-3 border border-zinc-800 bg-zinc-950 flex items-center gap-2.5">
+          <i className="fa-solid fa-circle-nodes text-xs text-amber-500 shrink-0" />
+          <p className="text-xs font-mono text-zinc-400 leading-relaxed">
+            Wedge analysis shows a <span className="text-white font-medium">14% delta</span> in core architecture alignment.
           </p>
         </div>
       </div>
@@ -131,3 +110,4 @@ const SkillRadar: React.FC<SkillRadarProps> = ({ skills }) => {
 };
 
 export default SkillRadar;
+

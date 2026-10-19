@@ -1,8 +1,4 @@
-// @ts-nocheck
 import React from 'react';
-import { Bullet } from './ui/bullet';
-import { Badge } from './ui/badge';
-import { TVNoise } from './ui/tv-noise';
 
 const LocationDemand: React.FC = () => {
     const locations = [
@@ -14,84 +10,64 @@ const LocationDemand: React.FC = () => {
     ];
 
     return (
-        <div className="bg-pop rounded-2xl border border-white/[0.07] overflow-hidden mb-6 relative">
-            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent" />
-            <TVNoise opacity={0.02} />
-
-            <div className="p-6 border-b border-white/[0.05] flex justify-between items-center relative z-10">
+        <div className="bg-zinc-900/90 rounded-2xl border border-zinc-800 overflow-hidden mb-6 font-mono">
+            <div className="p-5 border-b border-zinc-800 flex justify-between items-center">
                 <div>
                     <div className="flex items-center gap-2 mb-1">
-                        <Bullet variant="success" size="sm" />
-                        <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500">GEOGRAPHIC DISTRIBUTION</span>
+                        <span className="w-1.5 h-1.5 rounded-sm bg-amber-400"></span>
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">GEOGRAPHIC DISTRIBUTION</span>
                     </div>
-                    <h3 className="text-base font-display font-black text-white">Top Hiring Hubs</h3>
-                    <p className="text-[11px] font-mono text-slate-500 mt-0.5">Based on active position feeds across Indian tech ecosystems</p>
+                    <h3 className="text-sm font-bold text-zinc-100">Top Hiring Hubs</h3>
+                    <p className="text-[11px] text-zinc-500 mt-0.5">Active tech employment corridors in India</p>
                 </div>
-                <Badge variant="outline-cyan">
-                    <i className="fa-solid fa-earth-asia mr-1.5 text-xs"></i> India Hub
-                </Badge>
+                <span className="px-2.5 py-1 rounded-md bg-zinc-950 border border-zinc-800 text-zinc-400 text-[10px] font-bold">
+                    India Core
+                </span>
             </div>
 
-            <div className="overflow-x-auto relative z-10">
-                <table className="min-w-full text-left text-xs font-mono whitespace-nowrap">
-                    <thead className="uppercase tracking-wider border-b border-white/[0.05] bg-white/[0.02] text-slate-400 text-[10px]">
+            <div className="overflow-x-auto">
+                <table className="min-w-full text-left text-xs whitespace-nowrap">
+                    <thead className="uppercase tracking-wider border-b border-zinc-800 bg-zinc-950/60 text-zinc-500 text-[10px]">
                         <tr>
-                            <th scope="col" className="px-6 py-3.5 font-bold">Node / Region</th>
-                            <th scope="col" className="px-6 py-3.5 font-bold">Active Postings</th>
-                            <th scope="col" className="px-6 py-3.5 font-bold">Avg Range</th>
-                            <th scope="col" className="px-6 py-3.5 font-bold">Remote Index</th>
+                            <th scope="col" className="px-5 py-3 font-bold">Node Region</th>
+                            <th scope="col" className="px-5 py-3 font-bold">Active Postings</th>
+                            <th scope="col" className="px-5 py-3 font-bold">Comp Band</th>
+                            <th scope="col" className="px-5 py-3 font-bold">Remote Index</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-white/[0.03]">
+                    <tbody className="divide-y divide-zinc-850">
                         {locations.map((loc, idx) => (
-                            <tr key={idx} className="hover:bg-white/[0.03] transition-colors group cursor-default">
-                                <td className="px-6 py-3.5">
+                            <tr key={idx} className="hover:bg-zinc-950/40 transition-colors">
+                                <td className="px-5 py-3.5">
                                     <div className="flex items-center">
-                                        <div className="w-6 h-6 rounded-lg bg-white/[0.04] border border-white/[0.08] text-slate-400 flex items-center justify-center mr-3 font-bold text-[10px] group-hover:border-cyan-500/40 group-hover:text-cyan-400 transition-colors">
+                                        <div className="w-5 h-5 rounded bg-zinc-950 border border-zinc-800 text-zinc-400 flex items-center justify-center mr-2.5 font-bold text-[9px]">
                                             {idx + 1}
                                         </div>
-                                        <span className="font-bold text-slate-200 group-hover:text-cyan-300 transition-colors">{loc.city}</span>
+                                        <span className="font-bold text-zinc-200">{loc.city}</span>
                                     </div>
                                 </td>
-                                <td className="px-6 py-3.5">
+                                <td className="px-5 py-3.5">
                                     <div className="flex items-center gap-2">
-                                        <span className="font-display font-black text-white text-sm">{loc.jobs.toLocaleString()}</span>
+                                        <span className="font-bold text-zinc-100 tabular-nums">{loc.jobs.toLocaleString()}</span>
                                         {loc.trend === 'High' && (
-                                            <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-500/10 border border-amber-500/20 text-amber-300">
+                                            <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-400/10 border border-amber-500/30 text-amber-400">
                                                 HOT 🔥
                                             </span>
                                         )}
                                     </div>
                                 </td>
-                                <td className="px-6 py-3.5">
-                                    <span className="bg-emerald-500/10 text-emerald-300 px-2 py-1 rounded-md border border-emerald-500/20 font-bold">
+                                <td className="px-5 py-3.5">
+                                    <span className="bg-zinc-950 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/30 font-bold tabular-nums">
                                         {loc.salary}
                                     </span>
                                 </td>
-                                <td className="px-6 py-3.5">
-                                    <div className="flex items-center">
-                                        <div className="w-20 h-1.5 bg-white/[0.06] rounded-full mr-2.5 overflow-hidden">
-                                            <div
-                                                className={`h-full rounded-full ${parseInt(loc.remote) > 50 ? 'bg-gradient-to-r from-cyan-400 to-emerald-400' : 'bg-gradient-to-r from-blue-500 to-indigo-500'}`}
-                                                style={{ width: loc.remote }}
-                                            ></div>
-                                        </div>
-                                        <span className="text-slate-400 font-bold">{loc.remote}</span>
-                                    </div>
+                                <td className="px-5 py-3.5 text-zinc-400 tabular-nums">
+                                    {loc.remote}
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
-            </div>
-            <div className="p-3.5 text-center border-t border-white/[0.05] bg-white/[0.01] relative z-10">
-                <button
-                    onClick={() => window.open('https://www.linkedin.com/jobs/search/?keywords=Software+Development&location=India', '_blank')}
-                    className="text-xs font-mono font-bold text-cyan-400 hover:text-cyan-300 transition-colors uppercase tracking-wider inline-flex items-center gap-1.5"
-                >
-                    <span>View Extended Regional Map</span>
-                    <i className="fa-solid fa-arrow-right text-[10px]"></i>
-                </button>
             </div>
         </div>
     );

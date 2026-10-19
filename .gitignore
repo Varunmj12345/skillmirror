@@ -33,3 +33,12 @@ coverage/
 debug*.txt
 debug*.py
 tsc_errors.txt
+
+# Android / Mobile Builds
+*.apk
+*.aab
+
+# Environment and Secrets
+.env*
+*.env
+

@@ -1,128 +1,213 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Shield,
+  ChevronLeft,
+  ChevronRight,
+  ChevronDown,
+  Folder,
+  FolderOpen,
+  Atom,
+  User,
+  LogOut,
+  FolderTree,
+  MinusSquare,
+  PlusSquare,
+} from 'lucide-react';
 import useAuth from '../hooks/useAuth';
 import NotificationBell from './NotificationBell';
 import ThemeToggle from './ThemeToggle';
 import apiClient from '../services/apiClient';
 
-interface NavItem {
-  href: string;
+interface HeaderProps {
+  collapsed?: boolean;
+  setCollapsed?: (val: boolean | ((prev: boolean) => boolean)) => void;
+}
+
+export interface TreeFileItem {
+  id: string;
+  name: string;
   label: string;
-  icon: string;
+  href: string;
+  icon?: string;
+  subRoutes?: string[];
 }
 
-interface NavSection {
-  title: string;
-  items: NavItem[];
+export interface TreeFolderItem {
+  id: string;
+  name: string;
+  label: string;
+  icon?: string;
+  files: TreeFileItem[];
 }
 
-const FALLBACK_NAV: NavSection[] = [
-  {
-    title: 'Command Center',
-    items: [{ href: '/dashboard', label: 'Intelligence Hub', icon: 'fa-gauge-high' }],
+const TREE_DATA: {
+  rootFile: TreeFileItem;
+  folders: TreeFolderItem[];
+} = {
+  rootFile: {
+    id: 'dashboard',
+    name: 'dashboard',
+    label: 'Command Center',
+    href: '/dashboard',
   },
-  {
-    title: 'AI Career Engines',
-    items: [
-      { href: '/roadmap',       label: 'Career Roadmap',   icon: 'fa-compass' },
-      { href: '/skill-gap',     label: 'Skill Gap Radar',  icon: 'fa-brain' },
-      { href: '/resume',        label: 'Resume Optimizer', icon: 'fa-file-shield' },
-      { href: '/mock-interview',label: 'Mock Interview',   icon: 'fa-headset' },
-      { href: '/job-intelligence', label: 'Job Intel',     icon: 'fa-magnifying-glass-chart' },
-      { href: '/smart-alerts',  label: 'Smart Alerts',     icon: 'fa-bell' },
-    ],
-  },
-  {
-    title: 'AI Practice & Assessments',
-    items: [
-      { href: '/problems', label: 'Practice Arena', icon: 'fa-code' },
-      { href: '/problems/matches', label: 'Gap Challenge Lab', icon: 'fa-bullseye' },
-      { href: '/projects/status-center', label: 'Scorecards & History', icon: 'fa-chart-line' },
-    ],
-  },
-  {
-    title: 'Identity & Settings',
-    items: [
-      { href: '/profile',  label: 'Career Identity',   icon: 'fa-id-card' },
-      { href: '/settings', label: 'Account Settings',  icon: 'fa-sliders' },
-    ],
-  },
-];
+  folders: [
+    {
+      id: 'diagnostic',
+      name: 'diagnostic',
+      label: 'Diagnostic & Intel',
+      files: [
+        {
+          id: 'skill-gap',
+          name: 'skill-gap',
+          label: 'Skill Gap Radar',
+          href: '/skill-gap',
+        },
+        {
+          id: 'resume',
+          name: 'resume',
+          label: 'Resume Optimizer',
+          href: '/resume',
+        },
+        {
+          id: 'job-intel',
+          name: 'job-intel',
+          label: 'Job Market Intel',
+          href: '/job-intelligence',
+        },
+      ],
+    },
+    {
+      id: 'roadmap',
+      name: 'roadmap',
+      label: 'Career Roadmap',
+      files: [
+        {
+          id: 'roadmap-seq',
+          name: 'roadmap',
+          label: 'Milestones & Path',
+          href: '/roadmap',
+        },
+        {
+          id: 'smart-alerts',
+          name: 'smart-alerts',
+          label: 'Signals & Nudges',
+          href: '/smart-alerts',
+        },
+      ],
+    },
+    {
+      id: 'practice',
+      name: 'practice',
+      label: 'Practice Studio',
+      files: [
+        {
+          id: 'problems',
+          name: 'problems',
+          label: 'Coding Arena',
+          href: '/problems',
+        },
+        {
+          id: 'gap-lab',
+          name: 'gap-challenges',
+          label: 'Gap Challenge Lab',
+          href: '/problems/matches',
+        },
+        {
+          id: 'mock-interview',
+          name: 'mock-interview',
+          label: 'AI Mock Interview',
+          href: '/mock-interview',
+          subRoutes: ['/mock-interview/session', '/mock-interview/result', '/mock-interview/live'],
+        },
+        {
+          id: 'scorecards',
+          name: 'scorecards',
+          label: 'Scorecards & History',
+          href: '/projects/status-center',
+        },
+      ],
+    },
+    {
+      id: 'system',
+      name: 'system',
+      label: 'Identity & Telemetry',
+      files: [
+        {
+          id: 'profile',
+          name: 'profile',
+          label: 'Career Identity',
+          href: '/profile',
+        },
+        {
+          id: 'settings',
+          name: 'settings',
+          label: 'Account Settings',
+          href: '/settings',
+        },
+        {
+          id: 'bot-telemetry',
+          name: 'bot-telemetry',
+          label: 'Bot Telemetry',
+          href: '/bot-analytics',
+        },
+      ],
+    },
+  ],
+};
 
-/* ── Section label ───────────────────────────────── */
-const SectionLabel: React.FC<{ title: string }> = ({ title }) => (
-  <div className="flex items-center gap-2 px-3 mb-2">
-    <div className="w-1.5 h-1.5 rounded-full bg-blue-500 dark:bg-cyan-500/60" />
-    <span className="text-[9px] font-mono font-bold uppercase tracking-[0.18em] text-slate-400 dark:text-slate-400">
-      {title}
-    </span>
-    <div className="flex-1 h-px bg-slate-200 dark:bg-white/[0.04]" />
-  </div>
-);
-
-/* ── Nav item button ───────────────────────────────────── */
-const NavBtn: React.FC<{ item: NavItem; isActive: boolean }> = ({ item, isActive }) => (
-  <Link href={item.href}>
-    <div
-      className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-200 group
-        ${isActive
-          ? 'bg-blue-50/90 dark:bg-cyan-500/10 text-blue-600 dark:text-cyan-300 font-bold shadow-light-sm dark:shadow-none'
-          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/[0.04]'
-        }`}
-    >
-      {/* Active indicator bar */}
-      {isActive && (
-        <motion.div
-          layoutId="activeNavBar"
-          className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-blue-600 dark:bg-cyan-400 rounded-r-full shadow-[0_0_8px_rgba(37,99,235,0.4)] dark:shadow-[0_0_8px_rgba(0,217,255,0.8)]"
-        />
-      )}
-
-      {/* Icon box */}
-      <div
-        className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all text-xs
-          ${isActive
-            ? 'bg-blue-100/90 border border-blue-200/80 text-blue-600 dark:bg-cyan-500/20 dark:border-cyan-500/30 dark:text-cyan-400 shadow-sm'
-            : 'bg-slate-100/80 dark:bg-white/[0.03] border border-slate-200/70 dark:border-white/[0.05] text-slate-500 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-slate-200 group-hover:bg-slate-200/60'
-          }`}
-      >
-        <i className={`fa-solid ${item.icon}`} />
-      </div>
-
-      <span className="text-xs font-mono font-semibold truncate">{item.label}</span>
-
-      {isActive && (
-        <div className="ml-auto w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-cyan-400 animate-pulse flex-shrink-0" />
-      )}
-    </div>
-  </Link>
-);
+/* ── Route matcher for file items ────────────────────── */
+const isFileActive = (file: TreeFileItem, currentPath: string): boolean => {
+  if (currentPath === file.href) return true;
+  if (file.subRoutes && file.subRoutes.some((r) => currentPath === r || currentPath.startsWith(r + '/'))) {
+    return true;
+  }
+  if (file.href !== '/' && file.href !== '/dashboard' && currentPath.startsWith(file.href + '/')) {
+    return true;
+  }
+  return false;
+};
 
 /* ═══════════════════════════════════════════════════════════
-   SIDEBAR / HEADER COMPONENT
+   VS CODE TREE EXPLORER SIDEBAR
    ═══════════════════════════════════════════════════════════ */
-const Header: React.FC = () => {
+const Header: React.FC<HeaderProps> = ({ collapsed: propCollapsed, setCollapsed: propSetCollapsed }) => {
   const { user, loading, logout } = useAuth() as any;
   const [mounted, setMounted] = useState(false);
-  const [navSections, setNavSections] = useState<NavSection[]>(FALLBACK_NAV);
   const [activeRole, setActiveRole] = useState<string>('student');
   const [activeDomain, setActiveDomain] = useState<string>('General');
-  const [collapsed, setCollapsed] = useState(false);
+  const [localCollapsed, setLocalCollapsed] = useState(false);
+  const collapsed = propCollapsed !== undefined ? propCollapsed : localCollapsed;
+  const setCollapsed = propSetCollapsed || setLocalCollapsed;
   const router = useRouter();
+  const currentPath = router.pathname;
+
+  // Folder open/closed states
+  const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({
+    diagnostic: true,
+    roadmap: true,
+    practice: true,
+    system: false,
+  });
+
+  // Admin dynamic folder injection
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const loadAuthorizedEngines = async () => {
     try {
       const res: any = await apiClient.get('/users/authorized-engines/');
       const data = res?.data || res;
-      if (data?.nav_sections) {
-        setNavSections(data.nav_sections);
-        setActiveRole(data.role || 'student');
-        setActiveDomain(data.domain || 'General');
+      if (data?.role) {
+        setActiveRole(data.role);
+        setIsAdmin(data.role === 'admin' || user?.is_staff);
+      }
+      if (data?.domain) {
+        setActiveDomain(data.domain);
       }
     } catch {
-      setNavSections(FALLBACK_NAV);
+      setIsAdmin(user?.is_staff || false);
     }
   };
 
@@ -131,54 +216,105 @@ const Header: React.FC = () => {
     if (user) loadAuthorizedEngines();
   }, [user]);
 
+  // Auto-expand folder when navigating into one of its files
+  useEffect(() => {
+    TREE_DATA.folders.forEach((folder) => {
+      const hasActiveChild = folder.files.some((f) => isFileActive(f, currentPath));
+      if (hasActiveChild) {
+        setOpenFolders((prev) => ({ ...prev, [folder.id]: true }));
+      }
+    });
+  }, [currentPath]);
+
+  const toggleFolder = (folderId: string) => {
+    setOpenFolders((prev) => ({
+      ...prev,
+      [folderId]: !prev[folderId],
+    }));
+  };
+
+  const expandAll = () => {
+    setOpenFolders({
+      diagnostic: true,
+      roadmap: true,
+      practice: true,
+      system: true,
+    });
+  };
+
+  const collapseAll = () => {
+    setOpenFolders({
+      diagnostic: false,
+      roadmap: false,
+      practice: false,
+      system: false,
+    });
+  };
+
   if (!mounted) return null;
 
   const sidebarW = collapsed ? 'w-[68px]' : 'w-72';
 
+  // Compute folders list (with optional admin items)
+  const foldersToRender = [...TREE_DATA.folders];
+  if (isAdmin) {
+    const sysFolder = foldersToRender.find((f) => f.id === 'system');
+    if (sysFolder && !sysFolder.files.some((f) => f.id === 'admin-control')) {
+      sysFolder.files = [
+        ...sysFolder.files,
+        {
+          id: 'admin-control',
+          name: 'admin-center',
+          label: 'Admin Control',
+          href: '/admin/problems',
+        },
+      ];
+    }
+  }
+
   return (
     <aside
-      className={`fixed inset-y-0 left-0 h-full z-50 bg-card border-r border-border hidden lg:flex flex-col transition-all duration-300 ${sidebarW} overflow-hidden shadow-light-sm dark:shadow-none`}
+      className={`fixed inset-y-0 left-0 h-full z-50 bg-zinc-950 border-r border-zinc-800 hidden lg:flex flex-col transition-all duration-300 ${sidebarW}`}
     >
-      {/* Top scanline decoration */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/20 dark:via-cyan-500/30 to-transparent pointer-events-none" />
-
       {/* ── Brand Section ── */}
-      <div className={`flex items-center ${collapsed ? 'justify-center px-0 py-5' : 'justify-between px-5 py-5'} border-b border-border`}>
-        {!collapsed && (
+      <div
+        className={`flex items-center ${
+          collapsed ? 'justify-center px-0 py-4' : 'justify-between px-4 py-4'
+        } border-b border-zinc-800`}
+      >
+        {!collapsed ? (
           <Link href="/">
-            <div className="flex items-center gap-3 cursor-pointer group">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 dark:from-blue-600 dark:to-cyan-500 flex items-center justify-center font-display font-black text-white text-xs shadow-md group-hover:scale-105 transition-transform flex-shrink-0">
-                SM
+            <div className="flex items-center gap-2.5 cursor-pointer group">
+              <div className="w-7 h-7 border border-amber-500/40 bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-black transition-colors shrink-0">
+                <Shield className="h-4 w-4" />
               </div>
               <div>
-                <div className="text-sm font-display font-black text-foreground tracking-widest uppercase">
-                  SkillMirror
+                <div className="text-xs font-mono font-bold text-zinc-100 tracking-tight flex items-center gap-1.5">
+                  SkillMirror <span className="text-amber-500 text-[10px] font-mono px-1 border border-amber-500/40 bg-amber-500/10">IDE</span>
                 </div>
-                <div className="text-[9px] font-mono text-muted-foreground uppercase tracking-[0.15em]">
-                  {activeDomain} Domain
+                <div className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">
+                  {activeDomain}
                 </div>
               </div>
             </div>
           </Link>
-        )}
-
-        {collapsed && (
+        ) : (
           <Link href="/">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 dark:from-blue-600 dark:to-cyan-500 flex items-center justify-center font-display font-black text-white text-xs shadow-md cursor-pointer hover:scale-105 transition-transform">
-              SM
+            <div className="w-7 h-7 border border-amber-500/40 bg-amber-500/10 flex items-center justify-center text-amber-500 cursor-pointer hover:bg-amber-500 hover:text-black transition-colors">
+              <Shield className="h-4 w-4" />
             </div>
           </Link>
         )}
 
         {/* Action icons: Theme Switcher & Collapse toggle */}
-        <div className={`${collapsed ? 'hidden' : 'flex'} items-center gap-1.5`}>
+        <div className={`${collapsed ? 'hidden' : 'flex'} items-center gap-1`}>
           <ThemeToggle variant="compact" />
           <button
-            onClick={() => setCollapsed((c) => !c)}
-            className="w-7 h-7 flex items-center justify-center rounded-lg bg-secondary border border-border text-muted-foreground hover:text-blue-600 dark:hover:text-cyan-400 hover:border-blue-300 dark:hover:border-cyan-500/30 transition-all text-[10px] flex-shrink-0"
+            onClick={() => setCollapsed(true)}
+            className="w-6 h-6 flex items-center justify-center bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-zinc-100 hover:border-zinc-700 transition-colors text-xs"
             title="Collapse Sidebar"
           >
-            <i className="fa-solid fa-chevron-left" />
+            <ChevronLeft className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
@@ -187,98 +323,229 @@ const Header: React.FC = () => {
       {collapsed && (
         <button
           onClick={() => setCollapsed(false)}
-          className="mx-auto mt-3 w-7 h-7 flex items-center justify-center rounded-lg bg-secondary border border-border text-muted-foreground hover:text-blue-600 dark:hover:text-cyan-400 hover:border-blue-300 dark:hover:border-cyan-500/30 transition-all text-[10px]"
+          className="mx-auto mt-2 w-7 h-7 flex items-center justify-center bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-zinc-100 hover:border-zinc-700 transition-colors text-xs"
           title="Expand Sidebar"
         >
-          <i className="fa-solid fa-chevron-right" />
+          <ChevronRight className="w-3.5 h-3.5" />
         </button>
       )}
 
-      {/* ── Status Pill ── */}
+      {/* ── VS Code Explorer Header ── */}
       {!collapsed && (
-        <div className="mx-4 mt-4 mb-1 flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-50/80 dark:bg-pop border border-emerald-200/70 dark:border-border text-[10px] font-mono">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
-          <span className="text-emerald-700 dark:text-emerald-400 font-bold uppercase tracking-wider truncate">NEURAL MESH: ACTIVE</span>
+        <div className="px-3 pt-3 pb-1.5 flex items-center justify-between border-b border-zinc-900 select-none">
+          <div className="flex items-center gap-1.5 text-[11px] font-mono text-zinc-400 uppercase tracking-wider font-semibold">
+            <FolderTree className="w-3.5 h-3.5 text-zinc-400" />
+            <span>Explorer</span>
+          </div>
+
+          <div className="flex items-center gap-0.5">
+            <button
+              onClick={expandAll}
+              title="Expand All Folders"
+              className="w-5 h-5 flex items-center justify-center hover:bg-zinc-800 text-zinc-500 hover:text-zinc-300 rounded transition-colors"
+            >
+              <PlusSquare className="w-3 h-3" />
+            </button>
+            <button
+              onClick={collapseAll}
+              title="Collapse All Folders"
+              className="w-5 h-5 flex items-center justify-center hover:bg-zinc-800 text-zinc-500 hover:text-zinc-300 rounded transition-colors"
+            >
+              <MinusSquare className="w-3 h-3" />
+            </button>
+          </div>
         </div>
       )}
 
-      {/* ── Navigation ── */}
-      <div className="flex-1 overflow-y-auto px-3 py-3 space-y-5 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-slate-300 dark:scrollbar-thumb-white/10 hover:scrollbar-thumb-slate-400 dark:hover:scrollbar-thumb-white/20">
-        {navSections.map((section) => (
-          <div key={section.title}>
-            {!collapsed && <SectionLabel title={section.title} />}
-            <nav className="space-y-0.5">
-              {section.items.map((item) => {
-                const isActive = router.pathname === item.href;
-                if (collapsed) {
-                  return (
-                    <Link key={item.href} href={item.href}>
-                      <div
-                        className={`w-10 h-10 mx-auto rounded-xl flex items-center justify-center transition-all text-xs cursor-pointer mb-1
-                          ${isActive
-                            ? 'bg-blue-50 border border-blue-200 text-blue-600 dark:bg-cyan-500/20 dark:border-cyan-500/30 dark:text-cyan-400 shadow-sm'
-                            : 'text-slate-500 hover:bg-secondary hover:text-foreground'
-                          }`}
-                        title={item.label}
-                      >
-                        <i className={`fa-solid ${item.icon}`} />
-                      </div>
-                    </Link>
-                  );
-                }
-                return <NavBtn key={item.href} item={item} isActive={isActive} />;
-              })}
-            </nav>
+      {/* ── Workspace Root Title (Clean, no yellow badge) ── */}
+      {!collapsed && (
+        <div className="px-3 py-1.5 flex items-center gap-1 text-[11px] font-mono font-bold text-zinc-300 uppercase tracking-wider select-none bg-zinc-900/40 border-b border-zinc-800/60">
+          <ChevronDown className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+          <span className="truncate">SKILLMIRROR-WORKSPACE</span>
+        </div>
+      )}
+
+      {/* ── File Tree Navigation ── */}
+      <div className="flex-1 overflow-y-auto px-2 py-2 space-y-0.5 scrollbar-thin scrollbar-thumb-zinc-800 hover:scrollbar-thumb-zinc-700">
+        {collapsed ? (
+          /* Collapsed Mini Sidebar Icons */
+          <div className="space-y-2">
+            <Link href={TREE_DATA.rootFile.href}>
+              <div
+                className={`w-9 h-9 mx-auto flex items-center justify-center transition-all text-xs cursor-pointer border rounded
+                  ${
+                    isFileActive(TREE_DATA.rootFile, currentPath)
+                      ? 'bg-amber-500/10 border-amber-500/40 text-amber-400 shadow-sm'
+                      : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-100 hover:border-zinc-700'
+                  }`}
+                title={TREE_DATA.rootFile.label}
+              >
+                <Atom className="w-4 h-4 text-cyan-400" />
+              </div>
+            </Link>
+
+            {foldersToRender.map((folder) => {
+              const hasActiveChild = folder.files.some((f) => isFileActive(f, currentPath));
+              const firstChild = folder.files[0];
+              return (
+                <Link key={folder.id} href={firstChild?.href || '#'}>
+                  <div
+                    className={`w-9 h-9 mx-auto flex items-center justify-center transition-all text-xs cursor-pointer border rounded
+                      ${
+                        hasActiveChild
+                          ? 'bg-amber-500/15 border-amber-500/40 text-amber-400'
+                          : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-100 hover:border-zinc-700'
+                      }`}
+                    title={`${folder.label} (${folder.files.length} items)`}
+                  >
+                    <Folder className="w-4 h-4 text-amber-400/90" />
+                  </div>
+                </Link>
+              );
+            })}
           </div>
-        ))}
+        ) : (
+          /* Full VS Code File Tree */
+          <>
+            {/* Root File: dashboard (No .tsx, No yellow badge) */}
+            <Link href={TREE_DATA.rootFile.href}>
+              <div
+                className={`flex items-center gap-2 px-2.5 py-1.5 rounded-none cursor-pointer text-xs font-mono transition-colors group select-none
+                  ${
+                    isFileActive(TREE_DATA.rootFile, currentPath)
+                      ? 'bg-zinc-800 text-zinc-100 font-semibold border-l-2 border-amber-500 shadow-sm'
+                      : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900/60'
+                  }`}
+              >
+                <Atom className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                <span className="truncate">{TREE_DATA.rootFile.name}</span>
+                <span className="text-[11px] text-zinc-500 font-sans ml-auto truncate opacity-70 group-hover:text-zinc-400">
+                  {TREE_DATA.rootFile.label}
+                </span>
+              </div>
+            </Link>
+
+            {/* Folders */}
+            {foldersToRender.map((folder) => {
+              const isOpen = openFolders[folder.id] ?? false;
+              const hasActiveChild = folder.files.some((f) => isFileActive(f, currentPath));
+
+              return (
+                <div key={folder.id} className="pt-0.5">
+                  {/* Folder Item Header (No yellow badge) */}
+                  <div
+                    onClick={() => toggleFolder(folder.id)}
+                    className={`flex items-center gap-1.5 px-2 py-1.5 rounded-none cursor-pointer text-xs font-mono select-none group transition-colors
+                      ${
+                        hasActiveChild
+                          ? 'text-zinc-200 bg-zinc-900/40'
+                          : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/50'
+                      }`}
+                  >
+                    <ChevronRight
+                      className={`w-3.5 h-3.5 text-zinc-500 group-hover:text-zinc-300 transition-transform duration-150 shrink-0 ${
+                        isOpen ? 'rotate-90 text-zinc-300' : ''
+                      }`}
+                    />
+                    {isOpen ? (
+                      <FolderOpen className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    ) : (
+                      <Folder className="w-3.5 h-3.5 text-amber-400/80 shrink-0" />
+                    )}
+                    <span className="font-semibold truncate">{folder.name}</span>
+                    <span className="text-[11px] text-zinc-500 font-sans ml-1 truncate opacity-70 group-hover:text-zinc-400">
+                      • {folder.label}
+                    </span>
+                  </div>
+
+                  {/* Folder Children (Files) with VS Code Indentation Line (No .tsx, No yellow badge) */}
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.15, ease: 'easeOut' }}
+                        className="overflow-hidden"
+                      >
+                        <div className="ml-[17px] pl-2 border-l border-zinc-800/80 space-y-0.5 my-0.5">
+                          {folder.files.map((file) => {
+                            const isChildActive = isFileActive(file, currentPath);
+                            return (
+                              <Link key={file.id} href={file.href}>
+                                <div
+                                  className={`flex items-center gap-2 px-2 py-1.5 rounded-none cursor-pointer text-xs font-mono transition-colors group select-none
+                                    ${
+                                      isChildActive
+                                        ? 'bg-zinc-800 text-zinc-100 font-semibold border-l-2 border-amber-500 shadow-sm'
+                                        : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
+                                    }`}
+                                >
+                                  <Atom className="w-3.5 h-3.5 text-cyan-400 shrink-0 group-hover:text-cyan-300" />
+                                  <span className="truncate">{file.name}</span>
+                                  <span className="text-[11px] text-zinc-500 font-sans ml-auto truncate opacity-70 group-hover:text-zinc-400">
+                                    {file.label}
+                                  </span>
+                                </div>
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            })}
+          </>
+        )}
       </div>
 
       {/* ── User Profile Footer ── */}
-      <div className={`border-t border-border ${collapsed ? 'p-2' : 'p-4'}`}>
+      <div className={`border-t border-zinc-800 bg-zinc-950 ${collapsed ? 'p-2' : 'p-3'}`}>
         {!loading && user ? (
           collapsed ? (
-            /* Collapsed: avatar + compact theme toggle */
             <div className="flex flex-col items-center gap-2">
-              <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-cyan-500/10 border border-blue-200 dark:border-cyan-500/25 flex items-center justify-center font-display font-black text-blue-600 dark:text-cyan-400 text-sm">
+              <div className="w-8 h-8 border border-zinc-700 bg-zinc-900 flex items-center justify-center font-mono font-medium text-zinc-100 text-xs">
                 {user?.username?.charAt(0).toUpperCase() || 'U'}
               </div>
               <ThemeToggle variant="compact" />
             </div>
           ) : (
-            /* Expanded: full user card with Theme & Notifications */
-            <div className="rounded-xl bg-slate-50 dark:bg-pop border border-border p-3.5 shadow-light-sm dark:shadow-sm">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-9 h-9 rounded-xl bg-blue-100/80 dark:bg-cyan-500/10 border border-blue-200 dark:border-cyan-500/25 flex items-center justify-center font-display font-black text-blue-600 dark:text-cyan-400 text-sm flex-shrink-0">
+            <div className="border border-zinc-800 bg-zinc-900/60 p-2.5 rounded-none">
+              <div className="flex items-center gap-2.5 mb-2.5">
+                <div className="w-7 h-7 border border-amber-500/40 bg-amber-500/10 flex items-center justify-center font-mono font-bold text-amber-500 text-xs shrink-0">
                   {user?.username?.charAt(0).toUpperCase() || 'U'}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-xs font-mono font-bold text-foreground truncate">{user?.username || 'Elite User'}</div>
+                  <div className="text-xs font-mono font-medium text-zinc-100 truncate">
+                    {user?.username || 'User'}
+                  </div>
                   <div className="flex items-center gap-1.5 mt-0.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 truncate">
+                    <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 truncate">
                       {activeRole}
                     </span>
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
-                  <ThemeToggle variant="compact" />
-                  <NotificationBell />
+                  <NotificationBell placement="sidebar" />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-1.5">
                 <Link href="/profile">
-                  <button className="w-full py-2 rounded-lg bg-white dark:bg-secondary border border-border text-[10px] font-mono font-bold text-slate-600 dark:text-muted-foreground hover:text-blue-600 dark:hover:text-cyan-300 hover:border-blue-200 dark:hover:border-cyan-500/25 transition-all uppercase tracking-wider shadow-light-sm">
-                    <i className="fa-solid fa-id-card text-[9px] mr-1" />
-                    Profile
+                  <button className="w-full py-1 bg-zinc-900 border border-zinc-700 text-[10px] font-mono text-zinc-300 hover:text-zinc-100 hover:border-zinc-500 transition-colors uppercase tracking-wider flex items-center justify-center gap-1 rounded-none">
+                    <User className="w-3 h-3 text-amber-500" />
+                    <span>Profile</span>
                   </button>
                 </Link>
                 <button
                   onClick={logout}
-                  className="w-full py-2 rounded-lg bg-white dark:bg-secondary border border-border text-[10px] font-mono font-bold text-slate-600 dark:text-muted-foreground hover:text-rose-600 dark:hover:text-rose-400 hover:border-rose-200 dark:hover:border-rose-500/20 transition-all uppercase tracking-wider shadow-light-sm"
+                  className="w-full py-1 bg-zinc-900 border border-zinc-700 text-[10px] font-mono text-zinc-300 hover:text-red-400 hover:border-red-500/40 transition-colors uppercase tracking-wider flex items-center justify-center gap-1 rounded-none"
                 >
-                  <i className="fa-solid fa-power-off text-[9px] mr-1" />
-                  Logout
+                  <LogOut className="w-3 h-3 text-red-400" />
+                  <span>Logout</span>
                 </button>
               </div>
             </div>
@@ -286,16 +553,10 @@ const Header: React.FC = () => {
         ) : !user && !loading ? (
           <div className="space-y-2">
             <Link href="/login">
-              <button className="sm-btn-primary w-full py-3 text-xs">
-                <i className="fa-solid fa-bolt text-xs" />
-                {!collapsed && 'Access Intelligence'}
+              <button className="w-full py-2 bg-white text-zinc-950 font-medium hover:bg-zinc-200 transition-colors text-xs uppercase tracking-wider rounded-none font-mono font-bold">
+                Access IDE
               </button>
             </Link>
-            {!collapsed && (
-              <div className="flex justify-center">
-                <ThemeToggle variant="pill" />
-              </div>
-            )}
           </div>
         ) : null}
       </div>

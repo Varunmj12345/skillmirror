@@ -5,6 +5,7 @@ import Layout from '../../components/Layout';
 import withAuth from '../../components/withAuth';
 import LiveInterviewSystem from '../../components/Interview/LiveInterviewSystem';
 import { interviewService } from '../../services/interviewService';
+import { CyberPageShell } from '../../components/CyberPageShell';
 
 const LiveInterviewPage: React.FC = () => {
     const router = useRouter();
@@ -32,8 +33,8 @@ const LiveInterviewPage: React.FC = () => {
 
     if (!id || !interviewData) return (
         <Layout>
-            <div className="flex items-center justify-center min-h-[60vh] text-slate-500 font-bold uppercase tracking-widest text-xs">
-                {id ? 'Initializing AI Proctor...' : 'Redirecting to Interview Setup...'}
+            <div className="flex items-center justify-center min-h-[60vh] text-zinc-500 font-mono uppercase tracking-wider text-xs">
+                {id ? 'INITIALIZING LIVE AI PROCTOR ENVIRONMENT...' : 'REDIRECTING TO PARAMETER COMPILER...'}
             </div>
         </Layout>
     );
@@ -41,44 +42,47 @@ const LiveInterviewPage: React.FC = () => {
     return (
         <Layout>
             <Head>
-                <title>Live AI Interview • SkillMirror</title>
+                <title>Live AI Interview • SkillMirror OS</title>
             </Head>
 
-            <section className="max-w-7xl mx-auto px-4 py-12">
-                <header className="mb-12">
-                    <p className="text-[10px] text-indigo-400 font-black uppercase tracking-[0.3em] mb-2">Real-time Persistence System</p>
-                    <h1 className="text-4xl font-black text-white leading-tight">Interactive AI <br /><span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">Interview Session</span></h1>
-                </header>
+            <CyberPageShell
+                moduleCode="INT-LIVE"
+                section="AI CAREER ENGINE"
+                badge="STREAM: ACTIVE"
+                title="LIVE PROCTOR SESSION"
+                subtitle="Real-time multi-modal audio transcription, behavioral telemetry, and adaptive questioning."
+            />
 
+            <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-12 space-y-8">
                 <LiveInterviewSystem
                     interviewId={parseInt(id as string)}
                     role={interviewData.role}
                     level={interviewData.experience_level}
-                    skills={interviewData.questions.map((q: any) => q.category)} // or use from metadata if available
+                    skills={interviewData.questions.map((q: any) => q.category)}
                     onComplete={handleComplete}
                 />
 
-                <div className="mt-12 grid md:grid-cols-3 gap-8">
-                    <div className="p-6 glass-panel border-white/5 bg-white/[0.02]">
-                        <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4">
-                            <i className="fa-solid fa-microphone-lines text-emerald-400"></i>
+                <div className="grid md:grid-cols-3 gap-4 pt-4">
+                    <div className="p-5 rounded-2xl bg-zinc-900/90 border border-zinc-800 space-y-2">
+                        <div className="w-8 h-8 rounded-lg bg-zinc-950 border border-zinc-800 flex items-center justify-center mb-2">
+                            <i className="fa-solid fa-microphone-lines text-amber-400 text-xs"></i>
                         </div>
-                        <h4 className="text-white font-bold mb-2">Voice Recognition</h4>
-                        <p className="text-xs text-slate-400 leading-relaxed">Speak naturally. Our AI uses real-time STT to understand your technical explanations and logic.</p>
+                        <h4 className="text-zinc-200 font-mono font-bold text-xs uppercase tracking-wider">Voice Recognition</h4>
+                        <p className="text-xs font-mono text-zinc-400 leading-relaxed">Continuous STT parsing captures architectural concepts, trade-offs, and terminology accuracy.</p>
                     </div>
-                    <div className="p-6 glass-panel border-white/5 bg-white/[0.02]">
-                        <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center mb-4">
-                            <i className="fa-solid fa-video text-indigo-400"></i>
+                    <div className="p-5 rounded-2xl bg-zinc-900/90 border border-zinc-800 space-y-2">
+                        <div className="w-8 h-8 rounded-lg bg-zinc-950 border border-zinc-800 flex items-center justify-center mb-2">
+                            <i className="fa-solid fa-video text-amber-400 text-xs"></i>
                         </div>
-                        <h4 className="text-white font-bold mb-2">Behavioral Tracking</h4>
-                        <p className="text-xs text-slate-400 leading-relaxed">Maintain eye contact. The system analyzes your non-verbal cues to assess confidence and clarity.</p>
+                        <h4 className="text-zinc-200 font-mono font-bold text-xs uppercase tracking-wider">Behavioral Tracking</h4>
+                        <p className="text-xs font-mono text-zinc-400 leading-relaxed">Vision heuristics track visual composure, engagement cadence, and speech hesitation markers.</p>
                     </div>
-                    <div className="p-6 glass-panel border-white/5 bg-white/[0.02]">
-                        <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center mb-4">
-                            <i className="fa-solid fa-brain text-purple-400"></i>
+                    <div className="p-5 rounded-2xl bg-zinc-900/90 border border-zinc-800 space-y-2">
+                        <div className="w-8 h-8 rounded-lg bg-zinc-950 border border-zinc-800 flex items-center justify-center mb-2">
+                            <i className="fa-solid fa-brain text-amber-400 text-xs"></i>
                         </div>
-                        <h4 className="text-white font-bold mb-2">Adaptive Questioning</h4>
-                        <p className="text-xs text-slate-400 leading-relaxed">The AI adjusts based on your answers, diving deeper into specific tech stacks if it detects expertise.</p>
+                        <h4 className="text-zinc-200 font-mono font-bold text-xs uppercase tracking-wider">Adaptive Ingestion</h4>
+                        <p className="text-xs font-mono text-zinc-400 leading-relaxed">The proctor dynamically generates subsequent questions based on your demonstrated technical depth.</p>
                     </div>
                 </div>
             </section>

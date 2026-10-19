@@ -1,41 +1,12 @@
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { loginUser, logoutUser, getCurrentUser } from '../services/auth';
+import { useAuth as useAuthContext } from '../context/AuthContext';
 
+/**
+ * Standardized useAuth hook bridging directly to the global AuthProvider context.
+ * Ensures consistent reactive user state across all components and navigation bars.
+ */
 const useAuth = () => {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const router = useRouter();
-
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const currentUser = await getCurrentUser();
-                setUser(currentUser);
-            } catch (error) {
-                console.error('Failed to fetch user:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchUser();
-    }, []);
-
-    const login = async (credentials: { email: string; password: string }) => {
-        const loggedInUser = await loginUser(credentials);
-        setUser(loggedInUser);
-        router.push('/dashboard');
-        return loggedInUser;
-    };
-
-    const logout = async () => {
-        await logoutUser();
-        setUser(null);
-        router.push('/');
-    };
-
-    return { user, loading, login, logout };
+    return useAuthContext();
 };
 
 export default useAuth;
+export { useAuth };

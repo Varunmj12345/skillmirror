@@ -1,0 +1,524 @@
+UI ID,Type,Label/Text,Placeholder,Role,Component,File:Line,Props/Attrs,State,Event,Handler,Function,Condition,Accessibility,Notes
+UI-001,motion.button,N/A,N/A,button,AICareerWidget,components/AICareerWidget.tsx:40,,N/A,None,N/A,N/A,N/A,implicit motion.button,Line 40 of components/AICareerWidget.tsx
+UI-002,Link,N/A,N/A,Link,AICareerWidget,components/AICareerWidget.tsx:80,"href=""/roadmap"" passHref",N/A,None,N/A,N/A,N/A,implicit Link,Line 80 of components/AICareerWidget.tsx
+UI-003,a,N/A,N/A,a,AICareerWidget,components/AICareerWidget.tsx:81,"className=""sm-nano text-slate-400 hover:text-white transiti",N/A,None,N/A,N/A,N/A,implicit a,Line 81 of components/AICareerWidget.tsx
+UI-004,ModeSelector,N/A,N/A,ModeSelector,AICareerWidget,components/AICareerWidget.tsx:90,selectedMode={selectedMode} onModeChange={setSelectedMode},N/A,onModeChange,{setSelectedMode},setSelectedMode,N/A,implicit ModeSelector,Line 90 of components/AICareerWidget.tsx
+UI-005,input,N/A,N/A,textbox,AICareerWidget,components/AICareerWidget.tsx:103,,N/A,None,N/A,N/A,N/A,implicit input,Line 103 of components/AICareerWidget.tsx
+UI-006,button,N/A,N/A,button,AICareerWidget,components/AICareerWidget.tsx:111,,N/A,None,N/A,N/A,N/A,implicit button,Line 111 of components/AICareerWidget.tsx
+UI-007,button,N/A,N/A,button,AIFeatureSection,components/AIFeatureSection.jsx:82,,N/A,None,N/A,N/A,N/A,implicit button,Line 82 of components/AIFeatureSection.jsx
+UI-008,Link,N/A,N/A,Link,AIFeatureSection,components/AIFeatureSection.jsx:108,"href=""/dashboard""",N/A,None,N/A,N/A,N/A,implicit Link,Line 108 of components/AIFeatureSection.jsx
+UI-009,button,N/A,N/A,button,AIFeatureSection,components/AIFeatureSection.jsx:109,"className=""sm-btn-primary w-full py-4 text-xs tracking-wide",N/A,None,N/A,N/A,N/A,implicit button,Line 109 of components/AIFeatureSection.jsx
+UI-010,button,N/A,N/A,button,CareerDigitalTwin,components/CareerDigitalTwin.tsx:308,,N/A,None,N/A,N/A,N/A,implicit button,Line 308 of components/CareerDigitalTwin.tsx
+UI-011,button,N/A,N/A,button,CareerDigitalTwin,components/CareerDigitalTwin.tsx:314,,N/A,None,N/A,N/A,N/A,implicit button,Line 314 of components/CareerDigitalTwin.tsx
+UI-012,button,N/A,N/A,button,CareerDigitalTwinModal,components/CareerDigitalTwinModal.tsx:124,,N/A,None,N/A,N/A,N/A,implicit button,Line 124 of components/CareerDigitalTwinModal.tsx
+UI-013,button,N/A,N/A,button,CareerIntelligenceModal,components/CareerIntelligenceModal.tsx:94,,N/A,None,N/A,N/A,N/A,implicit button,Line 94 of components/CareerIntelligenceModal.tsx
+UI-014,button,N/A,N/A,button,CareerIntelligenceModal,components/CareerIntelligenceModal.tsx:129,,N/A,None,N/A,N/A,N/A,implicit button,Line 129 of components/CareerIntelligenceModal.tsx
+UI-015,button,N/A,N/A,button,CareerIntelligenceModal,components/CareerIntelligenceModal.tsx:136,,N/A,None,N/A,N/A,N/A,implicit button,Line 136 of components/CareerIntelligenceModal.tsx
+UI-016,Link,N/A,N/A,Link,NavBtn,components/Header.tsx:67,href={item.href},N/A,None,N/A,N/A,N/A,implicit Link,Line 67 of components/Header.tsx
+UI-017,Link,N/A,N/A,Link,Header,components/Header.tsx:148,"href=""/""",N/A,None,N/A,N/A,N/A,implicit Link,Line 148 of components/Header.tsx
+UI-018,Link,N/A,N/A,Link,Header,components/Header.tsx:166,"href=""/""",N/A,None,N/A,N/A,N/A,implicit Link,Line 166 of components/Header.tsx
+UI-019,button,N/A,N/A,button,Header,components/Header.tsx:176,,N/A,None,N/A,N/A,N/A,implicit button,Line 176 of components/Header.tsx
+UI-020,button,N/A,N/A,button,Header,components/Header.tsx:188,,N/A,None,N/A,N/A,N/A,implicit button,Line 188 of components/Header.tsx
+UI-021,Link,N/A,N/A,Link,Header,components/Header.tsx:215,key={item.href} href={item.href},N/A,None,N/A,N/A,N/A,implicit Link,Line 215 of components/Header.tsx
+UI-022,Link,N/A,N/A,Link,Header,components/Header.tsx:270,"href=""/profile""",N/A,None,N/A,N/A,N/A,implicit Link,Line 270 of components/Header.tsx
+UI-023,button,N/A,N/A,button,Header,components/Header.tsx:271,"className=""w-full py-2 rounded-lg bg-white dark:bg-secondar",N/A,None,N/A,N/A,N/A,implicit button,Line 271 of components/Header.tsx
+UI-024,button,N/A,N/A,button,Header,components/Header.tsx:276,,N/A,None,N/A,N/A,N/A,implicit button,Line 276 of components/Header.tsx
+UI-025,Link,N/A,N/A,Link,Header,components/Header.tsx:288,"href=""/login""",N/A,None,N/A,N/A,N/A,implicit Link,Line 288 of components/Header.tsx
+UI-026,button,N/A,N/A,button,Header,components/Header.tsx:289,"className=""sm-btn-primary w-full py-3 text-xs""",N/A,None,N/A,N/A,N/A,implicit button,Line 289 of components/Header.tsx
+UI-027,Link,N/A,N/A,Link,HeroSection,components/HeroSection.jsx:54,href={user ? '/dashboard' : '/signup'},N/A,None,N/A,N/A,N/A,implicit Link,Line 54 of components/HeroSection.jsx
+UI-028,button,N/A,N/A,button,HeroSection,components/HeroSection.jsx:55,"className=""sm-btn-primary w-full sm:w-auto !py-4 !px-8 text",N/A,None,N/A,N/A,N/A,implicit button,Line 55 of components/HeroSection.jsx
+UI-029,Link,N/A,N/A,Link,HeroSection,components/HeroSection.jsx:60,"href=""/roadmap""",N/A,None,N/A,N/A,N/A,implicit Link,Line 60 of components/HeroSection.jsx
+UI-030,button,N/A,N/A,button,HeroSection,components/HeroSection.jsx:61,"className=""sm-btn-neon w-full sm:w-auto !py-4 !px-8 text-sm",N/A,None,N/A,N/A,N/A,implicit button,Line 61 of components/HeroSection.jsx
+UI-031,button,N/A,N/A,button,LiveInterviewSystem,components/Interview/LiveInterviewSystem.tsx:306,"onClick={startInterview} className=""w-full py-5 bg-indigo-6",N/A,onClick,{startInterview},startInterview,N/A,implicit button,Line 306 of components/Interview/LiveInterviewSystem.tsx
+UI-032,button,N/A,N/A,button,LiveInterviewSystem,components/Interview/LiveInterviewSystem.tsx:310,,N/A,None,N/A,N/A,N/A,implicit button,Line 310 of components/Interview/LiveInterviewSystem.tsx
+UI-033,button,N/A,N/A,button,LiveInterviewSystem,components/Interview/LiveInterviewSystem.tsx:319,onClick={() =,N/A,onClick,{(),,N/A,implicit button,Line 319 of components/Interview/LiveInterviewSystem.tsx
+UI-034,Link,N/A,N/A,Link,LandingFooter,components/LandingFooter.jsx:28,"href=""/signup""",N/A,None,N/A,N/A,N/A,implicit Link,Line 28 of components/LandingFooter.jsx
+UI-035,button,N/A,N/A,button,LandingFooter,components/LandingFooter.jsx:29,"className=""sm-btn-primary !py-4 !px-8 text-xs tracking-wide",N/A,None,N/A,N/A,N/A,implicit button,Line 29 of components/LandingFooter.jsx
+UI-036,Link,N/A,N/A,Link,LandingFooter,components/LandingFooter.jsx:34,"href=""/login""",N/A,None,N/A,N/A,N/A,implicit Link,Line 34 of components/LandingFooter.jsx
+UI-037,button,N/A,N/A,button,LandingFooter,components/LandingFooter.jsx:35,"className=""sm-btn-neon !py-4 !px-8 text-xs tracking-wider w",N/A,None,N/A,N/A,N/A,implicit button,Line 35 of components/LandingFooter.jsx
+UI-038,Link,Command Center,N/A,Link,LandingFooter,components/LandingFooter.jsx:74,"href=""/dashboard""",N/A,None,N/A,N/A,N/A,implicit Link,Line 74 of components/LandingFooter.jsx
+UI-039,a,Command Center,N/A,a,LandingFooter,components/LandingFooter.jsx:74,"className=""text-slate-600 dark:text-slate-400 hover:text-bl",N/A,None,N/A,N/A,N/A,implicit a,Line 74 of components/LandingFooter.jsx
+UI-040,Link,Career Roadmap,N/A,Link,LandingFooter,components/LandingFooter.jsx:75,"href=""/roadmap""",N/A,None,N/A,N/A,N/A,implicit Link,Line 75 of components/LandingFooter.jsx
+UI-041,a,Career Roadmap,N/A,a,LandingFooter,components/LandingFooter.jsx:75,"className=""text-slate-600 dark:text-slate-400 hover:text-bl",N/A,None,N/A,N/A,N/A,implicit a,Line 75 of components/LandingFooter.jsx
+UI-042,Link,Skill Gap Radar,N/A,Link,LandingFooter,components/LandingFooter.jsx:76,"href=""/skill-gap""",N/A,None,N/A,N/A,N/A,implicit Link,Line 76 of components/LandingFooter.jsx
+UI-043,a,Skill Gap Radar,N/A,a,LandingFooter,components/LandingFooter.jsx:76,"className=""text-slate-600 dark:text-slate-400 hover:text-bl",N/A,None,N/A,N/A,N/A,implicit a,Line 76 of components/LandingFooter.jsx
+UI-044,Link,Resume Optimizer,N/A,Link,LandingFooter,components/LandingFooter.jsx:77,"href=""/resume""",N/A,None,N/A,N/A,N/A,implicit Link,Line 77 of components/LandingFooter.jsx
+UI-045,a,Resume Optimizer,N/A,a,LandingFooter,components/LandingFooter.jsx:77,"className=""text-slate-600 dark:text-slate-400 hover:text-bl",N/A,None,N/A,N/A,N/A,implicit a,Line 77 of components/LandingFooter.jsx
+UI-046,Link,Mock Interview,N/A,Link,LandingFooter,components/LandingFooter.jsx:87,"href=""/mock-interview""",N/A,None,N/A,N/A,N/A,implicit Link,Line 87 of components/LandingFooter.jsx
+UI-047,a,Mock Interview,N/A,a,LandingFooter,components/LandingFooter.jsx:87,"className=""text-slate-600 dark:text-slate-400 hover:text-bl",N/A,None,N/A,N/A,N/A,implicit a,Line 87 of components/LandingFooter.jsx
+UI-048,Link,Job Market Radar,N/A,Link,LandingFooter,components/LandingFooter.jsx:88,"href=""/job-intelligence""",N/A,None,N/A,N/A,N/A,implicit Link,Line 88 of components/LandingFooter.jsx
+UI-049,a,Job Market Radar,N/A,a,LandingFooter,components/LandingFooter.jsx:88,"className=""text-slate-600 dark:text-slate-400 hover:text-bl",N/A,None,N/A,N/A,N/A,implicit a,Line 88 of components/LandingFooter.jsx
+UI-050,Link,Smart Alert Dispatch,N/A,Link,LandingFooter,components/LandingFooter.jsx:89,"href=""/smart-alerts""",N/A,None,N/A,N/A,N/A,implicit Link,Line 89 of components/LandingFooter.jsx
+UI-051,a,Smart Alert Dispatch,N/A,a,LandingFooter,components/LandingFooter.jsx:89,"className=""text-slate-600 dark:text-slate-400 hover:text-bl",N/A,None,N/A,N/A,N/A,implicit a,Line 89 of components/LandingFooter.jsx
+UI-052,Link,Career Digital Twin,N/A,Link,LandingFooter,components/LandingFooter.jsx:90,"href=""/profile""",N/A,None,N/A,N/A,N/A,implicit Link,Line 90 of components/LandingFooter.jsx
+UI-053,a,Career Digital Twin,N/A,a,LandingFooter,components/LandingFooter.jsx:90,"className=""text-slate-600 dark:text-slate-400 hover:text-bl",N/A,None,N/A,N/A,N/A,implicit a,Line 90 of components/LandingFooter.jsx
+UI-054,a,SECURITY POLICY,N/A,a,LandingFooter,components/LandingFooter.jsx:116,"href=""#"" className=""hover:text-slate-900 dark:hover:text-sl",N/A,None,N/A,N/A,N/A,implicit a,Line 116 of components/LandingFooter.jsx
+UI-055,a,TELEMETRY DOCS,N/A,a,LandingFooter,components/LandingFooter.jsx:117,"href=""#"" className=""hover:text-slate-900 dark:hover:text-sl",N/A,None,N/A,N/A,N/A,implicit a,Line 117 of components/LandingFooter.jsx
+UI-056,a,SUPPORT NODE,N/A,a,LandingFooter,components/LandingFooter.jsx:118,"href=""#"" className=""hover:text-slate-900 dark:hover:text-sl",N/A,None,N/A,N/A,N/A,implicit a,Line 118 of components/LandingFooter.jsx
+UI-057,Link,N/A,N/A,Link,Layout,components/Layout.tsx:22,"href=""/""",N/A,None,N/A,N/A,N/A,implicit Link,Line 22 of components/Layout.tsx
+UI-058,button,N/A,N/A,button,LocationDemand,components/LocationDemand.tsx:88,,N/A,None,N/A,N/A,N/A,implicit button,Line 88 of components/LocationDemand.tsx
+UI-059,button,N/A,N/A,button,ModeSelector,components/ModeSelector.tsx:20,,N/A,None,N/A,N/A,N/A,implicit button,Line 20 of components/ModeSelector.tsx
+UI-060,button,N/A,N/A,button,NotificationBell,components/NotificationBell.tsx:60,,N/A,None,N/A,N/A,N/A,implicit button,Line 60 of components/NotificationBell.tsx
+UI-061,button,"alertService.markAsRead(alert.id).then(loadAlerts)} className=""text-[9px] text-indigo-500/70 hover:text-indigo-400 font-black uppercase tracking-widest"">Read",N/A,button,NotificationBell,components/NotificationBell.tsx:121,onClick={() =,N/A,onClick,{(),,N/A,implicit button,Line 121 of components/NotificationBell.tsx
+UI-062,button,"alertService.dismiss(alert.id).then(loadAlerts)} className=""text-[9px] text-slate-600 hover:text-rose-400 font-black uppercase tracking-widest"">Clear",N/A,button,NotificationBell,components/NotificationBell.tsx:122,onClick={() =,N/A,onClick,{(),,N/A,implicit button,Line 122 of components/NotificationBell.tsx
+UI-063,button,N/A,N/A,button,NotificationBell,components/NotificationBell.tsx:133,,N/A,None,N/A,N/A,N/A,implicit button,Line 133 of components/NotificationBell.tsx
+UI-064,button,N/A,N/A,button,AIImprovementPanel,components/Resume/AIImprovementPanel.tsx:81,,N/A,None,N/A,N/A,N/A,implicit button,Line 81 of components/Resume/AIImprovementPanel.tsx
+UI-065,textarea,N/A,N/A,textbox,AIImprovementPanel,components/Resume/AIImprovementPanel.tsx:100,,N/A,None,N/A,N/A,N/A,implicit textarea,Line 100 of components/Resume/AIImprovementPanel.tsx
+UI-066,button,N/A,N/A,button,AIImprovementPanel,components/Resume/AIImprovementPanel.tsx:113,,N/A,None,N/A,N/A,N/A,implicit button,Line 113 of components/Resume/AIImprovementPanel.tsx
+UI-067,button,N/A,N/A,button,AIImprovementPanel,components/Resume/AIImprovementPanel.tsx:130,,N/A,None,N/A,N/A,N/A,implicit button,Line 130 of components/Resume/AIImprovementPanel.tsx
+UI-068,button,N/A,N/A,button,ATSScorePanel,components/Resume/ATSScorePanel.tsx:86,,N/A,None,N/A,N/A,N/A,implicit button,Line 86 of components/Resume/ATSScorePanel.tsx
+UI-069,button,N/A,N/A,button,CommunityGallery,components/Resume/CommunityGallery.tsx:149,,N/A,None,N/A,N/A,N/A,implicit button,Line 149 of components/Resume/CommunityGallery.tsx
+UI-070,button,N/A,N/A,button,CommunityGallery,components/Resume/CommunityGallery.tsx:166,onClick={() =,N/A,onClick,{(),,N/A,implicit button,Line 166 of components/Resume/CommunityGallery.tsx
+UI-071,input,N/A,N/A,textbox,CommunityGallery,components/Resume/CommunityGallery.tsx:187,,N/A,None,N/A,N/A,N/A,implicit input,Line 187 of components/Resume/CommunityGallery.tsx
+UI-072,select,N/A,N/A,select,CommunityGallery,components/Resume/CommunityGallery.tsx:196,,N/A,None,N/A,N/A,N/A,implicit select,Line 196 of components/Resume/CommunityGallery.tsx
+UI-073,option,{c},N/A,option,CommunityGallery,components/Resume/CommunityGallery.tsx:201,key={c},N/A,None,N/A,N/A,N/A,implicit option,Line 201 of components/Resume/CommunityGallery.tsx
+UI-074,input,N/A,N/A,textbox,CommunityGallery,components/Resume/CommunityGallery.tsx:207,,N/A,None,N/A,N/A,N/A,implicit input,Line 207 of components/Resume/CommunityGallery.tsx
+UI-075,button,"setSharing(false)} className=""flex-1 py-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-bold rounded-xl hover:bg-slate-200 transition-all"">Cancel",N/A,button,CommunityGallery,components/Resume/CommunityGallery.tsx:215,onClick={() =,N/A,onClick,{(),,N/A,implicit button,Line 215 of components/Resume/CommunityGallery.tsx
+UI-076,button,N/A,N/A,button,CommunityGallery,components/Resume/CommunityGallery.tsx:216,,N/A,None,N/A,N/A,N/A,implicit button,Line 216 of components/Resume/CommunityGallery.tsx
+UI-077,button,N/A,N/A,button,CommunityGallery,components/Resume/CommunityGallery.tsx:233,,N/A,None,N/A,N/A,N/A,implicit button,Line 233 of components/Resume/CommunityGallery.tsx
+UI-078,button,N/A,N/A,button,CommunityGallery,components/Resume/CommunityGallery.tsx:317,,N/A,None,N/A,N/A,N/A,implicit button,Line 317 of components/Resume/CommunityGallery.tsx
+UI-079,button,N/A,N/A,button,CustomTemplateEngine,components/Resume/CustomTemplateEngine.tsx:159,,N/A,None,N/A,N/A,N/A,implicit button,Line 159 of components/Resume/CustomTemplateEngine.tsx
+UI-080,input,N/A,N/A,textbox,CustomTemplateEngine,components/Resume/CustomTemplateEngine.tsx:167,"ref={fileInputRef} type=""file"" className=""hidden"" onChange=",N/A,onChange,{handleUpload},handleUpload,N/A,implicit input,Line 167 of components/Resume/CustomTemplateEngine.tsx
+UI-081,button,N/A,N/A,button,CustomTemplateEngine,components/Resume/CustomTemplateEngine.tsx:179,,N/A,None,N/A,N/A,N/A,implicit button,Line 179 of components/Resume/CustomTemplateEngine.tsx
+UI-082,button,N/A,N/A,button,CustomTemplateEngine,components/Resume/CustomTemplateEngine.tsx:205,,N/A,None,N/A,N/A,N/A,implicit button,Line 205 of components/Resume/CustomTemplateEngine.tsx
+UI-083,select,N/A,N/A,select,CustomTemplateEngine,components/Resume/CustomTemplateEngine.tsx:242,,N/A,None,N/A,N/A,N/A,implicit select,Line 242 of components/Resume/CustomTemplateEngine.tsx
+UI-084,option,Choose data field...,N/A,option,CustomTemplateEngine,components/Resume/CustomTemplateEngine.tsx:247,"value=""""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 247 of components/Resume/CustomTemplateEngine.tsx
+UI-085,option,{df.label},N/A,option,CustomTemplateEngine,components/Resume/CustomTemplateEngine.tsx:248,key={df.path} value={df.path},Local state bound,None,N/A,N/A,N/A,implicit option,Line 248 of components/Resume/CustomTemplateEngine.tsx
+UI-086,input,N/A,N/A,textbox,CustomTemplateEngine,components/Resume/CustomTemplateEngine.tsx:279,,N/A,None,N/A,N/A,N/A,implicit input,Line 279 of components/Resume/CustomTemplateEngine.tsx
+UI-087,button,N/A,N/A,button,CustomTemplateEngine,components/Resume/CustomTemplateEngine.tsx:286,,N/A,None,N/A,N/A,N/A,implicit button,Line 286 of components/Resume/CustomTemplateEngine.tsx
+UI-088,button,N/A,N/A,button,CustomTemplateEngine,components/Resume/CustomTemplateEngine.tsx:315,,N/A,None,N/A,N/A,N/A,implicit button,Line 315 of components/Resume/CustomTemplateEngine.tsx
+UI-089,input,N/A,N/A,textbox,CustomTemplateEngine,components/Resume/CustomTemplateEngine.tsx:330,,N/A,None,N/A,N/A,N/A,implicit input,Line 330 of components/Resume/CustomTemplateEngine.tsx
+UI-090,select,N/A,N/A,select,CustomTemplateEngine,components/Resume/CustomTemplateEngine.tsx:336,,N/A,None,N/A,N/A,N/A,implicit select,Line 336 of components/Resume/CustomTemplateEngine.tsx
+UI-091,option,Compact Space,N/A,option,CustomTemplateEngine,components/Resume/CustomTemplateEngine.tsx:341,"value=""compact""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 341 of components/Resume/CustomTemplateEngine.tsx
+UI-092,option,Normal Space,N/A,option,CustomTemplateEngine,components/Resume/CustomTemplateEngine.tsx:342,"value=""normal""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 342 of components/Resume/CustomTemplateEngine.tsx
+UI-093,option,Relaxed Space,N/A,option,CustomTemplateEngine,components/Resume/CustomTemplateEngine.tsx:343,"value=""relaxed""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 343 of components/Resume/CustomTemplateEngine.tsx
+UI-094,a,N/A,N/A,a,CustomTemplateEngine,components/Resume/CustomTemplateEngine.tsx:374,,N/A,None,N/A,N/A,N/A,implicit a,Line 374 of components/Resume/CustomTemplateEngine.tsx
+UI-095,button,N/A,N/A,button,ExportPanel,components/Resume/ExportPanel.tsx:138,,N/A,None,N/A,N/A,N/A,implicit button,Line 138 of components/Resume/ExportPanel.tsx
+UI-096,textarea,N/A,N/A,textbox,JobTargetingPanel,components/Resume/JobTargetingPanel.tsx:134,,N/A,None,N/A,N/A,N/A,implicit textarea,Line 134 of components/Resume/JobTargetingPanel.tsx
+UI-097,button,N/A,N/A,button,JobTargetingPanel,components/Resume/JobTargetingPanel.tsx:142,,N/A,None,N/A,N/A,N/A,implicit button,Line 142 of components/Resume/JobTargetingPanel.tsx
+UI-098,button,N/A,N/A,button,JobTargetingPanel,components/Resume/JobTargetingPanel.tsx:202,,N/A,None,N/A,N/A,N/A,implicit button,Line 202 of components/Resume/JobTargetingPanel.tsx
+UI-099,button,N/A,N/A,button,JobTargetingPanel,components/Resume/JobTargetingPanel.tsx:247,,N/A,None,N/A,N/A,N/A,implicit button,Line 247 of components/Resume/JobTargetingPanel.tsx
+UI-100,button,N/A,N/A,button,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:537,,N/A,None,N/A,N/A,N/A,implicit button,Line 537 of components/Resume/ResumeBuilderForm.tsx
+UI-101,input,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:588,,N/A,None,N/A,N/A,N/A,implicit input,Line 588 of components/Resume/ResumeBuilderForm.tsx
+UI-102,input,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:599,,N/A,None,N/A,N/A,N/A,implicit input,Line 599 of components/Resume/ResumeBuilderForm.tsx
+UI-103,input,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:610,,N/A,None,N/A,N/A,N/A,implicit input,Line 610 of components/Resume/ResumeBuilderForm.tsx
+UI-104,input,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:621,,N/A,None,N/A,N/A,N/A,implicit input,Line 621 of components/Resume/ResumeBuilderForm.tsx
+UI-105,input,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:632,,N/A,None,N/A,N/A,N/A,implicit input,Line 632 of components/Resume/ResumeBuilderForm.tsx
+UI-106,input,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:644,,N/A,None,N/A,N/A,N/A,implicit input,Line 644 of components/Resume/ResumeBuilderForm.tsx
+UI-107,input,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:654,,N/A,None,N/A,N/A,N/A,implicit input,Line 654 of components/Resume/ResumeBuilderForm.tsx
+UI-108,input,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:666,,N/A,None,N/A,N/A,N/A,implicit input,Line 666 of components/Resume/ResumeBuilderForm.tsx
+UI-109,input,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:677,,N/A,None,N/A,N/A,N/A,implicit input,Line 677 of components/Resume/ResumeBuilderForm.tsx
+UI-110,button,N/A,N/A,button,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:706,,N/A,None,N/A,N/A,N/A,implicit button,Line 706 of components/Resume/ResumeBuilderForm.tsx
+UI-111,input,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:720,,N/A,None,N/A,N/A,N/A,implicit input,Line 720 of components/Resume/ResumeBuilderForm.tsx
+UI-112,textarea,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:736,,N/A,None,N/A,N/A,N/A,implicit textarea,Line 736 of components/Resume/ResumeBuilderForm.tsx
+UI-113,button,N/A,N/A,button,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:768,,N/A,None,N/A,N/A,N/A,implicit button,Line 768 of components/Resume/ResumeBuilderForm.tsx
+UI-114,button,N/A,N/A,button,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:789,,N/A,None,N/A,N/A,N/A,implicit button,Line 789 of components/Resume/ResumeBuilderForm.tsx
+UI-115,input,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:802,,N/A,None,N/A,N/A,N/A,implicit input,Line 802 of components/Resume/ResumeBuilderForm.tsx
+UI-116,input,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:817,,N/A,None,N/A,N/A,N/A,implicit input,Line 817 of components/Resume/ResumeBuilderForm.tsx
+UI-117,input,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:832,,N/A,None,N/A,N/A,N/A,implicit input,Line 832 of components/Resume/ResumeBuilderForm.tsx
+UI-118,input,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:847,,N/A,None,N/A,N/A,N/A,implicit input,Line 847 of components/Resume/ResumeBuilderForm.tsx
+UI-119,button,N/A,N/A,button,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:865,,N/A,None,N/A,N/A,N/A,implicit button,Line 865 of components/Resume/ResumeBuilderForm.tsx
+UI-120,textarea,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:880,,N/A,None,N/A,N/A,N/A,implicit textarea,Line 880 of components/Resume/ResumeBuilderForm.tsx
+UI-121,button,N/A,N/A,button,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:891,,N/A,None,N/A,N/A,N/A,implicit button,Line 891 of components/Resume/ResumeBuilderForm.tsx
+UI-122,button,N/A,N/A,button,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:900,,N/A,None,N/A,N/A,N/A,implicit button,Line 900 of components/Resume/ResumeBuilderForm.tsx
+UI-123,button,N/A,N/A,button,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:940,,N/A,None,N/A,N/A,N/A,implicit button,Line 940 of components/Resume/ResumeBuilderForm.tsx
+UI-124,button,N/A,N/A,button,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:961,,N/A,None,N/A,N/A,N/A,implicit button,Line 961 of components/Resume/ResumeBuilderForm.tsx
+UI-125,input,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:974,,N/A,None,N/A,N/A,N/A,implicit input,Line 974 of components/Resume/ResumeBuilderForm.tsx
+UI-126,input,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:989,,N/A,None,N/A,N/A,N/A,implicit input,Line 989 of components/Resume/ResumeBuilderForm.tsx
+UI-127,input,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:1004,,N/A,None,N/A,N/A,N/A,implicit input,Line 1004 of components/Resume/ResumeBuilderForm.tsx
+UI-128,input,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:1019,,N/A,None,N/A,N/A,N/A,implicit input,Line 1019 of components/Resume/ResumeBuilderForm.tsx
+UI-129,button,N/A,N/A,button,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:1058,,N/A,None,N/A,N/A,N/A,implicit button,Line 1058 of components/Resume/ResumeBuilderForm.tsx
+UI-130,input,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:1070,,N/A,None,N/A,N/A,N/A,implicit input,Line 1070 of components/Resume/ResumeBuilderForm.tsx
+UI-131,button,N/A,N/A,button,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:1083,,N/A,None,N/A,N/A,N/A,implicit button,Line 1083 of components/Resume/ResumeBuilderForm.tsx
+UI-132,button,N/A,N/A,button,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:1090,,N/A,None,N/A,N/A,N/A,implicit button,Line 1090 of components/Resume/ResumeBuilderForm.tsx
+UI-133,button,N/A,N/A,button,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:1103,,N/A,None,N/A,N/A,N/A,implicit button,Line 1103 of components/Resume/ResumeBuilderForm.tsx
+UI-134,input,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:1145,,N/A,None,N/A,N/A,N/A,implicit input,Line 1145 of components/Resume/ResumeBuilderForm.tsx
+UI-135,button,N/A,N/A,button,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:1158,,N/A,None,N/A,N/A,N/A,implicit button,Line 1158 of components/Resume/ResumeBuilderForm.tsx
+UI-136,button,N/A,N/A,button,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:1180,,N/A,None,N/A,N/A,N/A,implicit button,Line 1180 of components/Resume/ResumeBuilderForm.tsx
+UI-137,button,N/A,N/A,button,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:1201,,N/A,None,N/A,N/A,N/A,implicit button,Line 1201 of components/Resume/ResumeBuilderForm.tsx
+UI-138,button,N/A,N/A,button,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:1237,,N/A,None,N/A,N/A,N/A,implicit button,Line 1237 of components/Resume/ResumeBuilderForm.tsx
+UI-139,button,N/A,N/A,button,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:1258,,N/A,None,N/A,N/A,N/A,implicit button,Line 1258 of components/Resume/ResumeBuilderForm.tsx
+UI-140,input,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:1271,,N/A,None,N/A,N/A,N/A,implicit input,Line 1271 of components/Resume/ResumeBuilderForm.tsx
+UI-141,input,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:1286,,N/A,None,N/A,N/A,N/A,implicit input,Line 1286 of components/Resume/ResumeBuilderForm.tsx
+UI-142,textarea,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:1308,,N/A,None,N/A,N/A,N/A,implicit textarea,Line 1308 of components/Resume/ResumeBuilderForm.tsx
+UI-143,button,N/A,N/A,button,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:1340,,N/A,None,N/A,N/A,N/A,implicit button,Line 1340 of components/Resume/ResumeBuilderForm.tsx
+UI-144,input,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:1355,,N/A,None,N/A,N/A,N/A,implicit input,Line 1355 of components/Resume/ResumeBuilderForm.tsx
+UI-145,input,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:1369,,N/A,None,N/A,N/A,N/A,implicit input,Line 1369 of components/Resume/ResumeBuilderForm.tsx
+UI-146,input,N/A,N/A,textbox,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:1384,,N/A,None,N/A,N/A,N/A,implicit input,Line 1384 of components/Resume/ResumeBuilderForm.tsx
+UI-147,button,N/A,N/A,button,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:1396,,N/A,None,N/A,N/A,N/A,implicit button,Line 1396 of components/Resume/ResumeBuilderForm.tsx
+UI-148,button,N/A,N/A,button,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:1437,,N/A,None,N/A,N/A,N/A,implicit button,Line 1437 of components/Resume/ResumeBuilderForm.tsx
+UI-149,button,N/A,N/A,button,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:1471,,N/A,None,N/A,N/A,N/A,implicit button,Line 1471 of components/Resume/ResumeBuilderForm.tsx
+UI-150,button,N/A,N/A,button,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:1487,,N/A,None,N/A,N/A,N/A,implicit button,Line 1487 of components/Resume/ResumeBuilderForm.tsx
+UI-151,button,N/A,N/A,button,ResumeBuilderForm,components/Resume/ResumeBuilderForm.tsx:1500,,N/A,None,N/A,N/A,N/A,implicit button,Line 1500 of components/Resume/ResumeBuilderForm.tsx
+UI-152,button,N/A,N/A,button,ResumeChoiceScreen,components/Resume/ResumeChoiceScreen.tsx:85,,N/A,None,N/A,N/A,N/A,implicit button,Line 85 of components/Resume/ResumeChoiceScreen.tsx
+UI-153,button,N/A,N/A,button,ResumeChoiceScreen,components/Resume/ResumeChoiceScreen.tsx:93,,N/A,None,N/A,N/A,N/A,implicit button,Line 93 of components/Resume/ResumeChoiceScreen.tsx
+UI-154,input,N/A,N/A,textbox,ResumeChoiceScreen,components/Resume/ResumeChoiceScreen.tsx:126,,N/A,None,N/A,N/A,N/A,implicit input,Line 126 of components/Resume/ResumeChoiceScreen.tsx
+UI-155,button,N/A,N/A,button,ResumeChoiceScreen,components/Resume/ResumeChoiceScreen.tsx:157,,N/A,None,N/A,N/A,N/A,implicit button,Line 157 of components/Resume/ResumeChoiceScreen.tsx
+UI-156,button,N/A,N/A,button,ResumeChoiceScreen,components/Resume/ResumeChoiceScreen.tsx:165,,N/A,None,N/A,N/A,N/A,implicit button,Line 165 of components/Resume/ResumeChoiceScreen.tsx
+UI-157,button,N/A,N/A,button,ResumeChoiceScreen,components/Resume/ResumeChoiceScreen.tsx:175,,N/A,None,N/A,N/A,N/A,implicit button,Line 175 of components/Resume/ResumeChoiceScreen.tsx
+UI-158,button,N/A,N/A,button,ResumeChoiceScreen,components/Resume/ResumeChoiceScreen.tsx:190,,N/A,None,N/A,N/A,N/A,implicit button,Line 190 of components/Resume/ResumeChoiceScreen.tsx
+UI-159,button,N/A,N/A,button,ResumeHistoryPanel,components/Resume/ResumeHistoryPanel.tsx:65,"className=""text-[10px] font-black px-3 py-1.5 bg-blue-600 d",N/A,None,N/A,N/A,N/A,implicit button,Line 65 of components/Resume/ResumeHistoryPanel.tsx
+UI-160,button,N/A,N/A,button,ResumeHistoryPanel,components/Resume/ResumeHistoryPanel.tsx:115,onClick={() =,N/A,onClick,{(),,N/A,implicit button,Line 115 of components/Resume/ResumeHistoryPanel.tsx
+UI-161,button,N/A,N/A,button,ResumeHistoryPanel,components/Resume/ResumeHistoryPanel.tsx:118,onClick={() =,N/A,onClick,{(),,N/A,implicit button,Line 118 of components/Resume/ResumeHistoryPanel.tsx
+UI-162,button,N/A,N/A,button,ResumeHistoryPanel,components/Resume/ResumeHistoryPanel.tsx:121,onClick={() =,N/A,onClick,{(),,N/A,implicit button,Line 121 of components/Resume/ResumeHistoryPanel.tsx
+UI-163,button,N/A,N/A,button,ResumeIntelligenceModal,components/Resume/ResumeIntelligenceModal.tsx:93,,N/A,None,N/A,N/A,N/A,implicit button,Line 93 of components/Resume/ResumeIntelligenceModal.tsx
+UI-164,button,N/A,N/A,button,ResumeIntelligenceModal,components/Resume/ResumeIntelligenceModal.tsx:166,,N/A,None,N/A,N/A,N/A,implicit button,Line 166 of components/Resume/ResumeIntelligenceModal.tsx
+UI-165,button,N/A,N/A,button,TemplateGallery,components/Resume/TemplateGallery.tsx:121,,N/A,None,N/A,N/A,N/A,implicit button,Line 121 of components/Resume/TemplateGallery.tsx
+UI-166,button,N/A,N/A,button,TemplateGallery,components/Resume/TemplateGallery.tsx:149,,N/A,None,N/A,N/A,N/A,implicit button,Line 149 of components/Resume/TemplateGallery.tsx
+UI-167,button,N/A,N/A,button,TemplateGallery,components/Resume/TemplateGallery.tsx:164,,N/A,None,N/A,N/A,N/A,implicit button,Line 164 of components/Resume/TemplateGallery.tsx
+UI-168,select,N/A,N/A,select,TemplateGallery,components/Resume/TemplateGallery.tsx:178,,N/A,None,N/A,N/A,N/A,implicit select,Line 178 of components/Resume/TemplateGallery.tsx
+UI-169,option,{f},N/A,option,TemplateGallery,components/Resume/TemplateGallery.tsx:183,key={f} value={f},Local state bound,None,N/A,N/A,N/A,implicit option,Line 183 of components/Resume/TemplateGallery.tsx
+UI-170,button,N/A,N/A,button,TemplateGallery,components/Resume/TemplateGallery.tsx:192,,N/A,None,N/A,N/A,N/A,implicit button,Line 192 of components/Resume/TemplateGallery.tsx
+UI-171,button,N/A,N/A,button,TemplateGallery,components/Resume/TemplateGallery.tsx:209,,N/A,None,N/A,N/A,N/A,implicit button,Line 209 of components/Resume/TemplateGallery.tsx
+UI-172,input,N/A,N/A,textbox,RoadmapBuilder,components/RoadmapBuilder.tsx:44,,N/A,None,N/A,N/A,N/A,implicit input,Line 44 of components/RoadmapBuilder.tsx
+UI-173,button,Generate Roadmap,N/A,button,RoadmapBuilder,components/RoadmapBuilder.tsx:53,onClick={generateRoadmap},N/A,onClick,{generateRoadmap},generateRoadmap,N/A,implicit button,Line 53 of components/RoadmapBuilder.tsx
+UI-174,a,N/A,N/A,a,AIRecommendations,components/SkillGap/AIRecommendations.tsx:147,,N/A,None,N/A,N/A,N/A,implicit a,Line 147 of components/SkillGap/AIRecommendations.tsx
+UI-175,button,N/A,N/A,button,ActionEngine,components/SkillGap/ActionEngine.tsx:101,,N/A,None,N/A,N/A,N/A,implicit button,Line 101 of components/SkillGap/ActionEngine.tsx
+UI-176,button,N/A,N/A,button,GapHeatmap,components/SkillGap/GapHeatmap.tsx:42,,N/A,None,N/A,N/A,N/A,implicit button,Line 42 of components/SkillGap/GapHeatmap.tsx
+UI-177,button,N/A,N/A,button,SkillComparisonPanels,components/SkillGap/SkillComparisonPanels.tsx:60,,N/A,None,N/A,N/A,N/A,implicit button,Line 60 of components/SkillGap/SkillComparisonPanels.tsx
+UI-178,button,N/A,N/A,button,SmartNotifications,components/SkillGap/SmartNotifications.tsx:52,,N/A,None,N/A,N/A,N/A,implicit button,Line 52 of components/SkillGap/SmartNotifications.tsx
+UI-179,button,N/A,N/A,button,SmartJobMatch,components/SmartJobMatch.tsx:76,,N/A,None,N/A,N/A,N/A,implicit button,Line 76 of components/SmartJobMatch.tsx
+UI-180,button,N/A,N/A,button,SmartJobMatch,components/SmartJobMatch.tsx:82,,N/A,None,N/A,N/A,N/A,implicit button,Line 82 of components/SmartJobMatch.tsx
+UI-181,button,N/A,N/A,button,SmartJobMatch,components/SmartJobMatch.tsx:185,,N/A,None,N/A,N/A,N/A,implicit button,Line 185 of components/SmartJobMatch.tsx
+UI-182,button,N/A,N/A,button,SmartJobMatch,components/SmartJobMatch.tsx:220,,N/A,None,N/A,N/A,N/A,implicit button,Line 220 of components/SmartJobMatch.tsx
+UI-183,button,N/A,N/A,button,ThemeToggle,components/ThemeToggle.tsx:30,,N/A,None,N/A,N/A,N/A,implicit button,Line 30 of components/ThemeToggle.tsx
+UI-184,button,N/A,N/A,button,ThemeToggle,components/ThemeToggle.tsx:58,,N/A,None,N/A,N/A,N/A,implicit button,Line 58 of components/ThemeToggle.tsx
+UI-185,button,N/A,N/A,button,YouTubeLearning,components/YouTubeLearning.tsx:270,,N/A,None,N/A,N/A,N/A,implicit button,Line 270 of components/YouTubeLearning.tsx
+UI-186,button,N/A,N/A,button,YouTubeLearning,components/YouTubeLearning.tsx:277,,N/A,None,N/A,N/A,N/A,implicit button,Line 277 of components/YouTubeLearning.tsx
+UI-187,button,N/A,N/A,button,YouTubeLearning,components/YouTubeLearning.tsx:284,,N/A,None,N/A,N/A,N/A,implicit button,Line 284 of components/YouTubeLearning.tsx
+UI-188,button,N/A,N/A,button,YouTubeLearning,components/YouTubeLearning.tsx:301,,N/A,None,N/A,N/A,N/A,implicit button,Line 301 of components/YouTubeLearning.tsx
+UI-189,input,N/A,N/A,textbox,YouTubeLearning,components/YouTubeLearning.tsx:321,,N/A,None,N/A,N/A,N/A,implicit input,Line 321 of components/YouTubeLearning.tsx
+UI-190,button,N/A,N/A,button,YouTubeLearning,components/YouTubeLearning.tsx:330,,N/A,None,N/A,N/A,N/A,implicit button,Line 330 of components/YouTubeLearning.tsx
+UI-191,div,N/A,N/A,div,YouTubeLearning,components/YouTubeLearning.tsx:347,"className=""relative aspect-video cursor-pointer overflow-hi",N/A,onClick,{(),,N/A,implicit div,Line 347 of components/YouTubeLearning.tsx
+UI-192,h3,N/A,N/A,h3,YouTubeLearning,components/YouTubeLearning.tsx:362,"className=""line-clamp-2 text-sm font-bold text-slate-900 da",N/A,onClick,{(),,N/A,implicit h3,Line 362 of components/YouTubeLearning.tsx
+UI-193,button,N/A,N/A,button,YouTubeLearning,components/YouTubeLearning.tsx:370,,N/A,None,N/A,N/A,N/A,implicit button,Line 370 of components/YouTubeLearning.tsx
+UI-194,button,N/A,N/A,button,YouTubeLearning,components/YouTubeLearning.tsx:379,,N/A,None,N/A,N/A,N/A,implicit button,Line 379 of components/YouTubeLearning.tsx
+UI-195,button,N/A,N/A,button,YouTubeLearning,components/YouTubeLearning.tsx:407,,N/A,None,N/A,N/A,N/A,implicit button,Line 407 of components/YouTubeLearning.tsx
+UI-196,a,N/A,N/A,a,YouTubeLearning,components/YouTubeLearning.tsx:463,,N/A,None,N/A,N/A,N/A,implicit a,Line 463 of components/YouTubeLearning.tsx
+UI-197,div,N/A,N/A,div,YouTubeLearning,components/YouTubeLearning.tsx:490,"className=""relative aspect-video rounded-2xl overflow-hidde",N/A,onClick,{(),,N/A,implicit div,Line 490 of components/YouTubeLearning.tsx
+UI-198,button,N/A,N/A,button,YouTubeLearning,components/YouTubeLearning.tsx:502,,N/A,None,N/A,N/A,N/A,implicit button,Line 502 of components/YouTubeLearning.tsx
+UI-199,button,N/A,N/A,button,YouTubeLearning,components/YouTubeLearning.tsx:508,onClick={() =,N/A,onClick,{(),,N/A,implicit button,Line 508 of components/YouTubeLearning.tsx
+UI-200,button,N/A,N/A,button,YouTubeLearning,components/YouTubeLearning.tsx:522,,N/A,None,N/A,N/A,N/A,implicit button,Line 522 of components/YouTubeLearning.tsx
+UI-201,button,N/A,N/A,button,YouTubeLearning,components/YouTubeLearning.tsx:536,,N/A,None,N/A,N/A,N/A,implicit button,Line 536 of components/YouTubeLearning.tsx
+UI-202,button,N/A,N/A,button,YouTubeLearning,components/YouTubeLearning.tsx:544,,N/A,None,N/A,N/A,N/A,implicit button,Line 544 of components/YouTubeLearning.tsx
+UI-203,button,N/A,N/A,button,AIInsightPanel,components/dashboard/AIInsightPanel.tsx:205,,N/A,None,N/A,N/A,N/A,implicit button,Line 205 of components/dashboard/AIInsightPanel.tsx
+UI-204,Link,N/A,N/A,Link,ModuleSummaries,components/dashboard/ModuleSummaries.tsx:120,href={mod.link},N/A,None,N/A,N/A,N/A,implicit Link,Line 120 of components/dashboard/ModuleSummaries.tsx
+UI-205,ToastItem,N/A,N/A,ToastItem,ToastProvider,components/motion/Toast.tsx:61,key={toast.id} toast={toast} onRemove={removeToast} /,N/A,onRemove,{removeToast},removeToast,N/A,implicit ToastItem,Line 61 of components/motion/Toast.tsx
+UI-206,button,N/A,N/A,button,ToastItem,components/motion/Toast.tsx:95,,N/A,None,N/A,N/A,N/A,implicit button,Line 95 of components/motion/Toast.tsx
+UI-207,button,N/A,N/A,button,PhaseMiniMock,components/roadmap/PhaseMiniMock.tsx:63,,N/A,None,N/A,N/A,N/A,implicit button,Line 63 of components/roadmap/PhaseMiniMock.tsx
+UI-208,button,N/A,N/A,button,PhaseMiniMock,components/roadmap/PhaseMiniMock.tsx:77,,N/A,None,N/A,N/A,N/A,implicit button,Line 77 of components/roadmap/PhaseMiniMock.tsx
+UI-209,button,N/A,N/A,button,ProductivityMode,components/roadmap/ProductivityMode.tsx:38,,N/A,None,N/A,N/A,N/A,implicit button,Line 38 of components/roadmap/ProductivityMode.tsx
+UI-210,button,N/A,N/A,button,ProductivityMode,components/roadmap/ProductivityMode.tsx:44,,N/A,None,N/A,N/A,N/A,implicit button,Line 44 of components/roadmap/ProductivityMode.tsx
+UI-211,button,N/A,N/A,button,MarketChart,components/ui/market-chart.tsx:77,,N/A,None,N/A,N/A,N/A,implicit button,Line 77 of components/ui/market-chart.tsx
+UI-212,Link,N/A,N/A,Link,ForbiddenPage,pages/403.tsx:29,"href=""/dashboard"" className=""w-full sm:w-auto""",N/A,None,N/A,N/A,N/A,implicit Link,Line 29 of pages/403.tsx
+UI-213,button,N/A,N/A,button,ForbiddenPage,pages/403.tsx:30,"className=""sm-btn-primary w-full py-3 px-6 text-xs font-bol",N/A,None,N/A,N/A,N/A,implicit button,Line 30 of pages/403.tsx
+UI-214,Link,N/A,N/A,Link,ForbiddenPage,pages/403.tsx:34,"href=""/admin/login"" className=""w-full sm:w-auto""",N/A,None,N/A,N/A,N/A,implicit Link,Line 34 of pages/403.tsx
+UI-215,button,N/A,N/A,button,ForbiddenPage,pages/403.tsx:35,"className=""w-full py-3 px-6 rounded-xl bg-slate-900 border",N/A,None,N/A,N/A,N/A,implicit button,Line 35 of pages/403.tsx
+UI-216,form,N/A,N/A,form,AdminLoginPage,pages/admin/login.tsx:68,"onSubmit={handleSubmit} className=""space-y-5 text-xs""",N/A,onSubmit,{handleSubmit},handleSubmit,N/A,implicit form,Line 68 of pages/admin/login.tsx
+UI-217,input,N/A,N/A,textbox,AdminLoginPage,pages/admin/login.tsx:82,,N/A,None,N/A,N/A,N/A,implicit input,Line 82 of pages/admin/login.tsx
+UI-218,input,N/A,N/A,textbox,AdminLoginPage,pages/admin/login.tsx:95,,N/A,None,N/A,N/A,N/A,implicit input,Line 95 of pages/admin/login.tsx
+UI-219,button,N/A,N/A,button,AdminLoginPage,pages/admin/login.tsx:103,,N/A,None,N/A,N/A,N/A,implicit button,Line 103 of pages/admin/login.tsx
+UI-220,button,N/A,N/A,button,AdminLoginPage,pages/admin/login.tsx:113,,N/A,None,N/A,N/A,N/A,implicit button,Line 113 of pages/admin/login.tsx
+UI-221,Link,N/A,N/A,Link,AdminLoginPage,pages/admin/login.tsx:132,"href=""/login""",N/A,None,N/A,N/A,N/A,implicit Link,Line 132 of pages/admin/login.tsx
+UI-222,button,N/A,N/A,button,AdminProblemPortalPage,pages/admin/problems.tsx:108,,N/A,None,N/A,N/A,N/A,implicit button,Line 108 of pages/admin/problems.tsx
+UI-223,button,N/A,N/A,button,AdminProblemPortalPage,pages/admin/problems.tsx:144,,N/A,None,N/A,N/A,N/A,implicit button,Line 144 of pages/admin/problems.tsx
+UI-224,button,N/A,N/A,button,AdminProblemPortalPage,pages/admin/problems.tsx:150,,N/A,None,N/A,N/A,N/A,implicit button,Line 150 of pages/admin/problems.tsx
+UI-225,button,N/A,N/A,button,AdminProblemPortalPage,pages/admin/problems.tsx:156,,N/A,None,N/A,N/A,N/A,implicit button,Line 156 of pages/admin/problems.tsx
+UI-226,button,N/A,N/A,button,Dashboard,pages/dashboard.tsx:171,"onClick={loadData} className=""sm-btn-primary w-full py-3 te",N/A,onClick,{loadData},loadData,N/A,implicit button,Line 171 of pages/dashboard.tsx
+UI-227,button,N/A,N/A,button,Dashboard,pages/dashboard.tsx:268,,N/A,None,N/A,N/A,N/A,implicit button,Line 268 of pages/dashboard.tsx
+UI-228,button,N/A,N/A,button,Dashboard,pages/dashboard.tsx:289,,N/A,None,N/A,N/A,N/A,implicit button,Line 289 of pages/dashboard.tsx
+UI-229,button,N/A,N/A,button,Dashboard,pages/dashboard.tsx:311,,N/A,None,N/A,N/A,N/A,implicit button,Line 311 of pages/dashboard.tsx
+UI-230,button,N/A,N/A,button,Dashboard,pages/dashboard.tsx:329,,N/A,None,N/A,N/A,N/A,implicit button,Line 329 of pages/dashboard.tsx
+UI-231,button,N/A,N/A,button,Dashboard,pages/dashboard.tsx:349,onClick={() =,N/A,onClick,{(),,N/A,implicit button,Line 349 of pages/dashboard.tsx
+UI-232,button,N/A,N/A,button,Dashboard,pages/dashboard.tsx:354,onClick={() =,N/A,onClick,{(),,N/A,implicit button,Line 354 of pages/dashboard.tsx
+UI-233,button,N/A,N/A,button,Dashboard,pages/dashboard.tsx:358,,N/A,None,N/A,N/A,N/A,implicit button,Line 358 of pages/dashboard.tsx
+UI-234,button,N/A,N/A,button,Dashboard,pages/dashboard.tsx:408,,N/A,None,N/A,N/A,N/A,implicit button,Line 408 of pages/dashboard.tsx
+UI-235,Link,N/A,N/A,Link,Dashboard,pages/dashboard.tsx:417,"href=""/profile""",N/A,None,N/A,N/A,N/A,implicit Link,Line 417 of pages/dashboard.tsx
+UI-236,button,N/A,N/A,button,Dashboard,pages/dashboard.tsx:418,"className=""flex items-center gap-2 px-4 py-2.5 rounded-xl b",N/A,None,N/A,N/A,N/A,implicit button,Line 418 of pages/dashboard.tsx
+UI-237,CareerDigitalTwinModal,N/A,N/A,CareerDigitalTwinModal,Dashboard,pages/dashboard.tsx:427,isOpen={isTwinOpen} onClose={() =,N/A,onClose,{(),,N/A,implicit CareerDigitalTwinModal,Line 427 of pages/dashboard.tsx
+UI-238,button,N/A,N/A,button,Dashboard,pages/dashboard.tsx:447,,N/A,None,N/A,N/A,N/A,implicit button,Line 447 of pages/dashboard.tsx
+UI-239,form,N/A,N/A,form,ForgotPassword,pages/forgot-password.tsx:43,"onSubmit={handleSubmit} className=""space-y-6""",N/A,onSubmit,{handleSubmit},handleSubmit,N/A,implicit form,Line 43 of pages/forgot-password.tsx
+UI-240,input,N/A,N/A,textbox,ForgotPassword,pages/forgot-password.tsx:57,,N/A,None,N/A,N/A,N/A,implicit input,Line 57 of pages/forgot-password.tsx
+UI-241,button,N/A,N/A,button,ForgotPassword,pages/forgot-password.tsx:67,,N/A,None,N/A,N/A,N/A,implicit button,Line 67 of pages/forgot-password.tsx
+UI-242,Link,N/A,N/A,Link,ForgotPassword,pages/forgot-password.tsx:77,"href=""/login""",N/A,None,N/A,N/A,N/A,implicit Link,Line 77 of pages/forgot-password.tsx
+UI-243,Link,N/A,N/A,Link,Home,pages/index.tsx:57,"href=""/""",N/A,None,N/A,N/A,N/A,implicit Link,Line 57 of pages/index.tsx
+UI-244,a,N/A,N/A,a,Home,pages/index.tsx:82,"href=""#telemetry"" className=""hover:text-blue-600 dark:hover",N/A,None,N/A,N/A,N/A,implicit a,Line 82 of pages/index.tsx
+UI-245,a,N/A,N/A,a,Home,pages/index.tsx:85,"href=""#features"" className=""hover:text-blue-600 dark:hover:",N/A,None,N/A,N/A,N/A,implicit a,Line 85 of pages/index.tsx
+UI-246,a,N/A,N/A,a,Home,pages/index.tsx:88,"href=""#ai-modes"" className=""hover:text-blue-600 dark:hover:",N/A,None,N/A,N/A,N/A,implicit a,Line 88 of pages/index.tsx
+UI-247,Link,N/A,N/A,Link,Home,pages/index.tsx:91,"href=""/dashboard""",N/A,None,N/A,N/A,N/A,implicit Link,Line 91 of pages/index.tsx
+UI-248,a,[Command Hub],N/A,a,Home,pages/index.tsx:92,"className=""hover:text-blue-600 dark:hover:text-white transi",N/A,None,N/A,N/A,N/A,implicit a,Line 92 of pages/index.tsx
+UI-249,Link,N/A,N/A,Link,Home,pages/index.tsx:100,"href=""/login""",N/A,None,N/A,N/A,N/A,implicit Link,Line 100 of pages/index.tsx
+UI-250,a,N/A,N/A,a,Home,pages/index.tsx:101,"className=""hidden sm:block text-xs font-mono font-bold text",N/A,None,N/A,N/A,N/A,implicit a,Line 101 of pages/index.tsx
+UI-251,Link,N/A,N/A,Link,Home,pages/index.tsx:106,href={user ? '/dashboard' : '/signup'},N/A,None,N/A,N/A,N/A,implicit Link,Line 106 of pages/index.tsx
+UI-252,a,N/A,N/A,a,Home,pages/index.tsx:107,"className=""sm-btn-primary !py-2.5 !px-5 text-xs font-bold u",N/A,None,N/A,N/A,N/A,implicit a,Line 107 of pages/index.tsx
+UI-253,select,N/A,N/A,select,JobIntelligencePage,pages/job-intelligence.tsx:90,,N/A,None,N/A,N/A,N/A,implicit select,Line 90 of pages/job-intelligence.tsx
+UI-254,option,Data Scientist,N/A,option,JobIntelligencePage,pages/job-intelligence.tsx:95,"value=""Data Scientist""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 95 of pages/job-intelligence.tsx
+UI-255,option,Frontend Developer,N/A,option,JobIntelligencePage,pages/job-intelligence.tsx:96,"value=""Frontend Developer""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 96 of pages/job-intelligence.tsx
+UI-256,option,Backend Developer,N/A,option,JobIntelligencePage,pages/job-intelligence.tsx:97,"value=""Backend Developer""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 97 of pages/job-intelligence.tsx
+UI-257,option,Full Stack Developer,N/A,option,JobIntelligencePage,pages/job-intelligence.tsx:98,"value=""Full Stack Developer""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 98 of pages/job-intelligence.tsx
+UI-258,option,DevOps Engineer,N/A,option,JobIntelligencePage,pages/job-intelligence.tsx:99,"value=""DevOps Engineer""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 99 of pages/job-intelligence.tsx
+UI-259,option,Product Manager,N/A,option,JobIntelligencePage,pages/job-intelligence.tsx:100,"value=""Product Manager""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 100 of pages/job-intelligence.tsx
+UI-260,button,N/A,N/A,button,JobIntelligencePage,pages/job-intelligence.tsx:102,,N/A,None,N/A,N/A,N/A,implicit button,Line 102 of pages/job-intelligence.tsx
+UI-261,button,N/A,N/A,button,JobIntelligencePage,pages/job-intelligence.tsx:111,"onClick={handleDownloadReport} className=""sm-btn-neon !py-2",N/A,onClick,{handleDownloadReport},handleDownloadReport,N/A,implicit button,Line 111 of pages/job-intelligence.tsx
+UI-262,button,N/A,N/A,button,JobIntelligencePage,pages/job-intelligence.tsx:114,onClick={() =,N/A,onClick,{(),,N/A,implicit button,Line 114 of pages/job-intelligence.tsx
+UI-263,button,N/A,N/A,button,JobIntelligencePage,pages/job-intelligence.tsx:148,,N/A,None,N/A,N/A,N/A,implicit button,Line 148 of pages/job-intelligence.tsx
+UI-264,input,N/A,N/A,textbox,InputField,pages/login.tsx:74,,N/A,None,N/A,N/A,N/A,implicit input,Line 74 of pages/login.tsx
+UI-265,button,N/A,N/A,button,Login,pages/login.tsx:286,,N/A,None,N/A,N/A,N/A,implicit button,Line 286 of pages/login.tsx
+UI-266,Link,N/A,N/A,Link,Login,pages/login.tsx:297,"href=""/forgot-password""",N/A,None,N/A,N/A,N/A,implicit Link,Line 297 of pages/login.tsx
+UI-267,a,N/A,N/A,a,Login,pages/login.tsx:298,"className=""text-[11px] font-mono text-cyan-400/80 hover:tex",N/A,None,N/A,N/A,N/A,implicit a,Line 298 of pages/login.tsx
+UI-268,button,N/A,N/A,button,Login,pages/login.tsx:304,,N/A,None,N/A,N/A,N/A,implicit button,Line 304 of pages/login.tsx
+UI-269,Link,N/A,N/A,Link,Login,pages/login.tsx:319,"href=""/signup""",N/A,None,N/A,N/A,N/A,implicit Link,Line 319 of pages/login.tsx
+UI-270,a,N/A,N/A,a,Login,pages/login.tsx:320,"className=""text-cyan-400 hover:text-cyan-300 font-bold tran",N/A,None,N/A,N/A,N/A,implicit a,Line 320 of pages/login.tsx
+UI-271,input,N/A,N/A,textbox,Login,pages/login.tsx:348,,N/A,None,N/A,N/A,N/A,implicit input,Line 348 of pages/login.tsx
+UI-272,button,N/A,N/A,button,Login,pages/login.tsx:359,"type=""submit"" disabled={loading} className=""sm-btn-primary",N/A,None,N/A,N/A,Disabled if: loading,implicit button,Line 359 of pages/login.tsx
+UI-273,button,N/A,N/A,button,Login,pages/login.tsx:365,,N/A,None,N/A,N/A,N/A,implicit button,Line 365 of pages/login.tsx
+UI-274,button,N/A,N/A,button,MockInterviewHistory,pages/mock-interview/history.tsx:42,,N/A,None,N/A,N/A,N/A,implicit button,Line 42 of pages/mock-interview/history.tsx
+UI-275,input,N/A,N/A,textbox,MockInterviewSetup,pages/mock-interview/index.tsx:112,,N/A,None,N/A,N/A,N/A,implicit input,Line 112 of pages/mock-interview/index.tsx
+UI-276,select,N/A,N/A,select,MockInterviewSetup,pages/mock-interview/index.tsx:124,,N/A,None,N/A,N/A,N/A,implicit select,Line 124 of pages/mock-interview/index.tsx
+UI-277,option,Entry (0-1 year),N/A,option,MockInterviewSetup,pages/mock-interview/index.tsx:129,"value=""Entry""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 129 of pages/mock-interview/index.tsx
+UI-278,option,Mid (2-5 years),N/A,option,MockInterviewSetup,pages/mock-interview/index.tsx:130,"value=""Mid""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 130 of pages/mock-interview/index.tsx
+UI-279,option,Senior (5+ years),N/A,option,MockInterviewSetup,pages/mock-interview/index.tsx:131,"value=""Senior""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 131 of pages/mock-interview/index.tsx
+UI-280,select,N/A,N/A,select,MockInterviewSetup,pages/mock-interview/index.tsx:137,,N/A,None,N/A,N/A,N/A,implicit select,Line 137 of pages/mock-interview/index.tsx
+UI-281,option,Technical,N/A,option,MockInterviewSetup,pages/mock-interview/index.tsx:142,"value=""Technical""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 142 of pages/mock-interview/index.tsx
+UI-282,option,Behavioral / HR,N/A,option,MockInterviewSetup,pages/mock-interview/index.tsx:143,"value=""Behavioral""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 143 of pages/mock-interview/index.tsx
+UI-283,option,Mixed (Recommended),N/A,option,MockInterviewSetup,pages/mock-interview/index.tsx:144,"value=""Mixed""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 144 of pages/mock-interview/index.tsx
+UI-284,select,N/A,N/A,select,MockInterviewSetup,pages/mock-interview/index.tsx:150,,N/A,None,N/A,N/A,N/A,implicit select,Line 150 of pages/mock-interview/index.tsx
+UI-285,option,Easy,N/A,option,MockInterviewSetup,pages/mock-interview/index.tsx:155,"value=""Easy""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 155 of pages/mock-interview/index.tsx
+UI-286,option,Moderate,N/A,option,MockInterviewSetup,pages/mock-interview/index.tsx:156,"value=""Moderate""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 156 of pages/mock-interview/index.tsx
+UI-287,option,Hard,N/A,option,MockInterviewSetup,pages/mock-interview/index.tsx:157,"value=""Hard""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 157 of pages/mock-interview/index.tsx
+UI-288,select,N/A,N/A,select,MockInterviewSetup,pages/mock-interview/index.tsx:163,,N/A,None,N/A,N/A,N/A,implicit select,Line 163 of pages/mock-interview/index.tsx
+UI-289,option,Standard,N/A,option,MockInterviewSetup,pages/mock-interview/index.tsx:168,"value=""standard""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 168 of pages/mock-interview/index.tsx
+UI-290,option,Rapid Fire (Quick),N/A,option,MockInterviewSetup,pages/mock-interview/index.tsx:169,"value=""rapid_fire""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 169 of pages/mock-interview/index.tsx
+UI-291,option,Deep Dive (Complex),N/A,option,MockInterviewSetup,pages/mock-interview/index.tsx:170,"value=""deep_dive""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 170 of pages/mock-interview/index.tsx
+UI-292,option,HR Simulation,N/A,option,MockInterviewSetup,pages/mock-interview/index.tsx:171,"value=""hr_simulation""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 171 of pages/mock-interview/index.tsx
+UI-293,option,Technical Panel,N/A,option,MockInterviewSetup,pages/mock-interview/index.tsx:172,"value=""technical_panel""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 172 of pages/mock-interview/index.tsx
+UI-294,button,N/A,N/A,button,MockInterviewSetup,pages/mock-interview/index.tsx:192,,N/A,None,N/A,N/A,N/A,implicit button,Line 192 of pages/mock-interview/index.tsx
+UI-295,textarea,N/A,N/A,textbox,MockInterviewSetup,pages/mock-interview/index.tsx:206,,N/A,None,N/A,N/A,N/A,implicit textarea,Line 206 of pages/mock-interview/index.tsx
+UI-296,button,N/A,N/A,button,MockInterviewSetup,pages/mock-interview/index.tsx:240,,N/A,None,N/A,N/A,N/A,implicit button,Line 240 of pages/mock-interview/index.tsx
+UI-297,button,N/A,N/A,button,MockInterviewSetup,pages/mock-interview/index.tsx:253,,N/A,None,N/A,N/A,N/A,implicit button,Line 253 of pages/mock-interview/index.tsx
+UI-298,button,N/A,N/A,button,MockInterviewSetup,pages/mock-interview/index.tsx:300,,N/A,None,N/A,N/A,N/A,implicit button,Line 300 of pages/mock-interview/index.tsx
+UI-299,button,View Roadmap,N/A,button,MockInterviewResult,pages/mock-interview/result.tsx:228,"className=""px-6 py-3 bg-white/5 hover:bg-white/10 text-whit",N/A,None,N/A,N/A,N/A,implicit button,Line 228 of pages/mock-interview/result.tsx
+UI-300,button,N/A,N/A,button,MockInterviewResult,pages/mock-interview/result.tsx:274,onClick={() =,N/A,onClick,{(),,N/A,implicit button,Line 274 of pages/mock-interview/result.tsx
+UI-301,button,N/A,N/A,button,MockInterviewResult,pages/mock-interview/result.tsx:277,onClick={() =,N/A,onClick,{(),,N/A,implicit button,Line 277 of pages/mock-interview/result.tsx
+UI-302,button,N/A,N/A,button,MockInterviewSession,pages/mock-interview/session.tsx:313,,N/A,None,N/A,N/A,N/A,implicit button,Line 313 of pages/mock-interview/session.tsx
+UI-303,textarea,N/A,N/A,textbox,MockInterviewSession,pages/mock-interview/session.tsx:323,,N/A,None,N/A,N/A,N/A,implicit textarea,Line 323 of pages/mock-interview/session.tsx
+UI-304,button,N/A,N/A,button,MockInterviewSession,pages/mock-interview/session.tsx:354,,N/A,None,N/A,N/A,N/A,implicit button,Line 354 of pages/mock-interview/session.tsx
+UI-305,button,N/A,N/A,button,MockInterviewSession,pages/mock-interview/session.tsx:363,,N/A,None,N/A,N/A,N/A,implicit button,Line 363 of pages/mock-interview/session.tsx
+UI-306,button,N/A,N/A,button,MockInterviewSession,pages/mock-interview/session.tsx:376,,N/A,None,N/A,N/A,N/A,implicit button,Line 376 of pages/mock-interview/session.tsx
+UI-307,Link,N/A,N/A,Link,AIAssessmentWorkspacePage,pages/problems/[id].tsx:118,"href=""/problems"" className=""hover:text-blue-600 dark:hover:",N/A,None,N/A,N/A,N/A,implicit Link,Line 118 of pages/problems/[id].tsx
+UI-308,button,N/A,N/A,button,AIAssessmentWorkspacePage,pages/problems/[id].tsx:210,,N/A,None,N/A,N/A,N/A,implicit button,Line 210 of pages/problems/[id].tsx
+UI-309,form,N/A,N/A,form,AIAssessmentWorkspacePage,pages/problems/[id].tsx:252,"onSubmit={handleEvaluateSubmission} className=""space-y-5""",N/A,onSubmit,{handleEvaluateSubmission},handleEvaluateSubmission,N/A,implicit form,Line 252 of pages/problems/[id].tsx
+UI-310,textarea,N/A,N/A,textbox,AIAssessmentWorkspacePage,pages/problems/[id].tsx:270,,N/A,None,N/A,N/A,N/A,implicit textarea,Line 270 of pages/problems/[id].tsx
+UI-311,input,N/A,N/A,textbox,AIAssessmentWorkspacePage,pages/problems/[id].tsx:285,,N/A,None,N/A,N/A,N/A,implicit input,Line 285 of pages/problems/[id].tsx
+UI-312,input,N/A,N/A,textbox,AIAssessmentWorkspacePage,pages/problems/[id].tsx:298,,N/A,None,N/A,N/A,N/A,implicit input,Line 298 of pages/problems/[id].tsx
+UI-313,button,N/A,N/A,button,AIAssessmentWorkspacePage,pages/problems/[id].tsx:313,,N/A,None,N/A,N/A,N/A,implicit button,Line 313 of pages/problems/[id].tsx
+UI-314,Link,N/A,N/A,Link,AIAssessmentWorkspacePage,pages/problems/[id].tsx:430,"href=""/projects/status-center""",N/A,None,N/A,N/A,N/A,implicit Link,Line 430 of pages/problems/[id].tsx
+UI-315,button,N/A,N/A,button,AIAssessmentWorkspacePage,pages/problems/[id].tsx:431,"className=""text-xs font-mono font-bold text-blue-600 dark:t",N/A,None,N/A,N/A,N/A,implicit button,Line 431 of pages/problems/[id].tsx
+UI-316,Link,N/A,N/A,Link,AIAssessmentWorkspacePage,pages/problems/[id].tsx:435,"href=""/problems""",N/A,None,N/A,N/A,N/A,implicit Link,Line 435 of pages/problems/[id].tsx
+UI-317,button,N/A,N/A,button,AIAssessmentWorkspacePage,pages/problems/[id].tsx:436,"className=""px-4 py-2 rounded-xl bg-slate-100 dark:bg-white/",N/A,None,N/A,N/A,N/A,implicit button,Line 436 of pages/problems/[id].tsx
+UI-318,button,N/A,N/A,button,AIPracticeArenaPage,pages/problems/index.tsx:128,,N/A,None,N/A,N/A,N/A,implicit button,Line 128 of pages/problems/index.tsx
+UI-319,Link,N/A,N/A,Link,AIPracticeArenaPage,pages/problems/index.tsx:137,"href=""/problems/matches""",N/A,None,N/A,N/A,N/A,implicit Link,Line 137 of pages/problems/index.tsx
+UI-320,button,N/A,N/A,button,AIPracticeArenaPage,pages/problems/index.tsx:138,"className=""px-3.5 py-2.5 rounded-xl bg-card border border-b",N/A,None,N/A,N/A,N/A,implicit button,Line 138 of pages/problems/index.tsx
+UI-321,Link,N/A,N/A,Link,AIPracticeArenaPage,pages/problems/index.tsx:144,"href=""/projects/status-center""",N/A,None,N/A,N/A,N/A,implicit Link,Line 144 of pages/problems/index.tsx
+UI-322,button,N/A,N/A,button,AIPracticeArenaPage,pages/problems/index.tsx:145,"className=""px-3.5 py-2.5 rounded-xl bg-card border border-b",N/A,None,N/A,N/A,N/A,implicit button,Line 145 of pages/problems/index.tsx
+UI-323,button,N/A,N/A,button,AIPracticeArenaPage,pages/problems/index.tsx:197,,N/A,None,N/A,N/A,N/A,implicit button,Line 197 of pages/problems/index.tsx
+UI-324,form,N/A,N/A,form,AIPracticeArenaPage,pages/problems/index.tsx:208,"onSubmit={handleSearch} className=""flex gap-2""",N/A,onSubmit,{handleSearch},handleSearch,N/A,implicit form,Line 208 of pages/problems/index.tsx
+UI-325,input,N/A,N/A,textbox,AIPracticeArenaPage,pages/problems/index.tsx:211,,N/A,None,N/A,N/A,N/A,implicit input,Line 211 of pages/problems/index.tsx
+UI-326,button,N/A,N/A,button,AIPracticeArenaPage,pages/problems/index.tsx:219,,N/A,None,N/A,N/A,N/A,implicit button,Line 219 of pages/problems/index.tsx
+UI-327,button,N/A,N/A,button,AIPracticeArenaPage,pages/problems/index.tsx:230,,N/A,None,N/A,N/A,N/A,implicit button,Line 230 of pages/problems/index.tsx
+UI-328,button,N/A,N/A,button,AIPracticeArenaPage,pages/problems/index.tsx:259,,N/A,None,N/A,N/A,N/A,implicit button,Line 259 of pages/problems/index.tsx
+UI-329,Link,N/A,N/A,Link,AIPracticeArenaPage,pages/problems/index.tsx:323,href={`/problems/${prob.id}`},N/A,None,N/A,N/A,N/A,implicit Link,Line 323 of pages/problems/index.tsx
+UI-330,button,N/A,N/A,button,AIPracticeArenaPage,pages/problems/index.tsx:324,"className=""px-3.5 py-1.5 rounded-lg bg-blue-50 text-blue-60",N/A,None,N/A,N/A,N/A,implicit button,Line 324 of pages/problems/index.tsx
+UI-331,Link,N/A,N/A,Link,AIGapChallengeLabPage,pages/problems/matches.tsx:82,"href=""/problems""",N/A,None,N/A,N/A,N/A,implicit Link,Line 82 of pages/problems/matches.tsx
+UI-332,button,N/A,N/A,button,AIGapChallengeLabPage,pages/problems/matches.tsx:83,"className=""px-3.5 py-2.5 rounded-xl bg-card border border-b",N/A,None,N/A,N/A,N/A,implicit button,Line 83 of pages/problems/matches.tsx
+UI-333,Link,N/A,N/A,Link,AIGapChallengeLabPage,pages/problems/matches.tsx:88,"href=""/projects/status-center""",N/A,None,N/A,N/A,N/A,implicit Link,Line 88 of pages/problems/matches.tsx
+UI-334,button,N/A,N/A,button,AIGapChallengeLabPage,pages/problems/matches.tsx:89,"className=""px-3.5 py-2.5 rounded-xl bg-card border border-b",N/A,None,N/A,N/A,N/A,implicit button,Line 89 of pages/problems/matches.tsx
+UI-335,select,N/A,N/A,select,AIGapChallengeLabPage,pages/problems/matches.tsx:121,,N/A,None,N/A,N/A,N/A,implicit select,Line 121 of pages/problems/matches.tsx
+UI-336,option,Beginner,N/A,option,AIGapChallengeLabPage,pages/problems/matches.tsx:126,"value=""beginner""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 126 of pages/problems/matches.tsx
+UI-337,option,Intermediate,N/A,option,AIGapChallengeLabPage,pages/problems/matches.tsx:127,"value=""intermediate""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 127 of pages/problems/matches.tsx
+UI-338,option,Advanced,N/A,option,AIGapChallengeLabPage,pages/problems/matches.tsx:128,"value=""advanced""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 128 of pages/problems/matches.tsx
+UI-339,option,Expert,N/A,option,AIGapChallengeLabPage,pages/problems/matches.tsx:129,"value=""expert""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 129 of pages/problems/matches.tsx
+UI-340,button,N/A,N/A,button,AIGapChallengeLabPage,pages/problems/matches.tsx:132,,N/A,None,N/A,N/A,N/A,implicit button,Line 132 of pages/problems/matches.tsx
+UI-341,button,N/A,N/A,button,AIGapChallengeLabPage,pages/problems/matches.tsx:154,,N/A,None,N/A,N/A,N/A,implicit button,Line 154 of pages/problems/matches.tsx
+UI-342,Link,N/A,N/A,Link,AIGapChallengeLabPage,pages/problems/matches.tsx:192,href={`/problems/${prob.id}`},N/A,None,N/A,N/A,N/A,implicit Link,Line 192 of pages/problems/matches.tsx
+UI-343,button,N/A,N/A,button,AIGapChallengeLabPage,pages/problems/matches.tsx:193,"className=""px-3.5 py-1.5 rounded-lg bg-blue-50 text-blue-60",N/A,None,N/A,N/A,N/A,implicit button,Line 193 of pages/problems/matches.tsx
+UI-344,button,N/A,N/A,button,ProfileDashboard,pages/profile.tsx:224,,N/A,None,N/A,N/A,N/A,implicit button,Line 224 of pages/profile.tsx
+UI-345,Link,N/A,N/A,Link,ProfileDashboard,pages/profile.tsx:231,"href=""/settings""",N/A,None,N/A,N/A,N/A,implicit Link,Line 231 of pages/profile.tsx
+UI-346,button,N/A,N/A,button,ProfileDashboard,pages/profile.tsx:232,"className=""px-3.5 py-2 rounded-xl bg-slate-900/80 border bo",N/A,None,N/A,N/A,N/A,implicit button,Line 232 of pages/profile.tsx
+UI-347,button,N/A,N/A,button,ProfileDashboard,pages/profile.tsx:275,,N/A,None,N/A,N/A,N/A,implicit button,Line 275 of pages/profile.tsx
+UI-348,Link,N/A,N/A,Link,ProfileDashboard,pages/profile.tsx:400,"href=""/roadmap""",N/A,None,N/A,N/A,N/A,implicit Link,Line 400 of pages/profile.tsx
+UI-349,button,N/A,N/A,button,ProfileDashboard,pages/profile.tsx:401,"className=""text-xs font-mono font-black text-blue-600 dark:",N/A,None,N/A,N/A,N/A,implicit button,Line 401 of pages/profile.tsx
+UI-350,Link,N/A,N/A,Link,ProfileDashboard,pages/profile.tsx:430,"href=""/resume""",N/A,None,N/A,N/A,N/A,implicit Link,Line 430 of pages/profile.tsx
+UI-351,button,N/A,N/A,button,ProfileDashboard,pages/profile.tsx:431,"className=""text-xs font-mono font-bold text-blue-600 dark:t",N/A,None,N/A,N/A,N/A,implicit button,Line 431 of pages/profile.tsx
+UI-352,input,N/A,N/A,textbox,ProfileDashboard,pages/profile.tsx:445,,N/A,None,N/A,N/A,N/A,implicit input,Line 445 of pages/profile.tsx
+UI-353,select,N/A,N/A,select,ProfileDashboard,pages/profile.tsx:454,,N/A,None,N/A,N/A,N/A,implicit select,Line 454 of pages/profile.tsx
+UI-354,option,Frontend,N/A,option,ProfileDashboard,pages/profile.tsx:459,"value=""Frontend""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 459 of pages/profile.tsx
+UI-355,option,Backend,N/A,option,ProfileDashboard,pages/profile.tsx:460,"value=""Backend""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 460 of pages/profile.tsx
+UI-356,option,Tools & DevOps,N/A,option,ProfileDashboard,pages/profile.tsx:461,"value=""Tools""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 461 of pages/profile.tsx
+UI-357,option,Soft Skills,N/A,option,ProfileDashboard,pages/profile.tsx:462,"value=""Soft Skills""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 462 of pages/profile.tsx
+UI-358,select,N/A,N/A,select,ProfileDashboard,pages/profile.tsx:466,,N/A,None,N/A,N/A,N/A,implicit select,Line 466 of pages/profile.tsx
+UI-359,option,Lvl 1 (Basic),N/A,option,ProfileDashboard,pages/profile.tsx:471,value={1},Local state bound,None,N/A,N/A,N/A,implicit option,Line 471 of pages/profile.tsx
+UI-360,option,Lvl 2 (Working),N/A,option,ProfileDashboard,pages/profile.tsx:472,value={2},Local state bound,None,N/A,N/A,N/A,implicit option,Line 472 of pages/profile.tsx
+UI-361,option,Lvl 3 (Proficient),N/A,option,ProfileDashboard,pages/profile.tsx:473,value={3},Local state bound,None,N/A,N/A,N/A,implicit option,Line 473 of pages/profile.tsx
+UI-362,option,Lvl 4 (Advanced),N/A,option,ProfileDashboard,pages/profile.tsx:474,value={4},Local state bound,None,N/A,N/A,N/A,implicit option,Line 474 of pages/profile.tsx
+UI-363,option,Lvl 5 (Mastery),N/A,option,ProfileDashboard,pages/profile.tsx:475,value={5},Local state bound,None,N/A,N/A,N/A,implicit option,Line 475 of pages/profile.tsx
+UI-364,button,N/A,N/A,button,ProfileDashboard,pages/profile.tsx:479,,N/A,None,N/A,N/A,N/A,implicit button,Line 479 of pages/profile.tsx
+UI-365,button,N/A,N/A,button,ProfileDashboard,pages/profile.tsx:493,,N/A,None,N/A,N/A,N/A,implicit button,Line 493 of pages/profile.tsx
+UI-366,button,N/A,N/A,button,ProfileDashboard,pages/profile.tsx:539,,N/A,None,N/A,N/A,N/A,implicit button,Line 539 of pages/profile.tsx
+UI-367,button,N/A,N/A,button,ProfileDashboard,pages/profile.tsx:636,,N/A,None,N/A,N/A,N/A,implicit button,Line 636 of pages/profile.tsx
+UI-368,button,N/A,N/A,button,ProfileDashboard,pages/profile.tsx:706,,N/A,None,N/A,N/A,N/A,implicit button,Line 706 of pages/profile.tsx
+UI-369,button,N/A,N/A,button,ProfileDashboard,pages/profile.tsx:721,,N/A,None,N/A,N/A,N/A,implicit button,Line 721 of pages/profile.tsx
+UI-370,button,N/A,N/A,button,ProfileDashboard,pages/profile.tsx:732,,N/A,None,N/A,N/A,N/A,implicit button,Line 732 of pages/profile.tsx
+UI-371,button,N/A,N/A,button,ProfileDashboard,pages/profile.tsx:739,,N/A,None,N/A,N/A,N/A,implicit button,Line 739 of pages/profile.tsx
+UI-372,button,N/A,N/A,button,ProfileDashboard,pages/profile.tsx:770,,N/A,None,N/A,N/A,N/A,implicit button,Line 770 of pages/profile.tsx
+UI-373,input,N/A,N/A,textbox,ProfileDashboard,pages/profile.tsx:782,,N/A,None,N/A,N/A,N/A,implicit input,Line 782 of pages/profile.tsx
+UI-374,input,N/A,N/A,textbox,ProfileDashboard,pages/profile.tsx:791,,N/A,None,N/A,N/A,N/A,implicit input,Line 791 of pages/profile.tsx
+UI-375,input,N/A,N/A,textbox,ProfileDashboard,pages/profile.tsx:802,,N/A,None,N/A,N/A,N/A,implicit input,Line 802 of pages/profile.tsx
+UI-376,select,N/A,N/A,select,ProfileDashboard,pages/profile.tsx:813,,N/A,None,N/A,N/A,N/A,implicit select,Line 813 of pages/profile.tsx
+UI-377,option,🎓 Verified Developer / Candidate,N/A,option,ProfileDashboard,pages/profile.tsx:818,"value=""student""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 818 of pages/profile.tsx
+UI-378,option,🛡️ Platform Admin,N/A,option,ProfileDashboard,pages/profile.tsx:819,"value=""admin""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 819 of pages/profile.tsx
+UI-379,select,N/A,N/A,select,ProfileDashboard,pages/profile.tsx:825,,N/A,None,N/A,N/A,N/A,implicit select,Line 825 of pages/profile.tsx
+UI-380,option,{l},N/A,option,ProfileDashboard,pages/profile.tsx:831,key={l} value={l},Local state bound,None,N/A,N/A,N/A,implicit option,Line 831 of pages/profile.tsx
+UI-381,button,N/A,N/A,button,ProfileDashboard,pages/profile.tsx:838,,N/A,None,N/A,N/A,N/A,implicit button,Line 838 of pages/profile.tsx
+UI-382,button,N/A,N/A,button,ProfileDashboard,pages/profile.tsx:844,,N/A,None,N/A,N/A,N/A,implicit button,Line 844 of pages/profile.tsx
+UI-383,Link,Status Center,N/A,Link,ProjectDetailPage,pages/projects/[id].tsx:151,"href=""/projects/status-center"" className=""hover:text-cyan-4",N/A,None,N/A,N/A,N/A,implicit Link,Line 151 of pages/projects/[id].tsx
+UI-384,button,N/A,N/A,button,ProjectDetailPage,pages/projects/[id].tsx:164,,N/A,None,N/A,N/A,N/A,implicit button,Line 164 of pages/projects/[id].tsx
+UI-385,button,N/A,N/A,button,ProjectDetailPage,pages/projects/[id].tsx:205,,N/A,None,N/A,N/A,N/A,implicit button,Line 205 of pages/projects/[id].tsx
+UI-386,a,N/A,N/A,a,ProjectDetailPage,pages/projects/[id].tsx:279,"href={sub.github_url} target=""_blank"" rel=""noreferrer"" clas",N/A,None,N/A,N/A,N/A,implicit a,Line 279 of pages/projects/[id].tsx
+UI-387,a,N/A,N/A,a,ProjectDetailPage,pages/projects/[id].tsx:285,"href={sub.published_url} target=""_blank"" rel=""noreferrer"" c",N/A,None,N/A,N/A,N/A,implicit a,Line 285 of pages/projects/[id].tsx
+UI-388,button,N/A,N/A,button,ProjectDetailPage,pages/projects/[id].tsx:315,onClick={() =,N/A,onClick,{(),,N/A,implicit button,Line 315 of pages/projects/[id].tsx
+UI-389,form,N/A,N/A,form,ProjectDetailPage,pages/projects/[id].tsx:320,"onSubmit={handleSubmitVersion} className=""space-y-6 text-xs",N/A,onSubmit,{handleSubmitVersion},handleSubmitVersion,N/A,implicit form,Line 320 of pages/projects/[id].tsx
+UI-390,input,N/A,N/A,textbox,ProjectDetailPage,pages/projects/[id].tsx:323,,N/A,None,N/A,N/A,N/A,implicit input,Line 323 of pages/projects/[id].tsx
+UI-391,input,N/A,N/A,textbox,ProjectDetailPage,pages/projects/[id].tsx:343,,N/A,None,N/A,N/A,N/A,implicit input,Line 343 of pages/projects/[id].tsx
+UI-392,button,N/A,N/A,button,ProjectDetailPage,pages/projects/[id].tsx:351,,N/A,None,N/A,N/A,N/A,implicit button,Line 351 of pages/projects/[id].tsx
+UI-393,textarea,N/A,N/A,textbox,ProjectDetailPage,pages/projects/[id].tsx:364,,N/A,None,N/A,N/A,N/A,implicit textarea,Line 364 of pages/projects/[id].tsx
+UI-394,input,N/A,N/A,textbox,ProjectDetailPage,pages/projects/[id].tsx:388,,N/A,None,N/A,N/A,N/A,implicit input,Line 388 of pages/projects/[id].tsx
+UI-395,input,N/A,N/A,textbox,ProjectDetailPage,pages/projects/[id].tsx:399,,N/A,None,N/A,N/A,N/A,implicit input,Line 399 of pages/projects/[id].tsx
+UI-396,button,N/A,N/A,button,ProjectDetailPage,pages/projects/[id].tsx:418,,N/A,None,N/A,N/A,N/A,implicit button,Line 418 of pages/projects/[id].tsx
+UI-397,button,N/A,N/A,button,ProjectDetailPage,pages/projects/[id].tsx:425,,N/A,None,N/A,N/A,N/A,implicit button,Line 425 of pages/projects/[id].tsx
+UI-398,Link,N/A,N/A,Link,ProjectsListPage,pages/projects/index.tsx:113,"href=""/projects/status-center""",N/A,None,N/A,N/A,N/A,implicit Link,Line 113 of pages/projects/index.tsx
+UI-399,button,N/A,N/A,button,ProjectsListPage,pages/projects/index.tsx:114,"className=""px-3.5 py-2 rounded-xl bg-slate-900/80 border bo",N/A,None,N/A,N/A,N/A,implicit button,Line 114 of pages/projects/index.tsx
+UI-400,Link,N/A,N/A,Link,ProjectsListPage,pages/projects/index.tsx:119,"href=""/problems""",N/A,None,N/A,N/A,N/A,implicit Link,Line 119 of pages/projects/index.tsx
+UI-401,button,N/A,N/A,button,ProjectsListPage,pages/projects/index.tsx:120,"className=""px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-",N/A,None,N/A,N/A,N/A,implicit button,Line 120 of pages/projects/index.tsx
+UI-402,button,N/A,N/A,button,ProjectsListPage,pages/projects/index.tsx:146,,N/A,None,N/A,N/A,N/A,implicit button,Line 146 of pages/projects/index.tsx
+UI-403,Link,N/A,N/A,Link,ProjectsListPage,pages/projects/index.tsx:183,"href=""/problems""",N/A,None,N/A,N/A,N/A,implicit Link,Line 183 of pages/projects/index.tsx
+UI-404,button,N/A,N/A,button,ProjectsListPage,pages/projects/index.tsx:184,"className=""px-5 py-2.5 rounded-xl bg-gradient-to-r from-blu",N/A,None,N/A,N/A,N/A,implicit button,Line 184 of pages/projects/index.tsx
+UI-405,Link,N/A,N/A,Link,ProjectsListPage,pages/projects/index.tsx:247,href={`/projects/${proj.id}`},N/A,None,N/A,N/A,N/A,implicit Link,Line 247 of pages/projects/index.tsx
+UI-406,button,N/A,N/A,button,ProjectsListPage,pages/projects/index.tsx:248,"className=""px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slat",N/A,None,N/A,N/A,N/A,implicit button,Line 248 of pages/projects/index.tsx
+UI-407,Link,N/A,N/A,Link,AIAssessmentScorecardsPage,pages/projects/status-center.tsx:76,"href=""/problems""",N/A,None,N/A,N/A,N/A,implicit Link,Line 76 of pages/projects/status-center.tsx
+UI-408,button,N/A,N/A,button,AIAssessmentScorecardsPage,pages/projects/status-center.tsx:77,"className=""px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-7",N/A,None,N/A,N/A,N/A,implicit button,Line 77 of pages/projects/status-center.tsx
+UI-409,Link,N/A,N/A,Link,AIAssessmentScorecardsPage,pages/projects/status-center.tsx:82,"href=""/problems/matches""",N/A,None,N/A,N/A,N/A,implicit Link,Line 82 of pages/projects/status-center.tsx
+UI-410,button,N/A,N/A,button,AIAssessmentScorecardsPage,pages/projects/status-center.tsx:83,"className=""px-3.5 py-2 rounded-xl bg-card border border-bor",N/A,None,N/A,N/A,N/A,implicit button,Line 83 of pages/projects/status-center.tsx
+UI-411,button,N/A,N/A,button,AIAssessmentScorecardsPage,pages/projects/status-center.tsx:101,,N/A,None,N/A,N/A,N/A,implicit button,Line 101 of pages/projects/status-center.tsx
+UI-412,button,N/A,N/A,button,AIAssessmentScorecardsPage,pages/projects/status-center.tsx:111,,N/A,None,N/A,N/A,N/A,implicit button,Line 111 of pages/projects/status-center.tsx
+UI-413,button,N/A,N/A,button,AIAssessmentScorecardsPage,pages/projects/status-center.tsx:121,,N/A,None,N/A,N/A,N/A,implicit button,Line 121 of pages/projects/status-center.tsx
+UI-414,Link,N/A,N/A,Link,AIAssessmentScorecardsPage,pages/projects/status-center.tsx:151,"href=""/problems""",N/A,None,N/A,N/A,N/A,implicit Link,Line 151 of pages/projects/status-center.tsx
+UI-415,button,N/A,N/A,button,AIAssessmentScorecardsPage,pages/projects/status-center.tsx:152,"className=""px-4 py-2 rounded-xl bg-blue-600 text-white font",N/A,None,N/A,N/A,N/A,implicit button,Line 152 of pages/projects/status-center.tsx
+UI-416,Link,N/A,N/A,Link,AIAssessmentScorecardsPage,pages/projects/status-center.tsx:204,href={`/problems/${sub.project_id // 1}`},N/A,None,N/A,N/A,N/A,implicit Link,Line 204 of pages/projects/status-center.tsx
+UI-417,button,N/A,N/A,button,AIAssessmentScorecardsPage,pages/projects/status-center.tsx:205,"className=""px-3.5 py-2 rounded-xl bg-blue-50 text-blue-600",N/A,None,N/A,N/A,N/A,implicit button,Line 205 of pages/projects/status-center.tsx
+UI-418,form,N/A,N/A,form,ResetPasswordPage,pages/reset-password.tsx:59,"onSubmit={handleSubmit} className=""space-y-6""",N/A,onSubmit,{handleSubmit},handleSubmit,N/A,implicit form,Line 59 of pages/reset-password.tsx
+UI-419,input,N/A,N/A,textbox,ResetPasswordPage,pages/reset-password.tsx:68,,N/A,None,N/A,N/A,N/A,implicit input,Line 68 of pages/reset-password.tsx
+UI-420,input,N/A,N/A,textbox,ResetPasswordPage,pages/reset-password.tsx:80,,N/A,None,N/A,N/A,N/A,implicit input,Line 80 of pages/reset-password.tsx
+UI-421,button,N/A,N/A,button,ResetPasswordPage,pages/reset-password.tsx:90,,N/A,None,N/A,N/A,N/A,implicit button,Line 90 of pages/reset-password.tsx
+UI-422,button,N/A,N/A,button,ResumePage,pages/resume.tsx:449,,N/A,None,N/A,N/A,N/A,implicit button,Line 449 of pages/resume.tsx
+UI-423,input,N/A,N/A,textbox,ResumePage,pages/resume.tsx:490,,N/A,None,N/A,N/A,N/A,implicit input,Line 490 of pages/resume.tsx
+UI-424,button,N/A,N/A,button,ResumePage,pages/resume.tsx:660,,N/A,None,N/A,N/A,N/A,implicit button,Line 660 of pages/resume.tsx
+UI-425,ATSScorePanel,N/A,N/A,ATSScorePanel,ResumePage,pages/resume.tsx:715,data={atsData} loading={atsLoading} onAnalyze={handleATSSca,N/A,onAnalyze,{handleATSScan},handleATSScan,N/A,implicit ATSScorePanel,Line 715 of pages/resume.tsx
+UI-426,button,N/A,N/A,button,ResumePage,pages/resume.tsx:798,,N/A,None,N/A,N/A,N/A,implicit button,Line 798 of pages/resume.tsx
+UI-427,button,N/A,N/A,button,ResumePage,pages/resume.tsx:813,,N/A,None,N/A,N/A,N/A,implicit button,Line 813 of pages/resume.tsx
+UI-428,button,N/A,N/A,button,ResumePage,pages/resume.tsx:830,,N/A,None,N/A,N/A,N/A,implicit button,Line 830 of pages/resume.tsx
+UI-429,button,N/A,N/A,button,ResumePage,pages/resume.tsx:838,,N/A,None,N/A,N/A,N/A,implicit button,Line 838 of pages/resume.tsx
+UI-430,button,N/A,N/A,button,Roadmap,pages/roadmap.tsx:259,,N/A,None,N/A,N/A,N/A,implicit button,Line 259 of pages/roadmap.tsx
+UI-431,button,N/A,N/A,button,Roadmap,pages/roadmap.tsx:288,,N/A,None,N/A,N/A,N/A,implicit button,Line 288 of pages/roadmap.tsx
+UI-432,select,N/A,N/A,select,Roadmap,pages/roadmap.tsx:301,,N/A,None,N/A,N/A,N/A,implicit select,Line 301 of pages/roadmap.tsx
+UI-433,option,{d},N/A,option,Roadmap,pages/roadmap.tsx:306,key={d} value={d},Local state bound,None,N/A,N/A,N/A,implicit option,Line 306 of pages/roadmap.tsx
+UI-434,select,N/A,N/A,select,Roadmap,pages/roadmap.tsx:312,,N/A,None,N/A,N/A,N/A,implicit select,Line 312 of pages/roadmap.tsx
+UI-435,option,{dom},N/A,option,Roadmap,pages/roadmap.tsx:317,key={dom} value={dom},Local state bound,None,N/A,N/A,N/A,implicit option,Line 317 of pages/roadmap.tsx
+UI-436,select,N/A,N/A,select,Roadmap,pages/roadmap.tsx:323,,N/A,None,N/A,N/A,N/A,implicit select,Line 323 of pages/roadmap.tsx
+UI-437,option,{l},N/A,option,Roadmap,pages/roadmap.tsx:328,key={l} value={l},Local state bound,None,N/A,N/A,N/A,implicit option,Line 328 of pages/roadmap.tsx
+UI-438,input,N/A,N/A,textbox,Roadmap,pages/roadmap.tsx:335,,N/A,None,N/A,N/A,N/A,implicit input,Line 335 of pages/roadmap.tsx
+UI-439,input,N/A,N/A,textbox,Roadmap,pages/roadmap.tsx:352,,N/A,None,N/A,N/A,N/A,implicit input,Line 352 of pages/roadmap.tsx
+UI-440,button,N/A,N/A,button,Roadmap,pages/roadmap.tsx:360,"onClick={handleAddSkill} className=""px-4 py-2 bg-slate-900",N/A,onClick,{handleAddSkill},handleAddSkill,N/A,implicit button,Line 360 of pages/roadmap.tsx
+UI-441,button,"handleRemoveSkill(s)} className=""hover:text-rose-600 dark:hover:text-rose-400"">",N/A,button,Roadmap,pages/roadmap.tsx:368,onClick={() =,N/A,onClick,{(),,N/A,implicit button,Line 368 of pages/roadmap.tsx
+UI-442,input,N/A,N/A,textbox,Roadmap,pages/roadmap.tsx:380,,N/A,None,N/A,N/A,N/A,implicit input,Line 380 of pages/roadmap.tsx
+UI-443,button,N/A,N/A,button,Roadmap,pages/roadmap.tsx:388,"onClick={handleAddTool} className=""px-4 py-2 bg-slate-900 d",N/A,onClick,{handleAddTool},handleAddTool,N/A,implicit button,Line 388 of pages/roadmap.tsx
+UI-444,button,"handleRemoveTool(t)} className=""hover:text-rose-600 dark:hover:text-rose-400"">",N/A,button,Roadmap,pages/roadmap.tsx:396,onClick={() =,N/A,onClick,{(),,N/A,implicit button,Line 396 of pages/roadmap.tsx
+UI-445,button,N/A,N/A,button,Roadmap,pages/roadmap.tsx:409,,N/A,None,N/A,N/A,N/A,implicit button,Line 409 of pages/roadmap.tsx
+UI-446,button,N/A,N/A,button,Roadmap,pages/roadmap.tsx:440,,N/A,None,N/A,N/A,N/A,implicit button,Line 440 of pages/roadmap.tsx
+UI-447,button,N/A,N/A,button,Roadmap,pages/roadmap.tsx:592,,N/A,None,N/A,N/A,N/A,implicit button,Line 592 of pages/roadmap.tsx
+UI-448,a,N/A,N/A,a,Roadmap,pages/roadmap.tsx:631,"href={res.url} target=""_blank"" rel=""noreferrer"" className=""",N/A,None,N/A,N/A,N/A,implicit a,Line 631 of pages/roadmap.tsx
+UI-449,button,N/A,N/A,button,Roadmap,pages/roadmap.tsx:669,onClick={() =,N/A,onClick,{(),,N/A,implicit button,Line 669 of pages/roadmap.tsx
+UI-450,button,N/A,N/A,button,Roadmap,pages/roadmap.tsx:698,,N/A,None,N/A,N/A,N/A,implicit button,Line 698 of pages/roadmap.tsx
+UI-451,button,N/A,N/A,button,SettingsPage,pages/settings.tsx:189,,N/A,None,N/A,N/A,N/A,implicit button,Line 189 of pages/settings.tsx
+UI-452,button,N/A,N/A,button,SettingsPage,pages/settings.tsx:213,,N/A,None,N/A,N/A,N/A,implicit button,Line 213 of pages/settings.tsx
+UI-453,input,N/A,N/A,textbox,SettingsPage,pages/settings.tsx:255,,N/A,None,N/A,N/A,N/A,implicit input,Line 255 of pages/settings.tsx
+UI-454,input,N/A,N/A,textbox,SettingsPage,pages/settings.tsx:268,,N/A,None,N/A,N/A,N/A,implicit input,Line 268 of pages/settings.tsx
+UI-455,select,N/A,N/A,select,SettingsPage,pages/settings.tsx:284,,N/A,None,N/A,N/A,N/A,implicit select,Line 284 of pages/settings.tsx
+UI-456,option,UTC (Coordinated Universal Time),N/A,option,SettingsPage,pages/settings.tsx:289,"value=""UTC""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 289 of pages/settings.tsx
+UI-457,option,Eastern Time (US / New York),N/A,option,SettingsPage,pages/settings.tsx:290,"value=""America/New_York""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 290 of pages/settings.tsx
+UI-458,option,Pacific Time (US / Los Angeles),N/A,option,SettingsPage,pages/settings.tsx:291,"value=""America/Los_Angeles""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 291 of pages/settings.tsx
+UI-459,option,Greenwich Mean Time (London),N/A,option,SettingsPage,pages/settings.tsx:292,"value=""Europe/London""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 292 of pages/settings.tsx
+UI-460,option,India Standard Time (IST / Kolkata),N/A,option,SettingsPage,pages/settings.tsx:293,"value=""Asia/Kolkata""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 293 of pages/settings.tsx
+UI-461,option,Japan Standard Time (Tokyo),N/A,option,SettingsPage,pages/settings.tsx:294,"value=""Asia/Tokyo""",Local state bound,None,N/A,N/A,N/A,implicit option,Line 294 of pages/settings.tsx
+UI-462,button,N/A,N/A,button,SettingsPage,pages/settings.tsx:330,,N/A,None,N/A,N/A,N/A,implicit button,Line 330 of pages/settings.tsx
+UI-463,button,N/A,N/A,button,SettingsPage,pages/settings.tsx:349,,N/A,None,N/A,N/A,N/A,implicit button,Line 349 of pages/settings.tsx
+UI-464,button,N/A,N/A,button,SettingsPage,pages/settings.tsx:398,,N/A,None,N/A,N/A,N/A,implicit button,Line 398 of pages/settings.tsx
+UI-465,button,N/A,N/A,button,SettingsPage,pages/settings.tsx:420,,N/A,None,N/A,N/A,N/A,implicit button,Line 420 of pages/settings.tsx
+UI-466,button,N/A,N/A,button,SettingsPage,pages/settings.tsx:467,,N/A,None,N/A,N/A,N/A,implicit button,Line 467 of pages/settings.tsx
+UI-467,button,N/A,N/A,button,SettingsPage,pages/settings.tsx:483,,N/A,None,N/A,N/A,N/A,implicit button,Line 483 of pages/settings.tsx
+UI-468,button,N/A,N/A,button,SettingsPage,pages/settings.tsx:499,,N/A,None,N/A,N/A,N/A,implicit button,Line 499 of pages/settings.tsx
+UI-469,button,N/A,N/A,button,SettingsPage,pages/settings.tsx:517,,N/A,None,N/A,N/A,N/A,implicit button,Line 517 of pages/settings.tsx
+UI-470,button,N/A,N/A,button,SettingsPage,pages/settings.tsx:561,,N/A,None,N/A,N/A,N/A,implicit button,Line 561 of pages/settings.tsx
+UI-471,button,N/A,N/A,button,SettingsPage,pages/settings.tsx:577,,N/A,None,N/A,N/A,N/A,implicit button,Line 577 of pages/settings.tsx
+UI-472,Link,N/A,N/A,Link,SettingsPage,pages/settings.tsx:589,"href=""/profile"" className=""flex-1""",N/A,None,N/A,N/A,N/A,implicit Link,Line 589 of pages/settings.tsx
+UI-473,button,N/A,N/A,button,SettingsPage,pages/settings.tsx:590,,N/A,None,N/A,N/A,N/A,implicit button,Line 590 of pages/settings.tsx
+UI-474,button,N/A,N/A,button,SettingsPage,pages/settings.tsx:597,,N/A,None,N/A,N/A,N/A,implicit button,Line 597 of pages/settings.tsx
+UI-475,input,N/A,N/A,textbox,InputField,pages/signup.tsx:100,,N/A,None,N/A,N/A,N/A,implicit input,Line 100 of pages/signup.tsx
+UI-476,Link,N/A,N/A,Link,Signup,pages/signup.tsx:186,"href=""/""",N/A,None,N/A,N/A,N/A,implicit Link,Line 186 of pages/signup.tsx
+UI-477,a,N/A,N/A,a,Signup,pages/signup.tsx:187,"className=""flex items-center gap-2.5 group""",N/A,None,N/A,N/A,N/A,implicit a,Line 187 of pages/signup.tsx
+UI-478,form,N/A,N/A,form,Signup,pages/signup.tsx:216,"onSubmit={handleSubmit} className=""space-y-4""",N/A,onSubmit,{handleSubmit},handleSubmit,N/A,implicit form,Line 216 of pages/signup.tsx
+UI-479,button,N/A,N/A,button,Signup,pages/signup.tsx:262,,N/A,None,N/A,N/A,N/A,implicit button,Line 262 of pages/signup.tsx
+UI-480,button,N/A,N/A,button,Signup,pages/signup.tsx:273,,N/A,None,N/A,N/A,N/A,implicit button,Line 273 of pages/signup.tsx
+UI-481,Link,N/A,N/A,Link,Signup,pages/signup.tsx:288,"href=""/login""",N/A,None,N/A,N/A,N/A,implicit Link,Line 288 of pages/signup.tsx
+UI-482,a,N/A,N/A,a,Signup,pages/signup.tsx:289,"className=""text-blue-600 dark:text-cyan-400 hover:underline",N/A,None,N/A,N/A,N/A,implicit a,Line 289 of pages/signup.tsx
+UI-483,button,N/A,N/A,button,SkillGapPage,pages/skill-gap.tsx:245,,N/A,None,N/A,N/A,N/A,implicit button,Line 245 of pages/skill-gap.tsx
+UI-484,select,N/A,N/A,select,SkillGapPage,pages/skill-gap.tsx:273,,N/A,None,N/A,N/A,N/A,implicit select,Line 273 of pages/skill-gap.tsx
+UI-485,option,{r},N/A,option,SkillGapPage,pages/skill-gap.tsx:278,key={r} value={r},Local state bound,None,N/A,N/A,N/A,implicit option,Line 278 of pages/skill-gap.tsx
+UI-486,button,N/A,N/A,button,SkillGapPage,pages/skill-gap.tsx:286,,N/A,None,N/A,N/A,N/A,implicit button,Line 286 of pages/skill-gap.tsx
+UI-487,select,N/A,N/A,select,SkillGapPage,pages/skill-gap.tsx:300,,N/A,None,N/A,N/A,N/A,implicit select,Line 300 of pages/skill-gap.tsx
+UI-488,option,{i},N/A,option,SkillGapPage,pages/skill-gap.tsx:305,key={i} value={i},Local state bound,None,N/A,N/A,N/A,implicit option,Line 305 of pages/skill-gap.tsx
+UI-489,textarea,N/A,N/A,textbox,SkillGapPage,pages/skill-gap.tsx:319,,N/A,None,N/A,N/A,N/A,implicit textarea,Line 319 of pages/skill-gap.tsx
+UI-490,button,N/A,N/A,button,SkillGapPage,pages/skill-gap.tsx:325,,N/A,None,N/A,N/A,N/A,implicit button,Line 325 of pages/skill-gap.tsx
+UI-491,button,N/A,N/A,button,SkillGapPage,pages/skill-gap.tsx:416,,N/A,None,N/A,N/A,N/A,implicit button,Line 416 of pages/skill-gap.tsx
+UI-492,button,N/A,N/A,button,SkillGapPage,pages/skill-gap.tsx:426,,N/A,None,N/A,N/A,N/A,implicit button,Line 426 of pages/skill-gap.tsx
+UI-493,button,N/A,N/A,button,SkillGapPage,pages/skill-gap.tsx:464,onClick={() =,N/A,onClick,{(),,N/A,implicit button,Line 464 of pages/skill-gap.tsx
+UI-494,input,N/A,N/A,textbox,SkillGapPage,pages/skill-gap.tsx:474,,N/A,None,N/A,N/A,N/A,implicit input,Line 474 of pages/skill-gap.tsx
+UI-495,button,N/A,N/A,button,SkillGapPage,pages/skill-gap.tsx:490,,N/A,None,N/A,N/A,N/A,implicit button,Line 490 of pages/skill-gap.tsx
+UI-496,select,N/A,N/A,select,SkillGapPage,pages/skill-gap.tsx:501,,N/A,None,N/A,N/A,N/A,implicit select,Line 501 of pages/skill-gap.tsx
+UI-497,option,Beginner,N/A,option,SkillGapPage,pages/skill-gap.tsx:506,,N/A,None,N/A,N/A,N/A,implicit option,Line 506 of pages/skill-gap.tsx
+UI-498,option,Intermediate,N/A,option,SkillGapPage,pages/skill-gap.tsx:507,,N/A,None,N/A,N/A,N/A,implicit option,Line 507 of pages/skill-gap.tsx
+UI-499,option,Advanced,N/A,option,SkillGapPage,pages/skill-gap.tsx:508,,N/A,None,N/A,N/A,N/A,implicit option,Line 508 of pages/skill-gap.tsx
+UI-500,button,N/A,N/A,button,SkillGapPage,pages/skill-gap.tsx:510,,N/A,None,N/A,N/A,N/A,implicit button,Line 510 of pages/skill-gap.tsx
+UI-501,ActionEngine,N/A,N/A,ActionEngine,SkillGapPage,pages/skill-gap.tsx:539,plan={actionPlan // undefined} onStartLearning={handleExpor,N/A,onStartLearning,{handleExportToRoadmap},handleExportToRoadmap,N/A,implicit ActionEngine,Line 539 of pages/skill-gap.tsx
+UI-502,button,N/A,N/A,button,SkillGapPage,pages/skill-gap.tsx:549,,N/A,None,N/A,N/A,N/A,implicit button,Line 549 of pages/skill-gap.tsx
+UI-503,button,N/A,N/A,button,SmartAlertsPage,pages/smart-alerts.tsx:279,,N/A,None,N/A,N/A,N/A,implicit button,Line 279 of pages/smart-alerts.tsx
+UI-504,button,N/A,N/A,button,SmartAlertsPage,pages/smart-alerts.tsx:288,,N/A,None,N/A,N/A,N/A,implicit button,Line 288 of pages/smart-alerts.tsx
+UI-505,Link,N/A,N/A,Link,SmartAlertsPage,pages/smart-alerts.tsx:428,"href=""/roadmap"" className=""shrink-0 w-full sm:w-auto""",N/A,None,N/A,N/A,N/A,implicit Link,Line 428 of pages/smart-alerts.tsx
+UI-506,button,N/A,N/A,button,SmartAlertsPage,pages/smart-alerts.tsx:429,"className=""w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradi",N/A,None,N/A,N/A,N/A,implicit button,Line 429 of pages/smart-alerts.tsx
+UI-507,button,N/A,N/A,button,SmartAlertsPage,pages/smart-alerts.tsx:539,,N/A,None,N/A,N/A,N/A,implicit button,Line 539 of pages/smart-alerts.tsx
+UI-508,input,N/A,N/A,textbox,SmartAlertsPage,pages/smart-alerts.tsx:565,,N/A,None,N/A,N/A,N/A,implicit input,Line 565 of pages/smart-alerts.tsx
+UI-509,button,N/A,N/A,button,SmartAlertsPage,pages/smart-alerts.tsx:573,,N/A,None,N/A,N/A,N/A,implicit button,Line 573 of pages/smart-alerts.tsx
+UI-510,select,N/A,N/A,select,SmartAlertsPage,pages/smart-alerts.tsx:585,,N/A,None,N/A,N/A,N/A,implicit select,Line 585 of pages/smart-alerts.tsx
+UI-511,option,Impact Level,N/A,option,SmartAlertsPage,pages/smart-alerts.tsx:590,"value=""impact"" className=""bg-white dark:bg-slate-900 text-s",Local state bound,None,N/A,N/A,N/A,implicit option,Line 590 of pages/smart-alerts.tsx
+UI-512,option,AI Confidence,N/A,option,SmartAlertsPage,pages/smart-alerts.tsx:591,"value=""confidence"" className=""bg-white dark:bg-slate-900 te",Local state bound,None,N/A,N/A,N/A,implicit option,Line 591 of pages/smart-alerts.tsx
+UI-513,option,Newest First,N/A,option,SmartAlertsPage,pages/smart-alerts.tsx:592,"value=""newest"" className=""bg-white dark:bg-slate-900 text-s",Local state bound,None,N/A,N/A,N/A,implicit option,Line 592 of pages/smart-alerts.tsx
+UI-514,button,N/A,N/A,button,SmartAlertsPage,pages/smart-alerts.tsx:622,,N/A,None,N/A,N/A,N/A,implicit button,Line 622 of pages/smart-alerts.tsx
+UI-515,button,N/A,N/A,button,SmartAlertsPage,pages/smart-alerts.tsx:629,,N/A,None,N/A,N/A,N/A,implicit button,Line 629 of pages/smart-alerts.tsx
+UI-516,button,N/A,N/A,button,SmartAlertsPage,pages/smart-alerts.tsx:776,,N/A,None,N/A,N/A,N/A,implicit button,Line 776 of pages/smart-alerts.tsx
+UI-517,Link,N/A,N/A,Link,SmartAlertsPage,pages/smart-alerts.tsx:808,"href={alert.action_link // '#'} className=""flex-1 lg:w-full",N/A,None,N/A,N/A,N/A,implicit Link,Line 808 of pages/smart-alerts.tsx
+UI-518,button,N/A,N/A,button,SmartAlertsPage,pages/smart-alerts.tsx:809,,N/A,None,N/A,N/A,N/A,implicit button,Line 809 of pages/smart-alerts.tsx
+UI-519,Link,N/A,N/A,Link,SmartAlertsPage,pages/smart-alerts.tsx:820,"href={alert.secondary_action_link} className=""flex-1 lg:w-f",N/A,None,N/A,N/A,N/A,implicit Link,Line 820 of pages/smart-alerts.tsx
+UI-520,button,N/A,N/A,button,SmartAlertsPage,pages/smart-alerts.tsx:821,"className=""w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg",N/A,None,N/A,N/A,N/A,implicit button,Line 821 of pages/smart-alerts.tsx
+UI-521,button,N/A,N/A,button,SmartAlertsPage,pages/smart-alerts.tsx:830,,N/A,None,N/A,N/A,N/A,implicit button,Line 830 of pages/smart-alerts.tsx
+UI-522,button,N/A,N/A,button,SmartAlertsPage,pages/smart-alerts.tsx:838,,N/A,None,N/A,N/A,N/A,implicit button,Line 838 of pages/smart-alerts.tsx
+UI-523,button,N/A,N/A,button,SmartAlertsPage,pages/smart-alerts.tsx:845,,N/A,None,N/A,N/A,N/A,implicit button,Line 845 of pages/smart-alerts.tsx

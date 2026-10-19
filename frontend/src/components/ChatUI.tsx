@@ -2,9 +2,8 @@ import React, { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const msgVariant = {
-  hidden:  { opacity: 0, y: 10, scale: 0.98 },
-  visible: { opacity: 1, y: 0,  scale: 1,
-    transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] } },
+  hidden:  { opacity: 0, y: 6 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.2 } },
 };
 
 const TypingIndicator = () => (
@@ -12,18 +11,16 @@ const TypingIndicator = () => (
     variants={msgVariant}
     initial="hidden"
     animate="visible"
-    className="flex items-end gap-3 mb-4"
+    className="flex items-start gap-2.5 mb-3"
   >
-    <div className="w-8 h-8 rounded-xl bg-brand-neural/20 flex items-center justify-center flex-shrink-0 shadow-inner border border-brand-neural/30 relative overflow-hidden">
-      <div className="absolute inset-0 bg-brand-neural/10 animate-pulse" />
-      <i className="fa-solid fa-brain text-brand-neural text-xs relative z-10" />
+    <div className="w-6 h-6 border border-amber-400/30 bg-amber-400/10 flex items-center justify-center flex-shrink-0 text-amber-400 text-[10px]">
+      <i className="fa-solid fa-brain" />
     </div>
-    <div className="bg-white/5 border border-white/5 rounded-[20px] rounded-bl-sm px-5 py-4 shadow-sm backdrop-blur-md">
-      <div className="flex items-center gap-1.5">
-        <span className="w-1.5 h-1.5 rounded-full bg-brand-neural/70 animate-bounce" style={{ animationDelay: '0ms'   }} />
-        <span className="w-1.5 h-1.5 rounded-full bg-brand-neural/70 animate-bounce" style={{ animationDelay: '150ms' }} />
-        <span className="w-1.5 h-1.5 rounded-full bg-brand-neural/70 animate-bounce" style={{ animationDelay: '300ms' }} />
-      </div>
+    <div className="bg-zinc-950 border border-zinc-800 p-2.5 text-xs font-mono flex items-center gap-2">
+      <span className="w-1.5 h-1.5 bg-amber-400 animate-pulse" />
+      <span className="text-[10px] text-amber-400 font-mono uppercase tracking-wider">
+        Computing trajectory heuristics...
+      </span>
     </div>
   </motion.div>
 );
@@ -31,6 +28,8 @@ const TypingIndicator = () => (
 interface Message {
   role: string;
   text: string;
+  latency_ms?: number;
+  model?: string;
 }
 
 interface MessageBubbleProps {
@@ -46,31 +45,42 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, index }) => {
       initial="hidden"
       animate="visible"
       custom={index}
-      className={`flex items-end gap-3 mb-4 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}
+      className={`flex items-start gap-2.5 mb-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}
     >
-      {/* Avatar */}
+      {/* Indicator Box */}
       {!isUser ? (
-        <div className="w-8 h-8 rounded-xl bg-brand-neural/10 flex items-center justify-center flex-shrink-0 border border-brand-neural/20 hover:scale-110 transition-transform relative">
-          <i className="fa-solid fa-sparkles text-brand-neural text-xs" />
+        <div className="w-6 h-6 border border-amber-400/30 bg-amber-400/10 flex items-center justify-center flex-shrink-0 text-amber-400 text-[10px] mt-0.5">
+          <i className="fa-solid fa-brain" />
         </div>
       ) : (
-        <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0 border border-white/10 hover:scale-110 transition-transform">
-          <i className="fa-solid fa-user text-slate-400 text-xs" />
+        <div className="w-6 h-6 border border-zinc-700 bg-zinc-900 flex items-center justify-center flex-shrink-0 text-zinc-300 text-[10px] mt-0.5">
+          <i className="fa-solid fa-user" />
         </div>
       )}
 
-      {/* Bubble */}
+      {/* Bubble Content */}
       <div
         className={`
-          max-w-[80%] px-5 py-3.5 text-sm leading-relaxed shadow-sm backdrop-blur-md
-          transition-all duration-300 hover:shadow-md font-medium tracking-wide
+          max-w-[85%] p-3 text-xs font-mono leading-relaxed transition-all
           ${isUser
-            ? 'bg-brand-neural text-white rounded-[20px] rounded-br-[4px] shadow-glass-glow shadow-brand-neural/20'
-            : 'bg-white/5 text-slate-200 border border-white/10 rounded-[20px] rounded-bl-[4px] hover:bg-white/10'
+            ? 'bg-zinc-900 border border-amber-400/40 text-zinc-100'
+            : 'bg-zinc-950 border border-zinc-800 text-zinc-300'
           }
         `}
       >
-        {message.text}
+        <div className="flex items-center justify-between gap-3 mb-1 pb-1 border-b border-zinc-800/80">
+          <span className={`text-[9px] font-mono font-bold uppercase tracking-wider ${
+            isUser ? 'text-zinc-400' : 'text-amber-400'
+          }`}>
+            {isUser ? '[ USER // OPERATOR ]' : '[ SENTINEL AI // ARCHITECT ]'}
+          </span>
+          {!isUser && message.latency_ms && (
+            <span className="text-[9px] font-mono text-zinc-500 bg-zinc-900 px-1.5 py-0.2 border border-zinc-800">
+              ⚡ {message.latency_ms}ms
+            </span>
+          )}
+        </div>
+        <p className="whitespace-pre-wrap">{message.text}</p>
       </div>
     </motion.div>
   );
@@ -89,14 +99,14 @@ const ChatUI: React.FC<ChatUIProps> = ({ messages = [], loading = false }) => {
   }, [messages, loading]);
 
   return (
-    <div className="h-full overflow-y-auto overscroll-contain px-6 py-6 scroll-smooth sm-scrollbar">
+    <div className="h-full overflow-y-auto overscroll-contain px-4 py-4 scroll-smooth sm-scrollbar">
       <AnimatePresence initial={false}>
         {messages.map((message, index) => (
           <MessageBubble key={index} message={message} index={index} />
         ))}
         {loading && <TypingIndicator key="typing" />}
       </AnimatePresence>
-      <div ref={bottomRef} className="h-4" />
+      <div ref={bottomRef} className="h-2" />
     </div>
   );
 };

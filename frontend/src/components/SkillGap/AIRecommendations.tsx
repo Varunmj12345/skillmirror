@@ -18,70 +18,72 @@ function AIRecommendations({ data }: RecommendationProps): React.ReactElement | 
     };
 
     return (
-        <div className="mt-8 p-8 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none relative overflow-hidden text-slate-900 dark:text-white">
-            <div className="relative z-10 flex flex-col lg:flex-row gap-12">
+        <div className="mt-8 p-6 lg:p-8 rounded-2xl bg-zinc-900/90 border border-zinc-800 relative overflow-hidden text-white">
+            <div className="relative z-10 flex flex-col lg:flex-row gap-8">
                 <div className="lg:w-1/3 space-y-6">
                     <div>
-                        <h3 className="text-2xl font-black mb-4 flex items-center gap-3">
-                            <span className="p-2.5 bg-blue-50 dark:bg-indigo-500/20 text-blue-600 dark:text-indigo-400 rounded-xl border border-blue-200 dark:border-indigo-500/30">
-                                <i className="fa-solid fa-robot"></i>
-                            </span>
-                            Learning Path Pro
-                        </h3>
-                        <div className="p-6 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm">
-                            <p className="text-slate-600 dark:text-slate-400 text-xs mb-6 leading-relaxed font-medium">
-                                AI has generated a <span className="text-slate-900 dark:text-white font-bold">dynamic learning sequence</span> based on your current gaps and daily availability.
+                        <div className="flex items-center gap-2 mb-4">
+                            <span className="w-1.5 h-1.5 rounded-sm bg-amber-400"></span>
+                            <h3 className="font-mono text-xs font-bold text-white uppercase tracking-widest">
+                                Learning Path Pro
+                            </h3>
+                        </div>
+                        <div className="p-5 bg-zinc-950 border border-zinc-800 rounded-xl">
+                            <p className="text-zinc-400 text-xs mb-5 leading-relaxed font-mono">
+                                AI has synthesized a sequenced learning schedule targeted directly at your detected gaps.
                             </p>
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-2 gap-4 font-mono">
                                 <div className="flex flex-col">
-                                    <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">{data.estimated_time}</span>
-                                    <span className="text-[9px] text-slate-500 dark:text-slate-400 uppercase font-black tracking-widest leading-none mt-1">Total Est. Duration</span>
+                                    <span className="text-xl font-bold text-white">{data.estimated_time}</span>
+                                    <span className="text-[9px] text-zinc-500 uppercase tracking-widest mt-1">Est. Duration</span>
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="text-2xl font-black text-blue-600 dark:text-indigo-400">Apr 15</span>
-                                    <span className="text-[9px] text-slate-500 dark:text-slate-400 uppercase font-black tracking-widest leading-none mt-1">Est. Completion</span>
+                                    <span className="text-xl font-bold text-amber-400">3-4 WEEKS</span>
+                                    <span className="text-[9px] text-zinc-500 uppercase tracking-widest mt-1">Target Pace</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="p-6 bg-indigo-50/50 dark:bg-indigo-600/5 border border-indigo-200 dark:border-indigo-500/20 rounded-2xl shadow-sm">
-                        <h4 className="text-[10px] font-black text-blue-600 dark:text-indigo-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                            <i className="fa-solid fa-link text-[10px]"></i> Skill Dependencies
+                    <div className="p-5 bg-zinc-950 border border-zinc-800 rounded-xl">
+                        <h4 className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                            <i className="fa-solid fa-link text-[10px] text-amber-400"></i> Skill Dependencies
                         </h4>
-                        <div className="space-y-2">
+                        <div className="space-y-2.5 font-mono text-[10px]">
                             <div className="flex items-center gap-3">
-                                <span className="text-[10px] font-bold text-slate-800 dark:text-slate-300">Auth Module</span>
-                                <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800 relative">
-                                    <i className="fa-solid fa-chevron-right absolute right-0 top-1/2 -translate-y-1/2 text-[6px] text-slate-400 dark:text-slate-700"></i>
+                                <span className="text-zinc-300">Auth Module</span>
+                                <div className="h-px flex-1 bg-zinc-800 relative">
+                                    <i className="fa-solid fa-chevron-right absolute right-0 top-1/2 -translate-y-1/2 text-[6px] text-zinc-600"></i>
                                 </div>
-                                <span className="text-[10px] font-bold text-slate-500">Node API</span>
+                                <span className="text-zinc-500">Node API</span>
                             </div>
                             <div className="flex items-center gap-3">
-                                <span className="text-[10px] font-bold text-slate-800 dark:text-slate-300">Next.js</span>
-                                <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800 relative">
-                                    <i className="fa-solid fa-chevron-right absolute right-0 top-1/2 -translate-y-1/2 text-[6px] text-slate-400 dark:text-slate-700"></i>
+                                <span className="text-zinc-300">Next.js</span>
+                                <div className="h-px flex-1 bg-zinc-800 relative">
+                                    <i className="fa-solid fa-chevron-right absolute right-0 top-1/2 -translate-y-1/2 text-[6px] text-zinc-600"></i>
                                 </div>
-                                <span className="text-[10px] font-bold text-slate-500">Redux State</span>
+                                <span className="text-zinc-500">Redux State</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="lg:w-2/3 grid grid-cols-1 gap-12">
+                <div className="lg:w-2/3 grid grid-cols-1 gap-8">
                     {/* Roadmap Phases */}
                     {data.roadmap && (
                         <div>
                             <div className="flex justify-between items-center mb-6">
-                                <h4 className="text-xs font-black text-slate-600 dark:text-slate-400 uppercase tracking-[0.2em]">Intelligent Phase Progression</h4>
-                                <span className="text-[10px] font-black text-slate-500 dark:text-slate-600 uppercase tracking-widest">
-                                    {completedPhases.size} / {data.roadmap.length} Phases Done
+                                <h4 className="text-xs font-mono font-bold text-zinc-400 uppercase tracking-widest">
+                                    Phase Progression
+                                </h4>
+                                <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider">
+                                    {completedPhases.size} / {data.roadmap.length} Phases Complete
                                 </span>
                             </div>
 
                             <div className="relative space-y-0">
                                 {/* Connection Line */}
-                                <div className="absolute left-[7px] top-4 bottom-4 w-0.5 bg-slate-200 dark:bg-slate-800"></div>
+                                <div className="absolute left-[7px] top-4 bottom-4 w-0.5 bg-zinc-800"></div>
 
                                 {data.roadmap.map((phase: RoadmapPhase, idx: number) => {
                                     const isLocked = idx > 0 && !completedPhases.has(idx - 1);
@@ -90,45 +92,54 @@ function AIRecommendations({ data }: RecommendationProps): React.ReactElement | 
                                     return (
                                         <div
                                             key={idx}
-                                            className={`relative pl-10 pb-8 transition-all duration-500 ${isLocked ? 'opacity-40 grayscale' : 'opacity-100'}`}
+                                            className={`relative pl-10 pb-7 transition-all duration-300 ${isLocked ? 'opacity-40' : 'opacity-100'}`}
                                         >
                                             {/* Step Hub */}
                                             <div
                                                 onClick={() => !isLocked && togglePhase(idx)}
-                                                className={`absolute left-0 top-1 w-4 h-4 rounded-full border-2 border-white dark:border-slate-900 z-10 cursor-pointer transition-all ${isDone ? 'bg-emerald-500 shadow-sm' :
-                                                        isLocked ? 'bg-slate-300 dark:bg-slate-700' : 'bg-blue-600 dark:bg-indigo-500 shadow-sm'
-                                                    }`}
+                                                className={`absolute left-0 top-1 w-4 h-4 rounded-sm border z-10 cursor-pointer transition-all flex items-center justify-center ${
+                                                    isDone
+                                                        ? 'bg-emerald-400 border-emerald-400 text-zinc-950'
+                                                        : isLocked
+                                                        ? 'bg-zinc-900 border-zinc-700'
+                                                        : 'bg-zinc-950 border-amber-400'
+                                                }`}
                                             >
-                                                {isDone && (
-                                                    <i className="fa-solid fa-check absolute -right-6 top-0 text-emerald-600 dark:text-emerald-400 text-[10px]"></i>
-                                                )}
+                                                {isDone && <i className="fa-solid fa-check text-[8px]"></i>}
                                             </div>
 
                                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                                 <div>
-                                                    <h5 className={`text-sm font-black mb-2 transition-colors ${isDone ? 'text-emerald-600 dark:text-emerald-400 line-through' : isLocked ? 'text-slate-400 dark:text-slate-500' : 'text-slate-900 dark:text-slate-100'}`}>
+                                                    <h5 className={`text-xs font-bold mb-2 transition-colors ${isDone ? 'text-zinc-500 line-through' : isLocked ? 'text-zinc-600' : 'text-zinc-100'}`}>
                                                         {phase.name}
                                                     </h5>
-                                                    <div className="flex flex-wrap gap-2">
+                                                    <div className="flex flex-wrap gap-1.5">
                                                         {phase.skills.map((skill: string) => (
-                                                            <span key={skill} className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-tighter border transition-colors ${isDone ? 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-500/70' :
-                                                                    isLocked ? 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-600' : 'bg-blue-50 dark:bg-slate-900 border-blue-200 dark:border-indigo-500/20 text-blue-700 dark:text-indigo-300'
-                                                                }`}>
+                                                            <span
+                                                                key={skill}
+                                                                className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider border ${
+                                                                    isDone
+                                                                        ? 'bg-zinc-900 border-zinc-800 text-zinc-500'
+                                                                        : isLocked
+                                                                        ? 'bg-zinc-950 border-zinc-800 text-zinc-600'
+                                                                        : 'bg-zinc-950 border-zinc-800 text-zinc-300'
+                                                                }`}
+                                                            >
                                                                 {skill}
                                                             </span>
                                                         ))}
                                                     </div>
                                                 </div>
                                                 {!isLocked && !isDone && (
-                                                    <div className="flex flex-col items-end shrink-0">
-                                                        <span className="text-[10px] font-black text-blue-600 dark:text-indigo-400 uppercase tracking-widest">Phase Time</span>
-                                                        <span className="text-xs font-bold text-slate-700 dark:text-slate-300">2.5 Weeks</span>
+                                                    <div className="flex flex-col items-end shrink-0 font-mono">
+                                                        <span className="text-[9px] text-zinc-500 uppercase tracking-widest">Est Duration</span>
+                                                        <span className="text-xs font-bold text-amber-400">2.5 Weeks</span>
                                                     </div>
                                                 )}
                                                 {isLocked && (
-                                                    <div className="flex items-center gap-2 text-slate-400 dark:text-slate-600">
-                                                        <i className="fa-solid fa-lock text-[10px]"></i>
-                                                        <span className="text-[9px] font-black uppercase tracking-[0.2em]">Locked</span>
+                                                    <div className="flex items-center gap-1.5 text-zinc-600 font-mono text-[10px]">
+                                                        <i className="fa-solid fa-lock text-[9px]"></i>
+                                                        <span className="uppercase tracking-widest">Locked</span>
                                                     </div>
                                                 )}
                                             </div>
@@ -139,39 +150,43 @@ function AIRecommendations({ data }: RecommendationProps): React.ReactElement | 
                         </div>
                     )}
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-slate-100 dark:border-slate-800/50">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-zinc-800">
                         <div>
-                            <h4 className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4">Recommended Courses</h4>
-                            <div className="space-y-3">
+                            <h4 className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mb-3">
+                                Recommended Courses
+                            </h4>
+                            <div className="space-y-2.5">
                                 {data.courses.map((c: Course, i: number) => (
                                     <a
                                         key={i}
                                         href={c.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-blue-300 dark:hover:border-indigo-500/40 hover:bg-white dark:hover:bg-indigo-500/5 transition-all group shadow-sm"
+                                        className="flex items-center justify-between p-3 bg-zinc-950 border border-zinc-800 rounded-xl hover:border-zinc-700 transition-all group"
                                     >
                                         <div className="flex flex-col">
-                                            <span className="text-[11px] font-black text-slate-800 dark:text-slate-300 line-clamp-1 group-hover:text-blue-600 dark:group-hover:text-indigo-300 transition-colors uppercase tracking-tight">{c.name}</span>
-                                            <span className="text-[9px] text-blue-600 dark:text-indigo-400 font-black uppercase tracking-widest mt-0.5">{c.platform} • {c.level}</span>
+                                            <span className="text-xs font-bold text-zinc-200 line-clamp-1 group-hover:text-amber-400 transition-colors">{c.name}</span>
+                                            <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest mt-0.5">{c.platform} • {c.level}</span>
                                         </div>
-                                        <i className="fa-solid fa-up-right-from-square text-[10px] text-slate-400 dark:text-slate-700 group-hover:text-blue-600 dark:group-hover:text-indigo-400 transition-colors"></i>
+                                        <i className="fa-solid fa-arrow-up-right-from-square text-[9px] text-zinc-600 group-hover:text-amber-400 transition-colors"></i>
                                     </a>
                                 ))}
                             </div>
                         </div>
 
                         <div>
-                            <h4 className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4">Hands-on Projects</h4>
-                            <div className="space-y-3">
+                            <h4 className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mb-3">
+                                Hands-on Projects
+                            </h4>
+                            <div className="space-y-2.5">
                                 {data.projects.map((p: Project, i: number) => (
-                                    <div key={i} className="flex items-center gap-3 p-3.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-emerald-400 dark:hover:border-emerald-500/20 transition-all shadow-sm">
-                                        <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-transparent flex items-center justify-center text-emerald-600 dark:text-emerald-400">
-                                            <i className="fa-solid fa-code text-[10px]"></i>
+                                    <div key={i} className="flex items-center gap-3 p-3 bg-zinc-950 border border-zinc-800 rounded-xl hover:border-zinc-700 transition-all">
+                                        <div className="w-7 h-7 rounded bg-zinc-900 border border-zinc-800 flex items-center justify-center text-amber-400 text-xs shrink-0">
+                                            <i className="fa-solid fa-code"></i>
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="text-[11px] font-black text-slate-800 dark:text-slate-300 uppercase tracking-tight">{p.name}</span>
-                                            <span className="text-[9px] text-slate-500 dark:text-slate-400 font-black uppercase tracking-widest mt-0.5">{p.difficulty}</span>
+                                            <span className="text-xs font-bold text-zinc-200 truncate">{p.name}</span>
+                                            <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest mt-0.5">{p.difficulty}</span>
                                         </div>
                                     </div>
                                 ))}

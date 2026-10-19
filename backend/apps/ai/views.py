@@ -149,8 +149,8 @@ class GenerateRoadmapView(APIView):
 from apps.ai.llm_client import chat_completion, get_active_provider_and_key
 
 class CareerChatView(APIView):
-    """AI Career Assistant - returns real AI career advice using xAI Grok / Groq Llama 3."""
-    permission_classes = [permissions.IsAuthenticated]
+    """AI Career Assistant - returns real AI career advice using Groq (openai/gpt-oss-120b)."""
+    permission_classes = [permissions.AllowAny]
 
     def post(self, request):
         msg = request.data.get('message', '')
@@ -166,21 +166,29 @@ class CareerChatView(APIView):
             user_context = ""
             try:
                 from apps.users.models import UserProfile
-                profile = UserProfile.objects.get(user=request.user)
-                user_context = f"User is aiming for: {profile.dream_job or 'Unknown'}. Experience level: {profile.experience_level or 'Unknown'}."
+                if request.user.is_authenticated:
+                    profile = UserProfile.objects.get(user=request.user)
+                    user_context = f"User is aiming for: {profile.dream_job or 'Unknown'}. Experience level: {profile.experience_level or 'Unknown'}."
             except Exception:
                 pass
 
             completion = chat_completion(
                 messages=[
-                    {"role": "system", "content": f"You are SkillMirror AI, a helpful career assistant. {user_context} Provide concise, actionable career advice. If the user asks for a roadmap, guide them to use our dedicated Analyzer section."},
+                    {"role": "system", "content": f"You are SkillMirror AI, an elite career intelligence advisor. {user_context} Provide concise, actionable, and mathematically grounded career guidance. Guide users strategically on roadmaps, skill gaps, resume refinement, and interview prep."},
                     {"role": "user", "content": msg}
                 ],
-                max_tokens=500,
+                max_tokens=600,
                 temperature=0.7,
+                interaction_type="career_chat",
+                user=request.user if getattr(request.user, 'is_authenticated', False) else None
             )
             reply = completion.content
-            return Response({'reply': reply})
+            return Response({
+                'reply': reply,
+                'latency_ms': round(getattr(completion, 'latency_ms', 0.0), 1),
+                'model': 'openai/gpt-oss-120b',
+                'provider': 'groq'
+            })
         except Exception as e:
             print(f"AI Chat Error: {e}")
             return self._mock_response(msg, request.user)
@@ -307,9 +315,11 @@ STRICT RULES:
                 ],
                 max_tokens=2000,
                 temperature=0.3,
+                interaction_type="career_intelligence",
+                user=request.user if getattr(request.user, 'is_authenticated', False) else None
             )
             report = completion.content
-            return Response({'report': report, 'metrics': data})
+            return Response({'report': report, 'metrics': data, 'latency_ms': round(getattr(completion, 'latency_ms', 0.0), 1)})
         except Exception as e:
             print(f"Career Intelligence View Error: {e}")
             return Response({'report': self._get_fallback_report(data), 'metrics': data})
@@ -577,9 +587,11 @@ FINAL OUTPUT STYLE:
                 ],
                 max_tokens=2000,
                 temperature=0.2,
+                interaction_type="resume_intelligence",
+                user=request.user if getattr(request.user, 'is_authenticated', False) else None
             )
             report = completion.content
-            return Response({'report': report, 'metrics': data})
+            return Response({'report': report, 'metrics': data, 'latency_ms': round(getattr(completion, 'latency_ms', 0.0), 1)})
         except Exception as e:
             print(f"Resume Intelligence View Error: {e}")
             return Response({'report': self._get_fallback_report(data), 'metrics': data})

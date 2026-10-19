@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { getCurrentUser, loginUser, logoutUser, verifyTwoFactor } from '../services/auth';
+import { AuthUser, LoginCredentials, TwoFactorPayload } from '../types';
 
 interface AuthContextType {
-    user: any;
+    user: AuthUser | null;
     loading: boolean;
-    login: (credentials: any) => Promise<any>;
-    verify2FA: (data: any) => Promise<any>;
+    login: (credentials: LoginCredentials) => Promise<AuthUser | null>;
+    verify2FA: (data: TwoFactorPayload) => Promise<AuthUser | null>;
     logout: () => Promise<void>;
     refreshUser: () => Promise<void>;
 }
@@ -14,14 +15,14 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [user, setUser] = useState<any>(null);
+    const [user, setUser] = useState<AuthUser | null>(null);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
 
     const refreshUser = async () => {
         try {
             const currentUser = await getCurrentUser();
-            setUser(currentUser);
+            setUser(currentUser as AuthUser | null);
         } catch (error) {
             console.error('Auth check failed:', error);
             setUser(null);
@@ -34,18 +35,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         refreshUser();
     }, []);
 
-    const login = async (credentials: any) => {
+    const login = async (credentials: LoginCredentials) => {
         const res = await loginUser(credentials);
         if (res && !res['2fa_required']) {
-            setUser(res);
+            setUser(res as AuthUser);
         }
-        return res;
+        return res as AuthUser;
     };
 
-    const verify2FA = async (data: any) => {
+    const verify2FA = async (data: TwoFactorPayload) => {
         const loggedInUser = await verifyTwoFactor(data);
-        setUser(loggedInUser);
-        return loggedInUser;
+        setUser(loggedInUser as AuthUser);
+        return loggedInUser as AuthUser;
     };
 
     const logout = async () => {

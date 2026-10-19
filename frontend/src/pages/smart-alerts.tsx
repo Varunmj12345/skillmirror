@@ -38,7 +38,7 @@ const SmartAlertsPage: React.FC = () => {
             if (showRefreshToast) {
                 addToast({
                     type: 'success',
-                    title: 'Neural Network Synchronized',
+                    title: 'Signals Synchronized',
                     message: `Telemetry updated. ${alertData.length} live career signals evaluated.`
                 });
             }
@@ -90,7 +90,7 @@ const SmartAlertsPage: React.FC = () => {
             setAlerts(prev => prev.map(a => ({ ...a, is_read: true })));
             addToast({
                 type: 'success',
-                title: 'All Signals Acknowledged',
+                title: 'Signals Acknowledged',
                 message: 'All unread career alerts have been marked as read.'
             });
         } catch (err) {
@@ -109,7 +109,6 @@ const SmartAlertsPage: React.FC = () => {
         };
     }, [alerts]);
 
-    // Categories filter configuration
     const filterOptions = [
         { id: 'all', label: 'All Signals', count: alerts.length, icon: 'fa-layer-group' },
         { id: 'market', label: 'Market Intel', count: alerts.filter(a => a.alert_type === 'market').length, icon: 'fa-briefcase' },
@@ -144,7 +143,6 @@ const SmartAlertsPage: React.FC = () => {
             );
         }
 
-        // Sorting
         result.sort((a, b) => {
             if (sortBy === 'impact') return (b.impact_score || 0) - (a.impact_score || 0);
             if (sortBy === 'confidence') return (b.confidence_score || 0) - (a.confidence_score || 0);
@@ -159,102 +157,69 @@ const SmartAlertsPage: React.FC = () => {
             icon: string;
             label: string;
             badgeColor: string;
-            glowClass: string;
-            borderClass: string;
-            textColor: string;
-            accentBg: string;
+            accentDot: string;
         }> = {
             market: {
                 icon: 'fa-chart-line',
                 label: 'Market Surge',
-                badgeColor: 'bg-sky-500/15 text-sky-400 border-sky-500/30',
-                glowClass: 'from-sky-500/20 via-transparent to-transparent',
-                borderClass: 'border-sky-500/30 hover:border-sky-400/60',
-                textColor: 'text-sky-400',
-                accentBg: 'bg-sky-500'
+                badgeColor: 'bg-zinc-950 text-amber-400 border-amber-500/30',
+                accentDot: 'bg-amber-400'
             },
             opportunity: {
                 icon: 'fa-wand-magic-sparkles',
                 label: 'AI Opportunity',
-                badgeColor: 'bg-violet-500/15 text-violet-400 border-violet-500/30',
-                glowClass: 'from-violet-500/20 via-transparent to-transparent',
-                borderClass: 'border-violet-500/30 hover:border-violet-400/60',
-                textColor: 'text-violet-400',
-                accentBg: 'bg-violet-500'
+                badgeColor: 'bg-zinc-950 text-emerald-400 border-emerald-500/30',
+                accentDot: 'bg-emerald-400'
             },
             predictive_risk: {
                 icon: 'fa-triangle-exclamation',
                 label: 'Predictive Risk',
-                badgeColor: 'bg-rose-500/15 text-rose-400 border-rose-500/30',
-                glowClass: 'from-rose-500/20 via-transparent to-transparent',
-                borderClass: 'border-rose-500/30 hover:border-rose-400/60',
-                textColor: 'text-rose-400',
-                accentBg: 'bg-rose-500'
+                badgeColor: 'bg-zinc-950 text-rose-400 border-rose-500/30',
+                accentDot: 'bg-rose-400'
             },
             skill_gap: {
                 icon: 'fa-chart-pie',
                 label: 'Skill Gap',
-                badgeColor: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
-                glowClass: 'from-amber-500/20 via-transparent to-transparent',
-                borderClass: 'border-amber-500/30 hover:border-amber-400/60',
-                textColor: 'text-amber-400',
-                accentBg: 'bg-amber-500'
+                badgeColor: 'bg-zinc-950 text-amber-400 border-amber-500/30',
+                accentDot: 'bg-amber-400'
             },
             roadmap: {
                 icon: 'fa-route',
                 label: 'Milestone Pace',
-                badgeColor: 'bg-indigo-500/15 text-indigo-400 border-indigo-500/30',
-                glowClass: 'from-indigo-500/20 via-transparent to-transparent',
-                borderClass: 'border-indigo-500/30 hover:border-indigo-400/60',
-                textColor: 'text-indigo-400',
-                accentBg: 'bg-indigo-500'
+                badgeColor: 'bg-zinc-950 text-zinc-300 border-zinc-800',
+                accentDot: 'bg-zinc-400'
             },
             behavioral: {
                 icon: 'fa-brain',
                 label: 'Behavioral Vector',
-                badgeColor: 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30',
-                glowClass: 'from-cyan-500/20 via-transparent to-transparent',
-                borderClass: 'border-cyan-500/30 hover:border-cyan-400/60',
-                textColor: 'text-cyan-400',
-                accentBg: 'bg-cyan-500'
+                badgeColor: 'bg-zinc-950 text-zinc-300 border-zinc-800',
+                accentDot: 'bg-zinc-400'
             },
             readiness: {
-                icon: 'fa-shield-check',
+                icon: 'fa-shield-halved',
                 label: 'Readiness Shift',
-                badgeColor: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
-                glowClass: 'from-emerald-500/20 via-transparent to-transparent',
-                borderClass: 'border-emerald-500/30 hover:border-emerald-400/60',
-                textColor: 'text-emerald-400',
-                accentBg: 'bg-emerald-500'
+                badgeColor: 'bg-zinc-950 text-emerald-400 border-emerald-500/30',
+                accentDot: 'bg-emerald-400'
             },
             interview: {
                 icon: 'fa-microphone-lines',
                 label: 'Interview Radar',
-                badgeColor: 'bg-fuchsia-500/15 text-fuchsia-400 border-fuchsia-500/30',
-                glowClass: 'from-fuchsia-500/20 via-transparent to-transparent',
-                borderClass: 'border-fuchsia-500/30 hover:border-fuchsia-400/60',
-                textColor: 'text-fuchsia-400',
-                accentBg: 'bg-fuchsia-500'
+                badgeColor: 'bg-zinc-950 text-amber-400 border-amber-500/30',
+                accentDot: 'bg-amber-400'
             },
             achievement: {
                 icon: 'fa-trophy',
                 label: 'Achievement',
-                badgeColor: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
-                glowClass: 'from-emerald-500/20 via-transparent to-transparent',
-                borderClass: 'border-emerald-500/30 hover:border-emerald-400/60',
-                textColor: 'text-emerald-400',
-                accentBg: 'bg-emerald-500'
+                badgeColor: 'bg-zinc-950 text-emerald-400 border-emerald-500/30',
+                accentDot: 'bg-emerald-400'
             }
         };
 
         return themeMap[alert.alert_type] || {
             icon: 'fa-bell',
             label: 'System Signal',
-            badgeColor: 'bg-slate-700/30 text-slate-300 border-slate-700/50',
-            glowClass: 'from-slate-700/20 via-transparent to-transparent',
-            borderClass: 'border-slate-800 hover:border-slate-700',
-            textColor: 'text-slate-400',
-            accentBg: 'bg-slate-500'
+            badgeColor: 'bg-zinc-950 text-zinc-400 border-zinc-800',
+            accentDot: 'bg-zinc-500'
         };
     };
 
@@ -266,374 +231,319 @@ const SmartAlertsPage: React.FC = () => {
             </Head>
 
             <CyberPageShell
-                moduleCode="MOD-06"
-                section="AI CAREER INTELLIGENCE ENGINE"
+                moduleCode="ALT-01"
+                section="AI CAREER ENGINE"
+                badge="TELEMETRY SCANNER: ACTIVE"
                 title="SMART CAREER ALERTS"
-                subtitle="Autonomous neural telemetry scanning live job market surges, competency drift, and career acceleration vectors."
-                badge="LIVE SIGNALS ACTIVE"
-                badgeVariant="outline-cyan"
-                bulletVariant="cyan"
-                glowColor="cyan"
+                subtitle="Autonomous signal ingestion tracking market demand surges, competency drift, and career acceleration vectors."
                 actions={
-                    <div className="flex items-center gap-2.5">
+                    <div className="flex items-center gap-2">
                         <button
                             onClick={() => loadData(true)}
                             disabled={isRefreshing}
-                            className="px-3.5 py-2 rounded-xl bg-slate-900/80 border border-white/[0.08] text-slate-300 hover:text-white hover:border-cyan-500/40 text-xs font-mono font-bold uppercase tracking-wider transition-all flex items-center gap-2"
-                            title="Synchronize Neural Feed"
+                            className="px-3.5 py-2 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 text-zinc-300 text-xs font-mono font-bold uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer"
+                            title="Synchronize Feed"
                         >
-                            <i className={`fa-solid fa-arrows-rotate text-xs text-cyan-400 ${isRefreshing ? 'animate-spin' : ''}`} />
-                            <span className="hidden sm:inline">Sync AI</span>
+                            <i className={`fa-solid fa-arrows-rotate text-xs text-amber-400 ${isRefreshing ? 'animate-spin' : ''}`} />
+                            <span className="hidden sm:inline">Sync Signals</span>
                         </button>
                         <button
                             onClick={handleMarkAllRead}
                             disabled={stats.unread === 0}
-                            className={`px-4 py-2 rounded-xl font-mono font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 ${
+                            className={`px-4 py-2 rounded-xl font-mono font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer ${
                                 stats.unread > 0 
-                                    ? 'bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-400' 
-                                    : 'bg-slate-900/40 border border-white/[0.05] text-slate-600 cursor-not-allowed'
+                                    ? 'bg-amber-400 hover:bg-amber-300 text-zinc-950 shadow-sm' 
+                                    : 'bg-zinc-950 border border-zinc-800 text-zinc-600 cursor-not-allowed'
                             }`}
                         >
                             <i className="fa-solid fa-check-double text-xs" />
-                            <span>Mark All Read</span>
+                            <span>Acknowledge All</span>
                         </button>
                     </div>
                 }
                 stats={
-                    <>
-                        <PageStatChip label="Active Signals" value={stats.total} icon="fa-satellite-dish" color="cyan" />
-                        <PageStatChip label="Action Needed" value={stats.unread} icon="fa-bolt" color="amber" />
-                        <PageStatChip label="AI Precision" value={`${stats.avgConfidence}%`} icon="fa-microchip" color="emerald" />
-                    </>
+                    <div className="flex flex-wrap gap-2.5 pt-1">
+                        <PageStatChip label="Active Signals" value={stats.total} icon="fa-satellite-dish" color="slate" />
+                        <PageStatChip label="Action Required" value={stats.unread} icon="fa-bolt" color="amber" />
+                        <PageStatChip label="Model Confidence" value={`${stats.avgConfidence}%`} icon="fa-microchip" color="emerald" />
+                    </div>
                 }
             />
 
-            <div className="px-4 sm:px-6 pb-24 max-w-[1400px] mx-auto space-y-8">
-                {/* ── 1. Weekly AI Intelligence Hub & Next Best Action ── */}
+            <div className="px-4 sm:px-6 pb-20 max-w-[1400px] mx-auto space-y-6 font-mono">
+                {/* 1. Weekly AI Intelligence Hub */}
                 {summary && (
                     <ScrollReveal>
-                        <div className="relative rounded-3xl bg-gradient-to-b from-indigo-50/80 via-white to-blue-50/50 dark:from-[#121624] dark:via-[#0d101a] dark:to-[#0a0c14] border border-indigo-200/80 dark:border-indigo-500/25 p-6 sm:p-7 overflow-hidden shadow-light-card dark:shadow-[0_12px_40px_rgba(0,0,0,0.6)] group">
-                            {/* Ambient Top Glow Wave */}
-                            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/60 dark:via-indigo-500/80 to-transparent" />
-                            <div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-500/5 dark:bg-indigo-600/10 rounded-full blur-3xl pointer-events-none group-hover:bg-indigo-500/10 dark:group-hover:bg-indigo-600/15 transition-all duration-700" />
-                            <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-blue-500/5 dark:bg-cyan-600/10 rounded-full blur-3xl pointer-events-none" />
-
-                            <div className="relative z-10 space-y-6">
-                                {/* Header badge + title */}
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-white/[0.06] pb-5">
-                                    <div className="flex items-center gap-3.5">
-                                        <div className="w-11 h-11 rounded-2xl bg-indigo-50 text-indigo-600 border border-indigo-200 dark:bg-indigo-500/15 dark:border-indigo-500/30 dark:text-indigo-400 flex items-center justify-center shadow-sm">
-                                            <i className="fa-solid fa-brain-circuit text-lg animate-pulse" />
-                                        </div>
-                                        <div>
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-indigo-600 dark:text-indigo-400">
-                                                    AUTONOMOUS CAREER COPILOT
-                                                </span>
-                                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20">
-                                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 mr-1.5 animate-ping" />
-                                                    SYNCHRONIZED
-                                                </span>
-                                            </div>
-                                            <h2 className="text-lg sm:text-xl font-display font-black text-slate-900 dark:text-white tracking-tight">
-                                                Weekly Intelligence & Predictive Trajectory
-                                            </h2>
-                                        </div>
+                        <div className="p-6 sm:p-7 rounded-2xl bg-zinc-900/90 border border-zinc-800 space-y-6">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-800 pb-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl bg-zinc-950 border border-zinc-800 text-amber-400 flex items-center justify-center">
+                                        <i className="fa-solid fa-brain text-base" />
                                     </div>
-                                    
-                                    <div className="flex items-center gap-2 self-start sm:self-auto">
-                                        <span className="text-[11px] font-mono text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-black/40 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-white/[0.06]">
-                                            <i className="fa-regular fa-clock text-indigo-600 dark:text-indigo-400 mr-1.5" />
-                                            Active Horizon: 7 Days
-                                        </span>
-                                    </div>
-                                </div>
-
-                                {/* 4 Telemetry Metrics Grid */}
-                                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
-                                    <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/[0.06] hover:border-indigo-300 dark:hover:border-indigo-500/30 transition-all shadow-sm">
-                                        <div className="flex items-center justify-between mb-2">
-                                            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Roadmap Momentum</span>
-                                            <i className="fa-solid fa-route text-indigo-600 dark:text-indigo-400 text-xs" />
-                                        </div>
-                                        <div className="text-xl sm:text-2xl font-display font-black text-slate-900 dark:text-white">
-                                            {summary.roadmap_completion_rate} <span className="text-xs font-mono font-normal text-slate-400">milestones</span>
-                                        </div>
-                                        <div className="w-full bg-slate-200 dark:bg-slate-800/80 h-1.5 rounded-full mt-2.5 overflow-hidden">
-                                            <div 
-                                                className="h-full bg-gradient-to-r from-indigo-500 to-blue-500 dark:to-cyan-400 rounded-full" 
-                                                style={{ width: `${Math.min(100, (summary.roadmap_completion_rate / 8) * 100)}%` }} 
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/[0.06] hover:border-blue-300 dark:hover:border-cyan-500/30 transition-all shadow-sm">
-                                        <div className="flex items-center justify-between mb-2">
-                                            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Interview Accuracy</span>
-                                            <i className="fa-solid fa-microphone-lines text-blue-600 dark:text-cyan-400 text-xs" />
-                                        </div>
-                                        <div className="text-xl sm:text-2xl font-display font-black text-blue-600 dark:text-cyan-300">
-                                            {summary.interview_avg}% <span className="text-xs font-mono font-normal text-slate-400">benchmark</span>
-                                        </div>
-                                        <div className="w-full bg-slate-200 dark:bg-slate-800/80 h-1.5 rounded-full mt-2.5 overflow-hidden">
-                                            <div 
-                                                className="h-full bg-blue-600 dark:bg-cyan-400 rounded-full shadow-sm" 
-                                                style={{ width: `${summary.interview_avg}%` }} 
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/[0.06] hover:border-emerald-300 dark:hover:border-emerald-500/30 transition-all shadow-sm">
-                                        <div className="flex items-center justify-between mb-2">
-                                            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Dominant Vector</span>
-                                            <i className="fa-solid fa-shield-halved text-emerald-600 dark:text-emerald-400 text-xs" />
-                                        </div>
-                                        <div className="text-base sm:text-lg font-display font-black text-emerald-600 dark:text-emerald-400 truncate" title={summary.strongest_skill}>
-                                            {summary.strongest_skill || 'Core Architecture'}
-                                        </div>
-                                        <span className="inline-block text-[10px] font-mono text-emerald-600 dark:text-emerald-500/90 mt-1 font-bold">
-                                            ★ Top 10% Candidate Tier
-                                        </span>
-                                    </div>
-
-                                    <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/[0.06] hover:border-violet-300 dark:hover:border-violet-500/30 transition-all shadow-sm">
-                                        <div className="flex items-center justify-between mb-2">
-                                            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Market Delta</span>
-                                            <i className="fa-solid fa-arrow-trend-up text-violet-600 dark:text-violet-400 text-xs" />
-                                        </div>
-                                        <div className="text-xl sm:text-2xl font-display font-black text-violet-600 dark:text-violet-300">
-                                            {summary.readiness_delta || '+12.5%'}
-                                        </div>
-                                        <span className="inline-block text-[10px] font-mono text-slate-500 dark:text-slate-400 mt-1">
-                                            Readiness velocity lift
-                                        </span>
-                                    </div>
-                                </div>
-
-                                {/* Next Best Action Callout Banner */}
-                                <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-indigo-50 via-purple-50 to-blue-50 dark:from-indigo-950/60 dark:via-purple-950/40 dark:to-slate-950/60 border border-indigo-200 dark:border-indigo-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative overflow-hidden shadow-sm">
-                                    <div className="flex items-center gap-3.5">
-                                        <div className="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-500/15 border border-amber-200 dark:border-amber-500/30 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0 shadow-sm">
-                                            <i className="fa-solid fa-bolt-lightning text-sm" />
-                                        </div>
-                                        <div>
-                                            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-amber-700 dark:text-amber-400/90">
-                                                RECOMMENDED HIGH-IMPACT ACTION
+                                    <div>
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <span className="w-1.5 h-1.5 rounded-sm bg-amber-400"></span>
+                                            <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+                                                AUTONOMOUS CAREER COPILOT
                                             </span>
-                                            <p className="text-xs sm:text-sm font-sans font-semibold text-slate-800 dark:text-slate-100">
-                                                {summary.next_best_action || 'Complete your active roadmap milestones to boost target readiness.'}
-                                            </p>
                                         </div>
+                                        <h2 className="text-base sm:text-lg font-bold text-zinc-100 tracking-tight">
+                                            Weekly Intelligence & Trajectory Assessment
+                                        </h2>
                                     </div>
-                                    <Link href="/roadmap" className="shrink-0 w-full sm:w-auto">
-                                        <button className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-mono font-black text-xs uppercase tracking-wider hover:brightness-110 shadow-sm transition-all flex items-center justify-center gap-2">
-                                            <span>Accelerate</span>
-                                            <i className="fa-solid fa-arrow-right text-[10px]" />
-                                        </button>
-                                    </Link>
                                 </div>
+                                <span className="text-xs text-zinc-500 bg-zinc-950 px-3 py-1.5 rounded-lg border border-zinc-800 self-start sm:self-auto">
+                                    Horizon: 7 Days
+                                </span>
+                            </div>
+
+                            {/* 4 Telemetry Metrics Grid */}
+                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                                <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
+                                    <span className="text-[10px] font-bold uppercase text-zinc-500">Roadmap Momentum</span>
+                                    <div className="text-xl font-bold text-zinc-100 tabular-nums">
+                                        {summary.roadmap_completion_rate} <span className="text-xs font-normal text-zinc-500">units</span>
+                                    </div>
+                                    <div className="w-full bg-zinc-900 h-1 rounded-full overflow-hidden">
+                                        <div 
+                                            className="h-full bg-amber-400 rounded-full" 
+                                            style={{ width: `${Math.min(100, (summary.roadmap_completion_rate / 8) * 100)}%` }} 
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
+                                    <span className="text-[10px] font-bold uppercase text-zinc-500">Interview Accuracy</span>
+                                    <div className="text-xl font-bold text-emerald-400 tabular-nums">
+                                        {summary.interview_avg}%
+                                    </div>
+                                    <div className="w-full bg-zinc-900 h-1 rounded-full overflow-hidden">
+                                        <div 
+                                            className="h-full bg-emerald-400 rounded-full" 
+                                            style={{ width: `${summary.interview_avg}%` }} 
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1">
+                                    <span className="text-[10px] font-bold uppercase text-zinc-500">Dominant Vector</span>
+                                    <div className="text-sm font-bold text-zinc-200 truncate" title={summary.strongest_skill}>
+                                        {summary.strongest_skill || 'Core Architecture'}
+                                    </div>
+                                    <span className="text-[10px] text-emerald-400 font-bold block pt-1">
+                                        ★ Top 10% Candidate Tier
+                                    </span>
+                                </div>
+
+                                <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1">
+                                    <span className="text-[10px] font-bold uppercase text-zinc-500">Market Delta</span>
+                                    <div className="text-xl font-bold text-amber-400 tabular-nums">
+                                        {summary.readiness_delta || '+12.5%'}
+                                    </div>
+                                    <span className="text-[10px] text-zinc-500 block pt-1">
+                                        Readiness velocity lift
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* Next Best Action Banner */}
+                            <div className="p-4 rounded-xl bg-zinc-950 border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-lg bg-zinc-900 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0">
+                                        <i className="fa-solid fa-bolt-lightning text-xs" />
+                                    </div>
+                                    <div>
+                                        <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400">
+                                            HIGH-IMPACT RECOMMENDED ACTION
+                                        </span>
+                                        <p className="text-xs text-zinc-300 font-sans mt-0.5">
+                                            {summary.next_best_action || 'Complete your active roadmap milestones to boost target readiness.'}
+                                        </p>
+                                    </div>
+                                </div>
+                                <Link href="/roadmap" className="shrink-0 w-full sm:w-auto">
+                                    <button className="w-full sm:w-auto px-4 py-2 rounded-xl bg-white hover:bg-zinc-200 text-zinc-950 font-mono font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm">
+                                        <span>Accelerate</span>
+                                        <i className="fa-solid fa-arrow-right text-[10px]" />
+                                    </button>
+                                </Link>
                             </div>
                         </div>
                     </ScrollReveal>
                 )}
 
-                {/* ── 2. Tri-Stat HUD Cards with Interactive Quick Toggles ── */}
-                <StaggerChildren className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-3">
-                    {/* Signal Volume Card */}
+                {/* 2. Tri-Stat HUD Cards with Interactive Quick Toggles */}
+                <StaggerChildren className="grid gap-4 grid-cols-1 md:grid-cols-3">
                     <ScrollReveal stagger>
-                        <div className="p-6 rounded-3xl bg-card border border-border hover:border-blue-300 dark:hover:border-cyan-500/40 transition-all duration-300 relative overflow-hidden group shadow-light-card dark:shadow-lg">
-                            <div className="flex items-start justify-between mb-3">
-                                <div>
-                                    <span className="text-[10px] font-mono font-bold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
-                                        SIGNAL VOLUME
-                                    </span>
-                                    <div className="text-4xl font-display font-black text-slate-900 dark:text-white mt-1">
-                                        {stats.total}
-                                    </div>
+                        <div className="p-5 rounded-2xl bg-zinc-900/90 border border-zinc-800 hover:border-zinc-700 transition-all flex items-start justify-between">
+                            <div>
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+                                    SIGNAL VOLUME
+                                </span>
+                                <div className="text-3xl font-bold text-zinc-100 mt-1 tabular-nums">
+                                    {stats.total}
                                 </div>
-                                <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-cyan-500/10 border border-blue-200 dark:border-cyan-500/20 flex items-center justify-center text-blue-600 dark:text-cyan-400 text-lg shadow-sm">
-                                    <i className="fa-solid fa-satellite-dish" />
-                                </div>
+                                <p className="text-[11px] text-zinc-500 mt-2">
+                                    Continuous telemetry indexing.
+                                </p>
                             </div>
-                            <p className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-2">
-                                Continuous real-time indexing of 12,500+ market telemetry vectors.
-                            </p>
+                            <div className="w-9 h-9 rounded-lg bg-zinc-950 border border-zinc-800 flex items-center justify-center text-zinc-400">
+                                <i className="fa-solid fa-satellite-dish text-xs" />
+                            </div>
                         </div>
                     </ScrollReveal>
 
-                    {/* Unchecked Insights Card (Clickable to Filter Unread) */}
                     <ScrollReveal stagger>
                         <div 
                             onClick={() => setUnreadOnly(!unreadOnly)}
-                            className={`p-6 rounded-3xl bg-card border transition-all duration-300 relative overflow-hidden group shadow-light-card dark:shadow-lg cursor-pointer ${
+                            className={`p-5 rounded-2xl border transition-all cursor-pointer flex items-start justify-between ${
                                 unreadOnly 
-                                    ? 'border-amber-400 bg-amber-50/50 dark:bg-amber-500/[0.07] ring-1 ring-amber-400' 
-                                    : 'border-border hover:border-amber-400/80'
+                                    ? 'bg-zinc-900/90 border-amber-400' 
+                                    : 'bg-zinc-900/90 border-zinc-800 hover:border-zinc-700'
                             }`}
                         >
-                            <div className="flex items-start justify-between mb-3">
-                                <div>
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-[10px] font-mono font-bold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
-                                            UNCHECKED SIGNALS
+                            <div>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+                                        ACTION REQUIRED
+                                    </span>
+                                    {unreadOnly && (
+                                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-400 text-zinc-950">
+                                            FILTERED
                                         </span>
-                                        {unreadOnly && (
-                                            <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-500/30">
-                                                ACTIVE FILTER
-                                            </span>
-                                        )}
-                                    </div>
-                                    <div className="text-4xl font-display font-black text-amber-600 dark:text-amber-400 mt-1">
-                                        {stats.unread}
-                                    </div>
+                                    )}
                                 </div>
-                                <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400 text-lg shadow-sm">
-                                    <i className="fa-solid fa-lightbulb" />
+                                <div className="text-3xl font-bold text-amber-400 mt-1 tabular-nums">
+                                    {stats.unread}
                                 </div>
+                                <p className="text-[11px] text-zinc-500 mt-2">
+                                    {unreadOnly ? 'Showing unacknowledged signals' : 'Click to isolate pending actions'}
+                                </p>
                             </div>
-                            <div className="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 mt-2">
-                                <span>{unreadOnly ? 'Showing unread only' : 'Click to filter unacknowledged'}</span>
-                                <i className={`fa-solid fa-arrow-right text-[10px] text-amber-600 dark:text-amber-400 group-hover:translate-x-1 transition-transform`} />
+                            <div className="w-9 h-9 rounded-lg bg-zinc-950 border border-zinc-800 flex items-center justify-center text-amber-400">
+                                <i className="fa-solid fa-lightbulb text-xs" />
                             </div>
                         </div>
                     </ScrollReveal>
 
-                    {/* Critical Risks Card */}
                     <ScrollReveal stagger>
                         <div 
                             onClick={() => setFilter(filter === 'predictive_risk' ? 'all' : 'predictive_risk')}
-                            className={`p-6 rounded-3xl bg-card border transition-all duration-300 relative overflow-hidden group shadow-light-card dark:shadow-lg cursor-pointer ${
+                            className={`p-5 rounded-2xl border transition-all cursor-pointer flex items-start justify-between ${
                                 filter === 'predictive_risk'
-                                    ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-500/[0.07] ring-1 ring-rose-500/40'
-                                    : 'border-border hover:border-rose-400'
+                                    ? 'bg-zinc-900/90 border-rose-400'
+                                    : 'bg-zinc-900/90 border-zinc-800 hover:border-zinc-700'
                             }`}
                         >
-                            <div className="flex items-start justify-between mb-3">
-                                <div>
-                                    <span className="text-[10px] font-mono font-bold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
-                                        CRITICAL RISK VECTORS
-                                    </span>
-                                    <div className={`text-4xl font-display font-black mt-1 ${stats.critical > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-700 dark:text-slate-300'}`}>
-                                        {stats.critical}
-                                    </div>
+                            <div>
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+                                    CRITICAL RISK ANOMALIES
+                                </span>
+                                <div className={`text-3xl font-bold mt-1 tabular-nums ${stats.critical > 0 ? 'text-rose-400' : 'text-zinc-200'}`}>
+                                    {stats.critical}
                                 </div>
-                                <div className="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 flex items-center justify-center text-rose-600 dark:text-rose-400 text-lg shadow-sm">
-                                    <i className="fa-solid fa-triangle-exclamation" />
-                                </div>
+                                <p className="text-[11px] text-zinc-500 mt-2">
+                                    {stats.critical === 0 ? 'Trajectory stabilized. No anomalies.' : 'Drift detected in target competency.'}
+                                </p>
                             </div>
-                            <p className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-2">
-                                {stats.critical === 0 ? 'Optimal trajectory. No critical regressions detected.' : 'Skill volatility detected. Immediate intervention recommended.'}
-                            </p>
+                            <div className="w-9 h-9 rounded-lg bg-zinc-950 border border-zinc-800 flex items-center justify-center text-rose-400">
+                                <i className="fa-solid fa-triangle-exclamation text-xs" />
+                            </div>
                         </div>
                     </ScrollReveal>
                 </StaggerChildren>
 
-                {/* ── 3. Cyber Intelligence Dock (Filters, Search, Sorting) ── */}
-                <div className="space-y-4">
-                    <div className="p-4 sm:p-5 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-xl flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
-                        {/* Category Pills */}
-                        <div className="flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0 scrollbar-none">
-                            {filterOptions.map(opt => {
-                                const isActive = filter === opt.id;
-                                return (
-                                    <button
-                                        key={opt.id}
-                                        onClick={() => setFilter(opt.id)}
-                                        className={`px-3.5 py-2 rounded-2xl text-xs font-mono font-bold uppercase tracking-wider whitespace-nowrap transition-all flex items-center gap-2 border ${
-                                            isActive
-                                                ? 'bg-blue-600 border-blue-500 text-white shadow-sm'
-                                                : 'bg-slate-100 dark:bg-slate-950/60 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:border-slate-300'
-                                        }`}
-                                    >
-                                        <i className={`fa-solid ${opt.icon} text-[11px] ${isActive ? 'text-white' : 'text-slate-400'}`} />
-                                        <span>{opt.label}</span>
-                                        {opt.count > 0 && (
-                                            <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono ${isActive ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-400'}`}>
-                                                {opt.count}
-                                            </span>
-                                        )}
-                                    </button>
-                                );
-                            })}
+                {/* 3. Filter Dock & Search */}
+                <div className="p-4 rounded-2xl bg-zinc-900/90 border border-zinc-800 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
+                    {/* Category Pills */}
+                    <div className="flex items-center gap-1.5 overflow-x-auto pb-2 lg:pb-0 scrollbar-none">
+                        {filterOptions.map(opt => {
+                            const isActive = filter === opt.id;
+                            return (
+                                <button
+                                    key={opt.id}
+                                    onClick={() => setFilter(opt.id)}
+                                    className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
+                                        isActive
+                                            ? 'bg-amber-400 text-zinc-950'
+                                            : 'bg-zinc-950 border border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'
+                                    }`}
+                                >
+                                    <i className={`fa-solid ${opt.icon} text-[10px]`} />
+                                    <span>{opt.label}</span>
+                                    {opt.count > 0 && (
+                                        <span className={`px-1 rounded text-[10px] tabular-nums ${isActive ? 'bg-zinc-950/20 text-zinc-950' : 'text-zinc-500'}`}>
+                                            {opt.count}
+                                        </span>
+                                    )}
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    {/* Search & Sort Row */}
+                    <div className="flex flex-wrap items-center gap-2 shrink-0">
+                        <div className="relative flex-1 sm:w-56">
+                            <i className="fa-solid fa-magnifying-glass text-zinc-500 text-xs absolute left-3 top-1/2 -translate-y-1/2" />
+                            <input
+                                type="text"
+                                placeholder="Filter signals..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full pl-8 pr-7 py-1.5 rounded-lg bg-zinc-950 border border-zinc-800 text-xs text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-amber-400 transition-all"
+                            />
+                            {searchQuery && (
+                                <button
+                                    onClick={() => setSearchQuery('')}
+                                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 text-xs"
+                                >
+                                    <i className="fa-solid fa-xmark" />
+                                </button>
+                            )}
                         </div>
 
-                        {/* Search & Sort Row */}
-                        <div className="flex flex-wrap items-center gap-3 shrink-0">
-                            {/* Search Input */}
-                            <div className="relative flex-1 sm:w-60">
-                                <i className="fa-solid fa-magnifying-glass text-slate-400 text-xs absolute left-3.5 top-1/2 -translate-y-1/2" />
-                                <input
-                                    type="text"
-                                    placeholder="Filter signals..."
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="w-full pl-9 pr-8 py-2 rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 text-xs font-mono text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-blue-500 transition-all"
-                                />
-                                {searchQuery && (
-                                    <button
-                                        onClick={() => setSearchQuery('')}
-                                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 text-xs"
-                                    >
-                                        <i className="fa-solid fa-xmark" />
-                                    </button>
-                                )}
-                            </div>
-
-                            {/* Sort Selector */}
-                            <div className="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 rounded-xl px-2.5 py-1.5">
-                                <span className="text-[10px] font-mono text-slate-500 font-bold uppercase">Sort:</span>
-                                <select
-                                    value={sortBy}
-                                    onChange={(e: any) => setSortBy(e.target.value)}
-                                    className="bg-transparent text-xs font-mono text-slate-700 dark:text-slate-300 font-bold outline-none cursor-pointer"
-                                >
-                                    <option value="impact" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Impact Level</option>
-                                    <option value="confidence" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">AI Confidence</option>
-                                    <option value="newest" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Newest First</option>
-                                </select>
-                            </div>
+                        <div className="flex items-center gap-1.5 bg-zinc-950 border border-zinc-800 rounded-lg px-2.5 py-1.5">
+                            <span className="text-[10px] text-zinc-500 font-bold uppercase">Sort:</span>
+                            <select
+                                value={sortBy}
+                                onChange={(e: any) => setSortBy(e.target.value)}
+                                className="bg-transparent text-xs text-zinc-300 font-bold outline-none cursor-pointer"
+                            >
+                                <option value="impact" className="bg-zinc-900 text-zinc-200">Impact Score</option>
+                                <option value="confidence" className="bg-zinc-900 text-zinc-200">Confidence</option>
+                                <option value="newest" className="bg-zinc-900 text-zinc-200">Newest First</option>
+                            </select>
                         </div>
                     </div>
                 </div>
 
-                {/* ── 4. Main Alert Feed Stream ── */}
-                <div className="space-y-4">
+                {/* 4. Alert Feed Stream */}
+                <div className="space-y-3">
                     {loading ? (
-                        <div className="space-y-4">
-                            <SkeletonCard className="!h-36" />
-                            <SkeletonCard className="!h-36" />
-                            <SkeletonCard className="!h-36" />
+                        <div className="space-y-3">
+                            <SkeletonCard className="!h-28" />
+                            <SkeletonCard className="!h-28" />
+                            <SkeletonCard className="!h-28" />
                         </div>
                     ) : filteredAlerts.length === 0 ? (
-                        /* Empty State with Cyber Scanner */
-                        <div className="p-16 rounded-3xl bg-card border border-border text-center relative overflow-hidden shadow-light-card dark:shadow-none">
-                            <div className="w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-950 flex items-center justify-center mx-auto mb-5 border border-slate-200 dark:border-slate-800 shadow-sm relative">
-                                <div className="absolute inset-0 rounded-full border border-blue-400 dark:border-cyan-500/20 animate-ping" />
-                                <i className="fa-solid fa-radar text-2xl text-blue-600 dark:text-cyan-400 animate-pulse" />
+                        <div className="p-12 rounded-2xl bg-zinc-900/90 border border-zinc-800 text-center space-y-3">
+                            <div className="w-12 h-12 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center mx-auto text-amber-400 text-lg">
+                                <i className="fa-solid fa-radar animate-pulse" />
                             </div>
-                            <h3 className="text-lg font-display font-black text-slate-900 dark:text-white">
-                                All Clear • Trajectory Stabilized
+                            <h3 className="text-sm font-bold text-zinc-200 uppercase">
+                                Telemetry Clear · Zero Anomalies
                             </h3>
-                            <p className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-2 max-w-md mx-auto leading-relaxed">
-                                No active warnings or pending vectors found matching your current filter. Continuous neural monitoring remains active.
+                            <p className="text-xs text-zinc-500 max-w-sm mx-auto">
+                                No active warnings matching your current filter. Autonomous market monitoring remains active.
                             </p>
-                            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-                                {(filter !== 'all' || unreadOnly || searchQuery) && (
-                                    <button
-                                        onClick={() => { setFilter('all'); setUnreadOnly(false); setSearchQuery(''); }}
-                                        className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 dark:hover:text-white text-xs font-mono font-bold uppercase transition-all"
-                                    >
-                                        Clear Active Filters
-                                    </button>
-                                )}
+                            {(filter !== 'all' || unreadOnly || searchQuery) && (
                                 <button
-                                    onClick={() => loadData(true)}
-                                    className="px-4 py-2 rounded-xl bg-blue-50 border border-blue-200 text-blue-600 hover:bg-blue-100 dark:bg-cyan-500/15 dark:border-cyan-500/30 dark:text-cyan-300 dark:hover:bg-cyan-500/25 text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 shadow-sm"
+                                    onClick={() => { setFilter('all'); setUnreadOnly(false); setSearchQuery(''); }}
+                                    className="px-3 py-1.5 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-400 hover:text-zinc-200 text-xs font-bold uppercase transition-all cursor-pointer"
                                 >
-                                    <i className="fa-solid fa-arrows-rotate" />
-                                    <span>Run Deep Market Sweep</span>
+                                    Clear Active Filter
                                 </button>
-                            </div>
+                            )}
                         </div>
                     ) : (
                         <AnimatePresence>
@@ -647,205 +557,150 @@ const SmartAlertsPage: React.FC = () => {
                                     <motion.div
                                         key={alert.id}
                                         layout
-                                        initial={{ opacity: 0, y: 15 }}
+                                        initial={{ opacity: 0, y: 8 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, scale: 0.96 }}
-                                        transition={{ duration: 0.25 }}
-                                        className={`group relative rounded-3xl bg-card border p-6 sm:p-7 transition-all duration-300 shadow-light-card dark:shadow-xl overflow-hidden ${
+                                        exit={{ opacity: 0, scale: 0.98 }}
+                                        transition={{ duration: 0.2 }}
+                                        className={`rounded-2xl bg-zinc-900/90 border p-5 sm:p-6 transition-all ${
                                             !alert.is_read 
-                                                ? 'border-blue-200 dark:border-white/[0.12] ring-1 ring-blue-400/20' 
-                                                : 'border-border opacity-95 hover:opacity-100'
-                                        } ${ui.borderClass}`}
+                                                ? 'border-zinc-700 bg-zinc-900' 
+                                                : 'border-zinc-800 hover:border-zinc-700 opacity-95'
+                                        }`}
                                     >
-                                        {/* Dynamic Gradient Corner Accent */}
-                                        <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${ui.glowClass}`} />
-                                        
-                                        {/* Unread Left Border Highlight */}
-                                        {!alert.is_read && (
-                                            <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-600 dark:bg-cyan-400 shadow-sm" />
-                                        )}
-
-                                        <div className="flex flex-col lg:flex-row gap-6 items-start">
-                                            {/* Left Icon Capsule & Live Impact Gauge */}
-                                            <div className="flex lg:flex-col items-center gap-4 shrink-0">
-                                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-xl shadow-sm border relative ${ui.badgeColor}`}>
+                                        <div className="flex flex-col lg:flex-row gap-5 items-start">
+                                            {/* Left Icon & Impact Score */}
+                                            <div className="flex lg:flex-col items-center gap-3 shrink-0">
+                                                <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-base border relative ${ui.badgeColor}`}>
                                                     <i className={`fa-solid ${ui.icon}`} />
                                                     {!alert.is_read && (
-                                                        <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-blue-600 dark:bg-cyan-400 border-2 border-white dark:border-slate-950 animate-pulse" />
+                                                        <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-amber-400 border border-zinc-950 animate-pulse" />
                                                     )}
                                                 </div>
 
-                                                <div className="flex lg:flex-col items-center gap-1.5">
-                                                    <div className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                                                <div className="flex lg:flex-col items-center gap-1">
+                                                    <span className="text-[9px] font-bold uppercase text-zinc-500">
                                                         IMPACT
-                                                    </div>
-                                                    <div className="w-16 lg:w-2 bg-slate-100 dark:bg-slate-950 rounded-full h-2 lg:h-12 overflow-hidden p-0.5 border border-slate-200 dark:border-white/[0.06] flex items-end">
-                                                        <div 
-                                                            className={`w-full ${ui.accentBg} rounded-full transition-all duration-500`}
-                                                            style={{ 
-                                                                height: `${impactScore}%`,
-                                                                width: '100%' 
-                                                            }}
-                                                        />
-                                                    </div>
-                                                    <span className="text-[10px] font-mono font-black text-slate-700 dark:text-slate-300">
+                                                    </span>
+                                                    <span className="text-xs font-bold text-zinc-200 tabular-nums">
                                                         {impactScore}
                                                     </span>
                                                 </div>
                                             </div>
 
                                             {/* Center Content Column */}
-                                            <div className="flex-1 space-y-4 min-w-0">
+                                            <div className="flex-1 space-y-3 min-w-0">
                                                 {/* Meta Tag Bar */}
-                                                <div className="flex flex-wrap items-center gap-2">
-                                                    {/* Alert Type Badge */}
-                                                    <span className={`text-[10px] font-mono font-black uppercase tracking-wider px-3 py-1 rounded-xl border ${ui.badgeColor}`}>
+                                                <div className="flex flex-wrap items-center gap-2 text-[10px]">
+                                                    <span className={`font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${ui.badgeColor}`}>
                                                         {ui.label}
                                                     </span>
 
-                                                    {/* Priority Badge */}
                                                     {(alert.priority === 'high' || alert.category === 'critical') && (
-                                                        <span className="text-[10px] font-mono font-black uppercase tracking-wider px-2.5 py-1 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-500/20 dark:text-rose-300 dark:border-rose-500/40 flex items-center gap-1.5">
-                                                            <i className="fa-solid fa-triangle-exclamation text-[10px]" />
-                                                            Priority Action
+                                                        <span className="font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-zinc-950 text-rose-400 border border-rose-500/30">
+                                                            Priority
                                                         </span>
                                                     )}
 
-                                                    {/* AI Confidence Meter */}
-                                                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20 flex items-center gap-1.5">
-                                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400" />
+                                                    <span className="font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-zinc-950 text-emerald-400 border border-emerald-500/30">
                                                         {confidence}% Confidence
                                                     </span>
 
-                                                    {/* Risk Level Badge */}
                                                     {alert.predicted_risk_level && (
-                                                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-xl bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-500/15 dark:text-amber-300 dark:border-amber-500/30">
+                                                        <span className="font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-zinc-950 text-amber-400 border border-amber-500/30">
                                                             Risk: {alert.predicted_risk_level}
                                                         </span>
                                                     )}
 
-                                                    {/* Timestamp */}
-                                                    <span className="text-[11px] font-mono text-slate-400 dark:text-slate-500 ml-auto flex items-center gap-1.5">
-                                                        <i className="fa-regular fa-clock text-[10px]" />
+                                                    <span className="text-zinc-500 ml-auto">
                                                         {new Date(alert.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                                                     </span>
                                                 </div>
 
                                                 {/* Headline */}
-                                                <div>
-                                                    <h3 className={`text-base sm:text-lg font-display font-black leading-snug tracking-tight ${!alert.is_read ? 'text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'}`}>
-                                                        {alert.message}
-                                                    </h3>
-                                                </div>
+                                                <h3 className={`text-sm sm:text-base font-bold leading-snug ${!alert.is_read ? 'text-zinc-100' : 'text-zinc-300'}`}>
+                                                    {alert.message}
+                                                </h3>
 
-                                                {/* AI Synthesis Reasoning Capsule */}
+                                                {/* Reasoning Capsule */}
                                                 {alert.ai_reasoning && (
-                                                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-black/40 border border-slate-200 dark:border-white/[0.06] relative overflow-hidden shadow-sm">
-                                                        <div className="flex items-start gap-3">
-                                                            <div className="w-6 h-6 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 text-xs shrink-0 mt-0.5">
-                                                                <i className="fa-solid fa-sparkles text-[10px]" />
-                                                            </div>
-                                                            <div className="space-y-1 text-xs font-sans text-slate-700 dark:text-slate-300 leading-relaxed">
-                                                                <p className="font-medium">{alert.ai_reasoning}</p>
-                                                            </div>
-                                                        </div>
+                                                    <div className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800">
+                                                        <p className="text-xs font-sans text-zinc-300 leading-relaxed font-medium">
+                                                            {alert.ai_reasoning}
+                                                        </p>
                                                     </div>
                                                 )}
 
-                                                {/* Projected Career Improvement Chip & Snapshot Toggle */}
-                                                <div className="flex flex-wrap items-center gap-4 pt-1">
+                                                {/* Projected Match Lift */}
+                                                <div className="flex flex-wrap items-center gap-3 pt-0.5 text-xs">
                                                     {alert.improvement_projection > 0 && (
-                                                        <div className="flex items-center gap-2">
-                                                            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500">
-                                                                Projected Career Lift:
-                                                            </span>
-                                                            <span className="text-xs font-mono font-black text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/15 border border-emerald-200 dark:border-emerald-500/30 px-2.5 py-0.5 rounded-lg">
-                                                                +{alert.improvement_projection}% Match Boost
-                                                            </span>
-                                                        </div>
-                                                    )}
-
-                                                    {alert.behavioral_flag && (
-                                                        <div className="flex items-center gap-1.5 text-[11px] font-mono text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 px-2.5 py-0.5 rounded-lg font-bold">
-                                                            <i className="fa-solid fa-shield-virus text-[10px]" />
-                                                            <span>Vector: {alert.behavioral_flag}</span>
-                                                        </div>
+                                                        <span className="text-[11px] font-bold text-emerald-400 bg-zinc-950 border border-emerald-500/30 px-2 py-0.5 rounded">
+                                                            +{alert.improvement_projection}% Match Boost
+                                                        </span>
                                                     )}
 
                                                     {alert.data_reference_snapshot && (
                                                         <button
                                                             onClick={() => toggleExpand(alert.id)}
-                                                            className="text-[11px] font-mono font-bold text-blue-600 dark:text-indigo-400 hover:underline flex items-center gap-1.5 ml-auto transition-colors"
+                                                            className="text-[11px] font-bold text-amber-400 hover:underline flex items-center gap-1 ml-auto cursor-pointer"
                                                         >
-                                                            <span>{isExpanded ? 'Hide Intel Snapshot' : 'Inspect Neural Data'}</span>
+                                                            <span>{isExpanded ? 'Hide Telemetry' : 'Inspect Data'}</span>
                                                             <i className={`fa-solid fa-chevron-${isExpanded ? 'up' : 'down'} text-[9px]`} />
                                                         </button>
                                                     )}
                                                 </div>
 
-                                                {/* Expandable Data Reference Snapshot */}
+                                                {/* Expandable JSON Snapshot */}
                                                 {isExpanded && alert.data_reference_snapshot && (
-                                                    <motion.div
-                                                        initial={{ opacity: 0, height: 0 }}
-                                                        animate={{ opacity: 1, height: 'auto' }}
-                                                        exit={{ opacity: 0, height: 0 }}
-                                                        className="p-4 rounded-2xl bg-slate-900 border border-slate-800 text-xs font-mono overflow-x-auto text-slate-400 space-y-2"
-                                                    >
-                                                        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                                                            <i className="fa-solid fa-database text-cyan-400" />
-                                                            <span>Neural Telemetry Data Snapshot</span>
-                                                        </div>
-                                                        <pre className="text-[11px] text-cyan-300 whitespace-pre-wrap font-mono">
+                                                    <div className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs overflow-x-auto space-y-1">
+                                                        <span className="text-[10px] text-zinc-500 uppercase font-bold">Raw Telemetry Node</span>
+                                                        <pre className="text-[11px] text-amber-300/90 whitespace-pre-wrap">
                                                             {JSON.stringify(alert.data_reference_snapshot, null, 2)}
                                                         </pre>
-                                                    </motion.div>
+                                                    </div>
                                                 )}
                                             </div>
 
                                             {/* Right Action Matrix */}
-                                            <div className="flex flex-row lg:flex-col gap-2.5 shrink-0 justify-end w-full lg:w-44 pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-100 dark:border-white/[0.06]">
-                                                {/* Primary Action Button */}
+                                            <div className="flex flex-row lg:flex-col gap-2 shrink-0 justify-end w-full lg:w-36 pt-2 lg:pt-0 border-t lg:border-t-0 border-zinc-800">
                                                 <Link href={alert.action_link || '#'} className="flex-1 lg:w-full">
                                                     <button 
                                                         onClick={() => !alert.is_read && handleAction(alert.id, 'read')}
-                                                        className="w-full px-4 py-3 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-mono font-bold text-xs uppercase tracking-wider shadow-sm hover:brightness-110 transition-all flex items-center justify-center gap-2"
+                                                        className="w-full px-3 py-2.5 rounded-xl bg-white hover:bg-zinc-200 text-zinc-950 font-mono font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
                                                     >
-                                                        <span>Execute Action</span>
-                                                        <i className="fa-solid fa-bolt text-[10px] text-amber-300" />
+                                                        <span>Execute</span>
+                                                        <i className="fa-solid fa-arrow-right text-[10px]" />
                                                     </button>
                                                 </Link>
 
-                                                {/* Secondary Action Link */}
                                                 {alert.secondary_action_link && (
                                                     <Link href={alert.secondary_action_link} className="flex-1 lg:w-full">
-                                                        <button className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 hover:border-slate-300 text-slate-700 dark:text-slate-300 font-mono font-bold text-[10px] uppercase tracking-wider transition-all text-center">
-                                                            {alert.secondary_action_text || 'Secondary Vector'}
+                                                        <button className="w-full px-2.5 py-1.5 rounded-lg bg-zinc-950 border border-zinc-800 hover:border-zinc-700 text-zinc-300 text-[10px] font-bold uppercase transition-all cursor-pointer">
+                                                            {alert.secondary_action_text || 'Secondary'}
                                                         </button>
                                                     </Link>
                                                 )}
 
-                                                {/* Utility Action Buttons (Read/Snooze/Dismiss) */}
-                                                <div className="flex items-center gap-1.5 self-center lg:w-full">
+                                                <div className="flex items-center gap-1 self-center lg:w-full">
                                                     {!alert.is_read && (
                                                         <button
                                                             onClick={() => handleAction(alert.id, 'read')}
-                                                            className="flex-1 px-2.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-emerald-600 hover:border-emerald-300 transition-all text-xs flex items-center justify-center"
-                                                            title="Mark as Read"
+                                                            className="flex-1 px-2 py-1.5 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-400 hover:text-emerald-400 hover:border-zinc-700 transition-all text-xs cursor-pointer"
+                                                            title="Acknowledge"
                                                         >
                                                             <i className="fa-solid fa-check" />
                                                         </button>
                                                     )}
                                                     <button
                                                         onClick={() => handleAction(alert.id, 'snooze')}
-                                                        className="flex-1 px-2.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-amber-600 hover:border-amber-300 transition-all text-xs flex items-center justify-center"
-                                                        title="Snooze for 24 Hours"
+                                                        className="flex-1 px-2 py-1.5 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-400 hover:text-amber-400 hover:border-zinc-700 transition-all text-xs cursor-pointer"
+                                                        title="Snooze 24h"
                                                     >
                                                         <i className="fa-regular fa-clock" />
                                                     </button>
                                                     <button
                                                         onClick={() => handleAction(alert.id, 'dismiss')}
-                                                        className="flex-1 px-2.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-rose-600 hover:border-rose-300 transition-all text-xs flex items-center justify-center"
-                                                        title="Dismiss Signal"
+                                                        className="flex-1 px-2 py-1.5 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-400 hover:text-rose-400 hover:border-zinc-700 transition-all text-xs cursor-pointer"
+                                                        title="Dismiss"
                                                     >
                                                         <i className="fa-regular fa-trash-can" />
                                                     </button>

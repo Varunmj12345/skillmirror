@@ -119,12 +119,10 @@ const LiveInterviewSystem: React.FC<Props> = ({
                 total: totalQuestions
             });
 
-            // Update Intelligence
             if (res.market_intelligence) setMarketPulse(res.market_intelligence);
             if (res.evaluation) setBehavioral(res.evaluation);
             setAiReport(res);
 
-            // Update History
             const updatedHistory = [...history, { question: currentQuestion, answer: transcript }];
             setHistory(updatedHistory);
 
@@ -134,7 +132,6 @@ const LiveInterviewSystem: React.FC<Props> = ({
                 return;
             }
 
-            // Move to Next Question (Adaptive or Mandatory)
             const nextQ = res.next_question?.question || res.question;
             if (nextQ) {
                 setQIndex(prev => prev + 1);
@@ -148,194 +145,159 @@ const LiveInterviewSystem: React.FC<Props> = ({
     };
 
     return (
-        <div className="relative min-h-[700px] bg-slate-950 rounded-[3rem] overflow-hidden border border-white/5 shadow-2xl flex flex-col font-sans">
-            {/* 1. Market Intelligence Ticker (Predictive Footer) */}
-            <AnimatePresence>
-                {marketPulse && (
-                    <motion.div 
-                        initial={{ y: 50 }} animate={{ y: 0 }}
-                        className="absolute bottom-0 left-0 w-full h-12 bg-indigo-600/90 backdrop-blur-xl z-50 flex items-center overflow-hidden border-t border-white/20"
-                    >
-                        <div className="flex gap-12 whitespace-nowrap animate-marquee px-8">
-                            {[1, 2].map(i => (
-                                <div key={i} className="flex gap-12 items-center">
-                                    <span className="flex items-center gap-2 text-white font-black text-[10px] uppercase tracking-widest">
-                                        <i className="fa-solid fa-chart-line text-emerald-300"></i> Market Demand: {marketPulse.market_demand}
-                                    </span>
-                                    <span className="flex items-center gap-2 text-white font-black text-[10px] uppercase tracking-widest">
-                                        <i className="fa-solid fa-money-bill-trend-up text-emerald-300"></i> Salary Index: {marketPulse.salary_projection}
-                                    </span>
-                                    <span className="flex items-center gap-2 text-white font-black text-[10px] uppercase tracking-widest">
-                                        <i className="fa-solid fa-building text-indigo-300"></i> Hiring Now: {marketPulse.top_companies.join(", ")}
-                                    </span>
-                                    <span className="flex items-center gap-2 text-white font-black text-[10px] uppercase tracking-widest">
-                                        <i className="fa-solid fa-arrow-trend-up text-emerald-300"></i> Growth: {marketPulse.growth_forecast}
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
-            {/* 2. Main Sandbox Workspace */}
-            <div className="flex-1 p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10">
-                
+        <div className="relative min-h-[640px] bg-zinc-900/90 rounded-2xl border border-zinc-800 overflow-hidden flex flex-col font-mono">
+            {/* Main Sandbox Workspace */}
+            <div className="flex-1 p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 relative z-10">
                 {/* Left: Performance Metrics (Behavioral Pulse) */}
-                <div className="lg:col-span-3 flex flex-col gap-6">
-                    <div className="glass-panel p-6 rounded-[2rem] border-white/5 bg-white/[0.02]">
-                        <h4 className="text-slate-500 font-black text-[9px] uppercase tracking-widest mb-6">Behavioral Pulse</h4>
-                        <div className="space-y-6">
+                <div className="lg:col-span-3 flex flex-col gap-4">
+                    <div className="p-5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-4">
+                        <div className="flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-sm bg-amber-400"></span>
+                            <h4 className="text-zinc-200 font-bold text-xs uppercase tracking-wider">Behavioral Pulse</h4>
+                        </div>
+                        <div className="space-y-4 pt-1">
                             {[
-                                { label: 'Clarity', val: behavioral?.clarity || 0, color: 'bg-indigo-500' },
-                                { label: 'Tech Accuracy', val: behavioral?.technical_accuracy || 0, color: 'bg-emerald-500' },
-                                { label: 'Confidence', val: behavioral?.confidence || 0, color: 'bg-sky-500' }
+                                { label: 'Clarity Index', val: behavioral?.clarity || 0, color: 'bg-amber-400' },
+                                { label: 'Technical Depth', val: behavioral?.technical_accuracy || 0, color: 'bg-emerald-400' },
+                                { label: 'Delivery Cadence', val: behavioral?.confidence || 0, color: 'bg-zinc-200' }
                             ].map(m => (
-                                <div key={m.label}>
-                                    <div className="flex justify-between text-[10px] font-bold text-white mb-2">
+                                <div key={m.label} className="space-y-1">
+                                    <div className="flex justify-between text-[11px] text-zinc-400">
                                         <span>{m.label}</span>
-                                        <span>{m.val}/10</span>
+                                        <span className="text-zinc-200 font-bold tabular-nums">{m.val} / 10</span>
                                     </div>
-                                    <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                    <div className="h-1 w-full bg-zinc-900 border border-zinc-800 rounded-full overflow-hidden">
                                         <motion.div animate={{ width: `${m.val * 10}%` }} className={`h-full ${m.color}`} />
                                     </div>
                                 </div>
                             ))}
                         </div>
                         {behavioral?.filler_words && behavioral.filler_words.length > 0 && (
-                            <div className="mt-8 p-3 bg-rose-500/10 rounded-xl border border-rose-500/20">
-                                <p className="text-[9px] font-black text-rose-500 uppercase tracking-widest mb-1">Hesitation Detected</p>
-                                <div className="flex flex-wrap gap-2 text-[10px] text-white/50">
+                            <div className="mt-4 p-2.5 bg-zinc-900 border border-amber-500/30 rounded-lg">
+                                <p className="text-[10px] text-amber-400 font-bold uppercase tracking-wider mb-1">Hesitation Triggers</p>
+                                <div className="text-[10px] text-zinc-400">
                                     {behavioral.filler_words.join(", ")}
                                 </div>
                             </div>
                         )}
                     </div>
 
-                    <div className="glass-panel p-6 rounded-[2rem] border-white/5 bg-white/[0.02]">
-                        <h4 className="text-slate-500 font-black text-[9px] uppercase tracking-widest mb-6">Skill Gap Alerts</h4>
-                        <div className="space-y-3">
+                    <div className="p-5 rounded-xl bg-zinc-950 border border-zinc-800 space-y-3">
+                        <div className="flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-sm bg-rose-400"></span>
+                            <h4 className="text-zinc-200 font-bold text-xs uppercase tracking-wider">Gap Telemetry</h4>
+                        </div>
+                        <div className="space-y-2">
                             {aiReport?.skill_gap_analysis?.missing_skills?.map(skill => (
-                                <div key={skill} className="px-4 py-2 bg-rose-500/10 border border-rose-500/20 rounded-xl text-[10px] text-rose-300 font-bold flex items-center gap-2">
-                                    <i className="fa-solid fa-triangle-exclamation"></i> {skill}
+                                <div key={skill} className="px-3 py-1.5 bg-zinc-900 border border-rose-500/30 rounded-lg text-[10px] text-rose-300 font-bold flex items-center gap-2">
+                                    <i className="fa-solid fa-triangle-exclamation text-[9px]"></i> {skill}
                                 </div>
-                            )) || <p className="text-[10px] text-slate-600 italic">No critical gaps identified yet.</p>}
+                            )) || <p className="text-[11px] text-zinc-500 italic">No critical anomalies flagged yet.</p>}
                         </div>
                     </div>
                 </div>
 
                 {/* Center: Live Feeds */}
-                <div className="lg:col-span-6 flex flex-col gap-6">
-                    <div className="relative rounded-[3rem] overflow-hidden border border-white/10 aspect-video bg-[#0a0f1e] shadow-2xl">
+                <div className="lg:col-span-6 flex flex-col gap-4">
+                    <div className="relative rounded-xl overflow-hidden border border-zinc-800 aspect-video bg-zinc-950">
                         <video ref={videoRef} autoPlay muted playsInline className="w-full h-full object-cover scale-x-[-1]" />
-                        <div className="absolute top-6 left-6 px-4 py-1.5 bg-black/60 backdrop-blur-xl rounded-xl border border-white/10 flex items-center gap-2">
-                            <span className={`w-1.5 h-1.5 rounded-full ${status === 'recording' ? 'bg-rose-500 animate-pulse' : 'bg-slate-500'}`} />
-                            <span className="text-[9px] text-white font-black uppercase tracking-widest">
-                                {status === 'recording' ? 'Live Intake' : 'Proctor Idle'}
+                        <div className="absolute top-4 left-4 px-3 py-1 bg-zinc-950/80 backdrop-blur-md rounded-lg border border-zinc-800 flex items-center gap-2">
+                            <span className={`w-1.5 h-1.5 rounded-sm ${status === 'recording' ? 'bg-rose-500 animate-pulse' : 'bg-zinc-600'}`} />
+                            <span className="text-[10px] text-zinc-300 font-bold uppercase tracking-wider">
+                                {status === 'recording' ? 'Audio Stream: Active' : 'Camera Ready'}
                             </span>
                         </div>
                         
-                        {/* Detection Overlay */}
                         {status === 'recording' && (
-                            <div className="absolute top-6 right-6 px-4 py-1.5 bg-indigo-500 text-white rounded-xl text-[9px] font-black uppercase tracking-widest animate-pulse">
-                                Analyzing Clarity...
+                            <div className="absolute top-4 right-4 px-3 py-1 bg-amber-400 text-zinc-950 rounded-lg text-[10px] font-bold uppercase tracking-wider">
+                                Ingesting STT...
                             </div>
                         )}
                     </div>
 
                     {/* Interaction Console */}
-                    <div className="glass-panel p-8 rounded-[2.5rem] border-white/10 bg-white/[0.04] backdrop-blur-3xl min-h-[200px] flex flex-col justify-center gap-4">
-                        <AnimatePresence exitBeforeEnter>
+                    <div className="p-5 rounded-xl border border-zinc-800 bg-zinc-950 min-h-[160px] flex flex-col justify-center gap-3">
+                        <AnimatePresence>
                             <motion.div 
                                 key={currentQuestion}
-                                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                                className="relative py-4"
+                                initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+                                className="space-y-2"
                             >
-                                <div className="flex items-center gap-2 mb-3">
-                                    <span className="px-2 py-0.5 bg-indigo-500 text-white text-[8px] font-black uppercase tracking-widest rounded">AI Proctor Intelligence</span>
-                                    <span className="text-[8px] text-slate-500 font-black uppercase tracking-widest">Q{qIndex + 1} of {totalQuestions}</span>
+                                <div className="flex items-center gap-2">
+                                    <span className="px-2 py-0.5 bg-zinc-900 border border-zinc-800 text-amber-400 text-[9px] font-bold uppercase tracking-wider rounded">
+                                        PROCTOR DIRECTIVE
+                                    </span>
+                                    <span className="text-[10px] text-zinc-500 uppercase tracking-wider">Q{qIndex + 1} OF {totalQuestions}</span>
                                 </div>
-                                <h2 className="text-xl text-white font-bold leading-relaxed">
-                                    {currentQuestion || "Ready when you are. Start with a professional introduction."}
+                                <h2 className="text-base sm:text-lg text-zinc-100 font-bold leading-snug">
+                                    {currentQuestion || "Environment armed. Initialize the session to receive your first architecture scenario."}
                                 </h2>
                             </motion.div>
                         </AnimatePresence>
 
-                        <div className="h-px w-full bg-white/5" />
+                        <div className="h-px w-full bg-zinc-850" />
 
-                        <p className="text-sm text-slate-400 font-medium italic min-h-[1.5rem]">
-                            {status === 'recording' ? `"${transcript || 'Listening to your response...'}"` : status === 'thinking' ? 'AI synthesizing evaluation...' : ''}
+                        <p className="text-xs text-zinc-400 italic min-h-[1.5rem]">
+                            {status === 'recording' ? `"${transcript || 'Streaming spoken response...'}"` : status === 'thinking' ? 'Synthesizing technical evaluation...' : ''}
                         </p>
                     </div>
                 </div>
 
                 {/* Right: AI Proctor Feed */}
-                <div className="lg:col-span-3 flex flex-col">
-                    <div className="flex-1 relative rounded-[3rem] overflow-hidden border border-white/10 bg-[#020617] flex flex-col items-center justify-center p-8 group shadow-2xl">
-                        <div className="absolute inset-0 spotlight-bg opacity-20" />
-                        <motion.div 
-                            animate={status === 'speaking' ? { scale: [1, 1.05, 1], rotate: [0, 1, -1, 0] } : {}}
-                            className={`w-32 h-32 rounded-[2.5rem] flex items-center justify-center transition-all duration-700 ${status === 'speaking' ? 'bg-indigo-500/20 border-2 border-indigo-400/50 shadow-[0_0_50px_rgba(99,102,241,0.3)]' : 'bg-slate-900 border border-white/5'}`}
-                        >
-                            <i className={`fa-solid fa-robot text-5xl ${status === 'speaking' ? 'text-indigo-400' : 'text-slate-800'}`}></i>
-                        </motion.div>
-                        <div className="mt-8 text-center">
-                            <p className="text-[9px] text-indigo-400 font-black uppercase tracking-[0.4em] mb-2">Master Intelligence Engine</p>
-                            <div className="flex items-center justify-center gap-1.5">
-                                {[1, 2, 3].map(i => (
-                                    <motion.div 
-                                        key={i} 
-                                        animate={status === 'speaking' ? { height: [4, 12, 4] } : { height: 4 }}
-                                        transition={{ repeat: Infinity, duration: 0.6, delay: i * 0.1 }}
-                                        className="w-1 bg-indigo-500 rounded-full" 
-                                    />
-                                ))}
-                            </div>
+                <div className="lg:col-span-3 flex flex-col justify-between gap-4">
+                    <div className="flex-1 rounded-xl border border-zinc-800 bg-zinc-950 flex flex-col items-center justify-center p-6 text-center">
+                        <div className={`w-20 h-20 rounded-2xl flex items-center justify-center transition-all ${status === 'speaking' ? 'bg-amber-400/10 border border-amber-400/40 text-amber-400' : 'bg-zinc-900 border border-zinc-800 text-zinc-600'}`}>
+                            <i className="fa-solid fa-microchip text-3xl"></i>
                         </div>
-
-                        {/* Adaptive Status Pill */}
-                        <div className="absolute bottom-8 px-4 py-2 bg-white/5 rounded-2xl border border-white/10">
-                            <p className="text-[8px] text-slate-500 font-bold uppercase tracking-widest">
-                                Mode: {qIndex < 3 ? 'Mandatory Core' : 'Adaptive Branching'}
-                            </p>
+                        <div className="mt-4">
+                            <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mb-1.5">AI Proctor State</p>
+                            <span className="text-xs text-zinc-200 font-bold uppercase tracking-wider">
+                                {status.toUpperCase()}
+                            </span>
                         </div>
                     </div>
 
-                    <div className="mt-8 flex flex-col gap-4">
+                    <div className="flex flex-col gap-2">
                         {status === 'idle' ? (
-                            <button onClick={startInterview} className="w-full py-5 bg-indigo-600 text-white rounded-3xl font-black text-xs uppercase tracking-[0.2em] hover:bg-indigo-500 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-indigo-600/20">
-                                Start Sandbox session
+                            <button onClick={startInterview} className="w-full py-3.5 px-4 bg-amber-400 hover:bg-amber-300 text-zinc-950 rounded-xl font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-sm">
+                                Start Session Loop
                             </button>
                         ) : (
                             <button 
                                 onClick={handleFinishAnswer} 
                                 disabled={status !== 'recording'}
-                                className="w-full py-5 bg-white/5 border border-white/10 text-white rounded-3xl font-black text-xs uppercase tracking-[0.2em] hover:bg-rose-500/20 hover:border-rose-500/30 transition-all disabled:opacity-20 flex items-center justify-center gap-3"
+                                className="w-full py-3.5 px-4 bg-white hover:bg-zinc-200 text-zinc-950 rounded-xl font-bold text-xs uppercase tracking-wider transition-all disabled:opacity-30 cursor-pointer shadow-sm flex items-center justify-center gap-2"
                             >
-                                <i className={`fa-solid ${status === 'thinking' ? 'fa-spinner fa-spin' : 'fa-stop text-rose-500'}`}></i>
-                                {status === 'thinking' ? 'Synthesizing...' : 'Finish Answer'}
+                                <i className={`fa-solid ${status === 'thinking' ? 'fa-spinner fa-spin' : 'fa-check text-xs'}`}></i>
+                                <span>{status === 'thinking' ? 'Synthesizing...' : 'Complete Response'}</span>
                             </button>
                         )}
-                        <button onClick={() => onComplete(aiReport)} className="w-full py-4 text-slate-500 hover:text-white transition-colors text-[9px] font-black uppercase tracking-[0.3em]">
-                            Terminate & View Insights
+                        <button onClick={() => onComplete(aiReport)} className="w-full py-2.5 text-zinc-500 hover:text-zinc-200 transition-colors text-[10px] font-bold uppercase tracking-wider cursor-pointer">
+                            Terminate & View Telemetry
                         </button>
                     </div>
                 </div>
             </div>
-            
-            <style dangerouslySetInnerHTML={{ __html: `
-                @keyframes marquee {
-                    0% { transform: translateX(0); }
-                    100% { transform: translateX(-50%); }
-                }
-                .animate-marquee {
-                    display: flex;
-                    animation: marquee 30s linear infinite;
-                }
-                .animate-marquee:hover {
-                    animation-play-state: paused;
-                }
-            `}} />
+
+            {/* Market Intelligence Ticker */}
+            {marketPulse && (
+                <div className="w-full py-2.5 bg-zinc-950 border-t border-zinc-800 flex items-center overflow-hidden">
+                    <div className="flex gap-8 whitespace-nowrap px-6 text-[10px] text-zinc-400">
+                        <span className="flex items-center gap-1.5">
+                            <i className="fa-solid fa-chart-line text-emerald-400"></i> Market Demand: <strong className="text-zinc-200">{marketPulse.market_demand}</strong>
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                            <i className="fa-solid fa-money-bill-trend-up text-amber-400"></i> Salary Index: <strong className="text-zinc-200">{marketPulse.salary_projection}</strong>
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                            <i className="fa-solid fa-building text-zinc-400"></i> Target Cos: <strong className="text-zinc-200">{marketPulse.top_companies?.join(", ")}</strong>
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                            <i className="fa-solid fa-arrow-trend-up text-emerald-400"></i> Growth: <strong className="text-zinc-200">{marketPulse.growth_forecast}</strong>
+                        </span>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

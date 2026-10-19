@@ -9,7 +9,7 @@ import withAuth from '../components/withAuth';
 import { CyberPageShell, PageStatChip } from '../components/CyberPageShell';
 import { SkeletonCard } from '../components/motion/Skeleton';
 import { ScrollReveal, StaggerChildren } from '../components/motion/ScrollReveal';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useToast } from '../components/motion/Toast';
 import Link from 'next/link';
 
@@ -211,26 +211,26 @@ function ProfileDashboard() {
       </Head>
 
       <CyberPageShell
-        moduleCode="MOD-09"
+        moduleCode="SYS-00"
         section="IDENTITY & CAREER TWIN ENGINE"
         title="CAREER IDENTITY DASHBOARD"
         subtitle="Manage your digital twin persona, verified technical competencies, readiness score, and live career trajectory."
         badge="DIGITAL TWIN SYNCHRONIZED"
-        badgeVariant="outline-cyan"
-        bulletVariant="cyan"
-        glowColor="cyan"
+        badgeVariant="outline-amber"
+        bulletVariant="amber"
+        glowColor="amber"
         actions={
           <div className="flex items-center gap-2.5">
             <button
               onClick={() => setShowEditProfile(true)}
-              className="px-4 py-2 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/25 text-xs font-mono font-bold uppercase tracking-wider transition-all flex items-center gap-2"
+              className="px-4 py-2 bg-amber-400 hover:bg-amber-300 text-zinc-950 text-xs font-mono font-bold uppercase tracking-wider transition-all flex items-center gap-2 border border-amber-400"
             >
               <i className="fa-solid fa-pen-to-square text-xs" />
               <span>Edit Identity</span>
             </button>
             <Link href="/settings">
-              <button className="px-3.5 py-2 rounded-xl bg-slate-900/80 border border-white/[0.08] text-slate-300 hover:text-white text-xs font-mono font-bold uppercase tracking-wider transition-all flex items-center gap-2">
-                <i className="fa-solid fa-gear text-xs text-indigo-400" />
+              <button className="px-3.5 py-2 bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 text-xs font-mono font-bold uppercase tracking-wider transition-all flex items-center gap-2">
+                <i className="fa-solid fa-gear text-xs text-amber-400" />
                 <span>Settings</span>
               </button>
             </Link>
@@ -238,9 +238,9 @@ function ProfileDashboard() {
         }
         stats={
           <>
-            <PageStatChip label="Completeness" value={`${profile?.profile_completeness || 85}%`} icon="fa-shield-halved" color="cyan" />
+            <PageStatChip label="Completeness" value={`${profile?.profile_completeness || 85}%`} icon="fa-shield-halved" color="amber" />
             <PageStatChip label="Readiness Score" value={`${profile?.job_readiness_score || 78}%`} icon="fa-bolt" color="amber" />
-            <PageStatChip label="Verified Skills" value={skills.length} icon="fa-layer-group" color="emerald" />
+            <PageStatChip label="Verified Skills" value={skills.length} icon="fa-layer-group" color="zinc" />
           </>
         }
       />
@@ -260,21 +260,17 @@ function ProfileDashboard() {
           <>
             {/* ── 1. Hero Digital Identity Persona Banner ── */}
             <ScrollReveal>
-              <div className="relative rounded-3xl bg-gradient-to-b from-blue-50/80 via-white to-indigo-50/50 dark:from-[#121624] dark:via-[#0d101a] dark:to-[#0a0c14] border border-blue-200/80 dark:border-cyan-500/25 p-6 sm:p-8 overflow-hidden shadow-light-card dark:shadow-[0_12px_40px_rgba(0,0,0,0.6)] group">
-                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/60 dark:via-cyan-500/80 to-transparent" />
-                <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-500/5 dark:bg-cyan-600/10 rounded-full blur-3xl pointer-events-none group-hover:bg-blue-500/10 dark:group-hover:bg-cyan-600/15 transition-all duration-700" />
-                <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-indigo-500/5 dark:bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
-
+              <div className="border border-zinc-800 bg-zinc-900/90 p-6 sm:p-8 relative">
                 <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
                   {/* Left: Avatar & Identity Details */}
                   <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
                     <div className="relative group/avatar shrink-0">
-                      <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-slate-100 dark:bg-slate-900 border-2 border-blue-400 dark:border-cyan-500/40 flex items-center justify-center overflow-hidden shadow-sm dark:shadow-[0_0_25px_rgba(0,217,255,0.2)] group-hover/avatar:border-blue-500 dark:group-hover/avatar:border-cyan-400 transition-all">
-                        <i className="fa-solid fa-user-astronaut text-4xl text-blue-600 dark:text-cyan-400/80" />
+                      <div className="w-24 h-24 sm:w-28 sm:h-28 bg-zinc-950 border border-zinc-700 flex items-center justify-center overflow-hidden">
+                        <i className="fa-solid fa-user-astronaut text-4xl text-amber-400/80" />
                       </div>
                       <button
                         onClick={() => setShowEditProfile(true)}
-                        className="absolute -bottom-2 -right-2 w-8 h-8 rounded-xl bg-blue-600 dark:bg-cyan-500 border-2 border-white dark:border-slate-950 flex items-center justify-center text-xs text-white dark:text-slate-950 shadow-md hover:scale-110 transition-transform"
+                        className="absolute -bottom-2 -right-2 w-7 h-7 bg-amber-400 border border-zinc-950 flex items-center justify-center text-[10px] text-zinc-950 shadow-md hover:scale-105 transition-transform"
                         title="Edit Avatar"
                       >
                         <i className="fa-solid fa-camera" />
@@ -283,63 +279,63 @@ function ProfileDashboard() {
 
                     <div className="space-y-2.5">
                       <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
-                        <h1 className="text-2xl sm:text-3xl font-display font-black text-slate-900 dark:text-white tracking-tight">
+                        <h1 className="text-xl sm:text-2xl font-mono font-bold text-zinc-100 tracking-tight">
                           {profile?.first_name ? `${profile.first_name} ${profile.last_name || ''}` : profile?.username || 'Digital Twin'}
                         </h1>
-                        <span className="px-3 py-1 bg-blue-50 text-blue-700 border border-blue-200 dark:bg-cyan-500/15 dark:border-cyan-500/30 dark:text-cyan-300 rounded-full text-[10px] font-mono font-black uppercase tracking-wider">
-                          {profile?.market_readiness_level || 'READY'} TIER
+                        <span className="px-2 py-0.5 border border-amber-400/40 bg-amber-400/10 text-amber-400 text-[10px] font-mono font-bold uppercase tracking-wider">
+                          [ {profile?.market_readiness_level || 'READY'} TIER ]
                         </span>
-                        <span className="px-3 py-1 bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-500/15 dark:border-indigo-500/30 dark:text-indigo-300 rounded-full text-[10px] font-mono font-black uppercase tracking-wider">
+                        <span className="px-2 py-0.5 border border-zinc-800 bg-zinc-950 text-zinc-400 text-[10px] font-mono font-bold uppercase tracking-wider">
                           {profile?.role === 'admin' ? '🛡️ Platform Admin' : '🎓 Verified Developer'}
                         </span>
                       </div>
 
-                      <p className="text-sm font-mono text-blue-700 dark:text-cyan-300/90 font-medium">
-                        <i className="fa-solid fa-crosshairs text-blue-600 dark:text-cyan-400 mr-2" />
-                        Target Role: <span className="text-slate-900 dark:text-white font-bold">{profile?.dream_job || 'Full-Stack Software Engineer'}</span>
+                      <p className="text-xs font-mono text-zinc-400">
+                        <span className="text-amber-400 mr-2">&gt; TARGET:</span>
+                        <span className="text-zinc-100 font-bold">{profile?.dream_job || 'Full-Stack Software Engineer'}</span>
                       </p>
 
-                      <div className="flex flex-wrap justify-center sm:justify-start gap-3 pt-1">
-                        <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 dark:bg-black/40 rounded-xl border border-slate-200 dark:border-white/[0.06] text-xs font-mono text-slate-700 dark:text-slate-300">
-                          <i className="fa-solid fa-briefcase text-slate-400 dark:text-slate-500 text-[11px]" />
+                      <div className="flex flex-wrap justify-center sm:justify-start gap-2 pt-1">
+                        <div className="flex items-center gap-2 px-2.5 py-1 bg-zinc-950 border border-zinc-800 text-[11px] font-mono text-zinc-300">
+                          <i className="fa-solid fa-briefcase text-zinc-500 text-[10px]" />
                           <span>{profile?.experience_level || 'Junior'} Level</span>
                         </div>
-                        <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 dark:bg-black/40 rounded-xl border border-slate-200 dark:border-white/[0.06] text-xs font-mono text-slate-700 dark:text-slate-300">
-                          <i className="fa-solid fa-layer-group text-slate-400 dark:text-slate-500 text-[11px]" />
+                        <div className="flex items-center gap-2 px-2.5 py-1 bg-zinc-950 border border-zinc-800 text-[11px] font-mono text-zinc-300">
+                          <i className="fa-solid fa-layer-group text-zinc-500 text-[10px]" />
                           <span>{skills.length} Verified Skills</span>
                         </div>
-                        <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 dark:bg-black/40 rounded-xl border border-slate-200 dark:border-white/[0.06] text-xs font-mono text-slate-700 dark:text-slate-300">
-                          <i className="fa-solid fa-shield-check text-emerald-600 dark:text-emerald-400 text-[11px]" />
-                          <span>{profile?.profile_visibility ? 'Publicly Indexed' : 'Private'}</span>
+                        <div className="flex items-center gap-2 px-2.5 py-1 bg-zinc-950 border border-zinc-800 text-[11px] font-mono text-zinc-300">
+                          <i className="fa-solid fa-shield-halved text-amber-400 text-[10px]" />
+                          <span>{profile?.profile_visibility ? 'Public Index' : 'Private'}</span>
                         </div>
                       </div>
                     </div>
                   </div>
 
                   {/* Right: Circular Readiness Radar Score */}
-                  <div className="flex flex-col items-center justify-center self-center lg:self-auto shrink-0 p-4 rounded-3xl bg-slate-50 dark:bg-black/40 border border-slate-200 dark:border-white/[0.06]">
-                    <div className="relative w-28 h-28 flex items-center justify-center">
+                  <div className="flex flex-col items-center justify-center self-center lg:self-auto shrink-0 p-4 border border-zinc-800 bg-zinc-950">
+                    <div className="relative w-24 h-24 flex items-center justify-center">
                       <svg className="w-full h-full transform -rotate-90">
-                        <circle cx="56" cy="56" r="48" stroke="currentColor" strokeWidth="8" fill="transparent" className="text-slate-200 dark:text-slate-800/80" />
+                        <circle cx="48" cy="48" r="40" stroke="#27272a" strokeWidth="6" fill="transparent" />
                         <circle
-                          cx="56"
-                          cy="56"
-                          r="48"
-                          stroke="currentColor"
-                          strokeWidth="8"
+                          cx="48"
+                          cy="48"
+                          r="40"
+                          stroke="#f59e0b"
+                          strokeWidth="6"
                           fill="transparent"
-                          strokeDasharray={301}
-                          strokeDashoffset={301 - (301 * (profile?.job_readiness_score || 78) / 100)}
-                          className="text-blue-600 dark:text-cyan-400 transition-all duration-1000"
+                          strokeDasharray={251}
+                          strokeDashoffset={251 - (251 * (profile?.job_readiness_score || 78) / 100)}
+                          className="transition-all duration-1000"
                         />
                       </svg>
                       <div className="absolute flex flex-col items-center">
-                        <span className="text-2xl font-display font-black text-slate-900 dark:text-white">{profile?.job_readiness_score || 78}%</span>
-                        <span className="text-[8px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Readiness</span>
+                        <span className="text-xl font-mono font-bold text-zinc-100">{profile?.job_readiness_score || 78}%</span>
+                        <span className="text-[8px] font-mono font-bold text-zinc-500 uppercase tracking-widest">Score</span>
                       </div>
                     </div>
-                    <span className="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 mt-2">
-                      ★ Market Top 15%
+                    <span className="text-[10px] font-mono font-bold text-amber-400 mt-2">
+                      TOP 15% TIER
                     </span>
                   </div>
                 </div>
@@ -349,26 +345,26 @@ function ProfileDashboard() {
             {/* ── 2. Four Key Performance Metric Cards ── */}
             <StaggerChildren className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {[
-                { label: 'Skills Mastered', val: stats?.skills_completed || skills.length, total: stats?.total_skills || 24, icon: 'fa-bolt', color: 'blue', trend: '↑', delta: '+4 this month' },
-                { label: 'Roadmap Velocity', val: stats?.roadmap_progress || 68, suffix: '%', icon: 'fa-route', color: 'indigo', trend: '↑', delta: 'Ahead of pace' },
-                { label: 'Resume ATS Score', val: stats?.resume_score || 84, total: 100, icon: 'fa-file-shield', color: 'emerald', trend: '↑', delta: 'Grade A' },
-                { label: 'AI Mentorship Sessions', val: stats?.chats_used || 18, icon: 'fa-comments', color: 'amber', trend: '↑', delta: 'Active' },
+                { label: 'Skills Mastered', val: stats?.skills_completed || skills.length, total: stats?.total_skills || 24, icon: 'fa-bolt', delta: '+4 this month' },
+                { label: 'Roadmap Velocity', val: stats?.roadmap_progress || 68, suffix: '%', icon: 'fa-route', delta: 'Ahead of pace' },
+                { label: 'Resume ATS Score', val: stats?.resume_score || 84, total: 100, icon: 'fa-file-shield', delta: 'Grade A' },
+                { label: 'AI Sessions', val: stats?.chats_used || 18, icon: 'fa-comments', delta: 'Active' },
               ].map((s, i) => (
                 <ScrollReveal stagger key={i}>
-                  <div className="p-5 rounded-3xl bg-card border border-border hover:border-blue-300 dark:hover:border-cyan-500/40 transition-all duration-300 shadow-light-card dark:shadow-none space-y-3">
+                  <div className="p-4 border border-zinc-800 bg-zinc-900/90 hover:border-zinc-700 transition-all space-y-3">
                     <div className="flex justify-between items-start">
-                      <div className="w-10 h-10 rounded-2xl flex items-center justify-center bg-slate-100 dark:bg-white/5 text-blue-600 dark:text-cyan-400 border border-slate-200 dark:border-white/5 text-sm shadow-sm">
+                      <div className="w-8 h-8 flex items-center justify-center bg-zinc-950 text-amber-400 border border-zinc-800 text-xs">
                         <i className={`fa-solid ${s.icon}`} />
                       </div>
-                      <span className="text-[10px] font-mono font-black text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded-lg border border-emerald-200 dark:border-emerald-500/20">
+                      <span className="text-[10px] font-mono font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 border border-amber-400/20">
                         {s.delta}
                       </span>
                     </div>
                     <div>
-                      <p className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">{s.label}</p>
+                      <p className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-wider">{s.label}</p>
                       <div className="flex items-baseline gap-1 mt-1">
-                        <span className="text-2xl sm:text-3xl font-display font-black text-slate-900 dark:text-white">{s.val}{s.suffix}</span>
-                        {s.total && <span className="text-xs font-mono text-slate-400 dark:text-slate-500">/ {s.total}</span>}
+                        <span className="text-2xl font-mono font-bold text-zinc-100">{s.val}{s.suffix}</span>
+                        {s.total && <span className="text-xs font-mono text-zinc-500">/ {s.total}</span>}
                       </div>
                     </div>
                   </div>
@@ -383,22 +379,22 @@ function ProfileDashboard() {
                 {/* AI Strategic Recommendation Capsule */}
                 {suggestions && suggestions.length > 0 && (
                   <ScrollReveal>
-                    <div className="p-6 rounded-3xl bg-gradient-to-r from-indigo-50/80 via-purple-50/40 to-blue-50/60 dark:from-indigo-950/60 dark:via-purple-950/40 dark:to-slate-950/60 border border-indigo-200 dark:border-indigo-500/30 flex items-start gap-4 shadow-light-card dark:shadow-xl relative overflow-hidden">
-                      <div className="w-12 h-12 rounded-2xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 text-xl shrink-0 shadow-sm">
-                        <i className="fa-solid fa-brain-circuit" />
+                    <div className="p-5 border border-amber-500/30 bg-amber-500/5 flex items-start gap-4 relative">
+                      <div className="w-9 h-9 border border-amber-400/30 bg-amber-400/10 flex items-center justify-center text-amber-400 text-sm shrink-0">
+                        <i className="fa-solid fa-brain" />
                       </div>
-                      <div className="space-y-2 flex-1">
+                      <div className="space-y-1.5 flex-1">
                         <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
-                            AI COPILOT RECOMMENDATION
+                          <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-400">
+                            [ AI STRATEGIC RECOMMENDATION ]
                           </span>
                         </div>
-                        <p className="text-xs sm:text-sm font-sans font-semibold text-slate-800 dark:text-slate-100 leading-relaxed">
+                        <p className="text-xs font-mono text-zinc-300 leading-relaxed">
                           {suggestions[0].text}
                         </p>
                         <div className="pt-1">
                           <Link href="/roadmap">
-                            <button className="text-xs font-mono font-black text-blue-600 dark:text-cyan-400 hover:underline uppercase tracking-wider flex items-center gap-2 transition-colors">
+                            <button className="text-xs font-mono font-bold text-amber-400 hover:text-amber-300 hover:underline uppercase tracking-wider flex items-center gap-2 transition-colors">
                               <span>Execute Target Vector</span>
                               <i className="fa-solid fa-arrow-right text-[10px]" />
                             </button>
@@ -411,24 +407,24 @@ function ProfileDashboard() {
 
                 {/* Skill Management Matrix */}
                 <ScrollReveal>
-                  <div className="p-6 sm:p-7 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none space-y-6">
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-white/[0.06]">
+                  <div className="p-6 border border-zinc-800 bg-zinc-900/90 space-y-6">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-zinc-800">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-cyan-500/10 border border-blue-200 dark:border-cyan-500/20 flex items-center justify-center text-blue-600 dark:text-cyan-400 text-sm">
+                        <div className="w-8 h-8 border border-amber-400/20 bg-amber-400/10 flex items-center justify-center text-amber-400 text-xs">
                           <i className="fa-solid fa-layer-group" />
                         </div>
                         <div>
-                          <h2 className="text-base sm:text-lg font-display font-black text-slate-900 dark:text-white">
+                          <h2 className="text-sm font-mono font-bold text-zinc-100 uppercase tracking-wider">
                             Verified Skills Matrix
                           </h2>
-                          <p className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
-                            Competency benchmarks evaluated across resume, projects, and interviews.
+                          <p className="text-[11px] font-mono text-zinc-400">
+                            Competency benchmarks evaluated across resume, projects, and assessments.
                           </p>
                         </div>
                       </div>
 
                       <Link href="/resume">
-                        <button className="text-xs font-mono font-bold text-blue-600 dark:text-cyan-400 hover:underline uppercase tracking-wider flex items-center gap-1.5 transition-colors">
+                        <button className="text-xs font-mono font-bold text-amber-400 hover:underline uppercase tracking-wider flex items-center gap-1.5 transition-colors">
                           <i className="fa-solid fa-file-import text-xs" />
                           <span>Import from Resume</span>
                         </button>
@@ -436,8 +432,8 @@ function ProfileDashboard() {
                     </div>
 
                     {/* Add Skill Quick Form */}
-                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 space-y-3">
-                      <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-600 dark:text-slate-400">
+                    <div className="p-4 bg-zinc-950 border border-zinc-800 space-y-3">
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400">
                         Add New Competency Vector
                       </span>
                       <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
@@ -447,14 +443,14 @@ function ProfileDashboard() {
                             placeholder="e.g. Next.js, Docker, PyTorch..."
                             value={newSkill.name}
                             onChange={e => setNewSkill({ ...newSkill, name: e.target.value })}
-                            className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-mono text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-blue-500 dark:focus:border-cyan-500/60"
+                            className="w-full px-3.5 py-2 bg-zinc-900 border border-zinc-800 text-xs font-mono text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-amber-400/60"
                           />
                         </div>
                         <div className="sm:col-span-3">
                           <select
                             value={newSkill.category}
                             onChange={e => setNewSkill({ ...newSkill, category: e.target.value })}
-                            className="w-full px-3 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-mono text-slate-900 dark:text-slate-200 outline-none"
+                            className="w-full px-3 py-2 bg-zinc-900 border border-zinc-800 text-xs font-mono text-zinc-200 outline-none focus:border-amber-400/60"
                           >
                             <option value="Frontend">Frontend</option>
                             <option value="Backend">Backend</option>
@@ -466,7 +462,7 @@ function ProfileDashboard() {
                           <select
                             value={newSkill.level}
                             onChange={e => setNewSkill({ ...newSkill, level: Number(e.target.value) })}
-                            className="w-full px-3 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-mono text-slate-900 dark:text-slate-200 outline-none"
+                            className="w-full px-3 py-2 bg-zinc-900 border border-zinc-800 text-xs font-mono text-zinc-200 outline-none focus:border-amber-400/60"
                           >
                             <option value={1}>Lvl 1 (Basic)</option>
                             <option value={2}>Lvl 2 (Working)</option>
@@ -478,7 +474,7 @@ function ProfileDashboard() {
                         <div className="sm:col-span-2">
                           <button
                             onClick={handleAddSkill}
-                            className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-mono font-bold text-xs uppercase tracking-wider shadow-sm transition-all flex items-center justify-center gap-1.5"
+                            className="w-full py-2 bg-amber-400 hover:bg-amber-300 text-zinc-950 font-mono font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 border border-amber-400"
                           >
                             <i className="fa-solid fa-plus text-[10px]" />
                             <span>Add</span>
@@ -493,55 +489,55 @@ function ProfileDashboard() {
                         <button
                           key={cat}
                           onClick={() => setActiveSkillCategory(cat)}
-                          className={`px-3 py-1.5 rounded-xl text-[11px] font-mono font-bold uppercase tracking-wider whitespace-nowrap transition-all border ${
+                          className={`px-3 py-1.5 text-[11px] font-mono font-bold uppercase tracking-wider whitespace-nowrap transition-all border ${
                             activeSkillCategory === cat
-                              ? 'bg-blue-50 border-blue-300 text-blue-700 dark:bg-cyan-500/20 dark:border-cyan-400 dark:text-cyan-200 shadow-sm'
-                              : 'bg-slate-100 dark:bg-slate-950/60 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                              ? 'border-amber-400/50 bg-amber-400/10 text-amber-400'
+                              : 'border-zinc-800 bg-zinc-950 text-zinc-400 hover:text-zinc-200'
                           }`}
                         >
-                          {cat === 'all' ? `All Skills (${skills.length})` : cat}
+                          {cat === 'all' ? `[ ALL SKILLS (${skills.length}) ]` : `[ ${cat.toUpperCase()} ]`}
                         </button>
                       ))}
                     </div>
 
                     {/* Skills Grid */}
                     {filteredSkills.length === 0 ? (
-                      <div className="p-8 text-center bg-slate-50 dark:bg-slate-950/40 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs font-mono text-slate-500">
+                      <div className="p-8 text-center bg-zinc-950 border border-zinc-800 text-xs font-mono text-zinc-500">
                         No skills tracked in this category yet.
                       </div>
                     ) : (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {filteredSkills.map((s: Skill) => (
                           <div
                             key={s.id}
-                            className="p-4 rounded-2xl bg-slate-50/70 dark:bg-slate-950/70 border border-slate-200/80 dark:border-slate-800/80 hover:border-blue-300 dark:hover:border-cyan-500/40 transition-all flex items-center justify-between gap-3 group"
+                            className="p-3.5 bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition-all flex items-center justify-between gap-3 group"
                           >
                             <div className="space-y-1.5 flex-1 min-w-0">
                               <div className="flex items-center gap-2">
-                                <span className="text-xs font-mono font-bold text-slate-900 dark:text-white truncate">{s.name}</span>
+                                <span className="text-xs font-mono font-bold text-zinc-200 truncate">{s.name}</span>
                                 {s.level >= 4 && (
-                                  <span className="px-1.5 py-0.2 bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-500/15 dark:border-amber-500/30 dark:text-amber-400 rounded text-[8px] font-mono font-black uppercase">
-                                    ★ Top
+                                  <span className="px-1.5 py-0.2 border border-amber-400/40 bg-amber-400/10 text-amber-400 text-[8px] font-mono font-bold uppercase">
+                                    ★ TOP
                                   </span>
                                 )}
                               </div>
                               {/* Level Bar */}
-                              <div className="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                              <div className="w-full bg-zinc-850 h-1.5 overflow-hidden border border-zinc-800">
                                 <div
-                                  className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 dark:from-cyan-500 dark:to-indigo-500 rounded-full transition-all duration-500"
+                                  className="h-full bg-amber-400 transition-all duration-500"
                                   style={{ width: `${s.level * 20}%` }}
                                 />
                               </div>
                             </div>
 
                             <div className="flex items-center gap-2 shrink-0">
-                              <span className="text-[10px] font-mono font-black text-slate-500 dark:text-slate-400">Lvl {s.level}</span>
+                              <span className="text-[10px] font-mono font-bold text-zinc-400">LVL {s.level}</span>
                               <button
                                 onClick={() => handleDeleteSkill(s.id, s.name)}
-                                className="w-7 h-7 rounded-lg bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400 border border-rose-200 dark:border-rose-500/20 opacity-0 group-hover:opacity-100 hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-all flex items-center justify-center text-xs"
+                                className="w-6 h-6 bg-zinc-900 text-zinc-400 hover:text-rose-400 border border-zinc-800 hover:border-rose-500/40 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center text-xs"
                                 title="Delete Skill"
                               >
-                                <i className="fa-regular fa-trash-can" />
+                                <i className="fa-regular fa-trash-can text-[10px]" />
                               </button>
                             </div>
                           </div>
@@ -553,17 +549,17 @@ function ProfileDashboard() {
 
                 {/* Performance Analytics Chart */}
                 <ScrollReveal>
-                  <div className="p-6 sm:p-7 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none space-y-6">
-                    <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/[0.06]">
+                  <div className="p-6 border border-zinc-800 bg-zinc-900/90 space-y-6">
+                    <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-violet-50 dark:bg-violet-500/10 border border-violet-200 dark:border-violet-500/20 flex items-center justify-center text-violet-600 dark:text-violet-400 text-sm">
+                        <div className="w-8 h-8 border border-amber-400/20 bg-amber-400/10 flex items-center justify-center text-amber-400 text-xs">
                           <i className="fa-solid fa-chart-line" />
                         </div>
                         <div>
-                          <h2 className="text-base sm:text-lg font-display font-black text-slate-900 dark:text-white">
+                          <h2 className="text-sm font-mono font-bold text-zinc-100 uppercase tracking-wider">
                             Trajectory & Readiness Velocity
                           </h2>
-                          <p className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
+                          <p className="text-[11px] font-mono text-zinc-400">
                             Multi-week career readiness progression telemetry.
                           </p>
                         </div>
@@ -575,38 +571,38 @@ function ProfileDashboard() {
                         <ResponsiveContainer width="100%" height="100%">
                           <AreaChart data={growthData}>
                             <defs>
-                              <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#2563eb" stopOpacity={0.25} />
-                                <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
+                              <linearGradient id="colorScoreAmber" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.25} />
+                                <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
                               </linearGradient>
                             </defs>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-                            <XAxis dataKey="name" stroke="#64748b" fontSize={10} fontStyle="italic" axisLine={false} tickLine={false} />
-                            <YAxis stroke="#64748b" fontSize={10} axisLine={false} tickLine={false} domain={[0, 100]} />
+                            <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
+                            <XAxis dataKey="name" stroke="#71717a" fontSize={10} fontStyle="italic" axisLine={false} tickLine={false} />
+                            <YAxis stroke="#71717a" fontSize={10} axisLine={false} tickLine={false} domain={[0, 100]} />
                             <Tooltip
-                              contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '14px', color: '#0f172a' }}
-                              itemStyle={{ color: '#2563eb', fontFamily: 'monospace' }}
+                              contentStyle={{ backgroundColor: '#09090b', border: '1px solid #27272a', borderRadius: '0px', color: '#f4f4f5', fontFamily: 'monospace' }}
+                              itemStyle={{ color: '#f59e0b', fontFamily: 'monospace' }}
                             />
-                            <Area type="monotone" dataKey="score" stroke="#2563eb" strokeWidth={3} fillOpacity={1} fill="url(#colorScore)" />
+                            <Area type="monotone" dataKey="score" stroke="#f59e0b" strokeWidth={2} fillOpacity={1} fill="url(#colorScoreAmber)" />
                           </AreaChart>
                         </ResponsiveContainer>
                       ) : (
-                        <div className="w-full h-full bg-slate-100 dark:bg-slate-950/40 rounded-2xl animate-pulse" />
+                        <div className="w-full h-full bg-zinc-950 animate-pulse" />
                       )}
                     </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3.5 pt-2">
-                      <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-black/40 border border-slate-200 dark:border-white/[0.05] text-center">
-                        <p className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Weekly Velocity</p>
-                        <p className="text-lg font-display font-black text-emerald-600 dark:text-emerald-400 mt-0.5">+18.4% Lift</p>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 pt-2">
+                      <div className="p-3 bg-zinc-950 border border-zinc-800 text-center">
+                        <p className="text-[9px] font-mono font-bold uppercase tracking-wider text-zinc-500">Weekly Velocity</p>
+                        <p className="text-base font-mono font-bold text-amber-400 mt-0.5">+18.4% Lift</p>
                       </div>
-                      <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-black/40 border border-slate-200 dark:border-white/[0.05] text-center">
-                        <p className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Resume Factor</p>
-                        <p className="text-lg font-display font-black text-blue-600 dark:text-cyan-300 mt-0.5">4.8 / 5.0</p>
+                      <div className="p-3 bg-zinc-950 border border-zinc-800 text-center">
+                        <p className="text-[9px] font-mono font-bold uppercase tracking-wider text-zinc-500">Resume Factor</p>
+                        <p className="text-base font-mono font-bold text-zinc-100 mt-0.5">4.8 / 5.0</p>
                       </div>
-                      <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-black/40 border border-slate-200 dark:border-white/[0.05] text-center col-span-2 md:col-span-1">
-                        <p className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Interview Accuracy</p>
-                        <p className="text-lg font-display font-black text-indigo-600 dark:text-indigo-300 mt-0.5">85% Match</p>
+                      <div className="p-3 bg-zinc-950 border border-zinc-800 text-center col-span-2 md:col-span-1">
+                        <p className="text-[9px] font-mono font-bold uppercase tracking-wider text-zinc-500">Interview Match</p>
+                        <p className="text-base font-mono font-bold text-zinc-100 mt-0.5">85% Match</p>
                       </div>
                     </div>
                   </div>
@@ -617,25 +613,25 @@ function ProfileDashboard() {
               <div className="space-y-8">
                 {/* Profile Completeness Card */}
                 <ScrollReveal>
-                  <div className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none space-y-4">
+                  <div className="p-6 border border-zinc-800 bg-zinc-900/90 space-y-4">
                     <div className="flex justify-between items-center">
-                      <h3 className="text-xs font-mono font-bold text-slate-900 dark:text-white uppercase tracking-widest">
+                      <h3 className="text-xs font-mono font-bold text-zinc-100 uppercase tracking-wider">
                         Profile Completeness
                       </h3>
-                      <span className="text-xs font-mono font-black text-blue-600 dark:text-cyan-400">
+                      <span className="text-xs font-mono font-bold text-amber-400">
                         {profile?.profile_completeness || 85}%
                       </span>
                     </div>
-                    <div className="w-full h-2 bg-slate-100 dark:bg-slate-950 rounded-full overflow-hidden p-0.5 border border-slate-200 dark:border-white/[0.05]">
+                    <div className="w-full h-2 bg-zinc-950 border border-zinc-800 overflow-hidden">
                       <div
-                        className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full transition-all duration-1000 shadow-sm"
+                        className="h-full bg-amber-400 transition-all duration-1000"
                         style={{ width: `${profile?.profile_completeness || 85}%` }}
                       />
                     </div>
                     {(profile?.profile_completeness || 85) < 100 && (
                       <button
                         onClick={() => setShowEditProfile(true)}
-                        className="w-full py-2.5 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-200 dark:bg-cyan-500/15 dark:border-cyan-500/30 dark:text-cyan-300 dark:hover:bg-cyan-500/25 font-mono font-bold text-xs uppercase tracking-wider transition-all shadow-sm"
+                        className="w-full py-2 bg-amber-400/10 border border-amber-400/40 text-amber-400 hover:bg-amber-400/20 font-mono font-bold text-xs uppercase tracking-wider transition-all"
                       >
                         Complete Remaining Fields
                       </button>
@@ -645,35 +641,31 @@ function ProfileDashboard() {
 
                 {/* Live Activity Stream */}
                 <ScrollReveal>
-                  <div className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none space-y-5">
-                    <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100 dark:border-white/[0.06]">
-                      <i className="fa-solid fa-clock-rotate-left text-amber-500 text-xs" />
-                      <h3 className="text-xs font-mono font-bold text-slate-900 dark:text-white uppercase tracking-widest">
+                  <div className="p-6 border border-zinc-800 bg-zinc-900/90 space-y-5">
+                    <div className="flex items-center gap-2.5 pb-3 border-b border-zinc-800">
+                      <i className="fa-solid fa-clock-rotate-left text-amber-400 text-xs" />
+                      <h3 className="text-xs font-mono font-bold text-zinc-100 uppercase tracking-wider">
                         Live Activity Audit Feed
                       </h3>
                     </div>
 
-                    <div className="relative space-y-4 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-200 dark:before:bg-slate-800">
+                    <div className="relative space-y-4 before:absolute before:left-[7px] before:top-2 before:bottom-2 before:w-[1px] before:bg-zinc-800">
                       {activities && activities.length > 0 ? (
                         activities.slice(0, 5).map((a: Activity) => (
-                          <div key={a.id} className="relative pl-8">
-                            <div className="absolute left-0 top-1 w-6 h-6 rounded-full bg-white dark:bg-slate-950 border-2 border-slate-300 dark:border-slate-800 flex items-center justify-center z-10 shadow-sm">
-                              <div className={`w-2 h-2 rounded-full ${
-                                a.action_type === 'skill' ? 'bg-blue-500' :
-                                a.action_type === 'roadmap' ? 'bg-indigo-500' :
-                                a.action_type === 'resume' ? 'bg-emerald-500' : 'bg-amber-500'
-                              }`} />
+                          <div key={a.id} className="relative pl-6">
+                            <div className="absolute left-0 top-1.5 w-3.5 h-3.5 bg-zinc-950 border border-zinc-700 flex items-center justify-center z-10">
+                              <div className="w-1.5 h-1.5 bg-amber-400" />
                             </div>
                             <div className="space-y-1">
                               <div className="flex justify-between items-start">
-                                <p className="text-xs font-mono font-bold text-slate-900 dark:text-slate-200">{a.action_type_display}</p>
-                                <span className="text-[9px] font-mono text-slate-400 dark:text-slate-500">
+                                <p className="text-xs font-mono font-bold text-zinc-200">{a.action_type_display}</p>
+                                <span className="text-[9px] font-mono text-zinc-500">
                                   {new Date(a.timestamp).toLocaleDateString()}
                                 </span>
                               </div>
-                              <p className="text-[11px] font-sans text-slate-600 dark:text-slate-400 leading-relaxed">{a.description}</p>
+                              <p className="text-[11px] font-mono text-zinc-400 leading-relaxed">{a.description}</p>
                               {a.impact_score > 0 && (
-                                <span className="inline-block px-2 py-0.5 bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-200 dark:border-transparent text-[9px] font-mono font-bold rounded-md">
+                                <span className="inline-block px-1.5 py-0.2 bg-amber-400/10 text-amber-400 border border-amber-400/20 text-[9px] font-mono font-bold">
                                   +{a.impact_score} Readiness Score
                                 </span>
                               )}
@@ -681,7 +673,7 @@ function ProfileDashboard() {
                           </div>
                         ))
                       ) : (
-                        <p className="text-xs font-mono text-slate-400 pl-8">No recent activity records.</p>
+                        <p className="text-xs font-mono text-zinc-500 pl-6">No recent activity records.</p>
                       )}
                     </div>
                   </div>
@@ -689,56 +681,60 @@ function ProfileDashboard() {
 
                 {/* Quick Security & Privacy Controls */}
                 <ScrollReveal>
-                  <div className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none space-y-4">
-                    <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100 dark:border-white/[0.06]">
-                      <i className="fa-solid fa-shield-halved text-emerald-600 dark:text-emerald-400 text-xs" />
-                      <h3 className="text-xs font-mono font-bold text-slate-900 dark:text-white uppercase tracking-widest">
+                  <div className="p-6 border border-zinc-800 bg-zinc-900/90 space-y-4">
+                    <div className="flex items-center gap-2.5 pb-3 border-b border-zinc-800">
+                      <i className="fa-solid fa-shield-halved text-amber-400 text-xs" />
+                      <h3 className="text-xs font-mono font-bold text-zinc-100 uppercase tracking-wider">
                         Security & Controls
                       </h3>
                     </div>
 
                     <div className="space-y-3">
-                      <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-black/40 border border-slate-200 dark:border-white/[0.05]">
+                      <div className="flex items-center justify-between p-3 bg-zinc-950 border border-zinc-800">
                         <div>
-                          <p className="text-xs font-mono font-bold text-slate-900 dark:text-white">2-Factor Auth (2FA)</p>
-                          <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400">Secure digital identity</p>
+                          <p className="text-xs font-mono font-bold text-zinc-200">2-Factor Auth (2FA)</p>
+                          <p className="text-[10px] font-mono text-zinc-500">Secure digital identity</p>
                         </div>
                         <button
                           onClick={handleTwoFactorToggle}
-                          className={`w-10 h-5 rounded-full relative p-0.5 flex items-center transition-all ${
-                            profile?.two_factor_enabled ? 'bg-blue-600 justify-end' : 'bg-slate-300 dark:bg-slate-800 justify-start'
+                          className={`px-3 py-1 text-[10px] font-mono font-bold uppercase border transition-all ${
+                            profile?.two_factor_enabled
+                              ? 'border-amber-400 bg-amber-400 text-zinc-950'
+                              : 'border-zinc-800 bg-zinc-900 text-zinc-500'
                           }`}
                         >
-                          <div className="w-4 h-4 bg-white rounded-full shadow-sm" />
+                          {profile?.two_factor_enabled ? 'ON' : 'OFF'}
                         </button>
                       </div>
 
-                      <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-black/40 border border-slate-200 dark:border-white/[0.05]">
+                      <div className="flex items-center justify-between p-3 bg-zinc-950 border border-zinc-800">
                         <div>
-                          <p className="text-xs font-mono font-bold text-slate-900 dark:text-white">Identity Visibility</p>
-                          <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400">Public recruiter indexing</p>
+                          <p className="text-xs font-mono font-bold text-zinc-200">Identity Visibility</p>
+                          <p className="text-[10px] font-mono text-zinc-500">Public recruiter indexing</p>
                         </div>
                         <button
                           onClick={handleVisibilityToggle}
-                          className={`w-10 h-5 rounded-full relative p-0.5 flex items-center transition-all ${
-                            profile?.profile_visibility ? 'bg-emerald-500 justify-end' : 'bg-slate-300 dark:bg-slate-800 justify-start'
+                          className={`px-3 py-1 text-[10px] font-mono font-bold uppercase border transition-all ${
+                            profile?.profile_visibility
+                              ? 'border-amber-400 bg-amber-400 text-zinc-950'
+                              : 'border-zinc-800 bg-zinc-900 text-zinc-500'
                           }`}
                         >
-                          <div className="w-4 h-4 bg-white rounded-full shadow-sm" />
+                          {profile?.profile_visibility ? 'PUBLIC' : 'PRIVATE'}
                         </button>
                       </div>
 
-                      <div className="pt-3 border-t border-slate-100 dark:border-white/[0.06] space-y-2">
+                      <div className="pt-3 border-t border-zinc-800 space-y-2">
                         <button
                           onClick={handleExportData}
-                          className="w-full text-left px-3 py-2 text-xs font-mono font-bold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/[0.03] rounded-xl transition-all flex items-center gap-2"
+                          className="w-full text-left px-3 py-2 text-xs font-mono font-bold text-zinc-400 hover:text-white hover:bg-zinc-800/50 border border-transparent hover:border-zinc-700 transition-all flex items-center gap-2"
                         >
-                          <i className="fa-solid fa-download text-[11px] text-blue-600 dark:text-cyan-400" />
+                          <i className="fa-solid fa-download text-[11px] text-amber-400" />
                           <span>Export Identity Telemetry (JSON)</span>
                         </button>
                         <button
                           onClick={handleDeleteAccount}
-                          className="w-full text-left px-3 py-2 text-xs font-mono font-bold text-rose-600 dark:text-rose-400 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-xl transition-all flex items-center gap-2"
+                          className="w-full text-left px-3 py-2 text-xs font-mono font-bold text-rose-400 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/30 transition-all flex items-center gap-2"
                         >
                           <i className="fa-regular fa-trash-can text-[11px]" />
                           <span>Permanently Delete Identity</span>
@@ -755,65 +751,65 @@ function ProfileDashboard() {
 
       {/* ── Edit Career Identity Modal ── */}
       {showEditProfile && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/80 backdrop-blur-sm">
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="p-7 max-w-md w-full rounded-3xl bg-card border border-border shadow-2xl space-y-5 relative"
+            exit={{ opacity: 0, scale: 0.98 }}
+            className="p-6 sm:p-7 max-w-md w-full bg-zinc-950 border border-zinc-800 shadow-2xl space-y-5 relative"
           >
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/[0.08]">
+            <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
               <div className="flex items-center gap-2.5">
-                <i className="fa-solid fa-user-pen text-blue-600 dark:text-cyan-400 text-sm" />
-                <h2 className="text-base font-display font-black text-slate-900 dark:text-white">Edit Career Identity</h2>
+                <i className="fa-solid fa-user-pen text-amber-400 text-sm" />
+                <h2 className="text-sm font-mono font-bold text-zinc-100 uppercase tracking-wider">Edit Career Identity</h2>
               </div>
               <button
                 onClick={() => setShowEditProfile(false)}
-                className="text-slate-400 hover:text-slate-700 dark:hover:text-white text-xs"
+                className="text-zinc-500 hover:text-zinc-200 text-xs font-mono"
               >
-                <i className="fa-solid fa-xmark" />
+                [X]
               </button>
             </div>
 
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">First Name</label>
+                  <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider">First Name</label>
                   <input
                     type="text"
                     value={editForm.first_name}
                     onChange={e => setEditForm({ ...editForm, first_name: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-mono text-slate-900 dark:text-white outline-none focus:border-blue-500"
+                    className="w-full px-3 py-2 bg-zinc-900 border border-zinc-800 text-xs font-mono text-zinc-100 outline-none focus:border-amber-400/60"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Last Name</label>
+                  <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider">Last Name</label>
                   <input
                     type="text"
                     value={editForm.last_name}
                     onChange={e => setEditForm({ ...editForm, last_name: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-mono text-slate-900 dark:text-white outline-none focus:border-blue-500"
+                    className="w-full px-3 py-2 bg-zinc-900 border border-zinc-800 text-xs font-mono text-zinc-100 outline-none focus:border-amber-400/60"
                   />
                 </div>
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Target Dream Job</label>
+                <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider">Target Dream Job</label>
                 <input
                   type="text"
                   placeholder="e.g. Senior Full-Stack Engineer"
                   value={editForm.dream_job}
                   onChange={e => setEditForm({ ...editForm, dream_job: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-mono text-slate-900 dark:text-white outline-none focus:border-blue-500"
+                  className="w-full px-3 py-2 bg-zinc-900 border border-zinc-800 text-xs font-mono text-zinc-100 outline-none focus:border-amber-400/60"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Active System Role</label>
+                <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider">Active System Role</label>
                 <select
                   value={editForm.role || 'student'}
                   onChange={e => setEditForm({ ...editForm, role: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-cyan-500/40 text-slate-900 dark:text-cyan-300 text-xs font-mono font-bold outline-none cursor-pointer"
+                  className="w-full px-3 py-2 bg-zinc-900 border border-zinc-800 text-zinc-200 text-xs font-mono font-bold outline-none cursor-pointer focus:border-amber-400/60"
                 >
                   <option value="student">🎓 Verified Developer / Candidate</option>
                   <option value="admin">🛡️ Platform Admin</option>
@@ -821,11 +817,11 @@ function ProfileDashboard() {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Experience Level</label>
+                <label className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider">Experience Level</label>
                 <select
                   value={editForm.experience_level}
                   onChange={e => setEditForm({ ...editForm, experience_level: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-mono text-slate-900 dark:text-slate-200 outline-none cursor-pointer"
+                  className="w-full px-3 py-2 bg-zinc-900 border border-zinc-800 text-xs font-mono text-zinc-200 outline-none cursor-pointer focus:border-amber-400/60"
                 >
                   {['Junior', 'Mid-Level', 'Senior', 'Staff', 'Principal'].map(l => (
                     <option key={l} value={l}>{l}</option>
@@ -834,16 +830,16 @@ function ProfileDashboard() {
               </div>
             </div>
 
-            <div className="flex items-center gap-3 pt-3 border-t border-slate-100 dark:border-white/[0.08]">
+            <div className="flex items-center gap-3 pt-3 border-t border-zinc-800">
               <button
                 onClick={() => setShowEditProfile(false)}
-                className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider transition-all"
+                className="flex-1 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-mono font-bold text-zinc-300 uppercase tracking-wider transition-all"
               >
                 Cancel
               </button>
               <button
                 onClick={handleUpdateProfile}
-                className="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-xs font-mono font-bold text-white uppercase tracking-wider shadow-sm transition-all"
+                className="flex-1 py-2.5 bg-amber-400 hover:bg-amber-300 text-xs font-mono font-bold text-zinc-950 uppercase tracking-wider transition-all border border-amber-400"
               >
                 Save Identity
               </button>

@@ -251,102 +251,107 @@ const Roadmap: React.FC = () => {
         moduleCode="MOD-01"
         title="CAREER ROADMAP ENGINE"
         subtitle="Domain-aware AI learning sequencer mapping your skills to job readiness across any engineering or business field."
-        badge="AI GENERATED"
-        badgeVariant="outline-cyan"
-        bulletVariant="cyan"
-        glowColor="indigo"
+        badge="AUTONOMOUS SEQUENCE"
         actions={
           <button
             onClick={handleFetchRecommendations}
-            className="sm-btn-neon !py-2.5 !px-4 text-xs"
+            className="px-4 py-2 border border-zinc-700 bg-zinc-950 hover:bg-zinc-800 text-white font-mono text-xs transition-colors flex items-center gap-2"
           >
-            <i className="fa-solid fa-compass text-xs" /> Recommend Careers
+            <i className="fa-solid fa-compass text-xs text-amber-500" />
+            <span>Recommend Careers</span>
           </button>
         }
         stats={
           <>
-            <PageStatChip label="Streak" value={`${analytics?.streak || 0} days`} icon="fa-fire" color="amber" />
-            <PageStatChip label="XP" value={`${analytics?.points || 0}`} icon="fa-star" color="cyan" />
-            <PageStatChip label="Steps Done" value={analytics?.completed_steps || 0} icon="fa-graduation-cap" color="emerald" />
-            <PageStatChip label="Badges" value={analytics?.badges?.length || 0} icon="fa-award" color="slate" />
+            <PageStatChip label="Streak" value={`${analytics?.streak || 0} days`} icon="fa-fire" />
+            <PageStatChip label="XP" value={`${analytics?.points || 0}`} icon="fa-star" />
+            <PageStatChip label="Steps Done" value={analytics?.completed_steps || 0} icon="fa-graduation-cap" />
+            <PageStatChip label="Badges" value={analytics?.badges?.length || 0} icon="fa-award" />
           </>
         }
       />
-      <div className="max-w-[1400px] mx-auto px-6 pb-10 text-slate-900 dark:text-slate-100 space-y-8">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 pb-10 space-y-8">
 
         {!roadmap ? (
           /* Profile & Roadmap Generator Setup Form */
-          <ScrollReveal className="p-8 sm:p-10 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none space-y-8">
-            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 dark:border-white/10 pb-6">
+          <div className="border border-zinc-800 bg-zinc-900/90 p-6 md:p-8 space-y-6">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-800 pb-5">
               <div>
-                <span className="text-xs font-black uppercase tracking-widest text-blue-600 dark:text-cyan-400">Universal Career Engine</span>
-                <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">Domain-Aware Career Roadmap</h1>
-                <p className="mt-1 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
-                  Select your engineering or non-engineering domain to perform skill gap analysis and generate a personalized learning sequence.
+                <div className="flex items-center gap-2 mb-1.5">
+                  <div className="w-1.5 h-1.5 bg-amber-500" />
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">
+                    UNIVERSAL CAREER SEQUENCER
+                  </span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-normal text-white tracking-tight">
+                  Domain-Aware Career Roadmap
+                </h2>
+                <p className="mt-1 text-xs font-mono text-zinc-400">
+                  Select your academic domain to perform skill gap analysis and generate a personalized curriculum.
                 </p>
               </div>
               <button
                 onClick={handleFetchRecommendations}
-                className="px-4 py-2.5 rounded-xl bg-blue-50 dark:bg-cyan-500/20 text-blue-600 dark:text-cyan-300 font-bold text-xs hover:bg-blue-100 dark:hover:bg-cyan-500/30 border border-blue-200 dark:border-cyan-500/30 flex items-center gap-2 transition-all shadow-sm"
+                className="px-4 py-2 border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 font-mono text-xs transition-colors flex items-center gap-2"
               >
-                <i className="fa-solid fa-compass" />
+                <i className="fa-solid fa-compass text-xs text-amber-500" />
                 <span>Recommend Careers for Me</span>
               </button>
             </div>
 
             {/* Profiling Inputs */}
-            <div className="grid md:grid-cols-3 gap-6 text-xs">
+            <div className="grid md:grid-cols-3 gap-6 text-xs font-mono">
               <div className="space-y-2">
-                <label className="sm-label">Degree / Education</label>
+                <label className="text-zinc-400 uppercase text-[10px] tracking-wider block">Degree / Education</label>
                 <select
                   value={degree}
                   onChange={(e) => setDegree(e.target.value)}
-                  className="sm-input px-4 py-3"
+                  className="w-full bg-zinc-950 border border-zinc-800 text-white font-mono text-xs px-3 py-2.5 focus:border-zinc-600 focus:outline-none"
                 >
                   {DEGREE_OPTIONS.map((d) => <option key={d} value={d}>{d}</option>)}
                 </select>
               </div>
 
               <div className="space-y-2">
-                <label className="sm-label">Academic Domain / Branch</label>
+                <label className="text-zinc-400 uppercase text-[10px] tracking-wider block">Academic Domain / Branch</label>
                 <select
                   value={domain}
                   onChange={(e) => setDomain(e.target.value)}
-                  className="sm-input px-4 py-3 font-semibold text-blue-600 dark:text-cyan-300"
+                  className="w-full bg-zinc-950 border border-zinc-800 text-amber-400 font-mono text-xs px-3 py-2.5 focus:border-zinc-600 focus:outline-none"
                 >
                   {DOMAIN_OPTIONS.map((dom) => <option key={dom} value={dom}>{dom}</option>)}
                 </select>
               </div>
 
               <div className="space-y-2">
-                <label className="sm-label">Current Skill Level</label>
+                <label className="text-zinc-400 uppercase text-[10px] tracking-wider block">Current Skill Level</label>
                 <select
                   value={level}
                   onChange={(e) => setLevel(e.target.value)}
-                  className="sm-input px-4 py-3"
+                  className="w-full bg-zinc-950 border border-zinc-800 text-white font-mono text-xs px-3 py-2.5 focus:border-zinc-600 focus:outline-none"
                 >
                   {LEVEL_OPTIONS.map((l) => <option key={l} value={l}>{l}</option>)}
                 </select>
               </div>
             </div>
 
-            <div className="space-y-2 text-xs">
-              <label className="sm-label">Target Career Role</label>
+            <div className="space-y-2 text-xs font-mono">
+              <label className="text-zinc-400 uppercase text-[10px] tracking-wider block">Target Career Role</label>
               <input
                 type="text"
                 placeholder="e.g. Structural Engineer, Embedded Engineer, Mechanical Design Engineer, Software Developer..."
                 value={targetRole}
                 onChange={(e) => setTargetRole(e.target.value)}
-                className="sm-input px-4 py-3 text-slate-900 dark:text-white font-bold"
+                className="w-full bg-zinc-950 border border-zinc-800 text-white font-mono text-xs px-3 py-2.5 focus:border-zinc-600 focus:outline-none"
               />
             </div>
 
             {/* Skills & Tools Entry */}
-            <div className="grid md:grid-cols-2 gap-6 text-xs">
-              <div className="space-y-3 p-5 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-white/5">
-                <label className="sm-label flex items-center justify-between">
-                  <span className="text-slate-700 dark:text-slate-300 font-bold">Known Domain & Technical Skills</span>
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400">({userSkills.length} added)</span>
+            <div className="grid md:grid-cols-2 gap-6 text-xs font-mono">
+              <div className="space-y-3 p-4 border border-zinc-800 bg-zinc-950">
+                <label className="flex items-center justify-between text-zinc-400 uppercase text-[10px] tracking-wider">
+                  <span>Known Domain & Technical Skills</span>
+                  <span>({userSkills.length} added)</span>
                 </label>
                 <div className="flex gap-2">
                   <input
@@ -355,45 +360,51 @@ const Roadmap: React.FC = () => {
                     value={newSkillInput}
                     onChange={(e) => setNewSkillInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddSkill())}
-                    className="sm-input px-3 py-2 flex-1"
+                    className="flex-1 bg-zinc-900 border border-zinc-800 text-white font-mono text-xs px-3 py-2 focus:border-zinc-600 focus:outline-none"
                   />
-                  <button onClick={handleAddSkill} className="px-4 py-2 bg-slate-900 dark:bg-slate-800 text-white dark:text-slate-200 font-bold rounded-xl hover:bg-blue-600 dark:hover:bg-slate-700 transition-colors shadow-sm">
+                  <button
+                    onClick={handleAddSkill}
+                    className="px-3.5 py-2 bg-white text-zinc-950 hover:bg-zinc-200 font-mono text-xs font-medium transition-colors"
+                  >
                     + Add
                   </button>
                 </div>
                 <div className="flex flex-wrap gap-1.5 pt-2">
                   {userSkills.map((s) => (
-                    <span key={s} className="px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/30 flex items-center gap-1.5 text-[11px] font-mono font-medium">
+                    <span key={s} className="px-2.5 py-1 border border-zinc-800 bg-zinc-900 text-zinc-300 flex items-center gap-1.5 text-[11px] font-mono">
                       <span>{s}</span>
-                      <button onClick={() => handleRemoveSkill(s)} className="hover:text-rose-600 dark:hover:text-rose-400"><i className="fa-solid fa-xmark text-[10px]" /></button>
+                      <button onClick={() => handleRemoveSkill(s)} className="text-zinc-500 hover:text-white"><i className="fa-solid fa-xmark text-[9px]" /></button>
                     </span>
                   ))}
                 </div>
               </div>
 
-              <div className="space-y-3 p-5 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-white/5">
-                <label className="sm-label flex items-center justify-between">
-                  <span className="text-slate-700 dark:text-slate-300 font-bold">Software & Industry Tools Known</span>
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400">({softwareTools.length} added)</span>
+              <div className="space-y-3 p-4 border border-zinc-800 bg-zinc-950">
+                <label className="flex items-center justify-between text-zinc-400 uppercase text-[10px] tracking-wider">
+                  <span>Software & Industry Tools Known</span>
+                  <span>({softwareTools.length} added)</span>
                 </label>
                 <div className="flex gap-2">
                   <input
                     type="text"
-                    placeholder="Add tool (e.g. AutoCAD, SolidWorks, STAAD.Pro, KiCAD, Power BI)"
+                    placeholder="Add tool (e.g. AutoCAD, SolidWorks, STAAD.Pro, KiCAD)"
                     value={newToolInput}
                     onChange={(e) => setNewToolInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTool())}
-                    className="sm-input px-3 py-2 flex-1"
+                    className="flex-1 bg-zinc-900 border border-zinc-800 text-white font-mono text-xs px-3 py-2 focus:border-zinc-600 focus:outline-none"
                   />
-                  <button onClick={handleAddTool} className="px-4 py-2 bg-slate-900 dark:bg-slate-800 text-white dark:text-slate-200 font-bold rounded-xl hover:bg-blue-600 dark:hover:bg-slate-700 transition-colors shadow-sm">
+                  <button
+                    onClick={handleAddTool}
+                    className="px-3.5 py-2 bg-white text-zinc-950 hover:bg-zinc-200 font-mono text-xs font-medium transition-colors"
+                  >
                     + Add
                   </button>
                 </div>
                 <div className="flex flex-wrap gap-1.5 pt-2">
                   {softwareTools.map((t) => (
-                    <span key={t} className="px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-cyan-500/20 text-blue-700 dark:text-cyan-300 border border-blue-200 dark:border-cyan-500/30 flex items-center gap-1.5 text-[11px] font-mono font-medium">
+                    <span key={t} className="px-2.5 py-1 border border-zinc-800 bg-zinc-900 text-zinc-300 flex items-center gap-1.5 text-[11px] font-mono">
                       <span>{t}</span>
-                      <button onClick={() => handleRemoveTool(t)} className="hover:text-rose-600 dark:hover:text-rose-400"><i className="fa-solid fa-xmark text-[10px]" /></button>
+                      <button onClick={() => handleRemoveTool(t)} className="text-zinc-500 hover:text-white"><i className="fa-solid fa-xmark text-[9px]" /></button>
                     </span>
                   ))}
                 </div>
@@ -401,7 +412,7 @@ const Roadmap: React.FC = () => {
             </div>
 
             {genError && (
-              <div className="p-4 rounded-xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs font-bold">
+              <div className="p-3 border border-rose-500/40 bg-zinc-950 text-rose-400 text-xs font-mono">
                 {genError}
               </div>
             )}
@@ -409,72 +420,82 @@ const Roadmap: React.FC = () => {
             <button
               onClick={handleGenerate}
               disabled={genLoading}
-              className="w-full sm-btn-primary py-4 rounded-2xl text-xs font-black uppercase tracking-widest shadow-md"
+              className="w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-mono text-xs font-medium transition-colors uppercase tracking-wider"
             >
               {genLoading ? (
                 <div className="flex items-center justify-center gap-3">
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <div className="w-3.5 h-3.5 border-2 border-zinc-950/30 border-t-zinc-950 rounded-full animate-spin" />
                   <span className="animate-pulse">{genStatus}</span>
                 </div>
               ) : `Generate ${domain} Career Roadmap →`}
             </button>
-          </ScrollReveal>
+          </div>
         ) : (
           /* Roadmap View Display */
-          <ScrollReveal className="space-y-8">
+          <div className="space-y-8">
             {/* Header Card */}
-            <div className="p-8 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none space-y-6">
+            <div className="border border-zinc-800 bg-zinc-900/90 p-6 md:p-8 space-y-5">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center gap-2">
-                  <span className="px-3 py-1 rounded-lg text-xs font-black uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200 dark:bg-cyan-500/10 dark:text-cyan-300 dark:border-cyan-500/20">
+                  <span className="px-2.5 py-1 text-xs font-mono uppercase tracking-wider border border-amber-500/40 bg-amber-500/10 text-amber-300">
                     {roadmap.domain || domain}
                   </span>
-                  <span className="px-3 py-1 rounded-lg text-xs font-black uppercase tracking-wider bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-white/5">
+                  <span className="px-2.5 py-1 text-xs font-mono uppercase tracking-wider border border-zinc-800 bg-zinc-950 text-zinc-400">
                     {roadmap.student_level || level} Level
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-xs font-bold text-slate-600 dark:text-slate-300">
-                    Job Readiness: <span className="text-emerald-600 dark:text-emerald-400 font-black text-sm">{roadmap.job_readiness_score || 75}%</span>
+                  <span className="text-xs font-mono text-zinc-400">
+                    Job Readiness: <span className="text-emerald-400 font-medium text-sm tabular-nums">{roadmap.job_readiness_score || 75}%</span>
                   </span>
                   <button
                     onClick={() => setRoadmap(null)}
-                    className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition-all border border-slate-200 dark:border-white/5 shadow-sm"
+                    className="px-3.5 py-1.5 border border-zinc-700 bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-mono transition-colors"
                   >
-                    + New Domain Roadmap
+                    + New Roadmap
                   </button>
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">{roadmap.title}</h1>
-                <p className="text-xs text-slate-600 dark:text-slate-300">{roadmap.timeline_summary || 'Comprehensive domain sequence'}</p>
+              <div className="space-y-1">
+                <h1 className="text-2xl sm:text-3xl font-normal text-white tracking-tight">{roadmap.title}</h1>
+                <p className="text-xs font-mono text-zinc-400">{roadmap.timeline_summary || 'Comprehensive domain sequence'}</p>
               </div>
 
-              <div className="w-full h-2.5 rounded-full bg-slate-100 dark:bg-slate-900 overflow-hidden border border-slate-200 dark:border-white/5">
-                <div className="h-full bg-gradient-to-r from-blue-500 to-emerald-500 dark:from-cyan-400 dark:to-emerald-400 transition-all duration-500" style={{ width: `${roadmap.completion_percentage || 0}%` }} />
+              <div className="w-full h-2 bg-zinc-950 border border-zinc-800 overflow-hidden">
+                <div className="h-full bg-amber-500 transition-all duration-500" style={{ width: `${roadmap.completion_percentage || 0}%` }} />
               </div>
             </div>
 
             {/* Categorized Skill Gap Breakdown */}
             {roadmap.categorized_gaps && (
-              <div className="p-7 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none space-y-5">
-                <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center justify-between">
-                  <span>Domain Skill Gap Classification</span>
-                  <span className="text-xs text-slate-500 dark:text-slate-400 font-normal">Prioritized for {targetRole}</span>
-                </h3>
+              <div className="border border-zinc-800 bg-zinc-900/90 p-6 md:p-8 space-y-5">
+                <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-1.5 h-1.5 bg-amber-500" />
+                    <h3 className="text-xs font-mono uppercase tracking-wider text-zinc-300">
+                      Domain Skill Gap Classification
+                    </h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider">
+                    TARGET: {targetRole}
+                  </span>
+                </div>
 
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-mono">
                   {/* Critical */}
-                  <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-500/5 border border-rose-200 dark:border-rose-500/30 space-y-2">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-rose-700 dark:text-rose-400">🔴 Critical Must-Have</span>
-                    <ul className="space-y-1 font-semibold text-slate-800 dark:text-slate-200">
+                  <div className="p-4 border border-zinc-800 bg-zinc-950 space-y-2">
+                    <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-rose-400">
+                      <div className="w-1.5 h-1.5 bg-rose-500" />
+                      <span>Critical Must-Have</span>
+                    </div>
+                    <ul className="space-y-1.5 text-zinc-300 pt-1">
                       {(roadmap.categorized_gaps.critical || []).length === 0 ? (
-                        <li className="text-slate-400 italic">No critical gaps!</li>
+                        <li className="text-zinc-600 italic">No critical gaps</li>
                       ) : (
                         roadmap.categorized_gaps.critical.map((sk: string, i: number) => (
-                          <li key={i} className="flex items-center gap-1.5">
-                            <i className="fa-solid fa-circle-exclamation text-[10px] text-rose-500 dark:text-rose-400" />
+                          <li key={i} className="flex items-center gap-2 text-[11px]">
+                            <span className="text-rose-500">•</span>
                             <span>{sk}</span>
                           </li>
                         ))
@@ -483,15 +504,18 @@ const Roadmap: React.FC = () => {
                   </div>
 
                   {/* High Priority */}
-                  <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-500/5 border border-amber-200 dark:border-amber-500/30 space-y-2">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-amber-700 dark:text-amber-400">🟠 High Priority</span>
-                    <ul className="space-y-1 font-semibold text-slate-800 dark:text-slate-200">
+                  <div className="p-4 border border-zinc-800 bg-zinc-950 space-y-2">
+                    <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-amber-400">
+                      <div className="w-1.5 h-1.5 bg-amber-500" />
+                      <span>High Priority</span>
+                    </div>
+                    <ul className="space-y-1.5 text-zinc-300 pt-1">
                       {(roadmap.categorized_gaps.high_priority || []).length === 0 ? (
-                        <li className="text-slate-400 italic">No high priority gaps!</li>
+                        <li className="text-zinc-600 italic">No high priority gaps</li>
                       ) : (
                         roadmap.categorized_gaps.high_priority.map((sk: string, i: number) => (
-                          <li key={i} className="flex items-center gap-1.5">
-                            <i className="fa-solid fa-triangle-exclamation text-[10px] text-amber-500 dark:text-amber-400" />
+                          <li key={i} className="flex items-center gap-2 text-[11px]">
+                            <span className="text-amber-500">•</span>
                             <span>{sk}</span>
                           </li>
                         ))
@@ -500,15 +524,18 @@ const Roadmap: React.FC = () => {
                   </div>
 
                   {/* Medium Priority */}
-                  <div className="p-4 rounded-2xl bg-yellow-50 dark:bg-yellow-500/5 border border-yellow-200 dark:border-yellow-500/30 space-y-2">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-yellow-700 dark:text-yellow-300">🟡 Medium Priority</span>
-                    <ul className="space-y-1 font-semibold text-slate-800 dark:text-slate-200">
+                  <div className="p-4 border border-zinc-800 bg-zinc-950 space-y-2">
+                    <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-yellow-400">
+                      <div className="w-1.5 h-1.5 bg-yellow-500" />
+                      <span>Medium Priority</span>
+                    </div>
+                    <ul className="space-y-1.5 text-zinc-300 pt-1">
                       {(roadmap.categorized_gaps.medium_priority || []).length === 0 ? (
-                        <li className="text-slate-400 italic">None</li>
+                        <li className="text-zinc-600 italic">None</li>
                       ) : (
                         roadmap.categorized_gaps.medium_priority.map((sk: string, i: number) => (
-                          <li key={i} className="flex items-center gap-1.5">
-                            <i className="fa-solid fa-circle-dot text-[10px] text-yellow-500 dark:text-yellow-300" />
+                          <li key={i} className="flex items-center gap-2 text-[11px]">
+                            <span className="text-yellow-500">•</span>
                             <span>{sk}</span>
                           </li>
                         ))
@@ -517,15 +544,18 @@ const Roadmap: React.FC = () => {
                   </div>
 
                   {/* Optional */}
-                  <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-500/5 border border-emerald-200 dark:border-emerald-500/30 space-y-2">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-emerald-700 dark:text-emerald-400">🟢 Optional Edge</span>
-                    <ul className="space-y-1 font-semibold text-slate-800 dark:text-slate-200">
+                  <div className="p-4 border border-zinc-800 bg-zinc-950 space-y-2">
+                    <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-emerald-400">
+                      <div className="w-1.5 h-1.5 bg-emerald-500" />
+                      <span>Optional Edge</span>
+                    </div>
+                    <ul className="space-y-1.5 text-zinc-300 pt-1">
                       {(roadmap.categorized_gaps.optional || []).length === 0 ? (
-                        <li className="text-slate-400 italic">None</li>
+                        <li className="text-zinc-600 italic">None</li>
                       ) : (
                         roadmap.categorized_gaps.optional.map((sk: string, i: number) => (
-                          <li key={i} className="flex items-center gap-1.5">
-                            <i className="fa-solid fa-star text-[10px] text-emerald-500 dark:text-emerald-400" />
+                          <li key={i} className="flex items-center gap-2 text-[11px]">
+                            <span className="text-emerald-500">•</span>
                             <span>{sk}</span>
                           </li>
                         ))
@@ -538,30 +568,30 @@ const Roadmap: React.FC = () => {
 
             {/* Recommended Projects & Certifications Grid */}
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none space-y-4 text-xs">
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <i className="fa-solid fa-diagram-project text-blue-600 dark:text-cyan-400" />
-                  <span>Domain Projects to Build</span>
-                </h3>
+              <div className="border border-zinc-800 bg-zinc-900/90 p-6 space-y-4 text-xs font-mono">
+                <div className="flex items-center gap-2.5 pb-2 border-b border-zinc-800">
+                  <i className="fa-solid fa-diagram-project text-xs text-amber-500" />
+                  <h3 className="text-xs uppercase tracking-wider text-white">Domain Projects to Build</h3>
+                </div>
                 <div className="space-y-2">
                   {(roadmap.projects_to_build || []).map((proj: string, i: number) => (
-                    <div key={i} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200/70 dark:border-white/5 text-slate-800 dark:text-slate-200 font-semibold flex items-start gap-2">
-                      <span className="text-blue-600 dark:text-cyan-400 font-bold">{i+1}.</span>
+                    <div key={i} className="p-3 border border-zinc-800 bg-zinc-950 text-zinc-300 flex items-start gap-2.5">
+                      <span className="text-amber-500 font-medium">{i+1}.</span>
                       <span>{proj}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none space-y-4 text-xs">
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <i className="fa-solid fa-certificate text-indigo-600 dark:text-indigo-400" />
-                  <span>Industry Certifications to Pursue</span>
-                </h3>
+              <div className="border border-zinc-800 bg-zinc-900/90 p-6 space-y-4 text-xs font-mono">
+                <div className="flex items-center gap-2.5 pb-2 border-b border-zinc-800">
+                  <i className="fa-solid fa-certificate text-xs text-amber-500" />
+                  <h3 className="text-xs uppercase tracking-wider text-white">Industry Certifications</h3>
+                </div>
                 <div className="space-y-2">
                   {(roadmap.certifications || []).map((cert: string, i: number) => (
-                    <div key={i} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200/70 dark:border-white/5 text-indigo-700 dark:text-indigo-300 font-semibold flex items-center gap-2">
-                      <i className="fa-solid fa-ribbon text-indigo-600 dark:text-indigo-400" />
+                    <div key={i} className="p-3 border border-zinc-800 bg-zinc-950 text-zinc-300 flex items-center gap-2.5">
+                      <i className="fa-solid fa-ribbon text-amber-500 text-xs" />
                       <span>{cert}</span>
                     </div>
                   ))}
@@ -571,80 +601,100 @@ const Roadmap: React.FC = () => {
 
             {/* 5-Phase Learning Sequence */}
             <div className="space-y-6">
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center justify-between">
-                <span>Domain Learning & Execution Sequence</span>
-                <span className="text-xs text-slate-500 dark:text-slate-400 font-normal">Click checkmark to log completion</span>
-              </h3>
+              <div className="flex items-center justify-between pb-2 border-b border-zinc-800">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-2 h-2 bg-amber-500" />
+                  <h3 className="text-xs font-mono uppercase tracking-widest text-zinc-300 font-medium">
+                    Domain Learning & Execution Sequence
+                  </h3>
+                </div>
+                <span className="text-[10px] font-mono text-zinc-500">
+                  CLICK CHECKMARK TO LOG COMPLETION
+                </span>
+              </div>
 
-              <StaggerChildren className="grid gap-6">
+              <div className="space-y-4">
                 {(roadmap.steps || []).map((step: any, idx: number) => (
-                  <ScrollReveal stagger key={step.id || idx}>
-                    <div className={`p-6 rounded-3xl bg-card border transition-all space-y-4 shadow-light-card dark:shadow-none ${step.completed ? 'bg-emerald-50/50 dark:bg-emerald-500/5 border-emerald-200 dark:border-emerald-500/30' : 'border-border dark:border-white/5 hover:border-blue-300 dark:hover:border-cyan-500/30'}`}>
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex items-center gap-3">
-                          <span className={`w-8 h-8 rounded-xl flex items-center justify-center font-black text-xs ${step.completed ? 'bg-emerald-500 text-white dark:text-slate-950' : 'bg-slate-100 text-blue-600 dark:bg-slate-900 dark:text-cyan-400 border border-slate-200 dark:border-white/10'}`}>
-                            {idx + 1}
-                          </span>
-                          <h4 className={`text-base font-bold ${step.completed ? 'line-through text-slate-400' : 'text-slate-900 dark:text-white'}`}>
-                            {step.title}
-                          </h4>
-                        </div>
-                        <button
-                          onClick={() => toggleStep(step.id, !!step.completed)}
-                          className={`w-8 h-8 rounded-xl border flex items-center justify-center transition-all shadow-sm ${step.completed ? 'bg-emerald-500 border-emerald-400 text-white dark:text-slate-950' : 'border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}`}
-                        >
-                          <i className="fa-solid fa-check text-xs font-black" />
-                        </button>
-                      </div>
-
-                      <div className="flex flex-wrap gap-2 text-[10px] font-bold">
-                        <AdaptiveDifficulty level={step.difficulty} />
-                        <span className="px-3 py-1 bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300 rounded-lg border border-indigo-200 dark:border-indigo-500/20">
-                          ⏱️ {step.duration_weeks || 3} Weeks ({step.estimated_hours || 25} Hours)
+                  <div
+                    key={step.id || idx}
+                    className={`p-6 border transition-colors space-y-4 ${
+                      step.completed
+                        ? 'border-emerald-500/40 bg-zinc-900/95'
+                        : 'border-zinc-800 bg-zinc-900/90 hover:border-zinc-700'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex items-center gap-3">
+                        <span className={`w-8 h-8 border flex items-center justify-center font-mono text-xs ${
+                          step.completed
+                            ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
+                            : 'border-zinc-800 bg-zinc-950 text-zinc-400'
+                        }`}>
+                          {idx + 1}
                         </span>
+                        <h4 className={`text-base font-normal tracking-tight ${step.completed ? 'line-through text-zinc-500' : 'text-white'}`}>
+                          {step.title}
+                        </h4>
                       </div>
+                      <button
+                        onClick={() => toggleStep(step.id, !!step.completed)}
+                        className={`w-8 h-8 border flex items-center justify-center transition-colors ${
+                          step.completed
+                            ? 'border-emerald-500 bg-emerald-500 text-zinc-950 font-bold'
+                            : 'border-zinc-800 bg-zinc-950 text-zinc-500 hover:text-white hover:border-zinc-700'
+                        }`}
+                      >
+                        <i className="fa-solid fa-check text-xs" />
+                      </button>
+                    </div>
 
-                      <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-sans">{step.description}</p>
+                    <div className="flex flex-wrap gap-2 text-[10px] font-mono">
+                      <AdaptiveDifficulty level={step.difficulty} />
+                      <span className="px-2.5 py-1 border border-zinc-800 bg-zinc-950 text-zinc-400">
+                        {step.duration_weeks || 3} WEEKS • {step.estimated_hours || 25} HOURS
+                      </span>
+                    </div>
 
-                      {(step.skills || step.skills_list) && (
-                        <div className="flex flex-wrap gap-1.5 pt-1">
-                          {(step.skills || step.skills_list).map((sk: string, i: number) => (
-                            <span key={i} className="text-[10px] px-2.5 py-0.5 rounded bg-slate-100 text-slate-700 dark:bg-slate-900 dark:text-cyan-300 font-semibold border border-slate-200 dark:border-white/5">
-                              {sk}
-                            </span>
+                    <p className="text-xs font-mono text-zinc-300 leading-relaxed">{step.description}</p>
+
+                    {(step.skills || step.skills_list) && (
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {(step.skills || step.skills_list).map((sk: string, i: number) => (
+                          <span key={i} className="text-[10px] font-mono px-2 py-0.5 border border-zinc-800 bg-zinc-950 text-zinc-400">
+                            {sk}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Resources */}
+                    {step.recommended_resources && step.recommended_resources.length > 0 && (
+                      <div className="pt-3 border-t border-zinc-800/80 space-y-2 text-xs font-mono">
+                        <span className="text-[10px] uppercase tracking-widest text-zinc-500 block">Recommended Resources</span>
+                        <div className="grid gap-2 sm:grid-cols-2">
+                          {step.recommended_resources.map((res: any, rIdx: number) => (
+                            <div key={rIdx} className="p-3 border border-zinc-800 bg-zinc-950 flex items-center justify-between gap-2">
+                              <div className="min-w-0">
+                                <p className="text-white truncate text-xs">{res.name}</p>
+                                <p className="text-[10px] text-zinc-500">{res.platform || res.author || res.type}</p>
+                              </div>
+                              {res.url && (
+                                <a href={res.url} target="_blank" rel="noreferrer" className="text-amber-500 hover:text-amber-400">
+                                  <i className="fa-solid fa-arrow-up-right-from-square text-xs" />
+                                </a>
+                              )}
+                            </div>
                           ))}
                         </div>
-                      )}
-
-                      {/* Resources */}
-                      {step.recommended_resources && step.recommended_resources.length > 0 && (
-                        <div className="pt-3 border-t border-slate-100 dark:border-white/5 space-y-2 text-xs">
-                          <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Recommended Learning Resources</span>
-                          <div className="grid gap-2 sm:grid-cols-2">
-                            {step.recommended_resources.map((res: any, rIdx: number) => (
-                              <div key={rIdx} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200/60 dark:border-white/5 flex items-center justify-between gap-2">
-                                <div className="min-w-0">
-                                  <p className="font-bold text-slate-800 dark:text-slate-200 truncate">{res.name}</p>
-                                  <p className="text-[10px] text-slate-500 dark:text-slate-400">{res.platform || res.author || res.type}</p>
-                                </div>
-                                {res.url && (
-                                  <a href={res.url} target="_blank" rel="noreferrer" className="text-blue-600 dark:text-cyan-400 hover:underline font-bold">
-                                    <i className="fa-solid fa-external-link text-xs" />
-                                  </a>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </ScrollReveal>
+                      </div>
+                    )}
+                  </div>
                 ))}
-              </StaggerChildren>
+              </div>
             </div>
 
-            {/* YouTube & Elite Courses Learning Section */}
-            <div className="pt-8 border-t border-slate-200 dark:border-white/10">
+            {/* YouTube & Courses Learning Section */}
+            <div className="pt-8 border-t border-zinc-800">
               <YouTubeLearning
                 skills={Array.from(new Set([
                   ...(roadmap.required_skills || []),
@@ -654,44 +704,52 @@ const Roadmap: React.FC = () => {
                 ].filter(Boolean))).slice(0, 10)}
               />
             </div>
-          </ScrollReveal>
+          </div>
         )}
 
         {/* Recommended Careers Modal */}
         {showRecsModal && (
-          <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="p-8 rounded-3xl max-w-2xl w-full space-y-6 bg-card border border-border shadow-2xl">
-              <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4">
+          <div className="fixed inset-0 z-50 bg-zinc-950/90 backdrop-blur-md flex items-center justify-center p-4">
+            <div className="p-6 md:p-8 max-w-2xl w-full space-y-6 bg-zinc-950 border border-zinc-800 shadow-2xl">
+              <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
                 <div>
-                  <span className="text-[10px] font-black uppercase text-blue-600 dark:text-cyan-400">Career Intelligence Engine</span>
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-white">Recommended Career Paths for {domain}</h3>
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-1.5 h-1.5 bg-amber-500" />
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">
+                      CAREER RECOMMENDATION
+                    </span>
+                  </div>
+                  <h3 className="text-lg font-normal text-white">Recommended Career Paths for {domain}</h3>
                 </div>
-                <button onClick={() => setShowRecsModal(false)} className="text-slate-400 hover:text-slate-700 dark:hover:text-white">
-                  <i className="fa-solid fa-xmark text-lg" />
+                <button
+                  onClick={() => setShowRecsModal(false)}
+                  className="w-8 h-8 border border-zinc-800 bg-zinc-900 flex items-center justify-center text-zinc-400 hover:text-white"
+                >
+                  <i className="fa-solid fa-xmark text-xs" />
                 </button>
               </div>
 
               {recsLoading ? (
-                <div className="p-8 text-center text-slate-500 space-y-3">
-                  <div className="w-6 h-6 border-2 border-blue-600 dark:border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto" />
-                  <p className="text-xs">Analyzing education, branch, and current skills...</p>
+                <div className="p-8 text-center text-zinc-500 space-y-3 font-mono text-xs">
+                  <div className="w-5 h-5 border-2 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto" />
+                  <p>Analyzing education, domain, and current skills...</p>
                 </div>
               ) : (
-                <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+                <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2">
                   {recommendations.map((rec, idx) => (
-                    <div key={idx} className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-white/5 space-y-3 hover:border-blue-300 dark:hover:border-cyan-500/30 transition-all">
+                    <div key={idx} className="p-4 border border-zinc-800 bg-zinc-900/60 space-y-2.5 hover:border-zinc-700 transition-colors">
                       <div className="flex items-center justify-between">
-                        <h4 className="text-sm font-bold text-slate-900 dark:text-white">{rec.role}</h4>
-                        <span className="px-3 py-1 rounded-lg text-xs font-black bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
+                        <h4 className="text-sm font-normal text-white">{rec.role}</h4>
+                        <span className="px-2 py-0.5 text-[10px] font-mono border border-emerald-500/40 bg-zinc-950 text-emerald-400">
                           {rec.match_score}% Match
                         </span>
                       </div>
-                      <p className="text-xs text-slate-600 dark:text-slate-300">{rec.description}</p>
+                      <p className="text-xs font-mono text-zinc-400">{rec.description}</p>
 
-                      <div className="flex flex-wrap gap-2 text-[10px]">
-                        <span className="font-bold text-slate-500 dark:text-slate-400">Top Skills:</span>
+                      <div className="flex flex-wrap gap-1.5 text-[10px] font-mono">
+                        <span className="text-zinc-500">Skills:</span>
                         {(rec.top_skills || []).map((sk: string, sI: number) => (
-                          <span key={sI} className="bg-slate-200/70 text-slate-800 dark:bg-slate-800 dark:text-cyan-300 px-2 py-0.5 rounded font-semibold">{sk}</span>
+                          <span key={sI} className="bg-zinc-950 border border-zinc-800 text-zinc-300 px-1.5 py-0.2">{sk}</span>
                         ))}
                       </div>
 
@@ -700,7 +758,7 @@ const Roadmap: React.FC = () => {
                           setTargetRole(rec.role);
                           setShowRecsModal(false);
                         }}
-                        className="w-full py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 dark:bg-cyan-500/20 dark:hover:bg-cyan-500/30 dark:text-cyan-300 font-bold text-xs rounded-xl transition-all border border-blue-200 dark:border-transparent"
+                        className="w-full mt-2 py-2 bg-white text-zinc-950 hover:bg-zinc-200 font-mono text-xs font-medium transition-colors"
                       >
                         Select "{rec.role}" & Generate Roadmap →
                       </button>
@@ -717,4 +775,5 @@ const Roadmap: React.FC = () => {
 };
 
 export default withAuth(Roadmap);
+
 

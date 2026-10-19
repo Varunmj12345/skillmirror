@@ -1,0 +1,3670 @@
+{
+  "components": [
+    {
+      "id": "CMP-001",
+      "name": "AIFeatureSection",
+      "file": "components/AIFeatureSection.jsx",
+      "line": 48
+    },
+    {
+      "id": "CMP-002",
+      "name": "TypingIndicator",
+      "file": "components/ChatUI.tsx",
+      "line": 10
+    },
+    {
+      "id": "CMP-003",
+      "name": "FeatureCards",
+      "file": "components/FeatureCards.jsx",
+      "line": 64
+    },
+    {
+      "id": "CMP-004",
+      "name": "HeroSection",
+      "file": "components/HeroSection.jsx",
+      "line": 8
+    },
+    {
+      "id": "CMP-005",
+      "name": "CyberTooltip",
+      "file": "components/JobDemandTrends.tsx",
+      "line": 36
+    },
+    {
+      "id": "CMP-006",
+      "name": "LandingFooter",
+      "file": "components/LandingFooter.jsx",
+      "line": 8
+    },
+    {
+      "id": "CMP-007",
+      "name": "RoadmapBuilder",
+      "file": "components/RoadmapBuilder.tsx",
+      "line": 4
+    },
+    {
+      "id": "CMP-008",
+      "name": "CustomTooltip",
+      "file": "components/TopSkillsChart.tsx",
+      "line": 33
+    },
+    {
+      "id": "CMP-009",
+      "name": "AIInsightPanel",
+      "file": "components/dashboard/AIInsightPanel.tsx",
+      "line": 10
+    },
+    {
+      "id": "CMP-010",
+      "name": "CustomTooltip",
+      "file": "components/dashboard/SkillRadar.tsx",
+      "line": 17
+    },
+    {
+      "id": "CMP-011",
+      "name": "CustomTooltip",
+      "file": "components/ui/market-chart.tsx",
+      "line": 45
+    },
+    {
+      "id": "CMP-012",
+      "name": "Spinner",
+      "file": "pages/signup.tsx",
+      "line": 121
+    },
+    {
+      "id": "CMP-013",
+      "name": "Document",
+      "file": "pages/_document.tsx",
+      "line": 3
+    }
+  ],
+  "ui_elements": [
+    {
+      "id": "UI-001",
+      "type": "Link",
+      "file": "components/AICareerWidget.tsx",
+      "line": 80,
+      "events": []
+    },
+    {
+      "id": "UI-002",
+      "type": "a",
+      "file": "components/AICareerWidget.tsx",
+      "line": 81,
+      "events": []
+    },
+    {
+      "id": "UI-003",
+      "type": "ModeSelector",
+      "file": "components/AICareerWidget.tsx",
+      "line": 90,
+      "events": [
+        "onModeChange"
+      ]
+    },
+    {
+      "id": "UI-004",
+      "type": "Link",
+      "file": "components/AIFeatureSection.jsx",
+      "line": 108,
+      "events": []
+    },
+    {
+      "id": "UI-005",
+      "type": "button",
+      "file": "components/AIFeatureSection.jsx",
+      "line": 109,
+      "events": []
+    },
+    {
+      "id": "UI-006",
+      "type": "Link",
+      "file": "components/Header.tsx",
+      "line": 67,
+      "events": []
+    },
+    {
+      "id": "UI-007",
+      "type": "Link",
+      "file": "components/Header.tsx",
+      "line": 148,
+      "events": []
+    },
+    {
+      "id": "UI-008",
+      "type": "Link",
+      "file": "components/Header.tsx",
+      "line": 166,
+      "events": []
+    },
+    {
+      "id": "UI-009",
+      "type": "Link",
+      "file": "components/Header.tsx",
+      "line": 215,
+      "events": []
+    },
+    {
+      "id": "UI-010",
+      "type": "Link",
+      "file": "components/Header.tsx",
+      "line": 270,
+      "events": []
+    },
+    {
+      "id": "UI-011",
+      "type": "button",
+      "file": "components/Header.tsx",
+      "line": 271,
+      "events": []
+    },
+    {
+      "id": "UI-012",
+      "type": "Link",
+      "file": "components/Header.tsx",
+      "line": 288,
+      "events": []
+    },
+    {
+      "id": "UI-013",
+      "type": "button",
+      "file": "components/Header.tsx",
+      "line": 289,
+      "events": []
+    },
+    {
+      "id": "UI-014",
+      "type": "Link",
+      "file": "components/HeroSection.jsx",
+      "line": 54,
+      "events": []
+    },
+    {
+      "id": "UI-015",
+      "type": "button",
+      "file": "components/HeroSection.jsx",
+      "line": 55,
+      "events": []
+    },
+    {
+      "id": "UI-016",
+      "type": "Link",
+      "file": "components/HeroSection.jsx",
+      "line": 60,
+      "events": []
+    },
+    {
+      "id": "UI-017",
+      "type": "button",
+      "file": "components/HeroSection.jsx",
+      "line": 61,
+      "events": []
+    },
+    {
+      "id": "UI-018",
+      "type": "Link",
+      "file": "components/LandingFooter.jsx",
+      "line": 28,
+      "events": []
+    },
+    {
+      "id": "UI-019",
+      "type": "button",
+      "file": "components/LandingFooter.jsx",
+      "line": 29,
+      "events": []
+    },
+    {
+      "id": "UI-020",
+      "type": "Link",
+      "file": "components/LandingFooter.jsx",
+      "line": 34,
+      "events": []
+    },
+    {
+      "id": "UI-021",
+      "type": "button",
+      "file": "components/LandingFooter.jsx",
+      "line": 35,
+      "events": []
+    },
+    {
+      "id": "UI-022",
+      "type": "Link",
+      "file": "components/LandingFooter.jsx",
+      "line": 74,
+      "events": []
+    },
+    {
+      "id": "UI-023",
+      "type": "a",
+      "file": "components/LandingFooter.jsx",
+      "line": 74,
+      "events": []
+    },
+    {
+      "id": "UI-024",
+      "type": "Link",
+      "file": "components/LandingFooter.jsx",
+      "line": 75,
+      "events": []
+    },
+    {
+      "id": "UI-025",
+      "type": "a",
+      "file": "components/LandingFooter.jsx",
+      "line": 75,
+      "events": []
+    },
+    {
+      "id": "UI-026",
+      "type": "Link",
+      "file": "components/LandingFooter.jsx",
+      "line": 76,
+      "events": []
+    },
+    {
+      "id": "UI-027",
+      "type": "a",
+      "file": "components/LandingFooter.jsx",
+      "line": 76,
+      "events": []
+    },
+    {
+      "id": "UI-028",
+      "type": "Link",
+      "file": "components/LandingFooter.jsx",
+      "line": 77,
+      "events": []
+    },
+    {
+      "id": "UI-029",
+      "type": "a",
+      "file": "components/LandingFooter.jsx",
+      "line": 77,
+      "events": []
+    },
+    {
+      "id": "UI-030",
+      "type": "Link",
+      "file": "components/LandingFooter.jsx",
+      "line": 87,
+      "events": []
+    },
+    {
+      "id": "UI-031",
+      "type": "a",
+      "file": "components/LandingFooter.jsx",
+      "line": 87,
+      "events": []
+    },
+    {
+      "id": "UI-032",
+      "type": "Link",
+      "file": "components/LandingFooter.jsx",
+      "line": 88,
+      "events": []
+    },
+    {
+      "id": "UI-033",
+      "type": "a",
+      "file": "components/LandingFooter.jsx",
+      "line": 88,
+      "events": []
+    },
+    {
+      "id": "UI-034",
+      "type": "Link",
+      "file": "components/LandingFooter.jsx",
+      "line": 89,
+      "events": []
+    },
+    {
+      "id": "UI-035",
+      "type": "a",
+      "file": "components/LandingFooter.jsx",
+      "line": 89,
+      "events": []
+    },
+    {
+      "id": "UI-036",
+      "type": "Link",
+      "file": "components/LandingFooter.jsx",
+      "line": 90,
+      "events": []
+    },
+    {
+      "id": "UI-037",
+      "type": "a",
+      "file": "components/LandingFooter.jsx",
+      "line": 90,
+      "events": []
+    },
+    {
+      "id": "UI-038",
+      "type": "a",
+      "file": "components/LandingFooter.jsx",
+      "line": 116,
+      "events": []
+    },
+    {
+      "id": "UI-039",
+      "type": "a",
+      "file": "components/LandingFooter.jsx",
+      "line": 117,
+      "events": []
+    },
+    {
+      "id": "UI-040",
+      "type": "a",
+      "file": "components/LandingFooter.jsx",
+      "line": 118,
+      "events": []
+    },
+    {
+      "id": "UI-041",
+      "type": "Link",
+      "file": "components/Layout.tsx",
+      "line": 22,
+      "events": []
+    },
+    {
+      "id": "UI-042",
+      "type": "button",
+      "file": "components/NotificationBell.tsx",
+      "line": 121,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-043",
+      "type": "button",
+      "file": "components/NotificationBell.tsx",
+      "line": 122,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-044",
+      "type": "button",
+      "file": "components/RoadmapBuilder.tsx",
+      "line": 53,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-045",
+      "type": "Bar",
+      "file": "components/TopSkillsChart.tsx",
+      "line": 88,
+      "events": [
+        "onDuration"
+      ]
+    },
+    {
+      "id": "UI-046",
+      "type": "div",
+      "file": "components/YouTubeLearning.tsx",
+      "line": 347,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-047",
+      "type": "h3",
+      "file": "components/YouTubeLearning.tsx",
+      "line": 362,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-048",
+      "type": "div",
+      "file": "components/YouTubeLearning.tsx",
+      "line": 490,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-049",
+      "type": "button",
+      "file": "components/YouTubeLearning.tsx",
+      "line": 508,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-050",
+      "type": "Link",
+      "file": "components/dashboard/ModuleSummaries.tsx",
+      "line": 120,
+      "events": []
+    },
+    {
+      "id": "UI-051",
+      "type": "button",
+      "file": "components/Interview/LiveInterviewSystem.tsx",
+      "line": 306,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-052",
+      "type": "button",
+      "file": "components/Interview/LiveInterviewSystem.tsx",
+      "line": 319,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-053",
+      "type": "ToastItem",
+      "file": "components/motion/Toast.tsx",
+      "line": 61,
+      "events": [
+        "onRemove"
+      ]
+    },
+    {
+      "id": "UI-054",
+      "type": "button",
+      "file": "components/Resume/CommunityGallery.tsx",
+      "line": 166,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-055",
+      "type": "button",
+      "file": "components/Resume/CommunityGallery.tsx",
+      "line": 215,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-056",
+      "type": "input",
+      "file": "components/Resume/CustomTemplateEngine.tsx",
+      "line": 167,
+      "events": [
+        "onChange"
+      ]
+    },
+    {
+      "id": "UI-057",
+      "type": "button",
+      "file": "components/Resume/ResumeHistoryPanel.tsx",
+      "line": 65,
+      "events": []
+    },
+    {
+      "id": "UI-058",
+      "type": "button",
+      "file": "components/Resume/ResumeHistoryPanel.tsx",
+      "line": 115,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-059",
+      "type": "button",
+      "file": "components/Resume/ResumeHistoryPanel.tsx",
+      "line": 118,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-060",
+      "type": "button",
+      "file": "components/Resume/ResumeHistoryPanel.tsx",
+      "line": 121,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-061",
+      "type": "Link",
+      "file": "pages/403.tsx",
+      "line": 29,
+      "events": []
+    },
+    {
+      "id": "UI-062",
+      "type": "button",
+      "file": "pages/403.tsx",
+      "line": 30,
+      "events": []
+    },
+    {
+      "id": "UI-063",
+      "type": "Link",
+      "file": "pages/403.tsx",
+      "line": 34,
+      "events": []
+    },
+    {
+      "id": "UI-064",
+      "type": "button",
+      "file": "pages/403.tsx",
+      "line": 35,
+      "events": []
+    },
+    {
+      "id": "UI-065",
+      "type": "button",
+      "file": "pages/dashboard.tsx",
+      "line": 171,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-066",
+      "type": "button",
+      "file": "pages/dashboard.tsx",
+      "line": 349,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-067",
+      "type": "button",
+      "file": "pages/dashboard.tsx",
+      "line": 354,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-068",
+      "type": "Link",
+      "file": "pages/dashboard.tsx",
+      "line": 417,
+      "events": []
+    },
+    {
+      "id": "UI-069",
+      "type": "button",
+      "file": "pages/dashboard.tsx",
+      "line": 418,
+      "events": []
+    },
+    {
+      "id": "UI-070",
+      "type": "CareerDigitalTwinModal",
+      "file": "pages/dashboard.tsx",
+      "line": 427,
+      "events": [
+        "onClose"
+      ]
+    },
+    {
+      "id": "UI-071",
+      "type": "form",
+      "file": "pages/forgot-password.tsx",
+      "line": 43,
+      "events": [
+        "onSubmit"
+      ]
+    },
+    {
+      "id": "UI-072",
+      "type": "Link",
+      "file": "pages/forgot-password.tsx",
+      "line": 77,
+      "events": []
+    },
+    {
+      "id": "UI-073",
+      "type": "Link",
+      "file": "pages/index.tsx",
+      "line": 57,
+      "events": []
+    },
+    {
+      "id": "UI-074",
+      "type": "a",
+      "file": "pages/index.tsx",
+      "line": 82,
+      "events": []
+    },
+    {
+      "id": "UI-075",
+      "type": "a",
+      "file": "pages/index.tsx",
+      "line": 85,
+      "events": []
+    },
+    {
+      "id": "UI-076",
+      "type": "a",
+      "file": "pages/index.tsx",
+      "line": 88,
+      "events": []
+    },
+    {
+      "id": "UI-077",
+      "type": "Link",
+      "file": "pages/index.tsx",
+      "line": 91,
+      "events": []
+    },
+    {
+      "id": "UI-078",
+      "type": "a",
+      "file": "pages/index.tsx",
+      "line": 92,
+      "events": []
+    },
+    {
+      "id": "UI-079",
+      "type": "Link",
+      "file": "pages/index.tsx",
+      "line": 100,
+      "events": []
+    },
+    {
+      "id": "UI-080",
+      "type": "a",
+      "file": "pages/index.tsx",
+      "line": 101,
+      "events": []
+    },
+    {
+      "id": "UI-081",
+      "type": "Link",
+      "file": "pages/index.tsx",
+      "line": 106,
+      "events": []
+    },
+    {
+      "id": "UI-082",
+      "type": "a",
+      "file": "pages/index.tsx",
+      "line": 107,
+      "events": []
+    },
+    {
+      "id": "UI-083",
+      "type": "button",
+      "file": "pages/job-intelligence.tsx",
+      "line": 111,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-084",
+      "type": "button",
+      "file": "pages/job-intelligence.tsx",
+      "line": 114,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-085",
+      "type": "Link",
+      "file": "pages/login.tsx",
+      "line": 297,
+      "events": []
+    },
+    {
+      "id": "UI-086",
+      "type": "a",
+      "file": "pages/login.tsx",
+      "line": 298,
+      "events": []
+    },
+    {
+      "id": "UI-087",
+      "type": "Link",
+      "file": "pages/login.tsx",
+      "line": 319,
+      "events": []
+    },
+    {
+      "id": "UI-088",
+      "type": "a",
+      "file": "pages/login.tsx",
+      "line": 320,
+      "events": []
+    },
+    {
+      "id": "UI-089",
+      "type": "button",
+      "file": "pages/login.tsx",
+      "line": 359,
+      "events": []
+    },
+    {
+      "id": "UI-090",
+      "type": "Link",
+      "file": "pages/profile.tsx",
+      "line": 231,
+      "events": []
+    },
+    {
+      "id": "UI-091",
+      "type": "button",
+      "file": "pages/profile.tsx",
+      "line": 232,
+      "events": []
+    },
+    {
+      "id": "UI-092",
+      "type": "Link",
+      "file": "pages/profile.tsx",
+      "line": 400,
+      "events": []
+    },
+    {
+      "id": "UI-093",
+      "type": "button",
+      "file": "pages/profile.tsx",
+      "line": 401,
+      "events": []
+    },
+    {
+      "id": "UI-094",
+      "type": "Link",
+      "file": "pages/profile.tsx",
+      "line": 430,
+      "events": []
+    },
+    {
+      "id": "UI-095",
+      "type": "button",
+      "file": "pages/profile.tsx",
+      "line": 431,
+      "events": []
+    },
+    {
+      "id": "UI-096",
+      "type": "form",
+      "file": "pages/reset-password.tsx",
+      "line": 59,
+      "events": [
+        "onSubmit"
+      ]
+    },
+    {
+      "id": "UI-097",
+      "type": "ATSScorePanel",
+      "file": "pages/resume.tsx",
+      "line": 715,
+      "events": [
+        "onAnalyze"
+      ]
+    },
+    {
+      "id": "UI-098",
+      "type": "button",
+      "file": "pages/roadmap.tsx",
+      "line": 360,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-099",
+      "type": "button",
+      "file": "pages/roadmap.tsx",
+      "line": 368,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-100",
+      "type": "button",
+      "file": "pages/roadmap.tsx",
+      "line": 388,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-101",
+      "type": "button",
+      "file": "pages/roadmap.tsx",
+      "line": 396,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-102",
+      "type": "a",
+      "file": "pages/roadmap.tsx",
+      "line": 631,
+      "events": []
+    },
+    {
+      "id": "UI-103",
+      "type": "button",
+      "file": "pages/roadmap.tsx",
+      "line": 669,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-104",
+      "type": "Link",
+      "file": "pages/settings.tsx",
+      "line": 589,
+      "events": []
+    },
+    {
+      "id": "UI-105",
+      "type": "Link",
+      "file": "pages/signup.tsx",
+      "line": 186,
+      "events": []
+    },
+    {
+      "id": "UI-106",
+      "type": "a",
+      "file": "pages/signup.tsx",
+      "line": 187,
+      "events": []
+    },
+    {
+      "id": "UI-107",
+      "type": "form",
+      "file": "pages/signup.tsx",
+      "line": 216,
+      "events": [
+        "onSubmit"
+      ]
+    },
+    {
+      "id": "UI-108",
+      "type": "Link",
+      "file": "pages/signup.tsx",
+      "line": 288,
+      "events": []
+    },
+    {
+      "id": "UI-109",
+      "type": "a",
+      "file": "pages/signup.tsx",
+      "line": 289,
+      "events": []
+    },
+    {
+      "id": "UI-110",
+      "type": "button",
+      "file": "pages/skill-gap.tsx",
+      "line": 464,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-111",
+      "type": "ActionEngine",
+      "file": "pages/skill-gap.tsx",
+      "line": 539,
+      "events": [
+        "onStartLearning"
+      ]
+    },
+    {
+      "id": "UI-112",
+      "type": "Link",
+      "file": "pages/smart-alerts.tsx",
+      "line": 428,
+      "events": []
+    },
+    {
+      "id": "UI-113",
+      "type": "button",
+      "file": "pages/smart-alerts.tsx",
+      "line": 429,
+      "events": []
+    },
+    {
+      "id": "UI-114",
+      "type": "Link",
+      "file": "pages/smart-alerts.tsx",
+      "line": 808,
+      "events": []
+    },
+    {
+      "id": "UI-115",
+      "type": "Link",
+      "file": "pages/smart-alerts.tsx",
+      "line": 820,
+      "events": []
+    },
+    {
+      "id": "UI-116",
+      "type": "button",
+      "file": "pages/smart-alerts.tsx",
+      "line": 821,
+      "events": []
+    },
+    {
+      "id": "UI-117",
+      "type": "link",
+      "file": "pages/_document.tsx",
+      "line": 7,
+      "events": []
+    },
+    {
+      "id": "UI-118",
+      "type": "link",
+      "file": "pages/_document.tsx",
+      "line": 8,
+      "events": []
+    },
+    {
+      "id": "UI-119",
+      "type": "form",
+      "file": "pages/admin/login.tsx",
+      "line": 68,
+      "events": [
+        "onSubmit"
+      ]
+    },
+    {
+      "id": "UI-120",
+      "type": "Link",
+      "file": "pages/admin/login.tsx",
+      "line": 132,
+      "events": []
+    },
+    {
+      "id": "UI-121",
+      "type": "link",
+      "file": "pages/mock-interview/history.tsx",
+      "line": 33,
+      "events": []
+    },
+    {
+      "id": "UI-122",
+      "type": "button",
+      "file": "pages/mock-interview/result.tsx",
+      "line": 228,
+      "events": []
+    },
+    {
+      "id": "UI-123",
+      "type": "button",
+      "file": "pages/mock-interview/result.tsx",
+      "line": 274,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-124",
+      "type": "button",
+      "file": "pages/mock-interview/result.tsx",
+      "line": 277,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-125",
+      "type": "link",
+      "file": "pages/mock-interview/session.tsx",
+      "line": 208,
+      "events": []
+    },
+    {
+      "id": "UI-126",
+      "type": "i",
+      "file": "pages/mock-interview/session.tsx",
+      "line": 318,
+      "events": [
+        "onIndex"
+      ]
+    },
+    {
+      "id": "UI-127",
+      "type": "Link",
+      "file": "pages/problems/index.tsx",
+      "line": 137,
+      "events": []
+    },
+    {
+      "id": "UI-128",
+      "type": "button",
+      "file": "pages/problems/index.tsx",
+      "line": 138,
+      "events": []
+    },
+    {
+      "id": "UI-129",
+      "type": "Link",
+      "file": "pages/problems/index.tsx",
+      "line": 144,
+      "events": []
+    },
+    {
+      "id": "UI-130",
+      "type": "button",
+      "file": "pages/problems/index.tsx",
+      "line": 145,
+      "events": []
+    },
+    {
+      "id": "UI-131",
+      "type": "form",
+      "file": "pages/problems/index.tsx",
+      "line": 208,
+      "events": [
+        "onSubmit"
+      ]
+    },
+    {
+      "id": "UI-132",
+      "type": "Link",
+      "file": "pages/problems/index.tsx",
+      "line": 323,
+      "events": []
+    },
+    {
+      "id": "UI-133",
+      "type": "button",
+      "file": "pages/problems/index.tsx",
+      "line": 324,
+      "events": []
+    },
+    {
+      "id": "UI-134",
+      "type": "Link",
+      "file": "pages/problems/matches.tsx",
+      "line": 82,
+      "events": []
+    },
+    {
+      "id": "UI-135",
+      "type": "button",
+      "file": "pages/problems/matches.tsx",
+      "line": 83,
+      "events": []
+    },
+    {
+      "id": "UI-136",
+      "type": "Link",
+      "file": "pages/problems/matches.tsx",
+      "line": 88,
+      "events": []
+    },
+    {
+      "id": "UI-137",
+      "type": "button",
+      "file": "pages/problems/matches.tsx",
+      "line": 89,
+      "events": []
+    },
+    {
+      "id": "UI-138",
+      "type": "Link",
+      "file": "pages/problems/matches.tsx",
+      "line": 192,
+      "events": []
+    },
+    {
+      "id": "UI-139",
+      "type": "button",
+      "file": "pages/problems/matches.tsx",
+      "line": 193,
+      "events": []
+    },
+    {
+      "id": "UI-140",
+      "type": "Link",
+      "file": "pages/problems/[id].tsx",
+      "line": 118,
+      "events": []
+    },
+    {
+      "id": "UI-141",
+      "type": "form",
+      "file": "pages/problems/[id].tsx",
+      "line": 252,
+      "events": [
+        "onSubmit"
+      ]
+    },
+    {
+      "id": "UI-142",
+      "type": "Link",
+      "file": "pages/problems/[id].tsx",
+      "line": 430,
+      "events": []
+    },
+    {
+      "id": "UI-143",
+      "type": "button",
+      "file": "pages/problems/[id].tsx",
+      "line": 431,
+      "events": []
+    },
+    {
+      "id": "UI-144",
+      "type": "Link",
+      "file": "pages/problems/[id].tsx",
+      "line": 435,
+      "events": []
+    },
+    {
+      "id": "UI-145",
+      "type": "button",
+      "file": "pages/problems/[id].tsx",
+      "line": 436,
+      "events": []
+    },
+    {
+      "id": "UI-146",
+      "type": "Link",
+      "file": "pages/projects/index.tsx",
+      "line": 113,
+      "events": []
+    },
+    {
+      "id": "UI-147",
+      "type": "button",
+      "file": "pages/projects/index.tsx",
+      "line": 114,
+      "events": []
+    },
+    {
+      "id": "UI-148",
+      "type": "Link",
+      "file": "pages/projects/index.tsx",
+      "line": 119,
+      "events": []
+    },
+    {
+      "id": "UI-149",
+      "type": "button",
+      "file": "pages/projects/index.tsx",
+      "line": 120,
+      "events": []
+    },
+    {
+      "id": "UI-150",
+      "type": "Link",
+      "file": "pages/projects/index.tsx",
+      "line": 183,
+      "events": []
+    },
+    {
+      "id": "UI-151",
+      "type": "button",
+      "file": "pages/projects/index.tsx",
+      "line": 184,
+      "events": []
+    },
+    {
+      "id": "UI-152",
+      "type": "Link",
+      "file": "pages/projects/index.tsx",
+      "line": 247,
+      "events": []
+    },
+    {
+      "id": "UI-153",
+      "type": "button",
+      "file": "pages/projects/index.tsx",
+      "line": 248,
+      "events": []
+    },
+    {
+      "id": "UI-154",
+      "type": "Link",
+      "file": "pages/projects/status-center.tsx",
+      "line": 76,
+      "events": []
+    },
+    {
+      "id": "UI-155",
+      "type": "button",
+      "file": "pages/projects/status-center.tsx",
+      "line": 77,
+      "events": []
+    },
+    {
+      "id": "UI-156",
+      "type": "Link",
+      "file": "pages/projects/status-center.tsx",
+      "line": 82,
+      "events": []
+    },
+    {
+      "id": "UI-157",
+      "type": "button",
+      "file": "pages/projects/status-center.tsx",
+      "line": 83,
+      "events": []
+    },
+    {
+      "id": "UI-158",
+      "type": "Link",
+      "file": "pages/projects/status-center.tsx",
+      "line": 151,
+      "events": []
+    },
+    {
+      "id": "UI-159",
+      "type": "button",
+      "file": "pages/projects/status-center.tsx",
+      "line": 152,
+      "events": []
+    },
+    {
+      "id": "UI-160",
+      "type": "Link",
+      "file": "pages/projects/status-center.tsx",
+      "line": 204,
+      "events": []
+    },
+    {
+      "id": "UI-161",
+      "type": "button",
+      "file": "pages/projects/status-center.tsx",
+      "line": 205,
+      "events": []
+    },
+    {
+      "id": "UI-162",
+      "type": "Link",
+      "file": "pages/projects/[id].tsx",
+      "line": 151,
+      "events": []
+    },
+    {
+      "id": "UI-163",
+      "type": "a",
+      "file": "pages/projects/[id].tsx",
+      "line": 279,
+      "events": []
+    },
+    {
+      "id": "UI-164",
+      "type": "a",
+      "file": "pages/projects/[id].tsx",
+      "line": 285,
+      "events": []
+    },
+    {
+      "id": "UI-165",
+      "type": "button",
+      "file": "pages/projects/[id].tsx",
+      "line": 315,
+      "events": [
+        "onClick"
+      ]
+    },
+    {
+      "id": "UI-166",
+      "type": "form",
+      "file": "pages/projects/[id].tsx",
+      "line": 320,
+      "events": [
+        "onSubmit"
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "id": "FUNC-001",
+      "name": "send",
+      "file": "components/AICareerWidget.tsx",
+      "line": 17
+    },
+    {
+      "id": "FUNC-002",
+      "name": "activeMode",
+      "file": "components/AIFeatureSection.jsx",
+      "line": 50
+    },
+    {
+      "id": "FUNC-003",
+      "name": "getStatusColor",
+      "file": "components/CareerDigitalTwin.tsx",
+      "line": 59
+    },
+    {
+      "id": "FUNC-004",
+      "name": "runSimulation",
+      "file": "components/CareerDigitalTwinModal.tsx",
+      "line": 36
+    },
+    {
+      "id": "FUNC-005",
+      "name": "generateReport",
+      "file": "components/CareerIntelligenceModal.tsx",
+      "line": 22
+    },
+    {
+      "id": "FUNC-006",
+      "name": "interval",
+      "file": "components/CareerIntelligenceModal.tsx",
+      "line": 37
+    },
+    {
+      "id": "FUNC-007",
+      "name": "loadAuthorizedEngines",
+      "file": "components/Header.tsx",
+      "line": 115
+    },
+    {
+      "id": "FUNC-008",
+      "name": "processedTrends",
+      "file": "components/JobDemandTrends.tsx",
+      "line": 59
+    },
+    {
+      "id": "FUNC-009",
+      "name": "aggregated",
+      "file": "components/JobDemandTrends.tsx",
+      "line": 86
+    },
+    {
+      "id": "FUNC-010",
+      "name": "loadAlerts",
+      "file": "components/NotificationBell.tsx",
+      "line": 13
+    },
+    {
+      "id": "FUNC-011",
+      "name": "handleClickOutside",
+      "file": "components/NotificationBell.tsx",
+      "line": 31
+    },
+    {
+      "id": "FUNC-012",
+      "name": "handleToggle",
+      "file": "components/NotificationBell.tsx",
+      "line": 40
+    },
+    {
+      "id": "FUNC-013",
+      "name": "getAlertIcon",
+      "file": "components/NotificationBell.tsx",
+      "line": 42
+    },
+    {
+      "id": "FUNC-014",
+      "name": "fetchSkills",
+      "file": "components/RoadmapBuilder.tsx",
+      "line": 10
+    },
+    {
+      "id": "FUNC-015",
+      "name": "handleSkillSelect",
+      "file": "components/RoadmapBuilder.tsx",
+      "line": 22
+    },
+    {
+      "id": "FUNC-016",
+      "name": "generateRoadmap",
+      "file": "components/RoadmapBuilder.tsx",
+      "line": 28
+    },
+    {
+      "id": "FUNC-017",
+      "name": "getSkillAnalysis",
+      "file": "components/SkillAnalysis.tsx",
+      "line": 10
+    },
+    {
+      "id": "FUNC-018",
+      "name": "handleApply",
+      "file": "components/SmartJobMatch.tsx",
+      "line": 38
+    },
+    {
+      "id": "FUNC-019",
+      "name": "handleLinkedInSearch",
+      "file": "components/SmartJobMatch.tsx",
+      "line": 49
+    },
+    {
+      "id": "FUNC-020",
+      "name": "withAuth",
+      "file": "components/withAuth.tsx",
+      "line": 5
+    },
+    {
+      "id": "FUNC-021",
+      "name": "loadSaved",
+      "file": "components/YouTubeLearning.tsx",
+      "line": 184
+    },
+    {
+      "id": "FUNC-022",
+      "name": "handleSearch",
+      "file": "components/YouTubeLearning.tsx",
+      "line": 193
+    },
+    {
+      "id": "FUNC-023",
+      "name": "handleSaveToggle",
+      "file": "components/YouTubeLearning.tsx",
+      "line": 208
+    },
+    {
+      "id": "FUNC-024",
+      "name": "handleProgressToggle",
+      "file": "components/YouTubeLearning.tsx",
+      "line": 219
+    },
+    {
+      "id": "FUNC-025",
+      "name": "handleSummarize",
+      "file": "components/YouTubeLearning.tsx",
+      "line": 229
+    },
+    {
+      "id": "FUNC-026",
+      "name": "filteredCourses",
+      "file": "components/YouTubeLearning.tsx",
+      "line": 250
+    },
+    {
+      "id": "FUNC-027",
+      "name": "earnedTypes",
+      "file": "components/dashboard/AchievementBadges.tsx",
+      "line": 15
+    },
+    {
+      "id": "FUNC-028",
+      "name": "isUnlocked",
+      "file": "components/dashboard/AchievementBadges.tsx",
+      "line": 28
+    },
+    {
+      "id": "FUNC-029",
+      "name": "handleDownloadPDF",
+      "file": "components/dashboard/AIInsightPanel.tsx",
+      "line": 14
+    },
+    {
+      "id": "FUNC-030",
+      "name": "isInsufficient",
+      "file": "components/dashboard/GrowthForecast.tsx",
+      "line": 8
+    },
+    {
+      "id": "FUNC-031",
+      "name": "getDisplayValue",
+      "file": "components/dashboard/ModuleSummaries.tsx",
+      "line": 47
+    },
+    {
+      "id": "FUNC-032",
+      "name": "startCamera",
+      "file": "components/Interview/LiveInterviewSystem.tsx",
+      "line": 43
+    },
+    {
+      "id": "FUNC-033",
+      "name": "stopCamera",
+      "file": "components/Interview/LiveInterviewSystem.tsx",
+      "line": 52
+    },
+    {
+      "id": "FUNC-034",
+      "name": "setupSpeechRecognition",
+      "file": "components/Interview/LiveInterviewSystem.tsx",
+      "line": 59
+    },
+    {
+      "id": "FUNC-035",
+      "name": "speak",
+      "file": "components/Interview/LiveInterviewSystem.tsx",
+      "line": 78
+    },
+    {
+      "id": "FUNC-036",
+      "name": "startInterview",
+      "file": "components/Interview/LiveInterviewSystem.tsx",
+      "line": 90
+    },
+    {
+      "id": "FUNC-037",
+      "name": "handleFinishAnswer",
+      "file": "components/Interview/LiveInterviewSystem.tsx",
+      "line": 109
+    },
+    {
+      "id": "FUNC-038",
+      "name": "getVariant",
+      "file": "components/motion/ScrollReveal.tsx",
+      "line": 15
+    },
+    {
+      "id": "FUNC-039",
+      "name": "useToast",
+      "file": "components/motion/Toast.tsx",
+      "line": 21
+    },
+    {
+      "id": "FUNC-040",
+      "name": "getToastStyles",
+      "file": "components/motion/Toast.tsx",
+      "line": 27
+    },
+    {
+      "id": "FUNC-041",
+      "name": "addToast",
+      "file": "components/motion/Toast.tsx",
+      "line": 46
+    },
+    {
+      "id": "FUNC-042",
+      "name": "removeToast",
+      "file": "components/motion/Toast.tsx",
+      "line": 51
+    },
+    {
+      "id": "FUNC-043",
+      "name": "timer",
+      "file": "components/motion/Toast.tsx",
+      "line": 74
+    },
+    {
+      "id": "FUNC-044",
+      "name": "handleRun",
+      "file": "components/Resume/AIImprovementPanel.tsx",
+      "line": 22
+    },
+    {
+      "id": "FUNC-045",
+      "name": "showToast",
+      "file": "components/Resume/CommunityGallery.tsx",
+      "line": 62
+    },
+    {
+      "id": "FUNC-046",
+      "name": "fetchTemplates",
+      "file": "components/Resume/CommunityGallery.tsx",
+      "line": 64
+    },
+    {
+      "id": "FUNC-047",
+      "name": "existingIds",
+      "file": "components/Resume/CommunityGallery.tsx",
+      "line": 71
+    },
+    {
+      "id": "FUNC-048",
+      "name": "merged",
+      "file": "components/Resume/CommunityGallery.tsx",
+      "line": 72
+    },
+    {
+      "id": "FUNC-049",
+      "name": "handleApply",
+      "file": "components/Resume/CommunityGallery.tsx",
+      "line": 90
+    },
+    {
+      "id": "FUNC-050",
+      "name": "handleShare",
+      "file": "components/Resume/CommunityGallery.tsx",
+      "line": 107
+    },
+    {
+      "id": "FUNC-051",
+      "name": "filtered",
+      "file": "components/Resume/CommunityGallery.tsx",
+      "line": 134
+    },
+    {
+      "id": "FUNC-052",
+      "name": "count",
+      "file": "components/Resume/CommunityGallery.tsx",
+      "line": 231
+    },
+    {
+      "id": "FUNC-053",
+      "name": "showToast",
+      "file": "components/Resume/CustomTemplateEngine.tsx",
+      "line": 68
+    },
+    {
+      "id": "FUNC-054",
+      "name": "fetchTemplates",
+      "file": "components/Resume/CustomTemplateEngine.tsx",
+      "line": 75
+    },
+    {
+      "id": "FUNC-055",
+      "name": "fetchHistory",
+      "file": "components/Resume/CustomTemplateEngine.tsx",
+      "line": 82
+    },
+    {
+      "id": "FUNC-056",
+      "name": "handleUpload",
+      "file": "components/Resume/CustomTemplateEngine.tsx",
+      "line": 89
+    },
+    {
+      "id": "FUNC-057",
+      "name": "handleSelect",
+      "file": "components/Resume/CustomTemplateEngine.tsx",
+      "line": 106
+    },
+    {
+      "id": "FUNC-058",
+      "name": "t",
+      "file": "components/Resume/CustomTemplateEngine.tsx",
+      "line": 108
+    },
+    {
+      "id": "FUNC-059",
+      "name": "handleEnhanceData",
+      "file": "components/Resume/CustomTemplateEngine.tsx",
+      "line": 117
+    },
+    {
+      "id": "FUNC-060",
+      "name": "handleAutoFill",
+      "file": "components/Resume/CustomTemplateEngine.tsx",
+      "line": 130
+    },
+    {
+      "id": "FUNC-061",
+      "name": "handleExport",
+      "file": "components/Resume/ExportPanel.tsx",
+      "line": 21
+    },
+    {
+      "id": "FUNC-062",
+      "name": "handleCompare",
+      "file": "components/Resume/JobTargetingPanel.tsx",
+      "line": 26
+    },
+    {
+      "id": "FUNC-063",
+      "name": "missing",
+      "file": "components/Resume/JobTargetingPanel.tsx",
+      "line": 37
+    },
+    {
+      "id": "FUNC-064",
+      "name": "matched",
+      "file": "components/Resume/JobTargetingPanel.tsx",
+      "line": 38
+    },
+    {
+      "id": "FUNC-065",
+      "name": "handleOptimize",
+      "file": "components/Resume/JobTargetingPanel.tsx",
+      "line": 54
+    },
+    {
+      "id": "FUNC-066",
+      "name": "handleApplyToBuilder",
+      "file": "components/Resume/JobTargetingPanel.tsx",
+      "line": 95
+    },
+    {
+      "id": "FUNC-067",
+      "name": "handleNameChange",
+      "file": "components/Resume/ResumeBuilderForm.tsx",
+      "line": 299
+    },
+    {
+      "id": "FUNC-068",
+      "name": "setField",
+      "file": "components/Resume/ResumeBuilderForm.tsx",
+      "line": 304
+    },
+    {
+      "id": "FUNC-069",
+      "name": "handleCityChange",
+      "file": "components/Resume/ResumeBuilderForm.tsx",
+      "line": 317
+    },
+    {
+      "id": "FUNC-070",
+      "name": "handleCountryChange",
+      "file": "components/Resume/ResumeBuilderForm.tsx",
+      "line": 327
+    },
+    {
+      "id": "FUNC-071",
+      "name": "handlePinCodeChange",
+      "file": "components/Resume/ResumeBuilderForm.tsx",
+      "line": 336
+    },
+    {
+      "id": "FUNC-072",
+      "name": "handleGenerateSummary",
+      "file": "components/Resume/ResumeBuilderForm.tsx",
+      "line": 344
+    },
+    {
+      "id": "FUNC-073",
+      "name": "handlePolishBullet",
+      "file": "components/Resume/ResumeBuilderForm.tsx",
+      "line": 375
+    },
+    {
+      "id": "FUNC-074",
+      "name": "handleAddSkillToCategory",
+      "file": "components/Resume/ResumeBuilderForm.tsx",
+      "line": 406
+    },
+    {
+      "id": "FUNC-075",
+      "name": "all",
+      "file": "components/Resume/ResumeBuilderForm.tsx",
+      "line": 419
+    },
+    {
+      "id": "FUNC-076",
+      "name": "handleRemoveSkillFromCategory",
+      "file": "components/Resume/ResumeBuilderForm.tsx",
+      "line": 425
+    },
+    {
+      "id": "FUNC-077",
+      "name": "all",
+      "file": "components/Resume/ResumeBuilderForm.tsx",
+      "line": 431
+    },
+    {
+      "id": "FUNC-078",
+      "name": "handleAddCategory",
+      "file": "components/Resume/ResumeBuilderForm.tsx",
+      "line": 436
+    },
+    {
+      "id": "FUNC-079",
+      "name": "handleRemoveCategory",
+      "file": "components/Resume/ResumeBuilderForm.tsx",
+      "line": 450
+    },
+    {
+      "id": "FUNC-080",
+      "name": "all",
+      "file": "components/Resume/ResumeBuilderForm.tsx",
+      "line": 457
+    },
+    {
+      "id": "FUNC-081",
+      "name": "handleRenameCategory",
+      "file": "components/Resume/ResumeBuilderForm.tsx",
+      "line": 463
+    },
+    {
+      "id": "FUNC-082",
+      "name": "handleAddExperience",
+      "file": "components/Resume/ResumeBuilderForm.tsx",
+      "line": 472
+    },
+    {
+      "id": "FUNC-083",
+      "name": "handleRemoveExperience",
+      "file": "components/Resume/ResumeBuilderForm.tsx",
+      "line": 479
+    },
+    {
+      "id": "FUNC-084",
+      "name": "updated",
+      "file": "components/Resume/ResumeBuilderForm.tsx",
+      "line": 480
+    },
+    {
+      "id": "FUNC-085",
+      "name": "handleAddEducation",
+      "file": "components/Resume/ResumeBuilderForm.tsx",
+      "line": 485
+    },
+    {
+      "id": "FUNC-086",
+      "name": "handleRemoveEducation",
+      "file": "components/Resume/ResumeBuilderForm.tsx",
+      "line": 492
+    },
+    {
+      "id": "FUNC-087",
+      "name": "updated",
+      "file": "components/Resume/ResumeBuilderForm.tsx",
+      "line": 493
+    },
+    {
+      "id": "FUNC-088",
+      "name": "handleAddProject",
+      "file": "components/Resume/ResumeBuilderForm.tsx",
+      "line": 498
+    },
+    {
+      "id": "FUNC-089",
+      "name": "handleRemoveProject",
+      "file": "components/Resume/ResumeBuilderForm.tsx",
+      "line": 505
+    },
+    {
+      "id": "FUNC-090",
+      "name": "updated",
+      "file": "components/Resume/ResumeBuilderForm.tsx",
+      "line": 506
+    },
+    {
+      "id": "FUNC-091",
+      "name": "handleAddCert",
+      "file": "components/Resume/ResumeBuilderForm.tsx",
+      "line": 511
+    },
+    {
+      "id": "FUNC-092",
+      "name": "handleRemoveCert",
+      "file": "components/Resume/ResumeBuilderForm.tsx",
+      "line": 518
+    },
+    {
+      "id": "FUNC-093",
+      "name": "handleFileChange",
+      "file": "components/Resume/ResumeChoiceScreen.tsx",
+      "line": 24
+    },
+    {
+      "id": "FUNC-094",
+      "name": "handleDrop",
+      "file": "components/Resume/ResumeChoiceScreen.tsx",
+      "line": 29
+    },
+    {
+      "id": "FUNC-095",
+      "name": "fetchHistory",
+      "file": "components/Resume/ResumeHistoryPanel.tsx",
+      "line": 22
+    },
+    {
+      "id": "FUNC-096",
+      "name": "handleDelete",
+      "file": "components/Resume/ResumeHistoryPanel.tsx",
+      "line": 33
+    },
+    {
+      "id": "FUNC-097",
+      "name": "toggleCompare",
+      "file": "components/Resume/ResumeHistoryPanel.tsx",
+      "line": 40
+    },
+    {
+      "id": "FUNC-098",
+      "name": "getScoreDiff",
+      "file": "components/Resume/ResumeHistoryPanel.tsx",
+      "line": 44
+    },
+    {
+      "id": "FUNC-099",
+      "name": "generateReport",
+      "file": "components/Resume/ResumeIntelligenceModal.tsx",
+      "line": 23
+    },
+    {
+      "id": "FUNC-100",
+      "name": "interval",
+      "file": "components/Resume/ResumeIntelligenceModal.tsx",
+      "line": 37
+    },
+    {
+      "id": "FUNC-101",
+      "name": "experienceList",
+      "file": "components/Resume/ResumePreview.tsx",
+      "line": 41
+    },
+    {
+      "id": "FUNC-102",
+      "name": "educationList",
+      "file": "components/Resume/ResumePreview.tsx",
+      "line": 42
+    },
+    {
+      "id": "FUNC-103",
+      "name": "projectList",
+      "file": "components/Resume/ResumePreview.tsx",
+      "line": 43
+    },
+    {
+      "id": "FUNC-104",
+      "name": "certList",
+      "file": "components/Resume/ResumePreview.tsx",
+      "line": 44
+    },
+    {
+      "id": "FUNC-105",
+      "name": "cleanBullet",
+      "file": "components/Resume/ResumePreview.tsx",
+      "line": 47
+    },
+    {
+      "id": "FUNC-106",
+      "name": "getFontFamily",
+      "file": "components/Resume/ResumePreview.tsx",
+      "line": 51
+    },
+    {
+      "id": "FUNC-107",
+      "name": "renderFormattedDescription",
+      "file": "components/Resume/ResumePreview.tsx",
+      "line": 80
+    },
+    {
+      "id": "FUNC-108",
+      "name": "rawLines",
+      "file": "components/Resume/ResumePreview.tsx",
+      "line": 82
+    },
+    {
+      "id": "FUNC-109",
+      "name": "renderFAANG",
+      "file": "components/Resume/ResumePreview.tsx",
+      "line": 105
+    },
+    {
+      "id": "FUNC-110",
+      "name": "renderModernTwoCol",
+      "file": "components/Resume/ResumePreview.tsx",
+      "line": 304
+    },
+    {
+      "id": "FUNC-111",
+      "name": "renderIvyLeague",
+      "file": "components/Resume/ResumePreview.tsx",
+      "line": 511
+    },
+    {
+      "id": "FUNC-112",
+      "name": "filtered",
+      "file": "components/Resume/TemplateGallery.tsx",
+      "line": 93
+    },
+    {
+      "id": "FUNC-113",
+      "name": "selectTemplate",
+      "file": "components/Resume/TemplateGallery.tsx",
+      "line": 95
+    },
+    {
+      "id": "FUNC-114",
+      "name": "startMock",
+      "file": "components/roadmap/PhaseMiniMock.tsx",
+      "line": 15
+    },
+    {
+      "id": "FUNC-115",
+      "name": "submitMock",
+      "file": "components/roadmap/PhaseMiniMock.tsx",
+      "line": 28
+    },
+    {
+      "id": "FUNC-116",
+      "name": "formatTime",
+      "file": "components/roadmap/ProductivityMode.tsx",
+      "line": 20
+    },
+    {
+      "id": "FUNC-117",
+      "name": "togglePhase",
+      "file": "components/SkillGap/AIRecommendations.tsx",
+      "line": 13
+    },
+    {
+      "id": "FUNC-118",
+      "name": "allData",
+      "file": "components/SkillGap/GapHeatmap.tsx",
+      "line": 13
+    },
+    {
+      "id": "FUNC-119",
+      "name": "filteredData",
+      "file": "components/SkillGap/GapHeatmap.tsx",
+      "line": 20
+    },
+    {
+      "id": "FUNC-120",
+      "name": "getBarColor",
+      "file": "components/SkillGap/GapHeatmap.tsx",
+      "line": 27
+    },
+    {
+      "id": "FUNC-121",
+      "name": "chartData",
+      "file": "components/SkillGap/RadarGapChart.tsx",
+      "line": 11
+    },
+    {
+      "id": "FUNC-122",
+      "name": "getProgressColor",
+      "file": "components/SkillGap/SkillGapScoreCards.tsx",
+      "line": 19
+    },
+    {
+      "id": "FUNC-123",
+      "name": "getGlowColor",
+      "file": "components/SkillGap/SkillGapScoreCards.tsx",
+      "line": 25
+    },
+    {
+      "id": "FUNC-124",
+      "name": "timer",
+      "file": "components/SkillGap/SmartNotifications.tsx",
+      "line": 15
+    },
+    {
+      "id": "FUNC-125",
+      "name": "interval",
+      "file": "components/ui/telemetry-widget.tsx",
+      "line": 23
+    },
+    {
+      "id": "FUNC-126",
+      "name": "formatTime",
+      "file": "components/ui/telemetry-widget.tsx",
+      "line": 27
+    },
+    {
+      "id": "FUNC-127",
+      "name": "formatDate",
+      "file": "components/ui/telemetry-widget.tsx",
+      "line": 37
+    },
+    {
+      "id": "FUNC-128",
+      "name": "resizeCanvas",
+      "file": "components/ui/tv-noise.tsx",
+      "line": 28
+    },
+    {
+      "id": "FUNC-129",
+      "name": "animate",
+      "file": "components/ui/tv-noise.tsx",
+      "line": 40
+    },
+    {
+      "id": "FUNC-130",
+      "name": "refreshUser",
+      "file": "context/AuthContext.tsx",
+      "line": 21
+    },
+    {
+      "id": "FUNC-131",
+      "name": "login",
+      "file": "context/AuthContext.tsx",
+      "line": 37
+    },
+    {
+      "id": "FUNC-132",
+      "name": "verify2FA",
+      "file": "context/AuthContext.tsx",
+      "line": 45
+    },
+    {
+      "id": "FUNC-133",
+      "name": "logout",
+      "file": "context/AuthContext.tsx",
+      "line": 51
+    },
+    {
+      "id": "FUNC-134",
+      "name": "useAuth",
+      "file": "context/AuthContext.tsx",
+      "line": 64
+    },
+    {
+      "id": "FUNC-135",
+      "name": "applyThemeToDOM",
+      "file": "context/ThemeContext.tsx",
+      "line": 27
+    },
+    {
+      "id": "FUNC-136",
+      "name": "computeEffectiveTheme",
+      "file": "context/ThemeContext.tsx",
+      "line": 48
+    },
+    {
+      "id": "FUNC-137",
+      "name": "spawnWaterWaveRipple",
+      "file": "context/ThemeContext.tsx",
+      "line": 59
+    },
+    {
+      "id": "FUNC-138",
+      "name": "transition",
+      "file": "context/ThemeContext.tsx",
+      "line": 114
+    },
+    {
+      "id": "FUNC-139",
+      "name": "toggleTheme",
+      "file": "context/ThemeContext.tsx",
+      "line": 152
+    },
+    {
+      "id": "FUNC-140",
+      "name": "handleChange",
+      "file": "context/ThemeContext.tsx",
+      "line": 184
+    },
+    {
+      "id": "FUNC-141",
+      "name": "useTheme",
+      "file": "context/ThemeContext.tsx",
+      "line": 205
+    },
+    {
+      "id": "FUNC-142",
+      "name": "useAuth",
+      "file": "hooks/useAuth.ts",
+      "line": 5
+    },
+    {
+      "id": "FUNC-143",
+      "name": "fetchUser",
+      "file": "hooks/useAuth.ts",
+      "line": 11
+    },
+    {
+      "id": "FUNC-144",
+      "name": "login",
+      "file": "hooks/useAuth.ts",
+      "line": 25
+    },
+    {
+      "id": "FUNC-145",
+      "name": "logout",
+      "file": "hooks/useAuth.ts",
+      "line": 32
+    },
+    {
+      "id": "FUNC-146",
+      "name": "useCountUp",
+      "file": "hooks/useCountUp.ts",
+      "line": 3
+    },
+    {
+      "id": "FUNC-147",
+      "name": "easeOutExpo",
+      "file": "hooks/useCountUp.ts",
+      "line": 33
+    },
+    {
+      "id": "FUNC-148",
+      "name": "animate",
+      "file": "hooks/useCountUp.ts",
+      "line": 37
+    },
+    {
+      "id": "FUNC-149",
+      "name": "useScrollReveal",
+      "file": "hooks/useScrollReveal.ts",
+      "line": 3
+    },
+    {
+      "id": "FUNC-150",
+      "name": "loadData",
+      "file": "pages/dashboard.tsx",
+      "line": 97
+    },
+    {
+      "id": "FUNC-151",
+      "name": "handleCompleteWizard",
+      "file": "pages/dashboard.tsx",
+      "line": 139
+    },
+    {
+      "id": "FUNC-152",
+      "name": "toggleSkillSelection",
+      "file": "pages/dashboard.tsx",
+      "line": 154
+    },
+    {
+      "id": "FUNC-153",
+      "name": "handleSubmit",
+      "file": "pages/forgot-password.tsx",
+      "line": 13
+    },
+    {
+      "id": "FUNC-154",
+      "name": "handleScroll",
+      "file": "pages/index.tsx",
+      "line": 27
+    },
+    {
+      "id": "FUNC-155",
+      "name": "fetchData",
+      "file": "pages/job-intelligence.tsx",
+      "line": 36
+    },
+    {
+      "id": "FUNC-156",
+      "name": "handleRoleChange",
+      "file": "pages/job-intelligence.tsx",
+      "line": 69
+    },
+    {
+      "id": "FUNC-157",
+      "name": "handleDownloadReport",
+      "file": "pages/job-intelligence.tsx",
+      "line": 73
+    },
+    {
+      "id": "FUNC-158",
+      "name": "handleSubmit",
+      "file": "pages/login.tsx",
+      "line": 122
+    },
+    {
+      "id": "FUNC-159",
+      "name": "handleVerify2FA",
+      "file": "pages/login.tsx",
+      "line": 137
+    },
+    {
+      "id": "FUNC-160",
+      "name": "fetchDashboardData",
+      "file": "pages/profile.tsx",
+      "line": 54
+    },
+    {
+      "id": "FUNC-161",
+      "name": "handleAddSkill",
+      "file": "pages/profile.tsx",
+      "line": 80
+    },
+    {
+      "id": "FUNC-162",
+      "name": "handleDeleteSkill",
+      "file": "pages/profile.tsx",
+      "line": 97
+    },
+    {
+      "id": "FUNC-163",
+      "name": "handleUpdateProfile",
+      "file": "pages/profile.tsx",
+      "line": 112
+    },
+    {
+      "id": "FUNC-164",
+      "name": "handleTwoFactorToggle",
+      "file": "pages/profile.tsx",
+      "line": 128
+    },
+    {
+      "id": "FUNC-165",
+      "name": "handleVisibilityToggle",
+      "file": "pages/profile.tsx",
+      "line": 143
+    },
+    {
+      "id": "FUNC-166",
+      "name": "handleExportData",
+      "file": "pages/profile.tsx",
+      "line": 158
+    },
+    {
+      "id": "FUNC-167",
+      "name": "handleDeleteAccount",
+      "file": "pages/profile.tsx",
+      "line": 176
+    },
+    {
+      "id": "FUNC-168",
+      "name": "growthData",
+      "file": "pages/profile.tsx",
+      "line": 189
+    },
+    {
+      "id": "FUNC-169",
+      "name": "filteredSkills",
+      "file": "pages/profile.tsx",
+      "line": 201
+    },
+    {
+      "id": "FUNC-170",
+      "name": "handleSubmit",
+      "file": "pages/reset-password.tsx",
+      "line": 16
+    },
+    {
+      "id": "FUNC-171",
+      "name": "loadProfile",
+      "file": "pages/resume.tsx",
+      "line": 76
+    },
+    {
+      "id": "FUNC-172",
+      "name": "handleSaveProfile",
+      "file": "pages/resume.tsx",
+      "line": 131
+    },
+    {
+      "id": "FUNC-173",
+      "name": "handleExportPDF",
+      "file": "pages/resume.tsx",
+      "line": 158
+    },
+    {
+      "id": "FUNC-174",
+      "name": "handlePrintResume",
+      "file": "pages/resume.tsx",
+      "line": 193
+    },
+    {
+      "id": "FUNC-175",
+      "name": "fetchStatus",
+      "file": "pages/resume.tsx",
+      "line": 280
+    },
+    {
+      "id": "FUNC-176",
+      "name": "startToast",
+      "file": "pages/resume.tsx",
+      "line": 304
+    },
+    {
+      "id": "FUNC-177",
+      "name": "handleFile",
+      "file": "pages/resume.tsx",
+      "line": 309
+    },
+    {
+      "id": "FUNC-178",
+      "name": "iv",
+      "file": "pages/resume.tsx",
+      "line": 329
+    },
+    {
+      "id": "FUNC-179",
+      "name": "handleUploadAndLoadIntoBuilder",
+      "file": "pages/resume.tsx",
+      "line": 368
+    },
+    {
+      "id": "FUNC-180",
+      "name": "handleATSScan",
+      "file": "pages/resume.tsx",
+      "line": 380
+    },
+    {
+      "id": "FUNC-181",
+      "name": "breakdownData",
+      "file": "pages/resume.tsx",
+      "line": 395
+    },
+    {
+      "id": "FUNC-182",
+      "name": "loadData",
+      "file": "pages/roadmap.tsx",
+      "line": 78
+    },
+    {
+      "id": "FUNC-183",
+      "name": "latestDetail",
+      "file": "pages/roadmap.tsx",
+      "line": 108
+    },
+    {
+      "id": "FUNC-184",
+      "name": "loadSuggestion",
+      "file": "pages/roadmap.tsx",
+      "line": 123
+    },
+    {
+      "id": "FUNC-185",
+      "name": "handleAddSkill",
+      "file": "pages/roadmap.tsx",
+      "line": 135
+    },
+    {
+      "id": "FUNC-186",
+      "name": "handleRemoveSkill",
+      "file": "pages/roadmap.tsx",
+      "line": 142
+    },
+    {
+      "id": "FUNC-187",
+      "name": "handleAddTool",
+      "file": "pages/roadmap.tsx",
+      "line": 146
+    },
+    {
+      "id": "FUNC-188",
+      "name": "handleRemoveTool",
+      "file": "pages/roadmap.tsx",
+      "line": 153
+    },
+    {
+      "id": "FUNC-189",
+      "name": "handleFetchRecommendations",
+      "file": "pages/roadmap.tsx",
+      "line": 157
+    },
+    {
+      "id": "FUNC-190",
+      "name": "handleGenerate",
+      "file": "pages/roadmap.tsx",
+      "line": 175
+    },
+    {
+      "id": "FUNC-191",
+      "name": "bootTimer",
+      "file": "pages/roadmap.tsx",
+      "line": 181
+    },
+    {
+      "id": "FUNC-192",
+      "name": "toggleStep",
+      "file": "pages/roadmap.tsx",
+      "line": 211
+    },
+    {
+      "id": "FUNC-193",
+      "name": "updatedSteps",
+      "file": "pages/roadmap.tsx",
+      "line": 214
+    },
+    {
+      "id": "FUNC-194",
+      "name": "doneCount",
+      "file": "pages/roadmap.tsx",
+      "line": 217
+    },
+    {
+      "id": "FUNC-195",
+      "name": "maxOne",
+      "file": "pages/roadmap.tsx",
+      "line": 231
+    },
+    {
+      "id": "FUNC-196",
+      "name": "loadProfile",
+      "file": "pages/settings.tsx",
+      "line": 61
+    },
+    {
+      "id": "FUNC-197",
+      "name": "handleTwoFactorToggle",
+      "file": "pages/settings.tsx",
+      "line": 91
+    },
+    {
+      "id": "FUNC-198",
+      "name": "handleVisibilityToggle",
+      "file": "pages/settings.tsx",
+      "line": 106
+    },
+    {
+      "id": "FUNC-199",
+      "name": "persist",
+      "file": "pages/settings.tsx",
+      "line": 121
+    },
+    {
+      "id": "FUNC-200",
+      "name": "toggle",
+      "file": "pages/settings.tsx",
+      "line": 129
+    },
+    {
+      "id": "FUNC-201",
+      "name": "handleSave",
+      "file": "pages/settings.tsx",
+      "line": 137
+    },
+    {
+      "id": "FUNC-202",
+      "name": "handleSubmit",
+      "file": "pages/signup.tsx",
+      "line": 143
+    },
+    {
+      "id": "FUNC-203",
+      "name": "check",
+      "file": "pages/skill-gap.tsx",
+      "line": 94
+    },
+    {
+      "id": "FUNC-204",
+      "name": "addManualSkill",
+      "file": "pages/skill-gap.tsx",
+      "line": 110
+    },
+    {
+      "id": "FUNC-205",
+      "name": "removeManualSkill",
+      "file": "pages/skill-gap.tsx",
+      "line": 120
+    },
+    {
+      "id": "FUNC-206",
+      "name": "handleExtractJD",
+      "file": "pages/skill-gap.tsx",
+      "line": 124
+    },
+    {
+      "id": "FUNC-207",
+      "name": "matched",
+      "file": "pages/skill-gap.tsx",
+      "line": 136
+    },
+    {
+      "id": "FUNC-208",
+      "name": "gapped",
+      "file": "pages/skill-gap.tsx",
+      "line": 139
+    },
+    {
+      "id": "FUNC-209",
+      "name": "handleAnalyze",
+      "file": "pages/skill-gap.tsx",
+      "line": 158
+    },
+    {
+      "id": "FUNC-210",
+      "name": "planRes",
+      "file": "pages/skill-gap.tsx",
+      "line": 190
+    },
+    {
+      "id": "FUNC-211",
+      "name": "handleExportToRoadmap",
+      "file": "pages/skill-gap.tsx",
+      "line": 200
+    },
+    {
+      "id": "FUNC-212",
+      "name": "missingNames",
+      "file": "pages/skill-gap.tsx",
+      "line": 204
+    },
+    {
+      "id": "FUNC-213",
+      "name": "loadData",
+      "file": "pages/smart-alerts.tsx",
+      "line": 24
+    },
+    {
+      "id": "FUNC-214",
+      "name": "toggleExpand",
+      "file": "pages/smart-alerts.tsx",
+      "line": 62
+    },
+    {
+      "id": "FUNC-215",
+      "name": "handleAction",
+      "file": "pages/smart-alerts.tsx",
+      "line": 66
+    },
+    {
+      "id": "FUNC-216",
+      "name": "handleMarkAllRead",
+      "file": "pages/smart-alerts.tsx",
+      "line": 87
+    },
+    {
+      "id": "FUNC-217",
+      "name": "stats",
+      "file": "pages/smart-alerts.tsx",
+      "line": 101
+    },
+    {
+      "id": "FUNC-218",
+      "name": "filteredAlerts",
+      "file": "pages/smart-alerts.tsx",
+      "line": 122
+    },
+    {
+      "id": "FUNC-219",
+      "name": "getAlertUI",
+      "file": "pages/smart-alerts.tsx",
+      "line": 157
+    },
+    {
+      "id": "FUNC-220",
+      "name": "handleSubmit",
+      "file": "pages/admin/login.tsx",
+      "line": 17
+    },
+    {
+      "id": "FUNC-221",
+      "name": "loadAdminDashboard",
+      "file": "pages/admin/problems.tsx",
+      "line": 14
+    },
+    {
+      "id": "FUNC-222",
+      "name": "handleAction",
+      "file": "pages/admin/problems.tsx",
+      "line": 35
+    },
+    {
+      "id": "FUNC-223",
+      "name": "loadHistory",
+      "file": "pages/mock-interview/history.tsx",
+      "line": 17
+    },
+    {
+      "id": "FUNC-224",
+      "name": "loadHistory",
+      "file": "pages/mock-interview/index.tsx",
+      "line": 32
+    },
+    {
+      "id": "FUNC-225",
+      "name": "handleStart",
+      "file": "pages/mock-interview/index.tsx",
+      "line": 46
+    },
+    {
+      "id": "FUNC-226",
+      "name": "completedInterviews",
+      "file": "pages/mock-interview/index.tsx",
+      "line": 65
+    },
+    {
+      "id": "FUNC-227",
+      "name": "avg",
+      "file": "pages/mock-interview/index.tsx",
+      "line": 81
+    },
+    {
+      "id": "FUNC-228",
+      "name": "handleComplete",
+      "file": "pages/mock-interview/live.tsx",
+      "line": 23
+    },
+    {
+      "id": "FUNC-229",
+      "name": "loadResult",
+      "file": "pages/mock-interview/result.tsx",
+      "line": 72
+    },
+    {
+      "id": "FUNC-230",
+      "name": "timer",
+      "file": "pages/mock-interview/session.tsx",
+      "line": 32
+    },
+    {
+      "id": "FUNC-231",
+      "name": "loadInterview",
+      "file": "pages/mock-interview/session.tsx",
+      "line": 38
+    },
+    {
+      "id": "FUNC-232",
+      "name": "index",
+      "file": "pages/mock-interview/session.tsx",
+      "line": 58
+    },
+    {
+      "id": "FUNC-233",
+      "name": "formatTime",
+      "file": "pages/mock-interview/session.tsx",
+      "line": 67
+    },
+    {
+      "id": "FUNC-234",
+      "name": "handleSubmitAnswer",
+      "file": "pages/mock-interview/session.tsx",
+      "line": 73
+    },
+    {
+      "id": "FUNC-235",
+      "name": "handleRetry",
+      "file": "pages/mock-interview/session.tsx",
+      "line": 117
+    },
+    {
+      "id": "FUNC-236",
+      "name": "proceedAfterAnswer",
+      "file": "pages/mock-interview/session.tsx",
+      "line": 122
+    },
+    {
+      "id": "FUNC-237",
+      "name": "finalizeAndExit",
+      "file": "pages/mock-interview/session.tsx",
+      "line": 153
+    },
+    {
+      "id": "FUNC-238",
+      "name": "handleSkip",
+      "file": "pages/mock-interview/session.tsx",
+      "line": 166
+    },
+    {
+      "id": "FUNC-239",
+      "name": "loadChallenges",
+      "file": "pages/problems/index.tsx",
+      "line": 40
+    },
+    {
+      "id": "FUNC-240",
+      "name": "handleSearch",
+      "file": "pages/problems/index.tsx",
+      "line": 63
+    },
+    {
+      "id": "FUNC-241",
+      "name": "handleGenerateGapChallenge",
+      "file": "pages/problems/index.tsx",
+      "line": 68
+    },
+    {
+      "id": "FUNC-242",
+      "name": "stats",
+      "file": "pages/problems/index.tsx",
+      "line": 89
+    },
+    {
+      "id": "FUNC-243",
+      "name": "getDifficultyBadge",
+      "file": "pages/problems/index.tsx",
+      "line": 98
+    },
+    {
+      "id": "FUNC-244",
+      "name": "loadChallenges",
+      "file": "pages/problems/matches.tsx",
+      "line": 19
+    },
+    {
+      "id": "FUNC-245",
+      "name": "handleGenerateCustomGap",
+      "file": "pages/problems/matches.tsx",
+      "line": 36
+    },
+    {
+      "id": "FUNC-246",
+      "name": "stats",
+      "file": "pages/problems/matches.tsx",
+      "line": 55
+    },
+    {
+      "id": "FUNC-247",
+      "name": "loadDetail",
+      "file": "pages/problems/[id].tsx",
+      "line": 30
+    },
+    {
+      "id": "FUNC-248",
+      "name": "handleRequestHint",
+      "file": "pages/problems/[id].tsx",
+      "line": 55
+    },
+    {
+      "id": "FUNC-249",
+      "name": "handleEvaluateSubmission",
+      "file": "pages/problems/[id].tsx",
+      "line": 69
+    },
+    {
+      "id": "FUNC-250",
+      "name": "loadProjects",
+      "file": "pages/projects/index.tsx",
+      "line": 15
+    },
+    {
+      "id": "FUNC-251",
+      "name": "stats",
+      "file": "pages/projects/index.tsx",
+      "line": 32
+    },
+    {
+      "id": "FUNC-252",
+      "name": "completedCount",
+      "file": "pages/projects/index.tsx",
+      "line": 34
+    },
+    {
+      "id": "FUNC-253",
+      "name": "inProgressCount",
+      "file": "pages/projects/index.tsx",
+      "line": 35
+    },
+    {
+      "id": "FUNC-254",
+      "name": "avgProgress",
+      "file": "pages/projects/index.tsx",
+      "line": 36
+    },
+    {
+      "id": "FUNC-255",
+      "name": "filteredProjects",
+      "file": "pages/projects/index.tsx",
+      "line": 46
+    },
+    {
+      "id": "FUNC-256",
+      "name": "getStatusBadge",
+      "file": "pages/projects/index.tsx",
+      "line": 54
+    },
+    {
+      "id": "FUNC-257",
+      "name": "loadSubmissions",
+      "file": "pages/projects/status-center.tsx",
+      "line": 16
+    },
+    {
+      "id": "FUNC-258",
+      "name": "stats",
+      "file": "pages/projects/status-center.tsx",
+      "line": 33
+    },
+    {
+      "id": "FUNC-259",
+      "name": "passed",
+      "file": "pages/projects/status-center.tsx",
+      "line": 35
+    },
+    {
+      "id": "FUNC-260",
+      "name": "filteredSubmissions",
+      "file": "pages/projects/status-center.tsx",
+      "line": 48
+    },
+    {
+      "id": "FUNC-261",
+      "name": "loadProject",
+      "file": "pages/projects/[id].tsx",
+      "line": 30
+    },
+    {
+      "id": "FUNC-262",
+      "name": "toggleTask",
+      "file": "pages/projects/[id].tsx",
+      "line": 58
+    },
+    {
+      "id": "FUNC-263",
+      "name": "handleCheckLiveUrl",
+      "file": "pages/projects/[id].tsx",
+      "line": 68
+    },
+    {
+      "id": "FUNC-264",
+      "name": "handleSubmitVersion",
+      "file": "pages/projects/[id].tsx",
+      "line": 82
+    },
+    {
+      "id": "FUNC-265",
+      "name": "renderStatusBadge",
+      "file": "pages/projects/[id].tsx",
+      "line": 111
+    },
+    {
+      "id": "FUNC-266",
+      "name": "phaseTasks",
+      "file": "pages/projects/[id].tsx",
+      "line": 140
+    },
+    {
+      "id": "FUNC-267",
+      "name": "fetchSkillAnalysis",
+      "file": "services/ai.ts",
+      "line": 3
+    },
+    {
+      "id": "FUNC-268",
+      "name": "generateCareerRoadmap",
+      "file": "services/ai.ts",
+      "line": 13
+    },
+    {
+      "id": "FUNC-269",
+      "name": "getJobIntelligence",
+      "file": "services/ai.ts",
+      "line": 23
+    },
+    {
+      "id": "FUNC-270",
+      "name": "getCareerIntelligenceReport",
+      "file": "services/ai.ts",
+      "line": 35
+    },
+    {
+      "id": "FUNC-271",
+      "name": "getResumeIntelligenceReport",
+      "file": "services/ai.ts",
+      "line": 45
+    },
+    {
+      "id": "FUNC-272",
+      "name": "getCareerDigitalTwinReport",
+      "file": "services/ai.ts",
+      "line": 55
+    },
+    {
+      "id": "FUNC-273",
+      "name": "sendCareerMessage",
+      "file": "services/aiChat.ts",
+      "line": 7
+    },
+    {
+      "id": "FUNC-274",
+      "name": "sleep",
+      "file": "services/apiClient.ts",
+      "line": 15
+    },
+    {
+      "id": "FUNC-275",
+      "name": "getBackoffDelay",
+      "file": "services/apiClient.ts",
+      "line": 17
+    },
+    {
+      "id": "FUNC-276",
+      "name": "loginUser",
+      "file": "services/auth.ts",
+      "line": 16
+    },
+    {
+      "id": "FUNC-277",
+      "name": "logoutUser",
+      "file": "services/auth.ts",
+      "line": 29
+    },
+    {
+      "id": "FUNC-278",
+      "name": "forgotPassword",
+      "file": "services/auth.ts",
+      "line": 35
+    },
+    {
+      "id": "FUNC-279",
+      "name": "resetPassword",
+      "file": "services/auth.ts",
+      "line": 39
+    },
+    {
+      "id": "FUNC-280",
+      "name": "verifyTwoFactor",
+      "file": "services/auth.ts",
+      "line": 43
+    },
+    {
+      "id": "FUNC-281",
+      "name": "getUserProfile",
+      "file": "services/auth.ts",
+      "line": 52
+    },
+    {
+      "id": "FUNC-282",
+      "name": "getCurrentUser",
+      "file": "services/auth.ts",
+      "line": 57
+    },
+    {
+      "id": "FUNC-283",
+      "name": "fetchDashboard",
+      "file": "services/dashboard.ts",
+      "line": 4
+    },
+    {
+      "id": "FUNC-284",
+      "name": "uploadResume",
+      "file": "services/dashboard.ts",
+      "line": 8
+    },
+    {
+      "id": "FUNC-285",
+      "name": "deleteResume",
+      "file": "services/dashboard.ts",
+      "line": 14
+    },
+    {
+      "id": "FUNC-286",
+      "name": "fetchDomains",
+      "file": "services/roadmap.ts",
+      "line": 3
+    },
+    {
+      "id": "FUNC-287",
+      "name": "fetchCareerRecommendations",
+      "file": "services/roadmap.ts",
+      "line": 7
+    },
+    {
+      "id": "FUNC-288",
+      "name": "fetchGoals",
+      "file": "services/roadmap.ts",
+      "line": 11
+    },
+    {
+      "id": "FUNC-289",
+      "name": "fetchSkills",
+      "file": "services/roadmap.ts",
+      "line": 15
+    },
+    {
+      "id": "FUNC-290",
+      "name": "generateRoadmap",
+      "file": "services/roadmap.ts",
+      "line": 19
+    },
+    {
+      "id": "FUNC-291",
+      "name": "fetchRoadmapDetail",
+      "file": "services/roadmap.ts",
+      "line": 30
+    },
+    {
+      "id": "FUNC-292",
+      "name": "updateProgress",
+      "file": "services/roadmap.ts",
+      "line": 34
+    },
+    {
+      "id": "FUNC-293",
+      "name": "searchVideos",
+      "file": "services/roadmap.ts",
+      "line": 39
+    },
+    {
+      "id": "FUNC-294",
+      "name": "saveVideo",
+      "file": "services/roadmap.ts",
+      "line": 43
+    },
+    {
+      "id": "FUNC-295",
+      "name": "getSavedVideos",
+      "file": "services/roadmap.ts",
+      "line": 47
+    },
+    {
+      "id": "FUNC-296",
+      "name": "updateVideoProgress",
+      "file": "services/roadmap.ts",
+      "line": 51
+    },
+    {
+      "id": "FUNC-297",
+      "name": "getVideoSummary",
+      "file": "services/roadmap.ts",
+      "line": 55
+    },
+    {
+      "id": "FUNC-298",
+      "name": "fetchUserAnalytics",
+      "file": "services/roadmap.ts",
+      "line": 60
+    },
+    {
+      "id": "FUNC-299",
+      "name": "fetchAISuggestion",
+      "file": "services/roadmap.ts",
+      "line": 64
+    },
+    {
+      "id": "FUNC-300",
+      "name": "formatINR",
+      "file": "utils/formatters.ts",
+      "line": 8
+    }
+  ],
+  "event_handlers": [
+    {
+      "element": "ModeSelector",
+      "event": "onModeChange",
+      "file": "components/AICareerWidget.tsx",
+      "line": 90
+    },
+    {
+      "element": "button",
+      "event": "onClick",
+      "file": "components/NotificationBell.tsx",
+      "line": 121
+    },
+    {
+      "element": "button",
+      "event": "onClick",
+      "file": "components/NotificationBell.tsx",
+      "line": 122
+    },
+    {
+      "element": "button",
+      "event": "onClick",
+      "file": "components/RoadmapBuilder.tsx",
+      "line": 53
+    },
+    {
+      "element": "Bar",
+      "event": "onDuration",
+      "file": "components/TopSkillsChart.tsx",
+      "line": 88
+    },
+    {
+      "element": "div",
+      "event": "onClick",
+      "file": "components/YouTubeLearning.tsx",
+      "line": 347
+    },
+    {
+      "element": "h3",
+      "event": "onClick",
+      "file": "components/YouTubeLearning.tsx",
+      "line": 362
+    },
+    {
+      "element": "div",
+      "event": "onClick",
+      "file": "components/YouTubeLearning.tsx",
+      "line": 490
+    },
+    {
+      "element": "button",
+      "event": "onClick",
+      "file": "components/YouTubeLearning.tsx",
+      "line": 508
+    },
+    {
+      "element": "button",
+      "event": "onClick",
+      "file": "components/Interview/LiveInterviewSystem.tsx",
+      "line": 306
+    },
+    {
+      "element": "button",
+      "event": "onClick",
+      "file": "components/Interview/LiveInterviewSystem.tsx",
+      "line": 319
+    },
+    {
+      "element": "ToastItem",
+      "event": "onRemove",
+      "file": "components/motion/Toast.tsx",
+      "line": 61
+    },
+    {
+      "element": "button",
+      "event": "onClick",
+      "file": "components/Resume/CommunityGallery.tsx",
+      "line": 166
+    },
+    {
+      "element": "button",
+      "event": "onClick",
+      "file": "components/Resume/CommunityGallery.tsx",
+      "line": 215
+    },
+    {
+      "element": "input",
+      "event": "onChange",
+      "file": "components/Resume/CustomTemplateEngine.tsx",
+      "line": 167
+    },
+    {
+      "element": "button",
+      "event": "onClick",
+      "file": "components/Resume/ResumeHistoryPanel.tsx",
+      "line": 115
+    },
+    {
+      "element": "button",
+      "event": "onClick",
+      "file": "components/Resume/ResumeHistoryPanel.tsx",
+      "line": 118
+    },
+    {
+      "element": "button",
+      "event": "onClick",
+      "file": "components/Resume/ResumeHistoryPanel.tsx",
+      "line": 121
+    },
+    {
+      "element": "button",
+      "event": "onClick",
+      "file": "pages/dashboard.tsx",
+      "line": 171
+    },
+    {
+      "element": "button",
+      "event": "onClick",
+      "file": "pages/dashboard.tsx",
+      "line": 349
+    },
+    {
+      "element": "button",
+      "event": "onClick",
+      "file": "pages/dashboard.tsx",
+      "line": 354
+    },
+    {
+      "element": "CareerDigitalTwinModal",
+      "event": "onClose",
+      "file": "pages/dashboard.tsx",
+      "line": 427
+    },
+    {
+      "element": "form",
+      "event": "onSubmit",
+      "file": "pages/forgot-password.tsx",
+      "line": 43
+    },
+    {
+      "element": "button",
+      "event": "onClick",
+      "file": "pages/job-intelligence.tsx",
+      "line": 111
+    },
+    {
+      "element": "button",
+      "event": "onClick",
+      "file": "pages/job-intelligence.tsx",
+      "line": 114
+    },
+    {
+      "element": "form",
+      "event": "onSubmit",
+      "file": "pages/reset-password.tsx",
+      "line": 59
+    },
+    {
+      "element": "ATSScorePanel",
+      "event": "onAnalyze",
+      "file": "pages/resume.tsx",
+      "line": 715
+    },
+    {
+      "element": "button",
+      "event": "onClick",
+      "file": "pages/roadmap.tsx",
+      "line": 360
+    },
+    {
+      "element": "button",
+      "event": "onClick",
+      "file": "pages/roadmap.tsx",
+      "line": 368
+    },
+    {
+      "element": "button",
+      "event": "onClick",
+      "file": "pages/roadmap.tsx",
+      "line": 388
+    },
+    {
+      "element": "button",
+      "event": "onClick",
+      "file": "pages/roadmap.tsx",
+      "line": 396
+    },
+    {
+      "element": "button",
+      "event": "onClick",
+      "file": "pages/roadmap.tsx",
+      "line": 669
+    },
+    {
+      "element": "form",
+      "event": "onSubmit",
+      "file": "pages/signup.tsx",
+      "line": 216
+    },
+    {
+      "element": "button",
+      "event": "onClick",
+      "file": "pages/skill-gap.tsx",
+      "line": 464
+    },
+    {
+      "element": "ActionEngine",
+      "event": "onStartLearning",
+      "file": "pages/skill-gap.tsx",
+      "line": 539
+    },
+    {
+      "element": "form",
+      "event": "onSubmit",
+      "file": "pages/admin/login.tsx",
+      "line": 68
+    },
+    {
+      "element": "button",
+      "event": "onClick",
+      "file": "pages/mock-interview/result.tsx",
+      "line": 274
+    },
+    {
+      "element": "button",
+      "event": "onClick",
+      "file": "pages/mock-interview/result.tsx",
+      "line": 277
+    },
+    {
+      "element": "i",
+      "event": "onIndex",
+      "file": "pages/mock-interview/session.tsx",
+      "line": 318
+    },
+    {
+      "element": "form",
+      "event": "onSubmit",
+      "file": "pages/problems/index.tsx",
+      "line": 208
+    },
+    {
+      "element": "form",
+      "event": "onSubmit",
+      "file": "pages/problems/[id].tsx",
+      "line": 252
+    },
+    {
+      "element": "button",
+      "event": "onClick",
+      "file": "pages/projects/[id].tsx",
+      "line": 315
+    },
+    {
+      "element": "form",
+      "event": "onSubmit",
+      "file": "pages/projects/[id].tsx",
+      "line": 320
+    }
+  ],
+  "routes": [
+    {
+      "id": "ROUTE-001",
+      "file": "pages/403.tsx"
+    },
+    {
+      "id": "ROUTE-002",
+      "file": "pages/dashboard.tsx"
+    },
+    {
+      "id": "ROUTE-003",
+      "file": "pages/forgot-password.tsx"
+    },
+    {
+      "id": "ROUTE-004",
+      "file": "pages/index.tsx"
+    },
+    {
+      "id": "ROUTE-005",
+      "file": "pages/job-intelligence.tsx"
+    },
+    {
+      "id": "ROUTE-006",
+      "file": "pages/login.tsx"
+    },
+    {
+      "id": "ROUTE-007",
+      "file": "pages/profile.tsx"
+    },
+    {
+      "id": "ROUTE-008",
+      "file": "pages/reset-password.tsx"
+    },
+    {
+      "id": "ROUTE-009",
+      "file": "pages/resume.tsx"
+    },
+    {
+      "id": "ROUTE-010",
+      "file": "pages/roadmap.tsx"
+    },
+    {
+      "id": "ROUTE-011",
+      "file": "pages/settings.tsx"
+    },
+    {
+      "id": "ROUTE-012",
+      "file": "pages/signup.tsx"
+    },
+    {
+      "id": "ROUTE-013",
+      "file": "pages/skill-gap.tsx"
+    },
+    {
+      "id": "ROUTE-014",
+      "file": "pages/smart-alerts.tsx"
+    },
+    {
+      "id": "ROUTE-015",
+      "file": "pages/_app.tsx"
+    },
+    {
+      "id": "ROUTE-016",
+      "file": "pages/_document.tsx"
+    },
+    {
+      "id": "ROUTE-017",
+      "file": "pages/admin/login.tsx"
+    },
+    {
+      "id": "ROUTE-018",
+      "file": "pages/admin/problems.tsx"
+    },
+    {
+      "id": "ROUTE-019",
+      "file": "pages/api/proxy.ts"
+    },
+    {
+      "id": "ROUTE-020",
+      "file": "pages/evaluator/dashboard.tsx"
+    },
+    {
+      "id": "ROUTE-021",
+      "file": "pages/mock-interview/history.tsx"
+    },
+    {
+      "id": "ROUTE-022",
+      "file": "pages/mock-interview/index.tsx"
+    },
+    {
+      "id": "ROUTE-023",
+      "file": "pages/mock-interview/live.tsx"
+    },
+    {
+      "id": "ROUTE-024",
+      "file": "pages/mock-interview/result.tsx"
+    },
+    {
+      "id": "ROUTE-025",
+      "file": "pages/mock-interview/session.tsx"
+    },
+    {
+      "id": "ROUTE-026",
+      "file": "pages/owner/dashboard.tsx"
+    },
+    {
+      "id": "ROUTE-027",
+      "file": "pages/problems/index.tsx"
+    },
+    {
+      "id": "ROUTE-028",
+      "file": "pages/problems/matches.tsx"
+    },
+    {
+      "id": "ROUTE-029",
+      "file": "pages/problems/submit.tsx"
+    },
+    {
+      "id": "ROUTE-030",
+      "file": "pages/problems/[id].tsx"
+    },
+    {
+      "id": "ROUTE-031",
+      "file": "pages/projects/index.tsx"
+    },
+    {
+      "id": "ROUTE-032",
+      "file": "pages/projects/status-center.tsx"
+    },
+    {
+      "id": "ROUTE-033",
+      "file": "pages/projects/[id].tsx"
+    }
+  ],
+  "files_scanned": [
+    "components/AICareerWidget.tsx",
+    "components/AIFeatureSection.jsx",
+    "components/CareerDigitalTwin.tsx",
+    "components/CareerDigitalTwinModal.tsx",
+    "components/CareerIntelligenceModal.tsx",
+    "components/ChatUI.tsx",
+    "components/CyberPageShell.tsx",
+    "components/FeatureCards.jsx",
+    "components/Header.tsx",
+    "components/HeroSection.jsx",
+    "components/JobDemandTrends.tsx",
+    "components/LandingFooter.jsx",
+    "components/Layout.tsx",
+    "components/LocationDemand.tsx",
+    "components/MarketOverview.tsx",
+    "components/ModeSelector.tsx",
+    "components/NotificationBell.tsx",
+    "components/PageTransition.tsx",
+    "components/ProfileCard.tsx",
+    "components/RevealWrapper.tsx",
+    "components/RoadmapBuilder.tsx",
+    "components/SkillAnalysis.tsx",
+    "components/SmartJobMatch.tsx",
+    "components/StaggerGrid.tsx",
+    "components/ThemeToggle.tsx",
+    "components/TopSkillsChart.tsx",
+    "components/withAuth.tsx",
+    "components/YouTubeLearning.tsx",
+    "components/dashboard/AchievementBadges.tsx",
+    "components/dashboard/AIInsightPanel.tsx",
+    "components/dashboard/AIStrategy.tsx",
+    "components/dashboard/Benchmarking.tsx",
+    "components/dashboard/ConsistencyScore.tsx",
+    "components/dashboard/GrowthForecast.tsx",
+    "components/dashboard/MetricCard.tsx",
+    "components/dashboard/ModuleSummaries.tsx",
+    "components/dashboard/SkillHeatmap.tsx",
+    "components/dashboard/SkillRadar.tsx",
+    "components/dashboard/XPSystem.tsx",
+    "components/Interview/LiveInterviewSystem.tsx",
+    "components/Interview/PerformanceRadar.tsx",
+    "components/motion/PageTransition.tsx",
+    "components/motion/ScrollReveal.tsx",
+    "components/motion/Skeleton.tsx",
+    "components/motion/Toast.tsx",
+    "components/Resume/AIImprovementPanel.tsx",
+    "components/Resume/ATSScorePanel.tsx",
+    "components/Resume/CommunityGallery.tsx",
+    "components/Resume/CustomTemplateEngine.tsx",
+    "components/Resume/ExportPanel.tsx",
+    "components/Resume/JobTargetingPanel.tsx",
+    "components/Resume/ResumeBuilderForm.tsx",
+    "components/Resume/ResumeChoiceScreen.tsx",
+    "components/Resume/ResumeHistoryPanel.tsx",
+    "components/Resume/ResumeIntelligenceModal.tsx",
+    "components/Resume/ResumePreview.tsx",
+    "components/Resume/TemplateGallery.tsx",
+    "components/roadmap/AdaptiveDifficulty.tsx",
+    "components/roadmap/CareerOutcome.tsx",
+    "components/roadmap/Leaderboard.tsx",
+    "components/roadmap/MasteryScore.tsx",
+    "components/roadmap/PhaseMiniMock.tsx",
+    "components/roadmap/ProductivityMode.tsx",
+    "components/roadmap/SkillDemand.tsx",
+    "components/roadmap/TimeOptimization.tsx",
+    "components/SkillGap/ActionEngine.tsx",
+    "components/SkillGap/AdvancedCareerIntelligence.tsx",
+    "components/SkillGap/AIRecommendations.tsx",
+    "components/SkillGap/GamificationHeader.tsx",
+    "components/SkillGap/GapHeatmap.tsx",
+    "components/SkillGap/RadarGapChart.tsx",
+    "components/SkillGap/SkillComparisonPanels.tsx",
+    "components/SkillGap/SkillGapScoreCards.tsx",
+    "components/SkillGap/SmartNotifications.tsx",
+    "components/SkillGap/types.ts",
+    "components/ui/badge.tsx",
+    "components/ui/bullet.tsx",
+    "components/ui/card.tsx",
+    "components/ui/live-alerts-widget.tsx",
+    "components/ui/market-chart.tsx",
+    "components/ui/mastery-ranking.tsx",
+    "components/ui/stat-card.tsx",
+    "components/ui/system-status.tsx",
+    "components/ui/telemetry-widget.tsx",
+    "components/ui/tv-noise.tsx",
+    "context/AuthContext.tsx",
+    "context/store.ts",
+    "context/ThemeContext.tsx",
+    "hooks/useAuth.ts",
+    "hooks/useCountUp.ts",
+    "hooks/useScrollReveal.ts",
+    "pages/403.tsx",
+    "pages/dashboard.tsx",
+    "pages/forgot-password.tsx",
+    "pages/index.tsx",
+    "pages/job-intelligence.tsx",
+    "pages/login.tsx",
+    "pages/profile.tsx",
+    "pages/reset-password.tsx",
+    "pages/resume.tsx",
+    "pages/roadmap.tsx",
+    "pages/settings.tsx",
+    "pages/signup.tsx",
+    "pages/skill-gap.tsx",
+    "pages/smart-alerts.tsx",
+    "pages/_app.tsx",
+    "pages/_document.tsx",
+    "pages/admin/login.tsx",
+    "pages/admin/problems.tsx",
+    "pages/api/proxy.ts",
+    "pages/evaluator/dashboard.tsx",
+    "pages/mock-interview/history.tsx",
+    "pages/mock-interview/index.tsx",
+    "pages/mock-interview/live.tsx",
+    "pages/mock-interview/result.tsx",
+    "pages/mock-interview/session.tsx",
+    "pages/owner/dashboard.tsx",
+    "pages/problems/index.tsx",
+    "pages/problems/matches.tsx",
+    "pages/problems/submit.tsx",
+    "pages/problems/[id].tsx",
+    "pages/projects/index.tsx",
+    "pages/projects/status-center.tsx",
+    "pages/projects/[id].tsx",
+    "services/ai.ts",
+    "services/aiChat.ts",
+    "services/aiService.ts",
+    "services/alertService.ts",
+    "services/analyticsService.ts",
+    "services/apiClient.ts",
+    "services/auth.ts",
+    "services/dashboard.ts",
+    "services/interviewService.ts",
+    "services/jobService.ts",
+    "services/problemService.ts",
+    "services/projectService.ts",
+    "services/roadmap.ts",
+    "services/skillService.ts",
+    "types/index.ts",
+    "utils/formatters.ts"
+  ]
+}

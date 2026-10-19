@@ -6,4 +6,23 @@ module.exports = {
   images: {
     domains: ['example.com'], // Add your image domains here
   },
+  async redirects() {
+    return [
+      {
+        source: '/evaluator/dashboard',
+        destination: '/problems',
+        permanent: false,
+      },
+      {
+        source: '/owner/dashboard',
+        destination: '/problems',
+        permanent: false,
+      },
+      {
+        source: '/problems/submit',
+        destination: '/problems',
+        permanent: false,
+      },
+    ];
+  },
 };

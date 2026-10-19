@@ -16,7 +16,7 @@ const MockInterviewSession: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [fetchingNext, setFetchingNext] = useState(false);
     const [submitting, setSubmitting] = useState(false);
-    const [timeLeft, setTimeLeft] = useState(15 * 60); // 15 mins default
+    const [timeLeft, setTimeLeft] = useState(15 * 60);
     const [isThinking, setIsThinking] = useState(false);
     const [interviewSession, setInterviewSession] = useState<any[]>([]);
     const [lastEvaluation, setLastEvaluation] = useState<any>(null);
@@ -42,7 +42,6 @@ const MockInterviewSession: React.FC = () => {
             const data = res as any;
             setInterview(data);
 
-            // Reconstruct session from existing answers if any
             const existingAnswers = data.questions
                 .filter((q: any) => q.is_answered)
                 .map((q: any) => ({
@@ -54,7 +53,6 @@ const MockInterviewSession: React.FC = () => {
                 }));
             setInterviewSession(existingAnswers);
 
-            // Find first unanswered question
             const index = data.questions.findIndex((q: any) => !q.is_answered);
             setCurrentQuestionIndex(index !== -1 ? index : 0);
         } catch (err) {
@@ -77,14 +75,9 @@ const MockInterviewSession: React.FC = () => {
         setIsThinking(true);
         try {
             const currentQ = interview.questions[currentQuestionIndex];
-            console.log(`Submitting answer for question index: ${currentQuestionIndex}, ID: ${currentQ.id}`);
-
             const res = await interviewService.submitAnswer(currentQ.id, answer);
             const evalData = res as any;
 
-            console.log("API Response:", evalData);
-
-            // Store in session state as requested
             const sessionEntry = {
                 question: currentQ.question_text,
                 user_answer: answer,
@@ -93,10 +86,8 @@ const MockInterviewSession: React.FC = () => {
                 feedback: evalData.feedback
             };
             setInterviewSession(prev => [...prev, sessionEntry]);
-
             setLastEvaluation(evalData);
 
-            // Check for follow-up from backend
             if (evalData.follow_up) {
                 const newQuestions = [...interview.questions];
                 newQuestions.splice(currentQuestionIndex + 1, 0, evalData.follow_up);
@@ -126,20 +117,16 @@ const MockInterviewSession: React.FC = () => {
         setFetchingNext(true);
 
         try {
-            // Use backend sync to get next question as requested
             const nextRes = await interviewService.getNextQuestion(interview.id);
             const nextData = nextRes as any;
 
             if (nextData.next_available) {
-                console.log("Moving to next question:", nextData.question_id);
                 setCurrentQuestionIndex(prev => prev + 1);
             } else {
-                console.log("No more questions. Finalizing...");
                 finalizeAndExit();
             }
         } catch (err) {
             console.error("Failed to fetch next question", err);
-            // Fallback to local index increment if API fails
             if (currentQuestionIndex < interview.questions.length - 1) {
                 setCurrentQuestionIndex(prev => prev + 1);
             } else {
@@ -168,7 +155,6 @@ const MockInterviewSession: React.FC = () => {
         setIsThinking(true);
         try {
             const res = await interviewService.skipQuestion(currentQ.id) as any;
-            // Store skipped entry in session
             const sessionEntry = {
                 question: currentQ.question_text,
                 user_answer: '',
@@ -181,7 +167,6 @@ const MockInterviewSession: React.FC = () => {
             setLastEvaluation(res);
         } catch (err) {
             console.error('Skip question failed', err);
-            // Fallback: just move to next question if API fails
             proceedAfterAnswer();
         } finally {
             setIsThinking(false);
@@ -192,8 +177,8 @@ const MockInterviewSession: React.FC = () => {
         return (
             <Layout>
                 <div className="flex flex-col items-center justify-center min-h-[60vh]">
-                    <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-                    <p className="text-indigo-400 font-bold uppercase tracking-widest text-xs">Synchronizing Intelligence...</p>
+                    <div className="w-10 h-10 border-2 border-amber-400 border-t-transparent rounded-full animate-spin mb-3"></div>
+                    <p className="text-zinc-400 font-mono text-xs uppercase tracking-wider">Synchronizing Session Environment...</p>
                 </div>
             </Layout>
         );
@@ -204,196 +189,192 @@ const MockInterviewSession: React.FC = () => {
     return (
         <Layout>
             <Head>
-                <title>Interview Session • SkillMirror</title>
-                <link rel="stylesheet" href="/styles/mock-interview.css" />
+                <title>Interview Session • SkillMirror OS</title>
             </Head>
 
-            <div className="interview-container max-w-5xl mx-auto px-4 py-8">
-                <div className="session-header flex justify-between items-center mb-8">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+                {/* Header with Title and Timer */}
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-5 rounded-2xl bg-zinc-900/90 border border-zinc-800">
                     <div>
-                        <h2 className="text-2xl font-black text-white flex items-center gap-3">
-                            <span className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_15px_rgba(16,185,129,0.5)]"></span>
+                        <div className="flex items-center gap-2 mb-1">
+                            <span className="w-2 h-2 rounded-sm bg-emerald-400 animate-pulse"></span>
+                            <span className="text-xs font-mono text-zinc-400 uppercase tracking-wider">
+                                SIMULATION ACTIVE · #{id}
+                            </span>
+                        </div>
+                        <h2 className="text-lg font-mono font-bold text-zinc-100 uppercase tracking-tight">
                             {interview.role}
                         </h2>
-                        <p className="text-slate-500 text-sm font-bold uppercase tracking-widest mt-1">
-                            Step {currentQuestionIndex + 1} <span className="text-slate-700 mx-2">/</span> {interview.questions.length}
-                        </p>
                     </div>
-                    <div className="timer-pill bg-slate-900 border border-white/5 px-6 py-2 rounded-2xl flex items-center gap-3 shadow-xl">
-                        <i className="fa-solid fa-clock text-indigo-400"></i>
-                        <span className="font-mono text-white text-lg font-bold">{formatTime(timeLeft)}</span>
+                    <div className="flex items-center gap-3">
+                        <span className="text-xs font-mono text-zinc-500 uppercase tracking-wider">
+                            Q {currentQuestionIndex + 1} OF {interview.questions.length}
+                        </span>
+                        <div className="bg-zinc-950 border border-zinc-800 px-4 py-1.5 rounded-xl flex items-center gap-2">
+                            <i className="fa-solid fa-clock text-amber-400 text-xs"></i>
+                            <span className="font-mono text-zinc-100 text-sm font-bold tabular-nums">{formatTime(timeLeft)}</span>
+                        </div>
                     </div>
                 </div>
 
-                <div className="progress-bar w-full h-1.5 bg-slate-900 rounded-full mb-12 overflow-hidden border border-white/5">
+                {/* Progress Line */}
+                <div className="w-full h-1 bg-zinc-950 border border-zinc-800 rounded-full overflow-hidden">
                     <motion.div
-                        className="progress-fill h-full bg-gradient-to-r from-indigo-600 to-violet-600"
+                        className="h-full bg-amber-400"
                         initial={{ width: 0 }}
                         animate={{ width: `${((currentQuestionIndex + 1) / interview.questions.length) * 100}%` }}
-                        transition={{ duration: 0.8, ease: "circOut" }}
-                    ></motion.div>
+                        transition={{ duration: 0.4 }}
+                    />
                 </div>
 
                 <AnimatePresence>
                     <motion.div
                         key={currentQuestionIndex}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        transition={{ duration: 0.5 }}
-                        className="space-y-8"
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={{ duration: 0.2 }}
+                        className="space-y-6"
                     >
-                        <div className="flex flex-wrap gap-3">
-                            <span className="px-4 py-1.5 bg-indigo-500/10 text-indigo-400 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl border border-indigo-500/20 shadow-sm">
-                                {currentQ.category || 'TECHNICAL'}
-                            </span>
-                            <span className={`px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl border shadow-sm ${currentQ.difficulty_badge === 'Expert' ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' :
-                                currentQ.difficulty_badge === 'Hard' ? 'bg-orange-500/10 text-orange-400 border-orange-500/20' :
-                                    'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                        {/* Meta Tags & Question */}
+                        <div className="p-6 rounded-2xl bg-zinc-900/90 border border-zinc-800 space-y-4">
+                            <div className="flex flex-wrap items-center gap-2">
+                                <span className="px-2.5 py-1 bg-zinc-950 border border-zinc-800 text-amber-400 text-[10px] font-mono font-bold uppercase tracking-wider rounded-md">
+                                    {currentQ.category || 'TECHNICAL'}
+                                </span>
+                                <span className={`px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-wider rounded-md border ${
+                                    currentQ.difficulty_badge === 'Expert' || currentQ.difficulty_badge === 'Hard'
+                                        ? 'bg-zinc-950 text-rose-400 border-rose-500/30'
+                                        : 'bg-zinc-950 text-emerald-400 border-emerald-500/30'
                                 }`}>
-                                {currentQ.difficulty_badge || 'MODERATE'}
-                            </span>
-                        </div>
+                                    {currentQ.difficulty_badge || 'MODERATE'}
+                                </span>
+                            </div>
 
-                        <div className="question-text text-3xl font-bold text-white leading-tight mb-12">
-                            {currentQ.question_text}
+                            <div className="text-xl sm:text-2xl font-mono font-bold text-zinc-100 leading-snug">
+                                {currentQ.question_text}
+                            </div>
                         </div>
 
                         {interview.instant_feedback && lastEvaluation ? (
                             <motion.div
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                className="p-8 rounded-[2.5rem] border border-emerald-500/20 bg-emerald-500/5 backdrop-blur-3xl shadow-2xl relative overflow-hidden"
+                                initial={{ opacity: 0, y: 8 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="p-6 rounded-2xl border border-zinc-800 bg-zinc-900/90 space-y-5"
                             >
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 blur-[80px]" />
-
-                                <div className="flex justify-between items-center mb-8">
-                                    <h4 className="text-emerald-400 font-black uppercase tracking-[0.3em] text-xs flex items-center gap-3">
-                                        <i className="fa-solid fa-wand-magic-sparkles"></i> AI Deep Feedback
-                                    </h4>
-                                    <div className="flex items-center gap-3">
+                                <div className="flex justify-between items-center pb-3 border-b border-zinc-800">
+                                    <div className="flex items-center gap-2">
+                                        <span className="w-1.5 h-1.5 rounded-sm bg-emerald-400"></span>
+                                        <h4 className="text-zinc-200 font-mono font-bold text-xs uppercase tracking-wider">
+                                            AI Evaluation Telemetry
+                                        </h4>
+                                    </div>
+                                    <div className="flex items-center gap-2.5">
                                         {wasSkipped && (
-                                            <div className="px-4 py-1.5 bg-amber-500/20 border border-amber-500/30 text-amber-400 font-black text-[10px] uppercase tracking-widest rounded-xl flex items-center gap-2">
-                                                <i className="fa-solid fa-forward"></i> Skipped
-                                            </div>
+                                            <span className="px-2.5 py-0.5 bg-zinc-950 border border-amber-500/30 text-amber-400 font-mono text-[10px] uppercase">
+                                                Skipped
+                                            </span>
                                         )}
-                                        <div className="px-6 py-2 bg-emerald-500 text-white font-black text-xl rounded-2xl shadow-lg shadow-emerald-500/20">
-                                            {wasSkipped ? '0' : Math.round(lastEvaluation.score)}/10
+                                        <div className="px-3.5 py-1 bg-zinc-950 border border-zinc-800 text-emerald-400 font-mono font-bold text-base tabular-nums rounded-lg">
+                                            {wasSkipped ? '0' : Math.round(lastEvaluation.score)} / 10
                                         </div>
                                     </div>
                                 </div>
 
                                 {wasSkipped && (
-                                    <div className="mb-8 p-5 rounded-2xl bg-amber-500/5 border border-amber-500/20">
-                                        <p className="text-[10px] font-black text-amber-400 uppercase tracking-widest mb-2 flex items-center gap-2">
-                                            <i className="fa-solid fa-triangle-exclamation"></i> Question Skipped
-                                        </p>
-                                        <p className="text-sm text-slate-400">You didn't answer this question. Study the AI's ideal answer below to prepare for similar questions in real interviews.</p>
+                                    <div className="p-3.5 rounded-xl bg-zinc-950 border border-amber-500/20 text-xs font-mono text-zinc-400">
+                                        <p className="text-amber-400 font-bold mb-1 uppercase text-[10px]">Question Skipped</p>
+                                        Study the model reference answer below to incorporate architecture patterns in subsequent queries.
                                     </div>
                                 )}
 
-                                <div className="grid md:grid-cols-2 gap-10 mb-10">
-                                    <div className="space-y-3">
-                                        <p className="text-[10px] font-black text-emerald-500/60 uppercase tracking-widest">Key Strengths</p>
-                                        <p className="text-base text-slate-200 leading-relaxed font-medium">
-                                            {wasSkipped ? <span className="text-slate-500 italic">No answer provided</span> : (lastEvaluation.question?.strengths || lastEvaluation.strengths)}
+                                <div className="grid md:grid-cols-2 gap-4">
+                                    <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
+                                        <p className="text-[10px] font-mono font-bold text-emerald-400 uppercase tracking-wider">Observed Strengths</p>
+                                        <p className="text-xs font-mono text-zinc-300 leading-relaxed">
+                                            {wasSkipped ? <span className="text-zinc-600 italic">No candidate output provided</span> : (lastEvaluation.question?.strengths || lastEvaluation.strengths)}
                                         </p>
                                     </div>
-                                    <div className="space-y-3">
-                                        <p className="text-[10px] font-black text-rose-500/60 uppercase tracking-widest">Points for Growth</p>
-                                        <p className="text-base text-slate-200 leading-relaxed font-medium">{lastEvaluation.question?.weaknesses?.split('.')[0] || lastEvaluation.feedback}.</p>
+                                    <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-1.5">
+                                        <p className="text-[10px] font-mono font-bold text-rose-400 uppercase tracking-wider">Optimization Directives</p>
+                                        <p className="text-xs font-mono text-zinc-300 leading-relaxed">
+                                            {lastEvaluation.question?.weaknesses?.split('.')[0] || lastEvaluation.feedback}.
+                                        </p>
                                     </div>
                                 </div>
 
-                                <div className="p-6 bg-white/[0.03] rounded-3xl border border-white/5 mb-8">
-                                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Interviewer's Ideal Perspective</p>
-                                    <p className="text-sm text-slate-300 italic">"{lastEvaluation.ai_answer}"</p>
+                                <div className="p-4 bg-zinc-950 rounded-xl border border-zinc-800 space-y-1.5">
+                                    <p className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-wider">Principal Reference Architecture</p>
+                                    <p className="text-xs font-mono text-zinc-300 leading-relaxed italic">"{lastEvaluation.ai_answer}"</p>
                                 </div>
 
                                 <button
                                     onClick={proceedAfterAnswer}
-                                    className="w-full py-5 bg-emerald-600 text-white rounded-[1.8rem] font-black text-xs uppercase tracking-[0.2em] hover:bg-emerald-500 hover:scale-[1.02] transition-all shadow-xl shadow-emerald-600/20 active:scale-95 flex items-center justify-center gap-3"
+                                    className="w-full py-3.5 px-6 bg-white hover:bg-zinc-200 text-zinc-950 rounded-xl font-mono font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
                                 >
-                                    {currentQuestionIndex === interview.questions.length - 1 ? 'Finish & See Report' : 'Proceed to Next Step'}
-                                    <i className={`fa-solid ${currentQuestionIndex === interview.questions.length - 1 ? 'fa-check-double' : 'fa-arrow-right'}`}></i>
+                                    <span>{currentQuestionIndex === interview.questions.length - 1 ? 'Finalize Session & Synthesize Report' : 'Proceed to Next Step'}</span>
+                                    <i className={`fa-solid ${currentQuestionIndex === interview.questions.length - 1 ? 'fa-check-double' : 'fa-arrow-right'} text-xs`}></i>
                                 </button>
                             </motion.div>
                         ) : (
-                            <div className="relative group">
-                                <textarea
-                                    className={`answer-area w-full min-h-[250px] bg-slate-900/50 backdrop-blur-xl border-2 border-white/5 rounded-[2.5rem] p-8 text-lg text-slate-200 focus:border-indigo-500/50 focus:outline-none transition-all placeholder:text-slate-700 ${isThinking || fetchingNext ? 'opacity-30 pointer-events-none' : ''}`}
-                                    placeholder="Synthesize your detailed technical response here..."
-                                    value={answer}
-                                    onChange={(e) => setAnswer(e.target.value)}
-                                    disabled={submitting || fetchingNext}
-                                ></textarea>
+                            <div className="space-y-4">
+                                <div className="relative">
+                                    <textarea
+                                        className={`w-full min-h-[220px] bg-zinc-900/90 border border-zinc-800 focus:border-amber-400 rounded-2xl p-5 text-sm font-mono text-zinc-200 outline-none transition-colors placeholder:text-zinc-600 ${isThinking || fetchingNext ? 'opacity-30 pointer-events-none' : ''}`}
+                                        placeholder="Formulate your technical explanation, architectural trade-offs, and design patterns here..."
+                                        value={answer}
+                                        onChange={(e) => setAnswer(e.target.value)}
+                                        disabled={submitting || fetchingNext}
+                                    />
 
-                                {isThinking && (
-                                    <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                        <div className="relative mb-6">
-                                            <div className="w-20 h-20 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin"></div>
-                                            <i className="fa-solid fa-brain text-indigo-400 text-2xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse"></i>
+                                    {isThinking && (
+                                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-950/70 rounded-2xl">
+                                            <div className="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full animate-spin mb-3"></div>
+                                            <p className="text-amber-400 font-mono text-xs uppercase tracking-widest">Evaluating Candidate Logic...</p>
                                         </div>
-                                        <p className="text-indigo-400 font-black uppercase tracking-[0.4em] text-[10px] text-glow-premium">Analyzing Technical Depth...</p>
-                                    </div>
-                                )}
+                                    )}
 
-                                {fetchingNext && (
-                                    <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                        <p className="text-indigo-400 font-black uppercase tracking-[0.4em] text-[10px] animate-pulse">Syncing Next Challenge...</p>
+                                    {fetchingNext && (
+                                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-950/70 rounded-2xl">
+                                            <p className="text-amber-400 font-mono text-xs uppercase tracking-widest animate-pulse">Syncing Next Challenge...</p>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="flex flex-col sm:flex-row gap-3 items-center justify-between pt-2">
+                                    <div className="flex gap-2 w-full sm:w-auto">
+                                        <button
+                                            onClick={handleSkip}
+                                            disabled={submitting || fetchingNext || isThinking}
+                                            className="px-4 py-2.5 bg-zinc-950 border border-zinc-800 text-zinc-400 rounded-xl font-mono font-bold text-xs uppercase tracking-wider hover:border-zinc-700 transition-all disabled:opacity-30 flex items-center gap-1.5 cursor-pointer"
+                                        >
+                                            <i className="fa-solid fa-forward text-[10px]"></i>
+                                            <span>Skip Question</span>
+                                        </button>
+                                        <button
+                                            onClick={handleRetry}
+                                            disabled={!answer || submitting || fetchingNext}
+                                            className="px-4 py-2.5 bg-zinc-950 border border-zinc-800 text-zinc-400 rounded-xl font-mono font-bold text-xs uppercase tracking-wider hover:border-zinc-700 transition-all disabled:opacity-30 flex items-center gap-1.5 cursor-pointer"
+                                        >
+                                            <i className="fa-solid fa-rotate-left text-[10px]"></i>
+                                            <span>Clear</span>
+                                        </button>
                                     </div>
-                                )}
+
+                                    <button
+                                        onClick={handleSubmitAnswer}
+                                        disabled={!answer.trim() || submitting || fetchingNext}
+                                        className="w-full sm:w-auto px-6 py-2.5 bg-amber-400 hover:bg-amber-300 text-zinc-950 rounded-xl font-mono font-bold text-xs uppercase tracking-wider transition-all disabled:opacity-30 flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+                                    >
+                                        <span>{currentQuestionIndex === interview.questions.length - 1 ? 'Submit & Finalize' : 'Submit Response'}</span>
+                                        <i className="fa-solid fa-paper-plane text-[10px]"></i>
+                                    </button>
+                                </div>
                             </div>
                         )}
                     </motion.div>
                 </AnimatePresence>
-
-                <div className="session-footer flex flex-col md:flex-row gap-6 items-center justify-between mt-12 pt-8 border-t border-white/5">
-                    <div className="flex gap-4">
-                        {!lastEvaluation && (
-                            <button
-                                onClick={handleSkip}
-                                disabled={submitting || fetchingNext || isThinking}
-                                className="px-8 py-4 bg-white/5 border border-white/10 text-slate-400 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all disabled:opacity-20 flex items-center gap-2"
-                            >
-                                {isThinking ? <><i className="fa-solid fa-spinner animate-spin"></i> Getting AI Answer...</> : <>Skip Concept</>}
-                            </button>
-                        )}
-                        {!lastEvaluation && (
-                            <button
-                                onClick={handleRetry}
-                                disabled={!answer || submitting || fetchingNext}
-                                className="px-8 py-4 bg-amber-500/5 border border-amber-500/10 text-amber-500/60 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-amber-500/10 transition-all disabled:opacity-20"
-                            >
-                                <i className="fa-solid fa-rotate-left mr-2"></i> Retry Question
-                            </button>
-                        )}
-                    </div>
-
-                    <div className="flex gap-4 items-center">
-                        <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest mr-4 hidden lg:block">Press Alt + Enter to Submit</p>
-                        {!lastEvaluation && (
-                            <button
-                                onClick={handleSubmitAnswer}
-                                disabled={!answer.trim() || submitting || fetchingNext}
-                                className="px-12 py-5 bg-indigo-600 text-white rounded-[1.8rem] font-black text-xs uppercase tracking-[0.3em] hover:bg-indigo-500 hover:scale-[1.05] transition-all shadow-2xl shadow-indigo-600/30 disabled:opacity-20 flex items-center gap-4"
-                            >
-                                {currentQuestionIndex === interview.questions.length - 1 ? 'COMPLETE SESSION' : 'SUBMIT ANSWER'}
-                                <i className="fa-solid fa-paper-plane text-[10px]"></i>
-                            </button>
-                        )}
-                    </div>
-                </div>
             </div>
-
-            <style jsx global>{`
-                .text-glow-premium {
-                    text-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
-                }
-                textarea::placeholder {
-                    opacity: 0.5;
-                }
-            `}</style>
         </Layout>
     );
 };

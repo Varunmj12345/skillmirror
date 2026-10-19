@@ -2,6 +2,9 @@ import apiClient from './apiClient';
 
 export interface CareerChatResponse {
   reply: string;
+  latency_ms?: number;
+  model?: string;
+  provider?: string;
 }
 
 export const sendCareerMessage = async (message: string): Promise<CareerChatResponse> => {

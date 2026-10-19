@@ -13,15 +13,15 @@ const THEME_STORAGE_KEY = 'sm_theme';
 const LEGACY_STORAGE_KEY = 'sm_theme_mode';
 
 const ThemeContext = createContext<ThemeContextType>({
-  theme: 'light',
-  effectiveTheme: 'light',
+  theme: 'dark',
+  effectiveTheme: 'dark',
   setTheme: () => {},
   toggleTheme: () => {},
 });
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [theme, setThemeState] = useState<ThemeMode>('light');
-  const [effectiveTheme, setEffectiveTheme] = useState<'dark' | 'light'>('light');
+  const [theme, setThemeState] = useState<ThemeMode>('dark');
+  const [effectiveTheme, setEffectiveTheme] = useState<'dark' | 'light'>('dark');
   const [mounted, setMounted] = useState(false);
 
   const applyThemeToDOM = (resolved: 'dark' | 'light') => {
@@ -66,11 +66,11 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     ripple.style.left = `${x}px`;
     ripple.style.top = `${y}px`;
     if (isToDark) {
-      ripple.style.borderColor = 'rgba(0, 217, 255, 0.7)';
-      ripple.style.boxShadow = '0 0 50px rgba(0, 217, 255, 0.35), inset 0 0 35px rgba(99, 102, 241, 0.3)';
+      ripple.style.borderColor = 'rgba(245, 158, 11, 0.6)';
+      ripple.style.boxShadow = '0 0 50px rgba(245, 158, 11, 0.3), inset 0 0 35px rgba(245, 158, 11, 0.2)';
     } else {
-      ripple.style.borderColor = 'rgba(37, 99, 235, 0.6)';
-      ripple.style.boxShadow = '0 0 50px rgba(37, 99, 235, 0.3), inset 0 0 35px rgba(14, 165, 233, 0.25)';
+      ripple.style.borderColor = 'rgba(217, 119, 6, 0.5)';
+      ripple.style.boxShadow = '0 0 50px rgba(217, 119, 6, 0.25), inset 0 0 35px rgba(217, 119, 6, 0.15)';
     }
 
     document.body.appendChild(ripple);
@@ -156,7 +156,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   useEffect(() => {
     setMounted(true);
-    let initialMode: ThemeMode = 'light';
+    let initialMode: ThemeMode = 'dark';
 
     if (typeof window !== 'undefined') {
       try {

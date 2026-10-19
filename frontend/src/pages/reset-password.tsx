@@ -35,68 +35,73 @@ const ResetPasswordPage: React.FC = () => {
     return (
         <Layout>
             <Head>
-                <title>Reset Password • SkillMirror AI</title>
+                <title>Reset Password • SkillMirror Core</title>
             </Head>
-            <div className="min-h-[85vh] flex items-center justify-center p-6 bg-slate-950">
-                <div className="max-w-md w-full glass-panel p-10 border-slate-800 shadow-3xl">
-                    <div className="text-center mb-10">
-                        <div className="w-16 h-16 bg-violet-600 rounded-3xl mx-auto mb-6 flex items-center justify-center shadow-2xl shadow-violet-600/30">
-                            <i className="fa-solid fa-key text-white text-3xl"></i>
+            <div className="min-h-[85vh] flex items-center justify-center p-6 bg-zinc-950 text-zinc-200">
+                <div className="max-w-md w-full bg-zinc-900/95 border border-zinc-800 p-8 sm:p-10 space-y-6">
+                    <div className="text-center mb-8">
+                        <div className="w-12 h-12 bg-zinc-950 border border-zinc-800 mx-auto mb-4 flex items-center justify-center text-amber-400">
+                            <i className="fa-solid fa-key text-xl"></i>
                         </div>
-                        <h1 className="text-2xl font-black text-white tracking-tight">Set New Password</h1>
-                        <p className="text-slate-500 text-xs font-bold mt-2 uppercase tracking-[0.2em]">Security Protocol Update</p>
+                        <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-amber-400 flex items-center justify-center gap-1.5">
+                            <span className="w-1.5 h-1.5 bg-amber-400" />
+                            SECURITY PROTOCOL UPDATE
+                        </div>
+                        <h1 className="text-2xl font-mono font-bold text-white tracking-tight mt-1">Set New Password</h1>
+                        <p className="text-zinc-400 text-xs mt-1">Enter your new credentials to restore neural access.</p>
                     </div>
 
                     {success ? (
                         <div className="space-y-6">
-                            <div className="p-6 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-2xl text-center">
-                                <i className="fa-solid fa-circle-check text-2xl mb-3 block"></i>
-                                <p className="text-sm font-bold">Password Reset Successful!</p>
-                                <p className="text-[10px] mt-2 text-slate-400 uppercase tracking-widest">Redirecting to login...</p>
+                            <div className="p-6 bg-emerald-950/20 border border-emerald-800/60 text-emerald-400 text-center space-y-2">
+                                <span className="w-2 h-2 bg-emerald-400 inline-block mb-1" />
+                                <p className="text-sm font-mono font-bold">Password Reset Successful!</p>
+                                <p className="text-xs text-zinc-400 font-mono">Redirecting to login portal...</p>
                             </div>
                         </div>
                     ) : (
-                        <form onSubmit={handleSubmit} className="space-y-6">
+                        <form onSubmit={handleSubmit} className="space-y-5">
                             {error && (
-                                <div className="p-4 bg-red-500/10 border border-red-500/20 text-red-400 rounded-2xl text-[10px] font-bold uppercase tracking-widest text-center">
-                                    {error}
+                                <div className="p-3.5 bg-rose-950/20 border border-rose-800/60 text-rose-400 text-xs font-mono text-center flex items-center justify-center gap-2">
+                                    <span className="w-1.5 h-1.5 bg-rose-400" />
+                                    <span>{error}</span>
                                 </div>
                             )}
 
-                            <div>
-                                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">New Password</label>
+                            <div className="space-y-1.5">
+                                <label className="block text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest">New Password</label>
                                 <input
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
                                     placeholder="••••••••"
-                                    className="w-full px-5 py-4 bg-slate-900 border border-slate-800 rounded-2xl text-slate-100 placeholder:text-slate-700 focus:ring-2 focus:ring-violet-500/50 outline-none transition-all"
+                                    className="w-full px-4 py-3 bg-zinc-950 border border-zinc-800 text-xs font-mono text-white placeholder-zinc-600 focus:outline-none focus:border-amber-400"
                                 />
                             </div>
 
-                            <div>
-                                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Confirm New Password</label>
+                            <div className="space-y-1.5">
+                                <label className="block text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest">Confirm New Password</label>
                                 <input
                                     type="password"
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     required
                                     placeholder="••••••••"
-                                    className="w-full px-5 py-4 bg-slate-900 border border-slate-800 rounded-2xl text-slate-100 placeholder:text-slate-700 focus:ring-2 focus:ring-violet-500/50 outline-none transition-all"
+                                    className="w-full px-4 py-3 bg-zinc-950 border border-zinc-800 text-xs font-mono text-white placeholder-zinc-600 focus:outline-none focus:border-amber-400"
                                 />
                             </div>
 
                             <button
                                 type="submit"
                                 disabled={loading || !token}
-                                className="w-full btn-primary py-4 rounded-2xl text-xs font-black shadow-xl shadow-violet-600/20 transition-all active:scale-95 bg-violet-600 hover:bg-violet-500"
+                                className="w-full py-3.5 bg-amber-400 hover:bg-amber-300 text-black font-mono font-bold text-xs uppercase tracking-wider transition-colors disabled:opacity-50"
                             >
-                                {loading ? 'Updating Secret...' : 'Reset Password'}
+                                {loading ? 'Updating Secret...' : 'Reset Password →'}
                             </button>
 
                             {!token && (
-                                <p className="text-[10px] text-rose-400 font-bold text-center uppercase tracking-widest">Invalid search parameters detected.</p>
+                                <p className="text-xs font-mono text-rose-400 text-center">Invalid search parameters detected.</p>
                             )}
                         </form>
                     )}

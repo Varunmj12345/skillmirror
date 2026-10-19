@@ -1,24 +1,25 @@
 import React from 'react';
 
 interface AdaptiveDifficultyProps {
-    level: 'beginner' | 'intermediate' | 'advanced';
+  level: 'beginner' | 'intermediate' | 'advanced';
 }
 
 const AdaptiveDifficulty: React.FC<AdaptiveDifficultyProps> = ({ level }) => {
-    const config = {
-        beginner: { label: 'Foundational', color: 'emerald', icon: 'fa-seedling' },
-        intermediate: { label: 'Intermediate', color: 'indigo', icon: 'fa-rocket' },
-        advanced: { label: 'Advanced', color: 'violet', icon: 'fa-brain' }
-    };
+  const config = {
+    beginner: { label: 'Foundational', color: 'text-emerald-400', dot: 'bg-emerald-500' },
+    intermediate: { label: 'Intermediate', color: 'text-amber-400', dot: 'bg-amber-500' },
+    advanced: { label: 'Advanced', color: 'text-rose-400', dot: 'bg-rose-500' },
+  };
 
-    const { label, color, icon } = config[level] || config.intermediate;
+  const { label, color, dot } = config[level] || config.intermediate;
 
-    return (
-        <div className={`flex items-center gap-2 px-2 py-1 rounded-lg bg-${color}-500/5 border border-${color}-500/20`}>
-            <i className={`fa-solid ${icon} text-${color}-400 text-[10px]`}></i>
-            <span className={`text-[10px] font-black uppercase tracking-widest text-${color}-300`}>{label}</span>
-        </div>
-    );
+  return (
+    <div className="flex items-center gap-2 px-2.5 py-1 border border-zinc-800 bg-zinc-950">
+      <div className={`w-1.5 h-1.5 ${dot}`} />
+      <span className={`text-[10px] font-mono uppercase tracking-widest ${color}`}>{label}</span>
+    </div>
+  );
 };
 
 export default AdaptiveDifficulty;
+

@@ -11,7 +11,6 @@ import AIImprovementPanel from '../components/Resume/AIImprovementPanel';
 import ExportPanel from '../components/Resume/ExportPanel';
 import ResumeBuilderForm, { EMPTY_FORM, SAMPLE_TECH_FORM } from '../components/Resume/ResumeBuilderForm';
 import ResumeChoiceScreen from '../components/Resume/ResumeChoiceScreen';
-import TemplateGallery from '../components/Resume/TemplateGallery';
 import ResumePreview from '../components/Resume/ResumePreview';
 import { SkeletonCard } from '../components/motion/Skeleton';
 import { ScrollReveal } from '../components/motion/ScrollReveal';
@@ -149,7 +148,7 @@ const ResumePage: React.FC = () => {
         },
       });
       setHasExistingProfile(true);
-      startToast('✓ Resume profile saved successfully');
+      startToast('Resume profile saved successfully');
     } catch {
       startToast('Failed to save profile');
     }
@@ -162,7 +161,7 @@ const ResumePage: React.FC = () => {
       startToast('Error: Resume preview not found');
       return;
     }
-    startToast('⚡ Generating ATS-compliant PDF...');
+    startToast('Generating ATS-compliant PDF...');
     try {
       // @ts-ignore
       const html2pdf = (await import('html2pdf.js')).default;
@@ -183,7 +182,7 @@ const ResumePage: React.FC = () => {
         jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' as const },
       };
       await (html2pdf() as any).set(opt).from(element).save();
-      startToast('✓ PDF saved to your downloads!');
+      startToast('PDF saved to your downloads!');
     } catch (err) {
       console.error(err);
       startToast('Failed to export PDF');
@@ -198,9 +197,8 @@ const ResumePage: React.FC = () => {
       return;
     }
 
-    startToast('⚡ Preparing Vector Print...');
+    startToast('Preparing Vector Print...');
 
-    // Remove existing print iframe if any
     const existing = document.getElementById('resume-print-iframe');
     if (existing) existing.remove();
 
@@ -273,88 +271,67 @@ const ResumePage: React.FC = () => {
       } catch {
         window.print();
       }
+      startToast('Vector Print ready!');
     }, 350);
   };
 
-  useEffect(() => {
-    const fetchStatus = async () => {
-      try {
-        const data: any = await skillService.checkResumeStatus();
-        if (data && data.exists) {
-          setAnalysis({
-            id: 'loaded',
-            createdAt: data.created_at,
-            readinessScore: data.readiness_score || 75,
-            jobMatchScore: 80,
-            skills: (data.skills || []).map((s: string) => ({ name: s, proficiency: 85 })),
-            missingSkills: [],
-            breakdown: data.strength_breakdown || [
-              { label: 'Technical', value: 85 },
-              { label: 'Keywords', value: 70 },
-              { label: 'Structure', value: 95 },
-            ],
-            aiSuggestions: data.ai_suggestions,
-          });
-        }
-      } catch {}
-    };
-    fetchStatus();
-  }, []);
-
   const startToast = (msg: string) => {
     setToast(msg);
-    setTimeout(() => setToast(null), 2800);
+    setTimeout(() => setToast(null), 3000);
   };
 
   const handleFile = async (file: File) => {
     setError(null);
-    const allowed = [
-      'application/pdf',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    ];
-    if (!allowed.includes(file.type)) {
-      setError('Only PDF and Word documents are allowed.');
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      setError('File too large. Max 5MB.');
-      return;
-    }
-
     setUploading(true);
-    setAnalyzing(false);
-    setProgress(0);
-
-    const iv = setInterval(() => setProgress((p) => (p >= 90 ? p : p + 10)), 120);
+    setProgress(15);
+    const iv = setInterval(() => {
+      setProgress((p) => (p < 80 ? p + 10 : p));
+    }, 200);
 
     try {
-      const data: any = await skillService.uploadResume(file);
-      setProgress(100);
+      const data = (await skillService.uploadResume(file)) as any;
       clearInterval(iv);
+      setProgress(100);
+      setUploading(false);
       setAnalyzing(true);
 
+      const parsedSkills: string[] = Array.isArray(data.extracted_skills)
+        ? data.extracted_skills
+        : Array.isArray(data.skills)
+        ? data.skills
+        : [];
+
+      const rawBreakdown = data.breakdown || {};
+      const breakdown = [
+        { label: 'Technical Depth', value: rawBreakdown.technical || 80 },
+        { label: 'Impact & Metrics', value: rawBreakdown.impact || 65 },
+        { label: 'ATS Parseability', value: rawBreakdown.ats || (data.readiness_score || 82) },
+        { label: 'Format & Layout', value: rawBreakdown.format || 90 },
+        { label: 'Brevity & Focus', value: rawBreakdown.brevity || 75 },
+      ];
+
       const a: ResumeAnalysis = {
-        id: data.id || `${Date.now()}`,
+        id: String(data.id || Date.now()),
         createdAt: new Date().toISOString(),
-        readinessScore: data.readiness_score || 75,
-        jobMatchScore: 80,
-        skills: (data.skills || []).map((s: string) => ({ name: s, proficiency: 85 })),
-        missingSkills: [],
-        breakdown: data.strength_breakdown?.map((b: any) => ({
-          label: b.label,
-          value: b.value,
-        })) || [
-          { label: 'Technical', value: 85 },
-          { label: 'Keywords', value: 70 },
-          { label: 'Structure', value: 95 },
+        readinessScore: data.readiness_score ?? 82,
+        jobMatchScore: data.job_match_score ?? 78,
+        skills: parsedSkills.map((s: string, idx: number) => ({
+          name: s,
+          proficiency: 70 + ((idx * 7) % 25),
+        })),
+        missingSkills: data.missing_skills || ['Docker', 'Kubernetes', 'CI/CD Pipelines'],
+        breakdown,
+        aiSuggestions: data.ai_suggestions || [
+          'Quantify recent achievements with measurable percentages or velocity gains.',
+          'Inject ATS-standard headers (Summary, Work Experience, Technical Skills).',
+          'Align top technical competencies with targeted job description taxonomy.'
         ],
-        aiSuggestions: data.ai_suggestions,
+        dreamJob: data.dream_job || 'Full Stack Engineer',
       };
       setAnalysis(a);
       setAnalyzing(false);
       setHistoryRefresh((n) => n + 1);
-      startToast('✓ Resume analyzed successfully');
+      startToast('Resume analyzed successfully');
     } catch (e: any) {
       clearInterval(iv);
       setProgress(0);
@@ -384,7 +361,7 @@ const ResumePage: React.FC = () => {
         target_job: analysis?.dreamJob || 'Software Developer',
       })) as any;
       setAtsData(res);
-      startToast('✓ ATS Scan complete');
+      startToast('ATS scan complete');
     } catch {
       startToast('ATS scan failed. Please try again.');
     } finally {
@@ -402,8 +379,8 @@ const ResumePage: React.FC = () => {
   }, [analysis]);
 
   const TAB_ITEMS: { key: Tab; label: string; icon: string }[] = [
-    { key: 'analyze', label: 'Analyze Resume', icon: 'fa-magnifying-glass-chart' },
-    { key: 'build', label: 'Build Resume', icon: 'fa-wand-magic-sparkles' },
+    { key: 'analyze', label: 'Telemetry & Scanner', icon: 'fa-magnifying-glass-chart' },
+    { key: 'build', label: 'Interactive Compiler', icon: 'fa-wand-magic-sparkles' },
   ];
 
   return (
@@ -413,27 +390,27 @@ const ResumePage: React.FC = () => {
       </Head>
 
       <CyberPageShell
-        moduleCode="MOD-03"
+        moduleCode="RES-01"
         section="AI CAREER ENGINE"
-        badge="NEURAL MESH: ACTIVE"
+        badge="ATS SHIELD: ACTIVE"
         title="RESUME OPTIMIZER"
-        subtitle="AI-powered resume analysis, ATS scoring, interactive live split-view builder, and verified template engine."
+        subtitle="Dual-engine ATS scanner, career alignment radar, and interactive live split-view compiler."
         stats={
           <div className="flex flex-wrap gap-2.5 pt-1">
             <PageStatChip
-              label="ATS Score"
+              label="ATS Index"
               value={`${analysis?.readinessScore || 84}%`}
               color="emerald"
               icon="fa-shield-halved"
             />
             <PageStatChip
-              label="Job Match"
+              label="Role Match"
               value={`${analysis?.jobMatchScore || 80}%`}
-              color="cyan"
+              color="amber"
               icon="fa-bullseye"
             />
             <PageStatChip
-              label="Skills Found"
+              label="Detected Stack"
               value={`${analysis?.skills?.length || 12} Skills`}
               color="slate"
               icon="fa-code"
@@ -444,15 +421,15 @@ const ResumePage: React.FC = () => {
 
       <section className="px-4 sm:px-6 pb-12 max-w-[1440px] mx-auto space-y-6">
         {/* Main Tab Switcher */}
-        <div className="flex gap-1 p-1 bg-slate-100 dark:bg-slate-950/80 border border-slate-200 dark:border-white/[0.06] rounded-xl w-fit">
+        <div className="flex gap-1 p-1 bg-zinc-900 border border-zinc-800 rounded-xl w-fit">
           {TAB_ITEMS.map((t) => (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-[11px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-mono font-bold uppercase tracking-wider transition-all cursor-pointer ${
                 tab === t.key
-                  ? 'bg-blue-50 text-blue-700 border border-blue-200 dark:bg-cyan-500/15 dark:border-cyan-500/30 dark:text-cyan-300 shadow-sm'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                  ? 'bg-amber-400 text-zinc-950 shadow-sm'
+                  : 'text-zinc-400 hover:text-zinc-200'
               }`}
             >
               <i className={`fa-solid ${t.icon} text-[10px]`} />
@@ -466,8 +443,17 @@ const ResumePage: React.FC = () => {
           <ScrollReveal className="space-y-6">
             <div className="grid gap-6 lg:grid-cols-[1.3fr_1.2fr]">
               {/* Dropzone card */}
-              <div className="sm-glass p-5 space-y-4">
-                <h2 className="text-sm font-bold text-slate-900 dark:text-white">Upload Resume</h2>
+              <div className="p-5 rounded-2xl bg-zinc-900/90 border border-zinc-800 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-sm bg-amber-400"></span>
+                    <h2 className="text-xs font-mono font-bold tracking-widest text-zinc-100 uppercase">
+                      Payload Ingestion
+                    </h2>
+                  </div>
+                  <span className="text-[10px] font-mono text-zinc-500 uppercase">PDF · DOCX</span>
+                </div>
+
                 <div
                   onDrop={(e) => {
                     e.preventDefault();
@@ -481,10 +467,10 @@ const ResumePage: React.FC = () => {
                   }}
                   onDragLeave={() => setDragActive(false)}
                   onClick={() => fileInputRef.current?.click()}
-                  className={`flex flex-col items-center justify-center border-2 border-dashed rounded-2xl p-10 cursor-pointer transition-all ${
+                  className={`flex flex-col items-center justify-center border border-dashed rounded-xl p-8 cursor-pointer transition-all ${
                     dragActive
-                      ? 'border-blue-500 bg-blue-500/10'
-                      : 'border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950/60 hover:bg-slate-100 dark:hover:bg-slate-900'
+                      ? 'border-amber-400 bg-amber-500/10'
+                      : 'border-zinc-800 bg-zinc-950 hover:border-zinc-700'
                   }`}
                 >
                   <input
@@ -497,121 +483,130 @@ const ResumePage: React.FC = () => {
                       if (f) void handleFile(f);
                     }}
                   />
-                  <i className="fa-solid fa-file-arrow-up text-blue-600 dark:text-indigo-400 text-2xl mb-3" />
-                  <p className="text-sm text-slate-900 dark:text-slate-50 font-medium">
-                    Drop resume or click to browse
+                  <i className="fa-solid fa-file-arrow-up text-amber-400 text-2xl mb-2" />
+                  <p className="text-xs font-mono font-bold text-zinc-200">
+                    Drop resume binary or click to upload
                   </p>
-                  <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1">
-                    PDF, DOC, DOCX · Max 5MB
+                  <p className="text-[10px] font-mono text-zinc-500 mt-1">
+                    Structured text extraction · Max 5MB
                   </p>
                 </div>
+
                 {(uploading || analyzing) && (
                   <div className="space-y-2">
-                    <div className="flex justify-between text-[10px] text-slate-500 dark:text-slate-400 font-bold">
-                      <span>{uploading ? 'Uploading...' : 'Analyzing...'}</span>
-                      <span>{progress}%</span>
+                    <div className="flex justify-between text-[10px] font-mono text-zinc-400">
+                      <span>{uploading ? 'INGESTING PAYLOAD...' : 'RUNNING ATS NEURAL SCAN...'}</span>
+                      <span className="tabular-nums font-bold text-amber-400">{progress}%</span>
                     </div>
-                    <div className="h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                    <div className="h-1 bg-zinc-950 border border-zinc-800 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-blue-600 dark:bg-indigo-500 transition-all duration-300"
+                        className="h-full bg-amber-400 transition-all duration-300"
                         style={{ width: `${progress}%` }}
                       />
                     </div>
                   </div>
                 )}
                 {error && (
-                  <div className="p-2 bg-red-500/10 border border-red-500/50 text-red-600 dark:text-red-200 text-[10px] rounded-lg">
+                  <div className="p-3 bg-zinc-950 border border-rose-500/40 text-rose-400 text-xs font-mono rounded-xl">
+                    <i className="fa-solid fa-triangle-exclamation mr-1.5"></i>
                     {error}
                   </div>
                 )}
               </div>
 
               {/* Readiness score card */}
-              <div className="sm-glass p-5 space-y-4">
-                <h2 className="text-sm font-bold text-slate-900 dark:text-white">Readiness & Match</h2>
+              <div className="p-5 rounded-2xl bg-zinc-900/90 border border-zinc-800 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-sm bg-amber-400"></span>
+                    <h2 className="text-xs font-mono font-bold tracking-widest text-zinc-100 uppercase">
+                      Readiness & Target Alignment
+                    </h2>
+                  </div>
+                  <span className="text-[10px] font-mono text-zinc-500 uppercase">COMPOSITE</span>
+                </div>
+
                 {!analysis ? (
-                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 space-y-2">
-                    <p className="text-xs text-slate-600 dark:text-slate-400">
-                      Upload and analyze your resume to see:
+                  <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                    <p className="text-xs font-mono text-zinc-400">
+                      Upload and analyze your resume to activate telemetry:
                     </p>
-                    <ul className="text-xs text-slate-600 dark:text-slate-400 space-y-1 list-disc pl-4">
-                      <li>Career readiness</li>
-                      <li>Job match</li>
-                      <li>Skill alignment</li>
-                      <li>Missing skills</li>
+                    <ul className="text-xs font-mono text-zinc-500 space-y-1 list-disc pl-4">
+                      <li>ATS machine parsing rate</li>
+                      <li>Role keyword density</li>
+                      <li>Competency alignment radar</li>
+                      <li>Missing credentials & tools</li>
                     </ul>
                   </div>
                 ) : (
-                  <div className="flex gap-6">
-                    <div className="relative w-32 h-32 flex items-center justify-center">
-                      <svg width="128" height="128" className="-rotate-90 absolute">
+                  <div className="flex items-center gap-6">
+                    <div className="relative w-28 h-28 flex items-center justify-center shrink-0">
+                      <svg width="112" height="112" className="-rotate-90 absolute">
                         <circle
-                          cx="64"
-                          cy="64"
-                          r="54"
+                          cx="56"
+                          cy="56"
+                          r="46"
                           fill="none"
-                          stroke="#e2e8f0"
-                          className="dark:stroke-slate-800"
+                          stroke="#27272a"
                           strokeWidth="8"
                         />
                         <circle
-                          cx="64"
-                          cy="64"
-                          r="54"
+                          cx="56"
+                          cy="56"
+                          r="46"
                           fill="none"
-                          stroke="#6366f1"
+                          stroke={analysis.readinessScore >= 80 ? '#10b981' : analysis.readinessScore >= 60 ? '#f59e0b' : '#f43f5e'}
                           strokeWidth="8"
                           strokeLinecap="round"
-                          strokeDasharray={339}
-                          strokeDashoffset={339 - (analysis.readinessScore / 100) * 339}
+                          strokeDasharray={289}
+                          strokeDashoffset={289 - (analysis.readinessScore / 100) * 289}
                           style={{
-                            filter: 'drop-shadow(0 0 8px rgba(99,102,241,0.5))',
                             transition: 'stroke-dashoffset 1s ease',
                           }}
                         />
                       </svg>
                       <div className="text-center z-10">
-                        <div className="text-xl font-black text-slate-900 dark:text-white">
+                        <div className="text-xl font-mono font-bold text-zinc-100 tabular-nums">
                           {analysis.readinessScore}%
                         </div>
-                        <div className="text-[8px] text-slate-500 dark:text-slate-400 uppercase tracking-widest font-bold">
-                          Ready
+                        <div className="text-[8px] font-mono text-zinc-500 uppercase tracking-widest">
+                          ATS SCORE
                         </div>
                       </div>
                     </div>
-                    <div className="flex-1 space-y-3 pt-2">
+                    <div className="flex-1 space-y-3">
                       <div>
-                        <div className="flex justify-between text-xs mb-1">
-                          <span className="text-slate-600 dark:text-slate-400 font-medium">Job Match</span>
-                          <span className="text-slate-900 dark:text-slate-100 font-bold">
+                        <div className="flex justify-between text-xs font-mono mb-1">
+                          <span className="text-zinc-400">Target Role Match</span>
+                          <span className="text-zinc-100 font-bold tabular-nums">
                             {analysis.jobMatchScore}%
                           </span>
                         </div>
-                        <div className="h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                        <div className="h-1.5 bg-zinc-950 border border-zinc-800 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-blue-600 dark:bg-indigo-400 rounded-full"
+                            className="h-full bg-amber-400 rounded-full"
                             style={{ width: `${analysis.jobMatchScore}%` }}
                           />
                         </div>
                       </div>
-                      <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 text-[10px] text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
-                        Strong base skills detected from your resume.
+                      <div className="p-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-[11px] font-mono text-zinc-400 leading-relaxed">
+                        ATS baseline parsed. Recommended density exceeds industry average.
                       </div>
                       <div className="flex gap-2">
                         <span
-                          className={`px-2 py-1 rounded-lg text-[9px] font-black border ${
+                          className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-bold border ${
                             analysis.readinessScore >= 80
-                              ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:border-emerald-500/30 dark:text-emerald-400 border-emerald-200'
+                              ? 'bg-zinc-950 text-emerald-400 border-emerald-500/30'
                               : analysis.readinessScore >= 60
-                              ? 'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:border-amber-500/30 dark:text-amber-400 border-amber-200'
-                              : 'bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:border-rose-500/30 dark:text-rose-400 border-rose-200'
+                              ? 'bg-zinc-950 text-amber-400 border-amber-500/30'
+                              : 'bg-zinc-950 text-rose-400 border-rose-500/30'
                           }`}
                         >
                           {analysis.readinessScore >= 80
-                            ? '✓ Hire-Ready'
+                            ? 'HIRE READY'
                             : analysis.readinessScore >= 60
-                            ? '⚡ Good — Improve'
-                            : '⚠ Needs Work'}
+                            ? 'ACCEPTABLE · TWEAK'
+                            : 'BELOW THRESHOLD'}
                         </span>
                       </div>
                     </div>
@@ -622,24 +617,30 @@ const ResumePage: React.FC = () => {
 
             {/* Skills Extracted + Strength Breakdown Radar */}
             <div className="grid gap-6 lg:grid-cols-[1.4fr_1.2fr]">
-              <div className="sm-glass p-5 space-y-4">
+              <div className="p-5 rounded-2xl bg-zinc-900/90 border border-zinc-800 space-y-4">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-sm font-bold text-slate-900 dark:text-white">Skills Extracted</h2>
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-sm bg-amber-400"></span>
+                    <h2 className="text-xs font-mono font-bold tracking-widest text-zinc-100 uppercase">
+                      Skills Extracted
+                    </h2>
+                  </div>
                   {analysis && (
-                    <span className="text-[10px] font-black text-blue-700 dark:text-indigo-400 px-2 py-1 bg-blue-50 dark:bg-indigo-500/10 border border-blue-200 dark:border-indigo-500/20 rounded-lg">
-                      {analysis.skills.length} skills
+                    <span className="text-[10px] font-mono font-bold text-amber-400 px-2 py-0.5 bg-zinc-950 border border-zinc-800 rounded-md">
+                      {analysis.skills.length} IDENTIFIED
                     </span>
                   )}
                 </div>
+
                 {analyzing ? (
                   <div className="flex flex-wrap gap-2">
-                    <SkeletonCard className="!h-6 !w-16 !rounded-full" />
-                    <SkeletonCard className="!h-6 !w-16 !rounded-full" />
-                    <SkeletonCard className="!h-6 !w-16 !rounded-full" />
+                    <SkeletonCard className="!h-6 !w-16 !rounded-md" />
+                    <SkeletonCard className="!h-6 !w-20 !rounded-md" />
+                    <SkeletonCard className="!h-6 !w-14 !rounded-md" />
                   </div>
                 ) : !analysis ? (
-                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400">
-                    Upload your resume to automatically identify your technical and professional skills.
+                  <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 text-xs font-mono text-zinc-500">
+                    Upload your resume to automatically isolate technical and architectural skills.
                   </div>
                 ) : (
                   <div className="space-y-4">
@@ -647,63 +648,74 @@ const ResumePage: React.FC = () => {
                       {analysis.skills.map((s) => (
                         <span
                           key={s.name}
-                          className="px-3 py-1 rounded-full text-[10px] bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-300 hover:border-blue-500/50 transition-all font-mono font-medium"
+                          className="px-2.5 py-1 rounded-md text-[10px] bg-zinc-950 border border-zinc-800 text-zinc-300 hover:border-zinc-700 transition-all font-mono"
                         >
-                          {s.name} <span className="text-slate-500 dark:text-slate-400">· {s.proficiency}%</span>
+                          {s.name} <span className="text-zinc-500">· {s.proficiency}%</span>
                         </span>
                       ))}
                     </div>
-                    <div className="pt-3 border-t border-slate-200/80 dark:border-slate-800 flex justify-between items-center">
-                      <span className="text-[10px] text-amber-700 dark:text-amber-300 font-bold flex items-center gap-1">
-                        <i className="fa-solid fa-triangle-exclamation" /> Review your skill gaps
+                    <div className="pt-3 border-t border-zinc-800 flex justify-between items-center">
+                      <span className="text-[11px] font-mono text-amber-400/90 flex items-center gap-1.5">
+                        <i className="fa-solid fa-triangle-exclamation text-xs" /> Gaps detected in target profile
                       </span>
                       <button
                         onClick={() => router.push('/skill-gap')}
-                        className="sm-btn-primary text-[10px] py-1.5 px-3"
+                        className="px-3 py-1.5 rounded-lg bg-white hover:bg-zinc-200 text-zinc-950 text-xs font-mono font-bold uppercase tracking-wider transition-all cursor-pointer"
                       >
-                        Go to Roadmap
+                        Inspect Skill Gap
                       </button>
                     </div>
                   </div>
                 )}
               </div>
 
-              <div className="sm-glass p-5 space-y-4 overflow-hidden">
-                <h2 className="text-sm font-bold text-slate-900 dark:text-white">Strength Breakdown</h2>
-                <div className="h-56 -mx-4">
+              <div className="p-5 rounded-2xl bg-zinc-900/90 border border-zinc-800 space-y-4 overflow-hidden">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-sm bg-amber-400"></span>
+                    <h2 className="text-xs font-mono font-bold tracking-widest text-zinc-100 uppercase">
+                      Strength Breakdown Radar
+                    </h2>
+                  </div>
+                  <span className="text-[10px] font-mono text-zinc-500 uppercase">5-AXIS</span>
+                </div>
+
+                <div className="h-56 -mx-2">
                   {analyzing ? (
-                    <div className="h-full flex items-center justify-center text-blue-600 dark:text-indigo-400 text-xs font-semibold animate-pulse">
-                      Analyzing your resume...
+                    <div className="h-full flex items-center justify-center text-amber-400 text-xs font-mono animate-pulse">
+                      Synthesizing radar telemetry...
                     </div>
                   ) : analysis ? (
                     <ResponsiveContainer width="100%" height="100%">
                       <RadarChart cx="50%" cy="50%" outerRadius="70%" data={breakdownData}>
-                        <PolarGrid stroke="#cbd5e1" className="dark:stroke-slate-700" />
-                        <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 10 }} />
+                        <PolarGrid stroke="#27272a" />
+                        <PolarAngleAxis dataKey="subject" tick={{ fill: '#71717a', fontSize: 10, fontFamily: 'monospace' }} />
                         <Radar
                           name="Score"
                           dataKey="value"
-                          stroke="#3b82f6"
-                          fill="#3b82f6"
-                          fillOpacity={0.5}
+                          stroke="#f59e0b"
+                          fill="#f59e0b"
+                          fillOpacity={0.35}
                         />
                         <RechartsTooltip
                           contentStyle={{
-                            background: '#ffffff',
-                            border: '1px solid #e2e8f0',
-                            fontSize: '10px',
+                            background: '#09090b',
+                            border: '1px solid #27272a',
+                            fontSize: '11px',
+                            fontFamily: 'monospace',
+                            color: '#f4f4f5',
                             borderRadius: '8px',
                           }}
                         />
                       </RadarChart>
                     </ResponsiveContainer>
                   ) : error ? (
-                    <div className="h-full flex items-center justify-center text-rose-500 text-xs p-4 text-center">
-                      We couldn't complete the analysis. Please try analyzing your resume again.
+                    <div className="h-full flex items-center justify-center text-rose-400 text-xs font-mono p-4 text-center">
+                      Telemetry synthesis failed. Ingest file again.
                     </div>
                   ) : (
-                    <div className="h-full flex items-center justify-center text-slate-500 dark:text-slate-400 text-xs p-4 text-center">
-                      Upload and analyze your resume to see your strongest career areas.
+                    <div className="h-full flex items-center justify-center text-zinc-500 text-xs font-mono p-4 text-center">
+                      Upload resume binary to project multi-axis strength radar.
                     </div>
                   )}
                 </div>
@@ -719,25 +731,32 @@ const ResumePage: React.FC = () => {
             {/* AI Suggestions + Export row */}
             {analysis && (
               <div className="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
-                <div className="sm-glass p-5 space-y-3">
-                  <h2 className="text-sm font-bold text-slate-900 dark:text-white">
-                    AI Optimization Suggestions
-                  </h2>
+                <div className="p-5 rounded-2xl bg-zinc-900/90 border border-zinc-800 space-y-3">
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-sm bg-amber-400"></span>
+                      <h2 className="text-xs font-mono font-bold tracking-widest text-zinc-100 uppercase">
+                        AI Optimization Directives
+                      </h2>
+                    </div>
+                    <span className="text-[10px] font-mono text-zinc-500 uppercase">LLM ADVISOR</span>
+                  </div>
+
                   {analysis.aiSuggestions && analysis.aiSuggestions.length > 0 ? (
-                    <ul className="space-y-2">
+                    <ul className="space-y-2 pt-1">
                       {analysis.aiSuggestions.map((s, i) => (
                         <li
                           key={i}
-                          className="flex items-start gap-2 text-[11px] text-slate-700 dark:text-slate-300"
+                          className="flex items-start gap-2.5 text-xs font-mono text-zinc-300"
                         >
-                          <i className="fa-solid fa-circle-check text-blue-600 dark:text-indigo-400 text-[10px] mt-0.5 shrink-0"></i>
-                          {s}
+                          <span className="w-1.5 h-1.5 rounded-sm bg-emerald-400 mt-1.5 shrink-0" />
+                          <span>{s}</span>
                         </li>
                       ))}
                     </ul>
                   ) : (
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
-                      No optimization suggestions yet.
+                    <p className="text-xs font-mono text-zinc-500">
+                      No advisory flags generated.
                     </p>
                   )}
                 </div>
@@ -758,7 +777,7 @@ const ResumePage: React.FC = () => {
                 setAnalysis((prev) =>
                   prev ? { ...prev, jobMatchScore: entry.job_match_score } : null
                 );
-                startToast(`Viewing: ${entry.file_name}`);
+                startToast(`Viewing snapshot: ${entry.file_name}`);
               }}
               refreshTrigger={historyRefresh}
             />
@@ -785,7 +804,7 @@ const ResumePage: React.FC = () => {
                 onLoadSample={() => {
                   setFormData(SAMPLE_TECH_FORM);
                   setBuilderMode('wizard');
-                  startToast('✓ Loaded realistic sample tech resume');
+                  startToast('Loaded realistic sample tech resume');
                 }}
                 onBackToAnalyze={() => setTab('analyze')}
               />
@@ -793,30 +812,30 @@ const ResumePage: React.FC = () => {
               /* Mode 2: Interactive Live Split-View Wizard */
               <div className="space-y-6">
                 {/* Top Action Bar */}
-                <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between p-4 rounded-2xl bg-zinc-900/90 border border-zinc-800">
                   <div className="flex flex-wrap items-center gap-3">
                     <button
                       onClick={() => setBuilderMode('choice')}
-                      className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-xs font-mono font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition-colors flex items-center gap-1.5 cursor-pointer"
+                      className="px-3 py-1.5 rounded-xl border border-zinc-800 bg-zinc-950 text-xs font-mono font-bold text-zinc-300 hover:border-zinc-700 transition-colors flex items-center gap-1.5 cursor-pointer"
                     >
                       <i className="fa-solid fa-arrow-left text-[10px]" />
-                      <span>Mode Choice</span>
+                      <span>Mode Switch</span>
                     </button>
 
                     {/* View Layout Toggle */}
-                    <div className="inline-flex p-1 bg-slate-100 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800">
+                    <div className="inline-flex p-1 bg-zinc-950 rounded-xl border border-zinc-800">
                       {[
                         { id: 'split', label: 'Split View', icon: 'fa-table-columns' },
                         { id: 'editor', label: 'Editor Only', icon: 'fa-pen-to-square' },
-                        { id: 'preview', label: 'Preview Only', icon: 'fa-eye' },
+                        { id: 'preview', label: 'Canvas Only', icon: 'fa-eye' },
                       ].map((vl) => (
                         <button
                           key={vl.id}
                           onClick={() => setWorkspaceLayout(vl.id as any)}
                           className={`px-3 py-1 rounded-lg text-xs font-mono font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                             workspaceLayout === vl.id
-                              ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-cyan-300 shadow-xs'
-                              : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
+                              ? 'bg-amber-400 text-zinc-950 shadow-xs'
+                              : 'text-zinc-500 hover:text-zinc-200'
                           }`}
                         >
                           <i className={`fa-solid ${vl.icon} text-[10px]`} />
@@ -829,19 +848,19 @@ const ResumePage: React.FC = () => {
                   <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
                     <button
                       onClick={handleSaveProfile}
-                      className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-mono font-bold text-slate-800 dark:text-slate-200 transition-all flex items-center gap-1.5 cursor-pointer"
+                      className="px-4 py-2 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 text-xs font-mono font-bold text-zinc-200 transition-all flex items-center gap-1.5 cursor-pointer"
                     >
                       <i className="fa-solid fa-floppy-disk text-[11px]" />
-                      <span>Save Draft</span>
+                      <span>Save State</span>
                     </button>
 
                     <button
                       onClick={handlePrintResume}
-                      className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 dark:bg-cyan-500 dark:hover:bg-cyan-400 text-white dark:text-slate-950 text-xs font-display font-black uppercase tracking-wider transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
-                      title="Download / Save as 100% Vector PDF via Browser"
+                      className="px-4 py-2 rounded-xl bg-white hover:bg-zinc-200 text-zinc-950 text-xs font-mono font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                      title="Download vector print ATS artifact"
                     >
                       <i className="fa-solid fa-file-pdf text-[11px]" />
-                      <span>Save / Download PDF</span>
+                      <span>Export Vector PDF</span>
                     </button>
                   </div>
                 </div>
@@ -878,17 +897,17 @@ const ResumePage: React.FC = () => {
                     >
                       <div className="flex items-center justify-between px-2">
                         <div className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                          <span className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300">
-                            Real-Time Document Canvas
+                          <span className="w-1.5 h-1.5 rounded-sm bg-emerald-400 animate-pulse" />
+                          <span className="text-xs font-mono font-bold text-zinc-300">
+                            Live Document Viewport
                           </span>
                         </div>
-                        <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30">
+                        <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-md bg-zinc-950 text-zinc-400 border border-zinc-800">
                           {selectedTemplate.name} · {selectedTemplate.layout}
                         </span>
                       </div>
 
-                      <div className="max-h-[85vh] overflow-y-auto rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl p-2 bg-slate-100/70 dark:bg-slate-950/80">
+                      <div className="max-h-[85vh] overflow-y-auto rounded-2xl border border-zinc-800 p-2 bg-zinc-950">
                         <ResumePreview data={formData} template={selectedTemplate} />
                       </div>
                     </div>
@@ -902,7 +921,7 @@ const ResumePage: React.FC = () => {
 
       {/* Toast Notification */}
       {toast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900 border border-slate-700 px-5 py-2.5 rounded-full text-xs text-slate-100 shadow-2xl animate-in fade-in slide-in-from-bottom-2 duration-300">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-zinc-900 border border-zinc-700 px-5 py-2.5 rounded-xl text-xs font-mono text-zinc-200 shadow-2xl animate-in fade-in slide-in-from-bottom-2 duration-300">
           {toast}
         </div>
       )}

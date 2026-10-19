@@ -177,53 +177,76 @@ const AIInsightPanel = () => {
   };
 
   return (
-    <div className="sm-glass p-6 sm:p-7 rounded-2xl h-full flex flex-col justify-between shadow-light-card dark:shadow-none relative">
-      <div className="mb-6">
-        <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-blue-600 dark:text-indigo-400 mb-2">Neural Engine Insights</div>
-        <h3 className="text-xl sm:text-2xl font-display font-black text-slate-900 dark:text-white">Next Best Action</h3>
-        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-2 leading-relaxed font-sans">
-          Your readiness for "Senior Backend Engineer" has improved by 4% this week. 
-          Mastering <span className="text-blue-600 dark:text-brand-neural font-bold">Kafka Streams</span> will unlock a ₹3.5L salary increase.
+    <div className="border border-zinc-800 bg-zinc-900/90 p-6 flex flex-col justify-between h-full relative">
+      <div className="mb-5">
+        <div className="flex items-center gap-2 mb-2">
+          <div className="w-1.5 h-1.5 bg-amber-500 animate-pulse" />
+          <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">
+            NEURAL ENGINE INSIGHTS
+          </span>
+        </div>
+        <h3 className="text-base sm:text-lg font-normal tracking-tight text-white">
+          Next Best Action
+        </h3>
+        <p className="text-xs font-mono text-zinc-400 mt-2 leading-relaxed">
+          Your readiness for "Senior Backend Engineer" has improved by <span className="text-emerald-400 font-medium">4% this week</span>. 
+          Mastering <span className="text-white font-medium">Kafka Streams</span> will unlock a ₹3.5L salary increase.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-3">
+      <div className="space-y-2.5 my-2">
         {insights.map((insight) => (
-          <div key={insight.id} className="p-3.5 sm:p-4 bg-slate-50 dark:bg-white/5 border border-slate-200/70 dark:border-white/5 rounded-xl flex items-center justify-between group hover:bg-blue-50/70 dark:hover:bg-brand-neural/5 transition-colors shadow-light-sm dark:shadow-none">
-            <div className="flex flex-col">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{insight.label}</span>
-              <span className="text-lg sm:text-xl font-display font-black text-slate-900 dark:text-white">{insight.value}</span>
+          <div
+            key={insight.id}
+            className="p-3 border border-zinc-800 bg-zinc-950 flex items-center justify-between hover:border-zinc-700 transition-colors"
+          >
+            <div>
+              <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 block">
+                {insight.label}
+              </span>
+              <span className="text-sm font-mono font-medium text-white tabular-nums">
+                {insight.value}
+              </span>
             </div>
-            <div className="w-10 h-10 rounded-xl bg-white dark:bg-white/5 border border-slate-200/60 dark:border-transparent flex items-center justify-center text-lg shadow-sm">
-               {insight.status === 'rising' ? '📈' : insight.status === 'stable' ? '✨' : '🔥'}
+            <div className="flex items-center gap-2">
+              <span className={`text-[10px] font-mono uppercase tracking-widest ${
+                insight.status === 'rising' ? 'text-emerald-400' :
+                insight.status === 'stable' ? 'text-blue-400' : 'text-amber-400'
+              }`}>
+                {insight.status}
+              </span>
+              <div className={`w-1.5 h-1.5 ${
+                insight.status === 'rising' ? 'bg-emerald-500' :
+                insight.status === 'stable' ? 'bg-blue-500' : 'bg-amber-500'
+              }`} />
             </div>
           </div>
         ))}
       </div>
 
-      <div className="mt-6 pt-6 border-t border-slate-200/70 dark:border-white/5">
+      <div className="mt-5 pt-4 border-t border-zinc-800">
         <button
           onClick={handleDownloadPDF}
           disabled={downloading}
-          className="w-full py-3.5 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-[11px] font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-white hover:bg-blue-600 hover:text-white hover:border-blue-600 dark:hover:bg-brand-neural transition-all duration-300 shadow-light-sm dark:shadow-none flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-wait"
+          className="w-full py-2.5 border border-zinc-700 bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-mono transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
         >
           {downloading ? (
             <>
-              <i className="fa-solid fa-circle-notch fa-spin text-sm" />
-              <span>Generating Neural Report PDF...</span>
+              <i className="fa-solid fa-circle-notch fa-spin text-xs" />
+              <span>Generating Report PDF...</span>
             </>
           ) : (
             <>
-              <i className="fa-solid fa-file-arrow-down text-sm" />
-              <span>Download Full Readiness Report (PDF)</span>
+              <i className="fa-solid fa-file-arrow-down text-xs text-amber-500" />
+              <span>Download Readiness Report (PDF)</span>
             </>
           )}
         </button>
       </div>
 
       {toast && (
-        <div className="mt-3 p-3 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 rounded-xl text-emerald-700 dark:text-emerald-400 text-xs font-bold flex items-center gap-2 shadow-sm animate-in fade-in">
-          <i className="fa-solid fa-circle-check" />
+        <div className="mt-3 p-2.5 border border-emerald-500/30 bg-zinc-950 text-emerald-400 text-xs font-mono flex items-center gap-2">
+          <i className="fa-solid fa-circle-check text-emerald-400" />
           <span>{toast}</span>
         </div>
       )}
@@ -232,3 +255,4 @@ const AIInsightPanel = () => {
 };
 
 export default AIInsightPanel;
+

@@ -31,19 +31,25 @@ function GapHeatmap({ data }: HeatmapProps): React.ReactElement {
     };
 
     return (
-        <div className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none h-[450px] flex flex-col relative">
+        <div className="p-6 rounded-2xl bg-zinc-900/90 border border-zinc-800 h-[450px] flex flex-col relative">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                <h4 className="text-sm font-bold text-slate-900 dark:text-slate-400 flex items-center gap-2">
-                    <i className="fa-solid fa-fire text-rose-500"></i> Gap Severity Heatmap
-                </h4>
+                <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-sm bg-rose-400"></span>
+                    <h4 className="text-xs font-mono font-bold text-white uppercase tracking-widest">
+                        Gap Severity Heatmap
+                    </h4>
+                </div>
 
-                <div className="flex bg-slate-100 dark:bg-slate-900/80 p-1 rounded-xl border border-slate-200 dark:border-slate-800 self-stretch sm:self-auto overflow-x-auto no-scrollbar shadow-sm">
+                <div className="flex bg-zinc-950 p-1 rounded-lg border border-zinc-800 self-stretch sm:self-auto overflow-x-auto no-scrollbar">
                     {(['all', 'critical', 'technical', 'soft'] as const).map(f => (
                         <button
                             key={f}
                             onClick={() => setFilter(f)}
-                            className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${filter === f ? 'bg-white dark:bg-indigo-600/20 text-blue-600 dark:text-indigo-400 shadow-sm' : 'text-slate-600 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-400'
-                                }`}
+                            className={`px-3 py-1 rounded text-[9px] font-mono font-bold uppercase tracking-wider transition-all whitespace-nowrap ${
+                                filter === f
+                                    ? 'bg-zinc-800 text-amber-400 border border-zinc-700 shadow-sm'
+                                    : 'text-zinc-500 hover:text-zinc-300'
+                            }`}
                         >
                             {f}
                         </button>
@@ -66,31 +72,31 @@ function GapHeatmap({ data }: HeatmapProps): React.ReactElement {
                                 width={110}
                                 axisLine={false}
                                 tickLine={false}
-                                tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 700 }}
+                                tick={{ fill: '#a1a1aa', fontSize: 10, fontFamily: 'monospace', fontWeight: 600 }}
                             />
                             <Tooltip
-                                cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+                                cursor={{ fill: 'rgba(255,255,255,0.03)' }}
                                 content={({ active, payload }: any) => {
                                     if (active && payload && payload.length && payload[0]) {
                                         const item = payload[0];
                                         const value = typeof item.value === 'number' ? item.value : 0;
                                         return (
-                                            <div className="bg-slate-900 border border-slate-700 p-3 shadow-2xl rounded-xl min-w-[140px]">
-                                                <p className="text-xs font-black text-slate-50 mb-2 border-b border-slate-800 pb-1">{item.payload?.name || 'Skill'}</p>
+                                            <div className="bg-zinc-950 border border-zinc-800 p-3 shadow-2xl rounded-xl min-w-[140px] font-mono text-[10px]">
+                                                <p className="font-bold text-white mb-2 border-b border-zinc-800 pb-1">{item.payload?.name || 'Skill'}</p>
                                                 <div className="flex items-center gap-2">
-                                                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: getBarColor(value) }}></div>
-                                                    <p className="text-[10px] font-black uppercase" style={{ color: getBarColor(value) }}>
+                                                    <div className="w-1.5 h-1.5 rounded-sm" style={{ backgroundColor: getBarColor(value) }}></div>
+                                                    <p className="font-bold uppercase" style={{ color: getBarColor(value) }}>
                                                         {value >= 3 ? 'Critical' : value >= 2 ? 'Moderate' : 'Minor'} Gap
                                                     </p>
                                                 </div>
-                                                <p className="text-[9px] text-slate-500 mt-1 font-bold">Deficit: {value} Levels</p>
+                                                <p className="text-zinc-500 mt-1 font-bold">Deficit: {value} Levels</p>
                                             </div>
                                         );
                                     }
                                     return null;
                                 }}
                             />
-                            <Bar dataKey="gap" radius={[0, 4, 4, 0]} barSize={16}>
+                            <Bar dataKey="gap" radius={[0, 3, 3, 0]} barSize={14}>
                                 {filteredData.map((entry: any, index: number) => (
                                     <Cell key={`cell-${index}`} fill={getBarColor(entry.gap)} />
                                 ))}
@@ -99,27 +105,27 @@ function GapHeatmap({ data }: HeatmapProps): React.ReactElement {
                     </ResponsiveContainer>
                 ) : (
                     <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-center">
-                        <div className="w-16 h-16 rounded-full bg-slate-900 flex items-center justify-center text-slate-700 mb-4 border border-slate-800 border-dashed">
-                            <i className="fa-solid fa-filter-circle-xmark text-2xl opacity-20"></i>
+                        <div className="w-14 h-14 rounded-xl bg-zinc-950 flex items-center justify-center text-zinc-700 mb-3 border border-zinc-800 border-dashed">
+                            <i className="fa-solid fa-filter-circle-xmark text-lg opacity-40"></i>
                         </div>
-                        <p className="text-slate-500 text-xs font-black uppercase tracking-widest max-w-[200px]">No matches for current filter</p>
+                        <p className="text-zinc-500 text-xs font-mono uppercase tracking-widest max-w-[200px]">No matches for filter</p>
                     </div>
                 )}
             </div>
 
-            <div className="flex justify-between items-center pt-4 border-t border-slate-800/50">
+            <div className="flex justify-between items-center pt-3 border-t border-zinc-800 font-mono text-[9px]">
                 <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-rose-500"></div>
-                        <span className="text-[9px] font-black text-slate-600 uppercase">Critical</span>
+                    <div className="flex items-center gap-1.5">
+                        <div className="w-1.5 h-1.5 rounded-sm bg-rose-500"></div>
+                        <span className="text-zinc-500 uppercase tracking-wider">Critical</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-amber-500"></div>
-                        <span className="text-[9px] font-black text-slate-600 uppercase">Moderate</span>
+                    <div className="flex items-center gap-1.5">
+                        <div className="w-1.5 h-1.5 rounded-sm bg-amber-500"></div>
+                        <span className="text-zinc-500 uppercase tracking-wider">Moderate</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
-                        <span className="text-[9px] font-black text-slate-600 uppercase">Minor</span>
+                    <div className="flex items-center gap-1.5">
+                        <div className="w-1.5 h-1.5 rounded-sm bg-yellow-500"></div>
+                        <span className="text-zinc-500 uppercase tracking-wider">Minor</span>
                     </div>
                 </div>
             </div>

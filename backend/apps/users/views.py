@@ -494,41 +494,36 @@ class AuthorizedEnginesView(APIView):
             default_dashboard = '/dashboard'
             nav_sections = [
                 {
-                    'title': 'Command Center',
+                    'title': 'Core Workspaces',
                     'items': [
-                        {'href': '/dashboard', 'label': 'Intelligence Hub', 'icon': 'fa-gauge-high'},
+                        {'href': '/dashboard', 'label': 'Command Center', 'icon': 'fa-gauge-high'},
+                        {
+                            'href': '/skill-gap',
+                            'label': 'Diagnostic & Intel',
+                            'icon': 'fa-brain',
+                            'subRoutes': ['/skill-gap', '/resume', '/job-intelligence']
+                        },
+                        {
+                            'href': '/roadmap',
+                            'label': 'Career Roadmap',
+                            'icon': 'fa-compass',
+                            'subRoutes': ['/roadmap', '/smart-alerts']
+                        },
+                        {
+                            'href': '/problems',
+                            'label': 'Practice Studio',
+                            'icon': 'fa-code',
+                            'subRoutes': ['/problems', '/problems/matches', '/mock-interview', '/projects/status-center']
+                        },
                     ]
                 },
                 {
-                    'title': 'AI Career Engines',
+                    'title': 'Identity & System',
                     'items': [
-                        {'href': '/roadmap', 'label': 'Career Roadmap', 'icon': 'fa-compass'},
-                        {'href': '/skill-gap', 'label': 'Skill Gap Analysis', 'icon': 'fa-brain'},
-                        {'href': '/resume', 'label': 'Resume Builder', 'icon': 'fa-file-shield'},
-                        {'href': '/mock-interview', 'label': 'Mock Interview', 'icon': 'fa-headset'},
-                    ]
-                },
-                {
-                    'title': 'Market Intelligence',
-                    'items': [
-                        {'href': '/job-intelligence', 'label': 'Job Intelligence', 'icon': 'fa-network-wired'},
-                        {'href': '/smart-alerts', 'label': 'Smart Alerts', 'icon': 'fa-bolt-lightning'},
-                    ]
-                },
-                {
-                    'title': 'AI Practice & Assessments',
-                    'items': [
-                        {'href': '/problems', 'label': 'Practice Arena', 'icon': 'fa-code'},
-                        {'href': '/problems/matches', 'label': 'Gap Challenge Lab', 'icon': 'fa-bullseye'},
-                        {'href': '/projects/status-center', 'label': 'Submissions & Scorecards', 'icon': 'fa-chart-line'},
-                    ]
-                },
-                {
-                    'title': 'Admin & System',
-                    'items': [
-                        {'href': '/admin/problems', 'label': 'Admin Control Center', 'icon': 'fa-shield'},
                         {'href': '/profile', 'label': 'Admin Identity', 'icon': 'fa-id-card'},
                         {'href': '/settings', 'label': 'Account Settings', 'icon': 'fa-sliders'},
+                        {'href': '/bot-analytics', 'label': 'Bot Telemetry', 'icon': 'fa-chart-network', 'badge': 'AI INTEL'},
+                        {'href': '/admin/problems', 'label': 'Admin Control Center', 'icon': 'fa-shield', 'badge': 'ADMIN'},
                     ]
                 }
             ]
@@ -536,40 +531,35 @@ class AuthorizedEnginesView(APIView):
             default_dashboard = '/dashboard'
             nav_sections = [
                 {
-                    'title': 'Command Center',
+                    'title': 'Core Workspaces',
                     'items': [
-                        {'href': '/dashboard', 'label': 'Intelligence Hub', 'icon': 'fa-gauge-high'},
+                        {'href': '/dashboard', 'label': 'Command Center', 'icon': 'fa-gauge-high'},
+                        {
+                            'href': '/skill-gap',
+                            'label': 'Diagnostic & Intel',
+                            'icon': 'fa-brain',
+                            'subRoutes': ['/skill-gap', '/resume', '/job-intelligence']
+                        },
+                        {
+                            'href': '/roadmap',
+                            'label': 'Career Roadmap',
+                            'icon': 'fa-compass',
+                            'subRoutes': ['/roadmap', '/smart-alerts']
+                        },
+                        {
+                            'href': '/problems',
+                            'label': 'Practice Studio',
+                            'icon': 'fa-code',
+                            'subRoutes': ['/problems', '/problems/matches', '/mock-interview', '/projects/status-center']
+                        },
                     ]
                 },
                 {
-                    'title': 'AI Career Engines',
-                    'items': [
-                        {'href': '/roadmap', 'label': 'Career Roadmap', 'icon': 'fa-compass'},
-                        {'href': '/skill-gap', 'label': 'Skill Gap Analysis', 'icon': 'fa-brain'},
-                        {'href': '/resume', 'label': 'Resume Builder', 'icon': 'fa-file-shield'},
-                        {'href': '/mock-interview', 'label': 'Mock Interview', 'icon': 'fa-headset'},
-                    ]
-                },
-                {
-                    'title': 'Market Intelligence',
-                    'items': [
-                        {'href': '/job-intelligence', 'label': 'Job Intelligence', 'icon': 'fa-network-wired'},
-                        {'href': '/smart-alerts', 'label': 'Smart Alerts', 'icon': 'fa-bolt-lightning'},
-                    ]
-                },
-                {
-                    'title': 'AI Practice & Assessments',
-                    'items': [
-                        {'href': '/problems', 'label': 'Practice Arena', 'icon': 'fa-code'},
-                        {'href': '/problems/matches', 'label': 'Gap Challenge Lab', 'icon': 'fa-bullseye'},
-                        {'href': '/projects/status-center', 'label': 'Submissions & Scorecards', 'icon': 'fa-chart-line'},
-                    ]
-                },
-                {
-                    'title': 'Profile & Settings',
+                    'title': 'Identity & System',
                     'items': [
                         {'href': '/profile', 'label': 'Career Identity', 'icon': 'fa-id-card'},
                         {'href': '/settings', 'label': 'Account Settings', 'icon': 'fa-sliders'},
+                        {'href': '/bot-analytics', 'label': 'Bot Telemetry', 'icon': 'fa-chart-network', 'badge': 'AI INTEL'},
                     ]
                 }
             ]

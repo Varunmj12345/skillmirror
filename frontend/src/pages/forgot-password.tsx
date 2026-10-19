@@ -28,54 +28,60 @@ const ForgotPassword: React.FC = () => {
   return (
     <Layout>
       <Head>
-        <title>Recover Identity • SkillMirror AI</title>
+        <title>Recover Identity • SkillMirror Core</title>
       </Head>
-      <div className="min-h-[85vh] flex items-center justify-center p-6 bg-slate-950">
-        <div className="max-w-md w-full glass-panel p-10 border-slate-800 shadow-3xl animate-in fade-in zoom-in duration-500">
-          <div className="text-center mb-10">
-            <div className="w-16 h-16 bg-amber-500 rounded-3xl mx-auto mb-6 flex items-center justify-center shadow-2xl shadow-amber-500/30">
-              <i className="fa-solid fa-burst text-white text-3xl"></i>
+      <div className="min-h-[85vh] flex items-center justify-center p-6 bg-zinc-950 text-zinc-200">
+        <div className="max-w-md w-full bg-zinc-900/95 border border-zinc-800 p-8 sm:p-10 space-y-6">
+          <div className="text-center mb-8">
+            <div className="w-12 h-12 bg-zinc-950 border border-zinc-800 mx-auto mb-4 flex items-center justify-center text-amber-400">
+              <i className="fa-solid fa-key text-xl"></i>
             </div>
-            <h1 className="text-2xl font-black text-white tracking-tight">Identity Recovery</h1>
-            <p className="text-slate-500 text-xs font-bold mt-2 uppercase tracking-[0.2em]">Secure Protocol Initiation</p>
+            <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-amber-400 flex items-center justify-center gap-1.5">
+              <span className="w-1.5 h-1.5 bg-amber-400" />
+              IDENTITY RECOVERY
+            </div>
+            <h1 className="text-2xl font-mono font-bold text-white tracking-tight mt-1">Reset Password</h1>
+            <p className="text-zinc-400 text-xs mt-1">Initiate verified recovery protocol to access your profile.</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
             {message && (
-              <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-2xl text-[10px] font-bold uppercase tracking-widest text-center">
-                {message}
+              <div className="p-3.5 bg-emerald-950/20 border border-emerald-800/60 text-emerald-400 text-xs font-mono text-center flex items-center justify-center gap-2">
+                <span className="w-1.5 h-1.5 bg-emerald-400" />
+                <span>{message}</span>
               </div>
             )}
             {error && (
-              <div className="p-4 bg-red-500/10 border border-red-500/20 text-red-400 rounded-2xl text-[10px] font-bold uppercase tracking-widest text-center">
-                {error}
+              <div className="p-3.5 bg-rose-950/20 border border-rose-800/60 text-rose-400 text-xs font-mono text-center flex items-center justify-center gap-2">
+                <span className="w-1.5 h-1.5 bg-rose-400" />
+                <span>{error}</span>
               </div>
             )}
 
-            <div>
-              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Registered Email</label>
+            <div className="space-y-1.5">
+              <label className="block text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest">Registered Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="name@company.com"
-                className="w-full px-5 py-4 bg-slate-900 border border-slate-800 rounded-2xl text-slate-100 placeholder:text-slate-700 focus:ring-2 focus:ring-amber-500/50 outline-none transition-all"
+                className="w-full px-4 py-3 bg-zinc-950 border border-zinc-800 text-xs font-mono text-white placeholder-zinc-600 focus:outline-none focus:border-amber-400"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full btn-primary py-4 rounded-2xl text-xs font-black shadow-xl shadow-amber-600/20 transition-all active:scale-95 bg-amber-600 hover:bg-amber-500"
+              className="w-full py-3.5 bg-amber-400 hover:bg-amber-300 text-black font-mono font-bold text-xs uppercase tracking-wider transition-colors disabled:opacity-50"
             >
-              {loading ? 'Processing...' : 'Request Reset Link'}
+              {loading ? 'Processing...' : 'Request Reset Link →'}
             </button>
           </form>
 
-          <p className="mt-8 text-center text-[10px] font-bold uppercase tracking-widest">
+          <p className="pt-4 text-center text-xs font-mono border-t border-zinc-800">
             <Link href="/login">
-              <span className="text-slate-500 hover:text-white transition-colors cursor-pointer">Back to Gateway</span>
+              <span className="text-zinc-500 hover:text-white transition-colors cursor-pointer">← Back to Gateway</span>
             </Link>
           </p>
         </div>

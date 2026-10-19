@@ -1,4 +1,12 @@
-/** @type {import('tailwindcss').Config} */
+function withOpacity(variableName) {
+  return ({ opacityValue }) => {
+    if (opacityValue !== undefined) {
+      return `rgb(var(${variableName}) / ${opacityValue})`;
+    }
+    return `rgb(var(${variableName}))`;
+  };
+}
+
 module.exports = {
   content: [
     './app/**/*.{js,ts,jsx,tsx,mdx}',
@@ -14,6 +22,20 @@ module.exports = {
         sans: ['Inter', 'sans-serif'],
       },
       colors: {
+        zinc: {
+          50: withOpacity('--zinc-50'),
+          100: withOpacity('--zinc-100'),
+          200: withOpacity('--zinc-200'),
+          300: withOpacity('--zinc-300'),
+          400: withOpacity('--zinc-400'),
+          500: withOpacity('--zinc-500'),
+          600: withOpacity('--zinc-600'),
+          700: withOpacity('--zinc-700'),
+          800: withOpacity('--zinc-800'),
+          850: withOpacity('--zinc-850'),
+          900: withOpacity('--zinc-900'),
+          950: withOpacity('--zinc-950'),
+        },
         background: 'var(--color-background, #0b0d13)',
         foreground: 'var(--color-foreground, #f8fafc)',
         card: {
@@ -97,11 +119,37 @@ module.exports = {
         },
       },
       fontSize: {
-        'nano': ['10px', { lineHeight: '1', letterSpacing: '0.08em' }],
+        'micro': ['8px', { lineHeight: '10px', letterSpacing: '0.08em' }],
+        'nano': ['9px', { lineHeight: '12px', letterSpacing: '0.08em' }],
+        'caption': ['10px', { lineHeight: '14px', letterSpacing: '0.06em' }],
+        'sub': ['11px', { lineHeight: '16px', letterSpacing: '0.04em' }],
         '7xl': ['4.5rem', { lineHeight: '1.1' }],
         '8xl': ['6rem', { lineHeight: '1', letterSpacing: '-0.02em' }],
       },
+      borderRadius: {
+        none: '0px',
+        sm: '0px',
+        DEFAULT: '0px',
+        md: '0px',
+        lg: '0px',
+        xl: '0px',
+        '2xl': '0px',
+        '3xl': '0px',
+        'tactical-none': '0px',
+        'tactical-xs': '0px',
+        'tactical-sm': '0px',
+        'tactical-md': '0px',
+        'tactical-lg': '0px',
+        'tactical-full': '9999px',
+        full: '9999px',
+      },
       boxShadow: {
+        'tactical-sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+        'tactical-card': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)',
+        'tactical-popover': '0 10px 25px -5px rgba(0, 0, 0, 0.25), 0 8px 10px -6px rgba(0, 0, 0, 0.2)',
+        'glow-amber': '0 0 16px -2px rgba(245, 158, 11, 0.4)',
+        'glow-emerald': '0 0 16px -2px rgba(16, 185, 129, 0.4)',
+        'glow-red': '0 0 16px -2px rgba(239, 68, 68, 0.4)',
         'cyber-sm': '0 2px 8px rgba(0, 0, 0, 0.4), 0 0 1px 1px rgba(255, 255, 255, 0.06)',
         'cyber-lg': '0 12px 36px rgba(0, 0, 0, 0.6), 0 0 1px 1px rgba(255, 255, 255, 0.08)',
         'neon-cyan': '0 0 20px rgba(0, 217, 255, 0.3)',

@@ -14,80 +14,83 @@ interface CareerIntelligenceProps {
 const AdvancedCareerIntelligence: React.FC<CareerIntelligenceProps> = ({ data }) => {
     if (!data) return null;
 
-    const demandColor = data.market_demand === 'High' ? 'text-emerald-700 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-500/10' :
-        data.market_demand === 'Medium' ? 'text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-500/10' : 'text-slate-700 dark:text-slate-400 bg-slate-100 dark:bg-slate-500/10';
+    const demandColor = data.market_demand === 'High' ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' :
+        data.market_demand === 'Medium' ? 'text-amber-400 bg-amber-500/10 border-amber-500/20' : 'text-zinc-400 bg-zinc-800 border-zinc-700';
 
     return (
-        <div className="p-8 rounded-3xl bg-gradient-to-br from-indigo-50/80 via-white to-blue-50/50 dark:from-indigo-600/20 dark:via-slate-900 dark:to-slate-900 border border-indigo-200/80 dark:border-indigo-500/30 shadow-light-card dark:shadow-none relative overflow-hidden group">
+        <div className="p-6 lg:p-8 rounded-2xl bg-zinc-900/90 border border-zinc-800 relative overflow-hidden">
             <div className="flex flex-col md:flex-row gap-8 relative z-10">
                 <div className="flex-1 space-y-6">
                     <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 dark:from-indigo-500 dark:to-indigo-600 flex items-center justify-center text-white shadow-md shrink-0">
-                            <i className="fa-solid fa-robot text-2xl"></i>
+                        <div className="w-12 h-12 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-amber-400 text-lg shrink-0">
+                            <i className="fa-solid fa-robot"></i>
                         </div>
                         <div>
-                            <h4 className="text-xl font-bold text-slate-900 dark:text-white">Career Intelligence Pro</h4>
-                            <div className="flex items-center gap-2 mt-1">
-                                <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest ${demandColor}`}>
+                            <div className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 rounded-sm bg-amber-400"></span>
+                                <h4 className="text-base font-bold text-white tracking-tight">Career Intelligence Pro</h4>
+                            </div>
+                            <div className="flex items-center gap-2 mt-1 font-mono">
+                                <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider border ${demandColor}`}>
                                     {data.market_demand} Demand
                                 </span>
-                                <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold">
-                                    Trend: <span className="text-emerald-600 dark:text-emerald-400 font-black">+{data.hiring_trend}%</span>
+                                <span className="text-[10px] text-zinc-500">
+                                    Trend: <span className="text-emerald-400 font-bold">+{data.hiring_trend}%</span>
                                 </span>
                             </div>
                         </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                        <div className="p-4 bg-white dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <div className="p-4 bg-zinc-950 rounded-xl border border-zinc-800">
                             <div className="flex justify-between items-center mb-1">
-                                <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-black">AI Confidence</span>
+                                <span className="text-[10px] text-zinc-500 font-mono uppercase tracking-wider">AI Confidence</span>
                                 <div className="group/tooltip relative">
-                                    <i className="fa-solid fa-circle-info text-[10px] text-slate-400 dark:text-slate-600 cursor-help"></i>
-                                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-900 dark:bg-slate-800 text-[9px] text-slate-100 dark:text-slate-300 rounded-lg opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl border border-slate-700">
-                                        Calculated based on your skill match, profile completeness, and current market volatility indices.
+                                    <i className="fa-solid fa-circle-info text-[10px] text-zinc-600 cursor-help"></i>
+                                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-zinc-900 text-[9px] font-mono text-zinc-300 rounded-lg opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50 shadow-2xl border border-zinc-800">
+                                        Calculated based on your skill match, profile completeness, and market volatility indices.
                                     </div>
                                 </div>
                             </div>
                             <div className="flex items-end gap-2">
-                                <span className="text-2xl font-black text-slate-900 dark:text-slate-100">{data.confidence_score}%</span>
-                                <div className="h-2 flex-1 bg-slate-100 dark:bg-slate-800 rounded-full mb-2 overflow-hidden">
-                                    <div className="h-full bg-blue-600 dark:bg-indigo-500" style={{ width: `${data.confidence_score}%` }}></div>
+                                <span className="text-2xl font-black font-mono text-white tracking-tight">{data.confidence_score}%</span>
+                                <div className="h-1.5 flex-1 bg-zinc-800 rounded-full mb-2 overflow-hidden">
+                                    <div className="h-full bg-amber-400" style={{ width: `${data.confidence_score}%` }}></div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="p-4 bg-white dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
-                            <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-black block mb-1">Automation Risk</span>
+                        <div className="p-4 bg-zinc-950 rounded-xl border border-zinc-800">
+                            <span className="text-[10px] text-zinc-500 font-mono uppercase tracking-wider block mb-1">Automation Risk</span>
                             <div className="flex items-center gap-2">
-                                <span className={`text-2xl font-black ${data.automation_risk < 20 ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}`}>
+                                <span className={`text-2xl font-black font-mono tracking-tight ${data.automation_risk < 20 ? 'text-emerald-400' : 'text-amber-400'}`}>
                                     {data.automation_risk}%
                                 </span>
-                                <span className="text-[9px] text-slate-500 font-bold leading-tight uppercase tracking-tighter">
-                                    Stability: <br /> <span className="text-slate-800 dark:text-slate-300">{data.job_stability}</span>
+                                <span className="text-[9px] font-mono text-zinc-500 leading-tight uppercase">
+                                    Stability: <br /> <span className="text-zinc-200 font-bold">{data.job_stability}</span>
                                 </span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="w-px bg-slate-200 dark:bg-slate-800 hidden md:block"></div>
+                <div className="w-px bg-zinc-800 hidden md:block"></div>
 
                 <div className="flex-1 space-y-4">
-                    <h5 className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-black tracking-widest">Salary Impact Estimator</h5>
-                    <div className="space-y-3">
+                    <h5 className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest font-bold">Salary Impact Estimator</h5>
+                    <div className="space-y-2.5">
                         {Object.entries(data.salary_impact).map(([skill, impact]) => (
-                            <div key={skill} className="flex items-center justify-between p-3.5 bg-white dark:bg-indigo-500/5 border border-slate-200 dark:border-indigo-500/10 rounded-2xl shadow-sm">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-2 h-2 rounded-full bg-blue-500 dark:bg-indigo-400"></div>
-                                    <span className="text-xs font-bold text-slate-800 dark:text-slate-300">Close {skill} gap</span>
+                            <div key={skill} className="flex items-center justify-between p-3 bg-zinc-950 border border-zinc-800 rounded-xl">
+                                <div className="flex items-center gap-2.5">
+                                    <span className="w-1.5 h-1.5 rounded-sm bg-amber-400"></span>
+                                    <span className="text-xs font-bold text-zinc-200">Close {skill} gap</span>
                                 </div>
-                                <span className="text-xs font-black text-emerald-600 dark:text-emerald-400">+{impact}% Range</span>
+                                <span className="text-xs font-mono font-bold text-emerald-400">+{impact}% Range</span>
                             </div>
                         ))}
                     </div>
-                    <p className="text-[9px] text-slate-500 dark:text-slate-600 italic">
-                        * Estimates based on real-time hiring data for your target role and region.
+                    <p className="text-[10px] font-mono text-zinc-500 italic">
+                        * Estimates based on real-time hiring data for your target role.
                     </p>
                 </div>
             </div>

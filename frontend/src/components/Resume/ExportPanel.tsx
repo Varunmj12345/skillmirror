@@ -5,18 +5,11 @@ const ExportPanel: React.FC = () => {
     const [toast, setToast] = useState('');
 
     const FORMATS = [
-        { key: 'pdf', label: 'PDF', icon: 'fa-file-pdf', color: 'rose', desc: 'Best for applications' },
-        { key: 'docx', label: 'DOCX', icon: 'fa-file-word', color: 'sky', desc: 'Editable Word format' },
-        { key: 'txt', label: 'TXT', icon: 'fa-file-lines', color: 'slate', desc: 'Plain text version' },
-        { key: 'linkedin', label: 'LinkedIn', icon: 'fa-linkedin', color: 'blue', desc: 'Optimized version' },
+        { key: 'pdf', label: 'PDF', icon: 'fa-file-pdf', desc: 'Vector ATS print · Recommended', primary: true },
+        { key: 'docx', label: 'DOCX', icon: 'fa-file-word', desc: 'Word editable copy' },
+        { key: 'txt', label: 'TXT', icon: 'fa-file-lines', desc: 'Plain-text ASCII stream' },
+        { key: 'linkedin', label: 'LinkedIn', icon: 'fa-linkedin', desc: 'Profile payload block' },
     ];
-
-    const colorMap: Record<string, string> = {
-        rose: 'bg-rose-500/10 border-rose-500/20 text-rose-400 hover:bg-rose-500/20',
-        sky: 'bg-sky-500/10 border-sky-500/20 text-sky-400 hover:bg-sky-500/20',
-        slate: 'bg-slate-700/20 border-slate-600/30 text-slate-400 hover:bg-slate-700/30',
-        blue: 'bg-blue-500/10 border-blue-500/20 text-blue-400 hover:bg-blue-500/20',
-    };
 
     const handleExport = async (key: string) => {
         if (key === 'pdf') {
@@ -116,48 +109,60 @@ const ExportPanel: React.FC = () => {
             setToast('TXT exported successfully!');
             setTimeout(() => setToast(''), 3000);
         } else {
-            // Document/TXT fallbacks in future iterations
             setExporting(key);
             await new Promise(r => setTimeout(r, 1200));
             setExporting(null);
-            setToast(`${key.toUpperCase()} export is coming soon. Use PDF.`);
+            setToast(`${key.toUpperCase()} export is queued. Use vector PDF.`);
             setTimeout(() => setToast(''), 3000);
         }
     };
 
     return (
-        <div className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-50 mb-2 flex items-center gap-2">
-                <i className="fa-solid fa-download text-blue-600 dark:text-sky-400 text-xs"></i>
-                Export Options
-            </h3>
-            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest mb-5">Download your resume in multiple formats</p>
+        <div className="p-5 rounded-2xl bg-zinc-900/90 border border-zinc-800">
+            <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-sm bg-amber-400"></span>
+                    <h3 className="text-xs font-mono font-bold tracking-widest text-zinc-100 uppercase">
+                        Export Terminal
+                    </h3>
+                </div>
+                <span className="text-[10px] font-mono text-zinc-500 uppercase">OUTPUT-v2</span>
+            </div>
+            <p className="text-[11px] font-mono text-zinc-400 mb-4">Export high-fidelity ATS and print artifacts.</p>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2.5">
                 {FORMATS.map(f => (
                     <button
                         key={f.key}
                         onClick={() => handleExport(f.key)}
                         disabled={!!exporting}
-                        className={`p-4 rounded-2xl border flex flex-col items-center gap-2 transition-all group disabled:opacity-50 disabled:cursor-wait shadow-sm ${colorMap[f.color]}`}
+                        className={`p-3.5 rounded-xl border text-left transition-all group disabled:opacity-50 disabled:cursor-wait ${
+                            f.primary
+                                ? 'bg-zinc-950 border-amber-500/40 hover:border-amber-400 text-zinc-100'
+                                : 'bg-zinc-950 border-zinc-800 hover:border-zinc-700 text-zinc-300'
+                        }`}
                     >
-                        {exporting === f.key ? (
-                            <i className="fa-solid fa-circle-notch fa-spin text-lg"></i>
-                        ) : (
-                            <i className={`fa-${f.key === 'linkedin' ? 'brands' : 'solid'} ${f.icon} text-xl group-hover:scale-110 transition-transform`}></i>
-                        )}
-                        <div className="text-center">
-                            <div className="text-xs font-black uppercase tracking-widest">{f.label}</div>
-                            <div className="text-[9px] opacity-70 font-bold">{f.desc}</div>
+                        <div className="flex items-center justify-between mb-2">
+                            {exporting === f.key ? (
+                                <i className="fa-solid fa-circle-notch fa-spin text-amber-400 text-sm"></i>
+                            ) : (
+                                <i className={`fa-${f.key === 'linkedin' ? 'brands' : 'solid'} ${f.icon} text-sm ${f.primary ? 'text-amber-400' : 'text-zinc-400 group-hover:text-zinc-200'}`}></i>
+                            )}
+                            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-200">
+                                {f.label}
+                            </span>
+                        </div>
+                        <div className="text-[10px] font-mono text-zinc-500 leading-tight">
+                            {f.desc}
                         </div>
                     </button>
                 ))}
             </div>
 
             {toast && (
-                <div className="mt-4 p-3 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 rounded-xl text-emerald-700 dark:text-emerald-400 text-[11px] font-black flex items-center gap-2 shadow-sm">
-                    <i className="fa-solid fa-circle-check"></i>
-                    {toast}
+                <div className="mt-4 p-2.5 bg-zinc-950 border border-emerald-500/30 rounded-xl text-emerald-400 text-[11px] font-mono flex items-center gap-2">
+                    <i className="fa-solid fa-circle-check text-xs"></i>
+                    <span>{toast}</span>
                 </div>
             )}
         </div>

@@ -29,6 +29,11 @@ SECRET_KEY = os.getenv('JWT_SECRET', os.getenv('DJANGO_SECRET_KEY', 'your-defaul
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
 
+# Groq Intelligence Engine Configuration
+GROQ_API_KEY = os.getenv('GROQ_API_KEY', '')
+DEFAULT_GROQ_MODEL = os.getenv('DEFAULT_GROQ_MODEL', 'openai/gpt-oss-120b')
+FAST_GROQ_MODEL = os.getenv('FAST_GROQ_MODEL', 'openai/gpt-oss-20b')
+
 ALLOWED_HOSTS = [
     "127.0.0.1", 
     "localhost", 

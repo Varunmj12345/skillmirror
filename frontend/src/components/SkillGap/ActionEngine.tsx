@@ -12,72 +12,73 @@ const ActionEngine: React.FC<ActionEngineProps> = ({ plan, onStartLearning }) =>
     if (!plan) return null;
 
     return (
-        <div className="mt-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
+        <div className="mt-8">
             <div className="flex items-center gap-2 mb-6">
-                <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
-                    <i className="fa-solid fa-bolt-lightning text-sm"></i>
-                </div>
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">Smart Action Plan</h3>
+                <span className="w-1.5 h-1.5 rounded-sm bg-amber-400"></span>
+                <h3 className="font-mono text-xs font-bold text-white uppercase tracking-widest">
+                    Smart Action Plan
+                </h3>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Weekly Breakdown */}
                 <div className="lg:col-span-2 space-y-4">
-                    <div className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none">
-                        <div className="flex items-center justify-between mb-6">
-                            <h4 className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.2em]">Next 7 Days Intensity</h4>
-                            <span className="px-2 py-1 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 text-[10px] font-black rounded-md border border-indigo-200 dark:border-transparent">
+                    <div className="p-5 rounded-2xl bg-zinc-900/90 border border-zinc-800">
+                        <div className="flex items-center justify-between mb-4">
+                            <h4 className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest">Next 7 Days Intensity</h4>
+                            <span className="px-2 py-0.5 bg-zinc-950 text-amber-400 font-mono text-[10px] font-bold rounded border border-zinc-800">
                                 {plan.daily_commitment || 0} HRS / DAY
                             </span>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                             {(plan.weekly_breakdown || []).map((day, i) => (
-                                <div key={i} className="p-3.5 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl flex items-start gap-3 hover:border-indigo-400 dark:hover:border-indigo-500/30 transition-all cursor-default group shadow-sm">
-                                    <div className="text-[10px] font-black text-blue-600 dark:text-indigo-500 w-10 shrink-0 mt-0.5">{day.day}</div>
-                                    <p className="text-[11px] text-slate-700 dark:text-slate-400 leading-snug group-hover:text-slate-900 dark:group-hover:text-slate-200 transition-colors">{day.task}</p>
+                                <div key={i} className="p-3 bg-zinc-950 border border-zinc-800 rounded-xl flex items-start gap-3 hover:border-zinc-700 transition-all cursor-default group">
+                                    <div className="text-[10px] font-mono font-bold text-amber-400 w-10 shrink-0 mt-0.5">{day.day}</div>
+                                    <p className="text-xs text-zinc-300 leading-snug group-hover:text-white transition-colors">{day.task}</p>
                                 </div>
                             ))}
                         </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none">
-                            <h4 className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                                <i className="fa-solid fa-flask-vial text-sky-500 dark:text-sky-400"></i> Project Recommendations
+                        <div className="p-5 rounded-2xl bg-zinc-900/90 border border-zinc-800">
+                            <h4 className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                <i className="fa-solid fa-flask-vial text-amber-400"></i> Project Recommendations
                             </h4>
-                            <div className="space-y-3">
+                            <div className="space-y-2.5">
                                 {(plan.projects || []).map((proj, i) => (
-                                    <div key={i} className="p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl group hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all shadow-sm">
+                                    <div key={i} className="p-3 bg-zinc-950 border border-zinc-800 rounded-xl group hover:border-zinc-700 transition-all">
                                         <div className="flex justify-between items-start mb-1">
-                                            <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-sky-400 transition-colors">{proj.name}</span>
-                                            <span className={`text-[8px] font-black px-1.5 py-0.5 rounded uppercase ${proj.difficulty === 'Advanced' ? 'bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-transparent' :
-                                                proj.difficulty === 'Intermediate' ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-transparent' : 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-transparent'
-                                                }`}>
+                                            <span className="text-xs font-bold text-zinc-200 group-hover:text-amber-400 transition-colors">{proj.name}</span>
+                                            <span className={`text-[8px] font-mono font-bold px-1.5 py-0.5 rounded uppercase ${
+                                                proj.difficulty === 'Advanced' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' :
+                                                proj.difficulty === 'Intermediate' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                            }`}>
                                                 {proj.difficulty}
                                             </span>
                                         </div>
-                                        {proj.description && <p className="text-[10px] text-slate-500 dark:text-slate-400 line-clamp-1 italic">{proj.description}</p>}
+                                        {proj.description && <p className="text-[10px] font-mono text-zinc-500 line-clamp-1 italic">{proj.description}</p>}
                                     </div>
                                 ))}
                             </div>
                         </div>
 
-                        <div className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none">
-                            <h4 className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                                <i className="fa-solid fa-certificate text-amber-500 dark:text-amber-400"></i> Certification Roadmap
+                        <div className="p-5 rounded-2xl bg-zinc-900/90 border border-zinc-800">
+                            <h4 className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                <i className="fa-solid fa-certificate text-amber-400"></i> Certification Roadmap
                             </h4>
-                            <div className="space-y-3">
+                            <div className="space-y-2.5">
                                 {(plan.certifications || []).map((cert, i) => (
-                                    <div key={i} className="p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-amber-400 dark:hover:border-amber-500/30 transition-all shadow-sm">
+                                    <div key={i} className="p-3 bg-zinc-950 border border-zinc-800 rounded-xl hover:border-zinc-700 transition-all">
                                         <div className="flex justify-between items-center">
-                                            <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200">{cert.name}</span>
-                                            <i className="fa-solid fa-award text-amber-500 text-xs"></i>
+                                            <span className="text-xs font-bold text-zinc-200">{cert.name}</span>
+                                            <i className="fa-solid fa-award text-amber-400 text-xs"></i>
                                         </div>
-                                        <div className="flex items-center gap-2 mt-2">
-                                            <span className="text-[9px] text-slate-500 dark:text-slate-400 font-bold uppercase">{cert.provider}</span>
-                                            <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-800"></span>
-                                            <span className="text-[9px] text-slate-600 dark:text-slate-500 font-bold uppercase">{cert.duration || '4-6 Weeks'}</span>
+                                        <div className="flex items-center gap-2 mt-2 font-mono text-[9px]">
+                                            <span className="text-zinc-400 uppercase">{cert.provider}</span>
+                                            <span className="w-1 h-1 rounded-sm bg-zinc-700"></span>
+                                            <span className="text-zinc-500 uppercase">{cert.duration || '4-6 Weeks'}</span>
                                         </div>
                                     </div>
                                 ))}
@@ -88,25 +89,25 @@ const ActionEngine: React.FC<ActionEngineProps> = ({ plan, onStartLearning }) =>
 
                 {/* Action Call */}
                 <div className="lg:col-span-1">
-                    <div className="p-8 rounded-3xl border border-indigo-200 dark:border-indigo-500/20 bg-indigo-50/50 dark:bg-indigo-500/5 h-full flex flex-col items-center justify-center text-center space-y-6 shadow-light-card dark:shadow-none">
-                        <div className="w-20 h-20 rounded-full bg-blue-600 dark:bg-indigo-500 flex items-center justify-center text-white shadow-md">
-                            <i className="fa-solid fa-graduation-cap text-3xl"></i>
+                    <div className="p-6 rounded-2xl border border-zinc-800 bg-zinc-900/90 h-full flex flex-col items-center justify-center text-center space-y-5">
+                        <div className="w-14 h-14 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-amber-400 text-xl shrink-0">
+                            <i className="fa-solid fa-graduation-cap"></i>
                         </div>
                         <div>
-                            <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Ready to Bridge the Gap?</h4>
-                            <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                                Automatically add these targeted skills to your personalized roadmap and start tracked learning sessions.
+                            <h4 className="text-sm font-bold text-white mb-2">Bridge the Competency Gap</h4>
+                            <p className="text-xs text-zinc-400 leading-relaxed font-mono">
+                                Automatically push detected delta skills to your personalized roadmap for structured milestones.
                             </p>
                         </div>
                         <button
                             onClick={() => onStartLearning('Roadmap Update')}
-                            className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:brightness-110 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-md transition-all active:scale-95 flex items-center justify-center gap-3 group"
+                            className="w-full py-3 bg-white hover:bg-zinc-200 text-zinc-950 rounded-lg font-mono font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2"
                         >
-                            Start Learning Now
-                            <i className="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                            <span>Start Learning Track</span>
+                            <i className="fa-solid fa-arrow-right text-[10px]"></i>
                         </button>
-                        <p className="text-[9px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest">
-                            Success probability increases by 40% with structured tracking
+                        <p className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider">
+                            Success rate increases 40% with structured tracking
                         </p>
                     </div>
                 </div>

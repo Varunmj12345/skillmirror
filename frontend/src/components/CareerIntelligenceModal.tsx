@@ -93,6 +93,8 @@ const CareerIntelligenceModal: React.FC<CareerIntelligenceModalProps> = ({ isOpe
                         </div>
                         <button 
                             onClick={onClose}
+                            aria-label="Close modal"
+                            title="Close"
                             className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all"
                         >
                             <i className="fa-solid fa-xmark" />

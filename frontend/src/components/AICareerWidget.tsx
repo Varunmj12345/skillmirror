@@ -9,7 +9,7 @@ const AICareerWidget: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [selectedMode, setSelectedMode] = useState('career');
   const [messages, setMessages] = useState<{ role: string; text: string }[]>([
-    { role: 'ai', text: "Neural connection established. I am your AI Career Architect. How can we optimize your trajectory today?" },
+    { role: 'ai', text: "Sentinel telemetry initialized. I am your autonomous AI Career Architect. How can we calibrate your technical trajectory today?" },
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -22,13 +22,13 @@ const AICareerWidget: React.FC = () => {
     setLoading(true);
     try {
       const res = await sendCareerMessage(userMsg);
-      const replyText = res?.reply || 'I am processing your career data. Ask about your Roadmap, Skills Matrix, or Resume optimization.';
+      const replyText = res?.reply || 'Synthesizing trajectory models. Ask about your Roadmap, Skill Gap Matrix, or Resume optimization.';
       setMessages((m) => [
         ...m,
-        { role: 'ai', text: replyText },
+        { role: 'ai', text: replyText, latency_ms: res?.latency_ms, model: res?.model },
       ]);
     } catch {
-      setMessages((m) => [...m, { role: 'ai', text: 'Latency detected. Please try your request again.' }]);
+      setMessages((m) => [...m, { role: 'ai', text: 'Telemetry latency detected. Please retry your request.' }]);
     } finally {
       setLoading(false);
     }
@@ -36,85 +36,106 @@ const AICareerWidget: React.FC = () => {
 
   return (
     <>
-      <div className="fixed bottom-8 right-8 z-[var(--z-sticky)]">
+      {/* Floating Tactical Launcher Beacon */}
+      <div className="fixed bottom-6 right-6 z-50">
         <motion.button
           onClick={() => setOpen(!open)}
-          whileHover={{ scale: 1.1, rotate: open ? 0 : 90 }}
-          whileTap={{ scale: 0.9 }}
-          transition={{ type: "spring", stiffness: 400, damping: 17 }}
-          className={`relative w-16 h-16 rounded-[1.25rem] bg-brand-neural flex items-center justify-center shadow-glass-glow shadow-brand-neural/50 overflow-hidden group ${!open ? 'fab-idle' : ''}`}
-          aria-label="Toggle Neural Assistant"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className={`px-3.5 py-2.5 transition-all flex items-center gap-2.5 shadow-[0_8px_30px_rgba(0,0,0,0.85)] border cursor-pointer ${
+            open
+              ? 'bg-zinc-900 border-amber-400 text-amber-400'
+              : 'bg-zinc-950 border-zinc-700 hover:border-amber-400 text-zinc-100'
+          }`}
+          aria-label="Toggle Sentinel AI Assistant"
         >
-          {/* Glass glare effect */}
-          <div className="absolute inset-0 bg-gradient-to-br from-white/30 to-transparent opacity-50 pointer-events-none" />
-          
-          <i className={`fa-solid ${open ? 'fa-xmark' : 'fa-brain'} text-2xl text-white relative z-10 transition-transform duration-300 ${open ? 'rotate-90 scale-90' : 'rotate-0 scale-100 group-hover:animate-pulse'}`} />
+          <span className={`w-1.5 h-1.5 bg-amber-400 ${open ? '' : 'animate-pulse'}`} />
+          <i className={`fa-solid ${open ? 'fa-xmark' : 'fa-brain'} text-xs text-amber-400`} />
+          <span className="text-[11px] font-mono font-bold uppercase tracking-wider">
+            {open ? 'CLOSE' : 'AI COPILOT'}
+          </span>
+          <span className="text-[9px] font-mono text-zinc-500 hidden sm:inline">
+            {open ? '[ESC]' : '[ONLINE]'}
+          </span>
         </motion.button>
       </div>
 
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: 40, scale: 0.95 }}
+            initial={{ opacity: 0, y: 16, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 40, scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="fixed bottom-28 right-8 z-[var(--z-sticky)] w-[400px] max-w-[calc(100vw-4rem)] sm-glass bg-brand-obsidian/95 backdrop-blur-3xl rounded-[2rem] border border-white/10 flex flex-col overflow-hidden shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8),_0_0_20px_2px_rgba(99,102,241,0.15)]"
+            exit={{ opacity: 0, y: 16, scale: 0.98 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
+            className="fixed bottom-20 right-6 z-50 w-[420px] max-w-[calc(100vw-2rem)] bg-zinc-950 border border-zinc-800 shadow-[0_24px_60px_rgba(0,0,0,0.95)] flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="px-6 py-5 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
-              <div className="flex items-center gap-3">
-                 <div className="w-8 h-8 rounded-lg bg-brand-neural/20 flex items-center justify-center border border-brand-neural/30 relative">
-                    <div className="absolute -inset-1 bg-brand-neural/20 blur-md rounded-full" />
-                    <i className="fa-solid fa-sparkles text-brand-neural text-xs relative z-10" />
-                 </div>
-                 <div>
-                    <h3 className="text-sm font-bold text-white tracking-tight">Intelligence Node</h3>
-                    <div className="flex items-center gap-1.5 mt-0.5">
-                       <span className="w-1.5 h-1.5 rounded-full bg-brand-emerald animate-pulse" />
-                       <span className="sm-nano text-brand-emerald">Online</span>
-                    </div>
-                 </div>
+            <div className="px-4 py-3 border-b border-zinc-800 bg-zinc-900/90 flex justify-between items-center">
+              <div className="flex items-center gap-2.5">
+                <div className="w-6 h-6 border border-amber-400/30 bg-amber-400/10 flex items-center justify-center text-amber-400 text-xs">
+                  <i className="fa-solid fa-brain" />
+                </div>
+                <div>
+                  <h3 className="text-xs font-mono font-bold text-zinc-100 uppercase tracking-wider">
+                    SENTINEL AI // ARCHITECT
+                  </h3>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <span className="w-1.5 h-1.5 bg-amber-400 animate-pulse" />
+                    <span className="text-[9px] font-mono text-amber-400 uppercase tracking-wider">ONLINE</span>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center gap-4">
-                <Link href="/roadmap" passHref>
-                  <a className="sm-nano text-slate-400 hover:text-white transition-colors">
-                    View Roadmap
+
+              <div className="flex items-center gap-3">
+                <Link href="/bot-analytics">
+                  <a className="text-[10px] font-mono font-bold text-amber-400 hover:text-amber-300 uppercase tracking-wider transition-colors flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 bg-amber-400 animate-pulse" />
+                    [INTEL]
                   </a>
                 </Link>
+                <Link href="/roadmap">
+                  <a className="text-[10px] font-mono font-bold text-zinc-400 hover:text-amber-400 uppercase tracking-wider transition-colors">
+                    [ROADMAP]
+                  </a>
+                </Link>
+                <button
+                  onClick={() => setOpen(false)}
+                  className="text-zinc-500 hover:text-zinc-200 text-xs font-mono"
+                  title="Close Terminal"
+                >
+                  [X]
+                </button>
               </div>
             </div>
-            
+
             {/* Mode Selector */}
-            <div className="px-6 pt-5 pb-2">
+            <div className="px-3 pt-3 pb-1 bg-zinc-950">
               <ModeSelector selectedMode={selectedMode} onModeChange={setSelectedMode} />
             </div>
 
-            {/* Chat Container */}
-            <div className="h-[360px] relative">
+            {/* Chat Messages Container */}
+            <div className="h-[360px] relative bg-zinc-950">
               <ChatUI messages={messages} loading={loading} />
-              {/* Soft gradient mask for scroll edge */}
-              <div className="absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-brand-obsidian/95 to-transparent pointer-events-none" />
             </div>
-            
-            {/* Input Area */}
-            <div className="p-5 border-t border-white/5 bg-white/[0.02]">
-              <div className="relative flex gap-3">
+
+            {/* Input Console */}
+            <div className="p-3 border-t border-zinc-800 bg-zinc-900/90">
+              <div className="flex gap-2">
                 <input
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && send()}
-                  placeholder="Ask your Career Architect..."
-                  className="sm-input flex-1 px-5 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder:text-slate-500 outline-none focus:bg-white/10 tracking-wide"
+                  placeholder="Inquire vector, roadmap, or interview..."
+                  className="flex-1 px-3 py-2 bg-zinc-950 border border-zinc-800 text-xs font-mono text-zinc-100 placeholder:text-zinc-600 outline-none focus:border-amber-400/60"
                 />
                 <button
                   onClick={send}
                   disabled={loading || !input.trim()}
-                  className="w-12 h-[52px] bg-brand-neural text-white flex justify-center items-center rounded-2xl shadow-glass-glow shadow-brand-neural/30 transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed group overflow-hidden relative sm-btn-primary !px-0 !py-0"
+                  className="px-3.5 py-2 bg-amber-400 hover:bg-amber-300 text-zinc-950 text-xs font-mono font-bold uppercase tracking-wider border border-amber-400 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent opacity-50 pointer-events-none" />
-                  <i className="fa-solid fa-paper-plane-top text-sm relative z-10 group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
+                  <i className="fa-solid fa-paper-plane text-[10px]" />
+                  <span>SEND</span>
                 </button>
               </div>
             </div>

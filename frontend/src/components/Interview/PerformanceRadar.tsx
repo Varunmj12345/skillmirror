@@ -18,13 +18,13 @@ interface Props {
 
 const PerformanceRadar: React.FC<Props> = ({ data }) => {
     return (
-        <div className="w-full h-[300px] flex items-center justify-center">
+        <div className="w-full h-[280px] flex items-center justify-center font-mono">
             <ResponsiveContainer width="100%" height="100%">
-                <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
-                    <PolarGrid stroke="#1e293b" />
+                <RadarChart cx="50%" cy="50%" outerRadius="75%" data={data}>
+                    <PolarGrid stroke="#27272a" />
                     <PolarAngleAxis 
                         dataKey="subject" 
-                        tick={{ fill: '#64748b', fontSize: 10, fontWeight: 900 }} 
+                        tick={{ fill: '#71717a', fontSize: 10, fontFamily: 'monospace' }} 
                     />
                     <PolarRadiusAxis 
                         angle={30} 
@@ -35,9 +35,9 @@ const PerformanceRadar: React.FC<Props> = ({ data }) => {
                     <Radar
                         name="Performance"
                         dataKey="A"
-                        stroke="#6366f1"
-                        fill="#6366f1"
-                        fillOpacity={0.5}
+                        stroke="#f59e0b"
+                        fill="#f59e0b"
+                        fillOpacity={0.35}
                     />
                 </RadarChart>
             </ResponsiveContainer>

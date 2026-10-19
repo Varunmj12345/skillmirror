@@ -15,5 +15,12 @@ urlpatterns = [
     path('update-skill-progress/', views.SkillProgressUpdateView.as_view(), name='update-skill-progress'),
     path('predict-completion/', views.PredictCompletionView.as_view(), name='predict-completion'),
     path('ai-career-insight/', views.CareerInsightView.as_view(), name='ai-career-insight'),
+    
+    # ── AI Bot Performance & Analytical Engine ──────────────────────────────
+    path('bot-performance/', views.BotPerformanceOverviewView.as_view(), name='bot-performance-overview'),
+    path('bot-performance/logs/', views.BotPerformanceLogsView.as_view(), name='bot-performance-logs'),
+    path('bot-performance/feedback/', views.BotFeedbackView.as_view(), name='bot-performance-feedback'),
+    path('bot-performance/diagnostic/', views.BotDiagnosticView.as_view(), name='bot-performance-diagnostic'),
+    
     path('', include(router.urls)),
 ]

@@ -64,7 +64,7 @@ const AIGapChallengeLabPage: React.FC = () => {
   return (
     <Layout>
       <Head>
-        <title>AI Gap Challenge Lab • SkillMirror</title>
+        <title>AI Gap Challenge Lab • SkillMirror Core</title>
         <meta name="description" content="Personalized AI practice challenges tailored to bridge your exact career skill gaps." />
       </Head>
 
@@ -74,20 +74,20 @@ const AIGapChallengeLabPage: React.FC = () => {
         title="AI GAP CHALLENGE LAB"
         subtitle="On-demand scenario assessments algorithmically designed to bridge your detected skill gaps and accelerate career readiness."
         badge="PRECISION GAP ENGINE"
-        badgeVariant="outline-cyan"
-        bulletVariant="cyan"
-        glowColor="indigo"
+        badgeVariant="outline-amber"
+        bulletVariant="amber"
+        glowColor="amber"
         actions={
           <div className="flex items-center gap-2.5">
             <Link href="/problems">
-              <button className="px-3.5 py-2.5 rounded-xl bg-card border border-border text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-white text-xs font-mono font-bold uppercase tracking-wider transition-all flex items-center gap-2 shadow-light-sm dark:shadow-none">
-                <i className="fa-solid fa-code text-xs text-blue-600 dark:text-cyan-400" />
+              <button className="px-3.5 py-2.5 bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 text-xs font-mono font-semibold uppercase tracking-wider transition-colors flex items-center gap-2">
+                <i className="fa-solid fa-code text-xs text-amber-400" />
                 <span>Practice Arena</span>
               </button>
             </Link>
             <Link href="/projects/status-center">
-              <button className="px-3.5 py-2.5 rounded-xl bg-card border border-border text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-white text-xs font-mono font-bold uppercase tracking-wider transition-all flex items-center gap-2 shadow-light-sm dark:shadow-none">
-                <i className="fa-solid fa-chart-line text-xs text-emerald-600 dark:text-emerald-400" />
+              <button className="px-3.5 py-2.5 bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 text-xs font-mono font-semibold uppercase tracking-wider transition-colors flex items-center gap-2">
+                <i className="fa-solid fa-chart-line text-xs text-emerald-400" />
                 <span>Scorecards</span>
               </button>
             </Link>
@@ -96,23 +96,24 @@ const AIGapChallengeLabPage: React.FC = () => {
       >
         {/* KPI Stat Chips */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
-          <PageStatChip label="Targeted Challenges" value={stats.total} icon="fa-bullseye" color="cyan" />
-          <PageStatChip label="Top Alignment" value={stats.highMatch} icon="fa-star" color="amber" />
+          <PageStatChip label="Targeted Challenges" value={stats.total} icon="fa-bullseye" color="amber" />
+          <PageStatChip label="Top Alignment" value={stats.highMatch} icon="fa-star" color="zinc" />
           <PageStatChip label="Avg Readiness Lift" value="+8.5%" icon="fa-arrow-trend-up" color="emerald" />
-          <PageStatChip label="AI Lab Status" value="Online" icon="fa-bolt" color="cyan" suffix="⚡" />
+          <PageStatChip label="AI Lab Status" value="Online" icon="fa-bolt" color="amber" suffix="⚡" />
         </div>
 
         {/* On-Demand Challenge Generator Box */}
-        <div className="mb-8 p-6 rounded-2xl bg-card border border-border shadow-light-card dark:shadow-none space-y-4">
+        <div className="mb-8 p-6 bg-zinc-900/90 border border-zinc-800 space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <div className="text-[10px] font-mono font-bold text-blue-600 dark:text-cyan-400 uppercase tracking-widest mb-1">
+              <div className="text-[10px] font-mono font-bold text-amber-400 uppercase tracking-widest mb-1 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 bg-amber-400" />
                 ON-DEMAND AI SYNTHESIS
               </div>
-              <h3 className="text-base font-display font-black text-slate-900 dark:text-white">
+              <h3 className="text-base font-mono font-bold text-white">
                 Synthesize a Targeted Skill Gap Assessment
               </h3>
-              <p className="text-xs font-sans text-slate-600 dark:text-slate-400 mt-1">
+              <p className="text-xs font-sans text-zinc-400 mt-1">
                 Select your target difficulty. Our AI will analyze your profile and generate an interactive real-world assessment.
               </p>
             </div>
@@ -121,7 +122,7 @@ const AIGapChallengeLabPage: React.FC = () => {
               <select
                 value={difficulty}
                 onChange={(e) => setDifficulty(e.target.value as any)}
-                className="px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-border rounded-xl text-xs font-mono font-bold text-slate-900 dark:text-white"
+                className="px-3 py-2 bg-zinc-950 border border-zinc-800 text-xs font-mono font-bold text-white focus:outline-none focus:border-amber-400"
               >
                 <option value="beginner">Beginner</option>
                 <option value="intermediate">Intermediate</option>
@@ -132,7 +133,7 @@ const AIGapChallengeLabPage: React.FC = () => {
               <button
                 onClick={handleGenerateCustomGap}
                 disabled={isGenerating}
-                className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-mono font-bold text-xs uppercase tracking-wider transition-all shadow-sm flex items-center gap-2"
+                className="px-5 py-2.5 bg-amber-400 hover:bg-amber-300 text-black font-mono font-bold text-xs uppercase tracking-wider transition-colors flex items-center gap-2 shadow-sm disabled:opacity-50"
               >
                 <i className={`fa-solid ${isGenerating ? 'fa-spinner fa-spin' : 'fa-wand-magic-sparkles'} text-xs`} />
                 <span>{isGenerating ? 'Synthesizing...' : 'Synthesize Now'}</span>
@@ -149,11 +150,11 @@ const AIGapChallengeLabPage: React.FC = () => {
             ))}
           </div>
         ) : problems.length === 0 ? (
-          <div className="p-12 text-center rounded-2xl bg-card border border-border">
-            <h3 className="text-sm font-mono font-bold text-slate-900 dark:text-white mb-2">No Challenges Synthesized Yet</h3>
+          <div className="p-12 text-center bg-zinc-900/80 border border-zinc-800">
+            <h3 className="text-sm font-mono font-bold text-white mb-2">No Challenges Synthesized Yet</h3>
             <button
               onClick={handleGenerateCustomGap}
-              className="px-4 py-2 rounded-xl bg-blue-600 text-white font-mono font-bold text-xs uppercase"
+              className="px-4 py-2 bg-amber-400 text-black hover:bg-amber-300 font-mono font-bold text-xs uppercase tracking-wider transition-colors"
             >
               Generate First Gap Assessment
             </button>
@@ -161,42 +162,42 @@ const AIGapChallengeLabPage: React.FC = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {problems.map((prob) => (
-              <motion.div
+              <div
                 key={prob.id}
-                whileHover={{ y: -3 }}
-                className="rounded-2xl bg-card border border-border p-5 shadow-light-card dark:shadow-none flex flex-col justify-between group transition-all"
+                className="bg-zinc-900/90 border border-zinc-800 p-5 hover:border-zinc-700 transition-colors flex flex-col justify-between group"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className="px-2.5 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase bg-blue-50 text-blue-700 border border-blue-200 dark:bg-cyan-500/10 dark:text-cyan-300 dark:border-cyan-500/30">
-                      {prob.category || 'Gap Challenge'}
+                    <span className="px-2 py-0.5 text-[10px] font-mono font-bold uppercase bg-zinc-950 border border-zinc-800 text-zinc-300">
+                      [ {prob.category || 'Gap Challenge'} ]
                     </span>
-                    <span className="text-[10px] font-mono font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2 py-0.5 rounded">
+                    <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-950/40 border border-emerald-800/60 px-2 py-0.5 flex items-center gap-1">
+                      <span className="w-1 h-1 bg-emerald-400" />
                       +150 XP
                     </span>
                   </div>
 
-                  <h3 className="text-base font-display font-black text-slate-900 dark:text-white tracking-tight group-hover:text-blue-600 dark:group-hover:text-cyan-400 transition-colors line-clamp-1 mb-2">
+                  <h3 className="text-base font-mono font-bold text-white tracking-tight group-hover:text-amber-400 transition-colors line-clamp-1 mb-2">
                     {prob.title}
                   </h3>
 
-                  <p className="text-xs font-sans text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed mb-4">
+                  <p className="text-xs font-sans text-zinc-400 line-clamp-2 leading-relaxed mb-4">
                     {prob.description}
                   </p>
                 </div>
 
-                <div className="pt-4 border-t border-slate-100 dark:border-white/5 flex items-center justify-between">
-                  <span className="text-[10px] font-mono text-slate-500 uppercase">
+                <div className="pt-4 border-t border-zinc-800/80 flex items-center justify-between">
+                  <span className="text-[10px] font-mono text-zinc-500 uppercase">
                     Level: {prob.complexity || 'Intermediate'}
                   </span>
                   <Link href={`/problems/${prob.id}`}>
-                    <button className="px-3.5 py-1.5 rounded-lg bg-blue-50 text-blue-600 border border-blue-200 dark:bg-cyan-500/10 dark:text-cyan-300 dark:border-cyan-500/30 text-xs font-mono font-bold uppercase tracking-wider group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm flex items-center gap-1.5">
+                    <button className="px-3.5 py-1.5 bg-zinc-950 border border-zinc-800 text-zinc-300 group-hover:border-amber-400/60 group-hover:text-amber-400 text-xs font-mono font-semibold uppercase tracking-wider transition-colors flex items-center gap-1.5">
                       <span>Launch</span>
                       <i className="fa-solid fa-arrow-right text-[10px]" />
                     </button>
                   </Link>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         )}

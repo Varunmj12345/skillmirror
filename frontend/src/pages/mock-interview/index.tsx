@@ -89,222 +89,272 @@ const MockInterviewSetup: React.FC = () => {
         <Layout>
             <Head><title>Mock Interview Engine • SkillMirror OS</title></Head>
             <CyberPageShell
-                moduleCode="MOD-04"
+                moduleCode="INT-01"
+                section="AI CAREER ENGINE"
+                badge="SIMULATION MATRIX: ACTIVE"
                 title="MOCK INTERVIEW ENGINE"
-                subtitle="Real-time AI interviewer with instant feedback, technical evaluation, and performance tracking."
-                badge="AI REALTIME"
-                badgeVariant="outline-cyan"
-                bulletVariant="cyan"
-                glowColor="indigo"
+                subtitle="Synthetic technical evaluation, live adaptive panel proctoring, and competency telemetry."
                 stats={
-                    <>
-                        <PageStatChip label="Sessions" value={totalCompleted} icon="fa-headset" color="cyan" />
+                    <div className="flex flex-wrap gap-2.5 pt-1">
+                        <PageStatChip label="Sessions" value={totalCompleted} icon="fa-headset" color="slate" />
                         <PageStatChip label="Avg Score" value={avgScore ? `${avgScore}%` : '—'} icon="fa-chart-line" color="emerald" />
                         <PageStatChip label="Best Role" value={bestTopic} icon="fa-trophy" color="amber" />
-                    </>
+                    </div>
                 }
             />
-            <div className="max-w-[900px] mx-auto px-6 pb-10 space-y-8">
-                <div className="rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none overflow-hidden relative">
-                    <div className="p-8 space-y-8">
-                        <div className="form-group">
-                            <label className="form-label text-xs uppercase tracking-wider text-slate-700 dark:text-slate-300 font-bold block mb-2">Target Job Role</label>
-                            <input
-                                type="text"
-                                className="sm-input px-4 py-3 text-sm w-full font-semibold"
-                                placeholder="e.g. Senior Frontend Developer"
-                                value={setup.role}
-                                onChange={(e) => setSetup({ ...setup, role: e.target.value })}
-                            />
+            <div className="max-w-[960px] mx-auto px-4 sm:px-6 pb-12 space-y-6">
+                {/* Configuration Panel */}
+                <div className="rounded-2xl bg-zinc-900/90 border border-zinc-800 p-6 sm:p-8 space-y-6">
+                    <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
+                        <div className="flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-sm bg-amber-400"></span>
+                            <h2 className="text-xs font-mono font-bold tracking-widest text-zinc-100 uppercase">
+                                Simulation Parameters
+                            </h2>
                         </div>
+                        <span className="text-[10px] font-mono text-zinc-500 uppercase">CONFIG-v2</span>
+                    </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <div className="form-group">
-                                <label className="form-label text-xs uppercase tracking-wider text-slate-700 dark:text-slate-300 font-bold block mb-2">Experience Level</label>
-                                <select
-                                    className="sm-input px-4 py-3 text-sm w-full font-medium"
-                                    value={setup.experience_level}
-                                    onChange={(e) => setSetup({ ...setup, experience_level: e.target.value as any })}
-                                >
-                                    <option value="Entry">Entry (0-1 year)</option>
-                                    <option value="Mid">Mid (2-5 years)</option>
-                                    <option value="Senior">Senior (5+ years)</option>
-                                </select>
-                            </div>
+                    <div className="space-y-1.5">
+                        <label className="text-xs font-mono font-bold tracking-wider text-zinc-300 block uppercase">
+                            Target Job Role
+                        </label>
+                        <input
+                            type="text"
+                            className="w-full px-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800 focus:border-amber-400 text-sm font-mono text-zinc-100 placeholder:text-zinc-600 outline-none transition-colors"
+                            placeholder="e.g. Senior Backend / Distributed Systems Engineer"
+                            value={setup.role}
+                            onChange={(e) => setSetup({ ...setup, role: e.target.value })}
+                        />
+                    </div>
 
-                            <div className="form-group">
-                                <label className="form-label text-xs uppercase tracking-wider text-slate-700 dark:text-slate-300 font-bold block mb-2">Interview Type</label>
-                                <select
-                                    className="sm-input px-4 py-3 text-sm w-full font-medium"
-                                    value={setup.interview_type}
-                                    onChange={(e) => setSetup({ ...setup, interview_type: e.target.value as any })}
-                                >
-                                    <option value="Technical">Technical</option>
-                                    <option value="Behavioral">Behavioral / HR</option>
-                                    <option value="Mixed">Mixed (Recommended)</option>
-                                </select>
-                            </div>
-
-                            <div className="form-group">
-                                <label className="form-label text-xs uppercase tracking-wider text-slate-700 dark:text-slate-300 font-bold block mb-2">Difficulty</label>
-                                <select
-                                    className="sm-input px-4 py-3 text-sm w-full font-medium"
-                                    value={setup.difficulty}
-                                    onChange={(e) => setSetup({ ...setup, difficulty: e.target.value as any })}
-                                >
-                                    <option value="Easy">Easy</option>
-                                    <option value="Moderate">Moderate</option>
-                                    <option value="Hard">Hard</option>
-                                </select>
-                            </div>
-
-                            <div className="form-group">
-                                <label className="form-label text-xs uppercase tracking-wider text-slate-700 dark:text-slate-300 font-bold block mb-2">Interview Mode</label>
-                                <select
-                                    className="sm-input px-4 py-3 text-sm w-full font-medium"
-                                    value={setup.interview_mode}
-                                    onChange={(e) => setSetup({ ...setup, interview_mode: e.target.value as any })}
-                                >
-                                    <option value="standard">Standard</option>
-                                    <option value="rapid_fire">Rapid Fire (Quick)</option>
-                                    <option value="deep_dive">Deep Dive (Complex)</option>
-                                    <option value="hr_simulation">HR Simulation</option>
-                                    <option value="technical_panel">Technical Panel</option>
-                                </select>
-                            </div>
-
-                            <div className="form-group">
-                                <label className="form-label text-xs uppercase tracking-wider text-slate-700 dark:text-slate-300 font-bold block mb-2">Instant Feedback</label>
-                                <div
-                                    onClick={() => setSetup({ ...setup, instant_feedback: !setup.instant_feedback })}
-                                    className={`relative w-full h-11 rounded-xl border flex items-center px-4 cursor-pointer transition-all shadow-sm ${setup.instant_feedback ? 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-300 dark:border-emerald-500/50 text-emerald-700 dark:text-emerald-400' : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-500'}`}
-                                >
-                                    <i className={`fa-solid ${setup.instant_feedback ? 'fa-toggle-on text-emerald-600 dark:text-emerald-400' : 'fa-toggle-off'} mr-3 text-lg`}></i>
-                                    <span className="text-xs font-bold uppercase tracking-wider">{setup.instant_feedback ? 'Enabled' : 'Disabled'}</span>
-                                    {setup.instant_feedback && <span className="ml-auto text-[9px] font-black text-emerald-600 dark:text-emerald-300">TIPS AFTER EACH Q</span>}
-                                </div>
-                            </div>
-
-                            <div className="form-group">
-                                <label className="form-label text-xs uppercase tracking-wider text-slate-700 dark:text-slate-300 font-bold block mb-2">Question Count</label>
-                                <div className="grid grid-cols-3 gap-2">
-                                    {[5, 10, 15].map(c => (
-                                        <button
-                                            key={c}
-                                            onClick={() => setSetup({ ...setup, question_count: c })}
-                                            className={`py-2.5 rounded-xl text-xs font-bold border transition-all ${setup.question_count === c ? 'bg-blue-600 border-blue-500 text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-500 hover:border-slate-300'}`}
-                                        >
-                                            {c} Qs
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="form-group">
-                            <label className="form-label text-xs uppercase tracking-wider text-slate-700 dark:text-slate-300 font-bold block mb-2">Job Description (Optional Context)</label>
-                            <textarea
-                                className="sm-input h-28 px-4 py-3 text-xs resize-none w-full"
-                                placeholder="Paste the JD here to generate custom questions matched to the role's specific requirements."
-                                value={setup.job_description}
-                                onChange={(e) => setSetup({ ...setup, job_description: e.target.value })}
-                            />
-                        </div>
-
-                        <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 space-y-3">
-                            <h4 className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-300 flex items-center gap-2">
-                                <i className="fa-solid fa-circle-info text-blue-600 dark:text-indigo-400" />
-                                What happens next?
-                            </h4>
-                            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs text-slate-600 dark:text-slate-400">
-                                <div className="flex items-start gap-2">
-                                    <span className="w-5 h-5 rounded-full bg-blue-50 text-blue-700 dark:bg-indigo-500/20 dark:text-indigo-400 flex items-center justify-center font-bold text-[10px] shrink-0 border border-blue-200 dark:border-transparent">1</span>
-                                    <span>Select role & options</span>
-                                </div>
-                                <div className="flex items-start gap-2">
-                                    <span className="w-5 h-5 rounded-full bg-blue-50 text-blue-700 dark:bg-indigo-500/20 dark:text-indigo-400 flex items-center justify-center font-bold text-[10px] shrink-0 border border-blue-200 dark:border-transparent">2</span>
-                                    <span>Answer AI scenarios</span>
-                                </div>
-                                <div className="flex items-start gap-2">
-                                    <span className="w-5 h-5 rounded-full bg-blue-50 text-blue-700 dark:bg-indigo-500/20 dark:text-indigo-400 flex items-center justify-center font-bold text-[10px] shrink-0 border border-blue-200 dark:border-transparent">3</span>
-                                    <span>Real-time feedback</span>
-                                </div>
-                                <div className="flex items-start gap-2">
-                                    <span className="w-5 h-5 rounded-full bg-blue-50 text-blue-700 dark:bg-indigo-500/20 dark:text-indigo-400 flex items-center justify-center font-bold text-[10px] shrink-0 border border-blue-200 dark:border-transparent">4</span>
-                                    <span>Detailed score breakdown</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="flex flex-col sm:flex-row gap-4 pt-2">
-                            <button
-                                onClick={() => handleStart(false)}
-                                disabled={loading || !setup.role}
-                                className="sm-btn-primary flex-1 py-4 text-sm flex items-center justify-center gap-2"
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-mono font-bold tracking-wider text-zinc-400 block uppercase">
+                                Experience Tier
+                            </label>
+                            <select
+                                className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 focus:border-amber-400 text-xs font-mono text-zinc-200 outline-none transition-colors"
+                                value={setup.experience_level}
+                                onChange={(e) => setSetup({ ...setup, experience_level: e.target.value as any })}
                             >
-                                {loading ? (
-                                    <span className="flex items-center justify-center gap-2">
-                                        <i className="fa-solid fa-spinner fa-spin"></i> Initializing...
-                                    </span>
-                                ) : (
-                                    "Start Standard Session (Text)"
+                                <option value="Entry">Entry (0-1 yr)</option>
+                                <option value="Mid">Mid (2-5 yrs)</option>
+                                <option value="Senior">Senior (5+ yrs)</option>
+                            </select>
+                        </div>
+
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-mono font-bold tracking-wider text-zinc-400 block uppercase">
+                                Interview Track
+                            </label>
+                            <select
+                                className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 focus:border-amber-400 text-xs font-mono text-zinc-200 outline-none transition-colors"
+                                value={setup.interview_type}
+                                onChange={(e) => setSetup({ ...setup, interview_type: e.target.value as any })}
+                            >
+                                <option value="Technical">Technical Deep Dive</option>
+                                <option value="Behavioral">Behavioral & Leadership</option>
+                                <option value="Mixed">Mixed (Standard Loop)</option>
+                            </select>
+                        </div>
+
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-mono font-bold tracking-wider text-zinc-400 block uppercase">
+                                Rigor Rating
+                            </label>
+                            <select
+                                className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 focus:border-amber-400 text-xs font-mono text-zinc-200 outline-none transition-colors"
+                                value={setup.difficulty}
+                                onChange={(e) => setSetup({ ...setup, difficulty: e.target.value as any })}
+                            >
+                                <option value="Easy">Standard</option>
+                                <option value="Moderate">Moderate (Industry Default)</option>
+                                <option value="Hard">Staff / Principal Level</option>
+                            </select>
+                        </div>
+
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-mono font-bold tracking-wider text-zinc-400 block uppercase">
+                                Delivery Engine
+                            </label>
+                            <select
+                                className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 focus:border-amber-400 text-xs font-mono text-zinc-200 outline-none transition-colors"
+                                value={setup.interview_mode}
+                                onChange={(e) => setSetup({ ...setup, interview_mode: e.target.value as any })}
+                            >
+                                <option value="standard">Standard Interactive</option>
+                                <option value="rapid_fire">Rapid Fire (Time-Constrained)</option>
+                                <option value="deep_dive">Architecture Deep Dive</option>
+                                <option value="hr_simulation">HR Panel Simulation</option>
+                                <option value="technical_panel">Technical Panel</option>
+                            </select>
+                        </div>
+
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-mono font-bold tracking-wider text-zinc-400 block uppercase">
+                                Realtime Feedback
+                            </label>
+                            <div
+                                onClick={() => setSetup({ ...setup, instant_feedback: !setup.instant_feedback })}
+                                className={`w-full h-[42px] rounded-xl border flex items-center px-3.5 cursor-pointer transition-all ${
+                                    setup.instant_feedback
+                                        ? 'bg-zinc-950 border-amber-500/40 text-amber-400'
+                                        : 'bg-zinc-950 border-zinc-800 text-zinc-500'
+                                }`}
+                            >
+                                <span className={`w-2 h-2 rounded-sm mr-2.5 ${setup.instant_feedback ? 'bg-amber-400' : 'bg-zinc-700'}`}></span>
+                                <span className="text-xs font-mono font-bold uppercase tracking-wider">
+                                    {setup.instant_feedback ? 'Active' : 'Disabled'}
+                                </span>
+                                {setup.instant_feedback && (
+                                    <span className="ml-auto text-[9px] font-mono text-zinc-400">INSTANT HINTS</span>
                                 )}
-                            </button>
-                            <button
-                                onClick={() => handleStart(true)}
-                                disabled={loading || !setup.role}
-                                className="sm-btn-primary bg-indigo-600 hover:bg-indigo-500 shadow-indigo-600/30 flex-1 py-4 text-sm flex items-center justify-center gap-2"
-                            >
-                                <i className="fa-solid fa-video text-base"></i>
-                                Start Live Video Interview
-                            </button>
+                            </div>
                         </div>
+
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-mono font-bold tracking-wider text-zinc-400 block uppercase">
+                                Question Count
+                            </label>
+                            <div className="grid grid-cols-3 gap-2">
+                                {[5, 10, 15].map(c => (
+                                    <button
+                                        key={c}
+                                        type="button"
+                                        onClick={() => setSetup({ ...setup, question_count: c })}
+                                        className={`py-2 rounded-xl text-xs font-mono font-bold border transition-all cursor-pointer ${
+                                            setup.question_count === c
+                                                ? 'bg-amber-400 border-amber-400 text-zinc-950'
+                                                : 'bg-zinc-950 border-zinc-800 text-zinc-400 hover:border-zinc-700'
+                                        }`}
+                                    >
+                                        {c} Qs
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                        <label className="text-xs font-mono font-bold tracking-wider text-zinc-400 block uppercase">
+                            Job Description Specification (Optional Payload)
+                        </label>
+                        <textarea
+                            className="w-full h-24 px-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800 focus:border-amber-400 text-xs font-mono text-zinc-200 resize-none outline-none transition-colors placeholder:text-zinc-600"
+                            placeholder="Paste specific JD requirements or architecture bullets here to direct AI questioning."
+                            value={setup.job_description}
+                            onChange={(e) => setSetup({ ...setup, job_description: e.target.value })}
+                        />
+                    </div>
+
+                    {/* Next Steps Infographic */}
+                    <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+                        <div className="flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-sm bg-zinc-400"></span>
+                            <h4 className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300">
+                                Execution Pipeline
+                            </h4>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs font-mono text-zinc-400 pt-1">
+                            <div className="flex items-center gap-2">
+                                <span className="w-4 h-4 rounded-sm bg-zinc-900 border border-zinc-800 text-zinc-300 flex items-center justify-center font-bold text-[9px] shrink-0">1</span>
+                                <span>Compile params</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className="w-4 h-4 rounded-sm bg-zinc-900 border border-zinc-800 text-zinc-300 flex items-center justify-center font-bold text-[9px] shrink-0">2</span>
+                                <span>Answer AI prompt</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className="w-4 h-4 rounded-sm bg-zinc-900 border border-zinc-800 text-zinc-300 flex items-center justify-center font-bold text-[9px] shrink-0">3</span>
+                                <span>Deep evaluation</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className="w-4 h-4 rounded-sm bg-zinc-900 border border-zinc-800 text-zinc-300 flex items-center justify-center font-bold text-[9px] shrink-0">4</span>
+                                <span>Telemetry synthesis</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Launch Action Buttons */}
+                    <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                        <button
+                            onClick={() => handleStart(false)}
+                            disabled={loading || !setup.role}
+                            className="flex-1 py-3.5 px-6 rounded-xl bg-white hover:bg-zinc-200 disabled:opacity-50 text-zinc-950 text-xs font-mono font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+                        >
+                            {loading ? (
+                                <span className="flex items-center justify-center gap-2">
+                                    <i className="fa-solid fa-spinner fa-spin"></i> Initializing Environment...
+                                </span>
+                            ) : (
+                                <>
+                                    <i className="fa-solid fa-terminal text-xs"></i>
+                                    <span>Launch Standard Terminal Session</span>
+                                </>
+                            )}
+                        </button>
+                        <button
+                            onClick={() => handleStart(true)}
+                            disabled={loading || !setup.role}
+                            className="flex-1 py-3.5 px-6 rounded-xl bg-amber-400 hover:bg-amber-300 disabled:opacity-50 text-zinc-950 text-xs font-mono font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+                        >
+                            <i className="fa-solid fa-video text-xs"></i>
+                            <span>Launch Live Audio / Video Panel</span>
+                        </button>
                     </div>
                 </div>
 
-                <div className="sm-glass p-6 rounded-3xl border border-slate-800/60 space-y-4">
-                    <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
-                        <i className="fa-solid fa-chart-simple text-indigo-400" />
-                        Your Interview Intelligence Stats
-                    </h3>
+                {/* Intelligence Stats */}
+                <div className="p-6 rounded-2xl bg-zinc-900/90 border border-zinc-800 space-y-4">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-sm bg-amber-400"></span>
+                            <h3 className="text-xs font-mono font-bold tracking-widest text-zinc-100 uppercase">
+                                Historical Telemetry & Performance
+                            </h3>
+                        </div>
+                        <span className="text-[10px] font-mono text-zinc-500 uppercase">ANALYTICS</span>
+                    </div>
 
                     {statsLoading ? (
-                        <div className="text-xs text-slate-500 animate-pulse">Loading interview stats...</div>
+                        <div className="text-xs font-mono text-zinc-500 animate-pulse">Syncing interview telemetry...</div>
                     ) : totalCompleted === 0 ? (
-                        <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 text-center text-xs text-slate-400">
-                            Start your first interview to unlock analytics.
+                        <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 text-center text-xs font-mono text-zinc-500">
+                            Complete your initial simulation session to unlock benchmark intelligence.
                         </div>
                     ) : (
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                            <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800">
-                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-wider">Completed</p>
-                                <p className="text-xl font-black text-white mt-1">{totalCompleted}</p>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+                                <p className="text-[10px] font-mono font-bold text-zinc-500 uppercase">Sessions Done</p>
+                                <p className="text-xl font-mono font-bold text-zinc-100 mt-1 tabular-nums">{totalCompleted}</p>
                             </div>
-                            <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800">
-                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-wider">Average Score</p>
-                                <p className="text-xl font-black text-emerald-400 mt-1">{avgScore}%</p>
+                            <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+                                <p className="text-[10px] font-mono font-bold text-zinc-500 uppercase">Mean Score</p>
+                                <p className="text-xl font-mono font-bold text-emerald-400 mt-1 tabular-nums">{avgScore}%</p>
                             </div>
-                            <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800">
-                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-wider">Best Topic</p>
-                                <p className="text-sm font-black text-cyan-300 mt-1 truncate" title={bestTopic}>{bestTopic}</p>
+                            <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+                                <p className="text-[10px] font-mono font-bold text-zinc-500 uppercase">Top Track</p>
+                                <p className="text-sm font-mono font-bold text-amber-400 mt-1 truncate" title={bestTopic}>{bestTopic}</p>
                             </div>
-                            <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800">
-                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-wider">Streak</p>
-                                <p className="text-xl font-black text-amber-400 mt-1">{totalCompleted > 0 ? `${totalCompleted} 🔥` : '0'}</p>
+                            <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+                                <p className="text-[10px] font-mono font-bold text-zinc-500 uppercase">Active Streak</p>
+                                <p className="text-xl font-mono font-bold text-zinc-100 mt-1 tabular-nums">{totalCompleted > 0 ? `${totalCompleted} 🔥` : '0'}</p>
                             </div>
                         </div>
                     )}
                 </div>
 
-                <div className="flex flex-col items-center">
+                <div className="flex flex-col items-center pt-2">
                     <button
                         onClick={() => router.push('/mock-interview/history')}
-                        className="text-slate-400 hover:text-indigo-400 font-bold text-xs transition-colors flex items-center gap-2 mb-3"
+                        className="text-zinc-400 hover:text-zinc-100 font-mono text-xs transition-colors flex items-center gap-2 mb-2 cursor-pointer"
                     >
-                        <i className="fa-solid fa-clock-rotate-left"></i> View Interview History
+                        <i className="fa-solid fa-clock-rotate-left text-[11px]"></i>
+                        <span>Inspect Complete Session History</span>
                     </button>
-                    <p className="text-[10px] text-slate-600 uppercase font-black tracking-widest text-center">
-                        Pro Tip: Use headphones for the best AI voice experience. Ensure you are in a well-lit environment for behavioral analysis.
+                    <p className="text-[10px] font-mono text-zinc-600 uppercase tracking-wider text-center">
+                        Pro Tip: Speak clearly with technical conciseness. Answers are evaluated for architectural trade-offs.
                     </p>
                 </div>
             </div>

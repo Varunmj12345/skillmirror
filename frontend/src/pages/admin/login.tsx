@@ -38,59 +38,59 @@ const AdminLoginPage: React.FC = () => {
   return (
     <Layout>
       <Head>
-        <title>Platform Admin Access • SkillMirror Enterprise</title>
+        <title>Platform Admin Access • SkillMirror Core</title>
       </Head>
 
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#020617] via-[#090d16] to-[#1e1b4b] relative overflow-hidden px-4">
-        {/* Glow orbs */}
-        <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-amber-600/10 blur-[130px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/3 w-96 h-96 bg-indigo-600/15 blur-[130px] rounded-full pointer-events-none" />
+      <div className="min-h-screen flex items-center justify-center bg-zinc-950 text-zinc-200 relative overflow-hidden px-4">
+        {/* Skydda vertical guidelines */}
+        <div className="pointer-events-none fixed inset-0 z-10">
+          <div className="mx-auto h-full max-w-7xl">
+            <div className="relative h-full">
+              <div className="absolute left-0 top-0 h-full w-px bg-zinc-800/50" />
+              <div className="absolute right-0 top-0 h-full w-px bg-zinc-800/50" />
+            </div>
+          </div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 24, scale: 0.97 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full max-w-md"
-        >
-          <div className="bg-slate-900/90 backdrop-blur-2xl border border-amber-500/30 rounded-3xl shadow-2xl shadow-black/60 p-10 space-y-8">
+        <div className="relative z-20 w-full max-w-md my-12">
+          <div className="bg-zinc-900/95 border border-zinc-800 p-8 sm:p-10 space-y-8">
             {/* Header */}
             <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-tr from-amber-600 to-indigo-600 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-xl shadow-amber-500/20 border border-amber-400/30">
-                <i className="fa-solid fa-shield-halved text-white text-2xl" />
+              <div className="w-12 h-12 bg-zinc-950 border border-zinc-800 mx-auto mb-4 flex items-center justify-center text-amber-400">
+                <i className="fa-solid fa-shield-halved text-xl" />
               </div>
-              <span className="text-[10px] font-black uppercase tracking-[0.25em] text-amber-400">Restricted Access</span>
-              <h1 className="text-2xl font-black text-white tracking-tight mt-1">Platform Admin Portal</h1>
-              <p className="text-slate-400 text-xs mt-1">
+              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-amber-400 flex items-center justify-center gap-1.5">
+                <span className="w-1.5 h-1.5 bg-amber-400" />
+                RESTRICTED ACCESS
+              </div>
+              <h1 className="text-2xl font-mono font-bold text-white tracking-tight mt-1">Platform Admin Portal</h1>
+              <p className="text-zinc-400 text-xs mt-1">
                 Authorized Platform Owner & Super Admin Authentication Boundary
               </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5 text-xs">
               {error && (
-                <motion.div
-                  initial={{ opacity: 0, y: -6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="p-4 bg-rose-500/10 border border-rose-500/30 text-rose-300 rounded-2xl font-semibold flex items-center gap-3"
-                >
-                  <i className="fa-solid fa-triangle-exclamation text-rose-400 text-sm flex-shrink-0" />
+                <div className="p-4 bg-rose-950/20 border border-rose-800/60 text-rose-300 font-mono text-xs flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-rose-400" />
                   <span>{error}</span>
-                </motion.div>
+                </div>
               )}
 
-              <div className="space-y-2">
-                <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest">Admin Email *</label>
+              <div className="space-y-1.5">
+                <label className="block text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest">Admin Email *</label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   placeholder="admin@skillmirror.ai"
-                  className="sm-input px-4 py-3.5 text-sm text-white font-mono border-slate-700 focus:border-amber-500"
+                  className="w-full px-4 py-3 text-xs text-white font-mono bg-zinc-950 border border-zinc-800 focus:outline-none focus:border-amber-400 placeholder-zinc-600"
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-widest">Admin Master Password *</label>
+              <div className="space-y-1.5">
+                <label className="block text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-widest">Admin Master Password *</label>
                 <div className="relative">
                   <input
                     type={showPassword ? 'text' : 'password'}
@@ -98,12 +98,12 @@ const AdminLoginPage: React.FC = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     placeholder="••••••••"
-                    className="sm-input px-4 pr-16 py-3.5 text-sm text-white border-slate-700 focus:border-amber-500"
+                    className="w-full px-4 pr-16 py-3 text-xs text-white font-mono bg-zinc-950 border border-zinc-800 focus:outline-none focus:border-amber-400 placeholder-zinc-600"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute inset-y-0 right-0 px-4 flex items-center text-slate-500 hover:text-amber-400 transition-colors text-xs font-bold uppercase tracking-wider"
+                    className="absolute inset-y-0 right-0 px-4 flex items-center text-zinc-500 hover:text-amber-400 transition-colors text-[10px] font-mono font-bold uppercase tracking-wider"
                   >
                     {showPassword ? 'Hide' : 'Show'}
                   </button>
@@ -113,31 +113,31 @@ const AdminLoginPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 rounded-xl bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-white text-xs font-black uppercase tracking-widest shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2"
+                className="w-full py-3.5 bg-amber-400 hover:bg-amber-300 text-black text-xs font-mono font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {loading ? (
                   <>
-                    <i className="fa-solid fa-circle-notch animate-spin" />
+                    <i className="fa-solid fa-circle-notch animate-spin text-xs" />
                     <span>Verifying Admin Boundary...</span>
                   </>
                 ) : (
                   <>
-                    <i className="fa-solid fa-lock" />
+                    <i className="fa-solid fa-lock text-xs" />
                     <span>Authenticate Platform Admin →</span>
                   </>
                 )}
               </button>
 
-              <div className="pt-2 text-center border-t border-white/5">
+              <div className="pt-2 text-center border-t border-zinc-800">
                 <Link href="/login">
-                  <span className="text-slate-500 hover:text-slate-300 text-[11px] font-semibold transition-colors">
+                  <span className="text-zinc-500 hover:text-zinc-300 text-xs font-mono transition-colors">
                     ← Return to Student Login Gateway
                   </span>
                 </Link>
               </div>
             </form>
           </div>
-        </motion.div>
+        </div>
       </div>
     </Layout>
   );

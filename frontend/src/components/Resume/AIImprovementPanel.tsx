@@ -38,33 +38,35 @@ const AIImprovementPanel: React.FC<Props> = ({ skills = [], role = 'Software Dev
     };
 
     const colorMap: Record<string, string> = {
-        indigo: 'bg-indigo-600/20 border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/30',
-        emerald: 'bg-emerald-600/20 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30',
-        amber: 'bg-amber-600/20 border-amber-500/30 text-amber-400 hover:bg-amber-500/30',
+        indigo: 'bg-zinc-950 border-zinc-800 text-zinc-400 hover:border-zinc-700',
+        emerald: 'bg-zinc-950 border-zinc-800 text-zinc-400 hover:border-zinc-700',
+        amber: 'bg-zinc-950 border-zinc-800 text-zinc-400 hover:border-zinc-700',
     };
     const activeMap: Record<string, string> = {
-        indigo: 'bg-indigo-600 border-indigo-500 text-white',
-        emerald: 'bg-emerald-600 border-emerald-500 text-white',
-        amber: 'bg-amber-600 border-amber-500 text-white',
+        indigo: 'bg-zinc-800 border-amber-400/40 text-amber-400 font-bold shadow-sm',
+        emerald: 'bg-zinc-800 border-amber-400/40 text-amber-400 font-bold shadow-sm',
+        amber: 'bg-zinc-800 border-amber-400/40 text-amber-400 font-bold shadow-sm',
     };
 
     return (
-        <div className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none space-y-6">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2">
-                <i className="fa-solid fa-brain text-purple-600 dark:text-purple-400 text-xs"></i>
-                AI Improvement Engine
-            </h3>
+        <div className="p-6 rounded-2xl bg-zinc-900/90 border border-zinc-800 space-y-5 font-mono">
+            <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-sm bg-amber-400"></span>
+                <h3 className="text-xs font-bold text-white uppercase tracking-widest">
+                    AI Improvement Engine
+                </h3>
+            </div>
 
             {/* Keyword Injections */}
             {injections.length > 0 && (
-                <div className="p-5 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 rounded-2xl space-y-3 shadow-sm">
-                    <h4 className="text-[10px] font-black text-indigo-700 dark:text-indigo-400 uppercase tracking-widest flex items-center gap-2">
+                <div className="p-4 bg-zinc-950 border border-zinc-800 rounded-xl space-y-2.5">
+                    <h4 className="text-[10px] font-bold text-amber-400 uppercase tracking-widest flex items-center gap-2">
                         <i className="fa-solid fa-syringe text-xs"></i> High-Impact Keyword Injections
                     </h4>
-                    <div className="space-y-2">
+                    <div className="space-y-1.5">
                         {injections.map((inj, idx) => (
-                            <div key={idx} className="flex items-start gap-3 text-xs text-slate-700 dark:text-slate-300 leading-relaxed group">
-                                <div className="w-5 h-5 rounded bg-indigo-200 dark:bg-indigo-500/20 text-indigo-800 dark:text-indigo-300 flex items-center justify-center shrink-0 mt-0.5 text-[9px] font-black group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                            <div key={idx} className="flex items-start gap-2.5 text-xs text-zinc-300 leading-relaxed">
+                                <div className="w-4 h-4 rounded bg-zinc-900 border border-zinc-800 text-amber-400 flex items-center justify-center shrink-0 mt-0.5 text-[9px] font-bold">
                                     {idx + 1}
                                 </div>
                                 <p>{inj}</p>
@@ -81,7 +83,7 @@ const AIImprovementPanel: React.FC<Props> = ({ skills = [], role = 'Software Dev
                         <button
                             key={m.key}
                             onClick={() => setMode(m.key)}
-                            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all shadow-sm ${mode === m.key ? activeMap[m.color] : colorMap[m.color]}`}
+                            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-wider border transition-all ${mode === m.key ? activeMap[m.color] : colorMap[m.color]}`}
                         >
                             <i className={`fa-solid ${m.icon} text-[10px]`}></i>
                             {m.label}
@@ -92,10 +94,10 @@ const AIImprovementPanel: React.FC<Props> = ({ skills = [], role = 'Software Dev
                 {/* Input */}
                 <div className="space-y-3">
                     <div>
-                        <label className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-2">
-                            {mode === 'improve' ? 'Paste your resume section to improve' :
-                                mode === 'summary' ? 'Paste your skills / experience context' :
-                                    'Paste your skills or target role text'}
+                        <label className="text-[10px] text-zinc-400 uppercase tracking-wider block mb-1.5">
+                            {mode === 'improve' ? 'Paste resume section to improve' :
+                                mode === 'summary' ? 'Paste skills or experience context' :
+                                    'Paste targeted role text'}
                         </label>
                         <textarea
                             value={input}
@@ -103,38 +105,38 @@ const AIImprovementPanel: React.FC<Props> = ({ skills = [], role = 'Software Dev
                             placeholder={mode === 'improve'
                                 ? 'Paste bullet points, summary, or experience section...'
                                 : mode === 'summary'
-                                    ? 'e.g. 5yr exp in React, Node.js, AWS, led team of 4...'
+                                    ? 'e.g. 5yr exp in React, Node.js, AWS, led engineering squad...'
                                     : 'e.g. Frontend Developer with React, CSS, TypeScript...'}
                             rows={5}
-                            className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 text-sm text-slate-900 dark:text-slate-300 placeholder:text-slate-400 dark:placeholder:text-slate-700 outline-none focus:border-indigo-500/50 resize-none transition-all shadow-sm"
+                            className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3.5 text-xs text-zinc-200 placeholder:text-zinc-600 outline-none focus:border-amber-400 resize-none transition-all"
                         />
                     </div>
 
                     <button
                         onClick={handleRun}
                         disabled={loading}
-                        className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 shadow-md disabled:opacity-50"
+                        className="w-full py-2.5 bg-amber-400 hover:bg-amber-300 text-zinc-950 text-xs font-bold uppercase tracking-wider rounded-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                     >
                         {loading
-                            ? <><i className="fa-solid fa-circle-notch fa-spin"></i> AI is working...</>
-                            : <><i className="fa-solid fa-sparkles"></i> Run AI Improvement</>}
+                            ? <><i className="fa-solid fa-circle-notch fa-spin"></i> Processing...</>
+                            : <><i className="fa-solid fa-wand-magic-sparkles"></i> Run AI Optimization</>}
                     </button>
                 </div>
             </div>
 
             {/* Result */}
             {result && (
-                <div className="animate-in fade-in duration-500 pt-2">
+                <div className="animate-in fade-in duration-300 pt-2">
                     <div className="flex items-center justify-between mb-2">
-                        <h4 className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">AI Output</h4>
+                        <h4 className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold">AI Synthesized Output</h4>
                         <button
                             onClick={() => navigator.clipboard.writeText(result)}
-                            className="text-[9px] font-black text-slate-500 hover:text-indigo-600 dark:text-slate-600 dark:hover:text-indigo-400 uppercase tracking-widest flex items-center gap-1 transition-colors"
+                            className="text-[9px] text-amber-400 hover:underline uppercase tracking-wider flex items-center gap-1 transition-colors"
                         >
-                            <i className="fa-solid fa-copy"></i> Copy result
+                            <i className="fa-solid fa-copy"></i> Copy Output
                         </button>
                     </div>
-                    <div className="p-4 bg-slate-50 dark:bg-slate-900 border border-indigo-200 dark:border-indigo-500/20 rounded-xl text-xs text-slate-800 dark:text-slate-300 leading-relaxed whitespace-pre-wrap max-h-64 overflow-y-auto shadow-sm">
+                    <div className="p-3.5 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-zinc-200 leading-relaxed whitespace-pre-wrap max-h-64 overflow-y-auto">
                         {result}
                     </div>
                 </div>

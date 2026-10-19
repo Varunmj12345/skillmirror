@@ -4,7 +4,7 @@ import Layout from '../components/Layout';
 import { getUserProfile } from '../services/auth';
 import apiClient from '../services/apiClient';
 import { CyberPageShell, PageStatChip } from '../components/CyberPageShell';
-import { ScrollReveal, StaggerChildren } from '../components/motion/ScrollReveal';
+import { ScrollReveal } from '../components/motion/ScrollReveal';
 import { useToast } from '../components/motion/Toast';
 import ThemeToggle from '../components/ThemeToggle';
 import { useTheme } from '../context/ThemeContext';
@@ -33,7 +33,7 @@ const SETTINGS_KEY = 'sm_settings_prefs';
 
 const SettingsPage: React.FC = () => {
   const { addToast } = useToast();
-  const { theme, effectiveTheme, setTheme } = useTheme();
+  const { effectiveTheme, setTheme } = useTheme();
   const [activeTab, setActiveTab] = useState<'all' | 'account' | 'theme' | 'ai' | 'alerts' | 'security'>('all');
   const [prefs, setPrefs] = useState<SettingsPrefs>({
     accountName: '',
@@ -54,7 +54,7 @@ const SettingsPage: React.FC = () => {
     dreamJob: '',
   });
   const [isSaving, setIsSaving] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -177,46 +177,46 @@ const SettingsPage: React.FC = () => {
       </Head>
 
       <CyberPageShell
-        moduleCode="MOD-10"
-        section="IDENTITY & SYSTEM PREFERENCES"
+        moduleCode="SYS-01"
+        section="SYSTEM PREFERENCES & CONTROL MATRIX"
         title="SYSTEM CONFIGURATION & PREFERENCES"
-        subtitle="Tune the autonomous AI copilot's personality, switch visual display themes, and configure security protocols."
-        badge="NEURAL ENGINE PREFS"
-        badgeVariant="outline-cyan"
-        bulletVariant="cyan"
-        glowColor="indigo"
+        subtitle="Calibrate autonomous AI heuristics, manage signal telemetry, configure 2FA security, and tune system ergonomics."
+        badge="SYSTEM NOMINAL"
+        badgeVariant="outline-amber"
+        bulletVariant="amber"
+        glowColor="amber"
         actions={
           <button
             type="button"
             onClick={handleSave}
             disabled={isSaving}
-            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:brightness-110 text-white font-mono font-bold text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,217,255,0.35)] transition-all flex items-center gap-2"
+            className="px-5 py-2.5 bg-amber-400 hover:bg-amber-300 text-zinc-950 font-mono font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 border border-amber-400"
           >
             <i className={`fa-solid fa-floppy-disk text-xs ${isSaving ? 'animate-spin' : ''}`} />
-            <span>{isSaving ? 'Saving...' : 'Save Settings'}</span>
+            <span>{isSaving ? 'SYNCING...' : 'SAVE SETTINGS'}</span>
           </button>
         }
         stats={
           <>
-            <PageStatChip label="Visual Theme" value={effectiveTheme.toUpperCase()} icon="fa-palette" color="cyan" />
-            <PageStatChip label="AI Personality" value={prefs.aiTone.toUpperCase()} icon="fa-brain" color="emerald" />
+            <PageStatChip label="Visual Theme" value={effectiveTheme.toUpperCase()} icon="fa-palette" color="amber" />
+            <PageStatChip label="AI Personality" value={prefs.aiTone.toUpperCase()} icon="fa-brain" color="zinc" />
             <PageStatChip label="Alert Sensitivity" value={prefs.alertSensitivity.toUpperCase()} icon="fa-bolt" color="amber" />
           </>
         }
       />
 
       <div className="px-4 sm:px-6 pb-24 max-w-[1400px] mx-auto space-y-8">
-        {/* Navigation Category Switcher */}
+        {/* Skydda Category Switcher */}
         <ScrollReveal>
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none p-2 rounded-2xl bg-card border border-border backdrop-blur-xl">
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none p-1.5 border border-zinc-800 bg-zinc-900/90">
             {tabs.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`px-4 py-2 rounded-xl text-xs font-mono font-bold uppercase tracking-wider whitespace-nowrap transition-all flex items-center gap-2 border ${
+                className={`px-3.5 py-2 text-xs font-mono font-bold uppercase tracking-wider whitespace-nowrap transition-all flex items-center gap-2 border ${
                   activeTab === tab.id
-                    ? 'bg-cyan-500/20 border-cyan-400 text-cyan-600 dark:text-cyan-200 shadow-[0_0_15px_rgba(0,217,255,0.25)]'
-                    : 'border-transparent text-muted-foreground hover:text-foreground'
+                    ? 'border-amber-400/50 bg-amber-400/10 text-amber-400'
+                    : 'border-transparent text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
                 }`}
               >
                 <i className={`fa-solid ${tab.icon} text-xs`} />
@@ -232,16 +232,16 @@ const SettingsPage: React.FC = () => {
             {/* ── 1. Account & Career Identity Settings ── */}
             {(activeTab === 'all' || activeTab === 'account') && (
               <ScrollReveal>
-                <div className="p-6 sm:p-7 rounded-3xl bg-card border border-border backdrop-blur-xl shadow-xl space-y-6">
-                  <div className="flex items-center gap-3 pb-4 border-b border-border">
-                    <div className="w-10 h-10 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-500 dark:text-cyan-400 text-base">
+                <div className="p-6 sm:p-7 border border-zinc-800 bg-zinc-900/90 space-y-6">
+                  <div className="flex items-center gap-3 pb-4 border-b border-zinc-800">
+                    <div className="w-8 h-8 border border-amber-400/20 bg-amber-400/10 text-amber-400 flex items-center justify-center text-xs">
                       <i className="fa-solid fa-id-card" />
                     </div>
                     <div>
-                      <h2 className="text-base sm:text-lg font-display font-black text-foreground">
+                      <h2 className="text-sm font-mono font-bold text-zinc-100 uppercase tracking-wider">
                         Career Identity & Target Role
                       </h2>
-                      <p className="text-[11px] font-mono text-muted-foreground">
+                      <p className="text-[11px] font-mono text-zinc-400">
                         Configures target benchmark models and job match parameters.
                       </p>
                     </div>
@@ -249,20 +249,20 @@ const SettingsPage: React.FC = () => {
 
                   <div className="space-y-4">
                     <div className="space-y-1.5">
-                      <label className="block text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-wider">
+                      <label className="block text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider">
                         Display Handle
                       </label>
                       <input
                         type="text"
                         value={prefs.accountName}
                         onChange={(e) => setPrefs(prev => ({ ...prev, accountName: e.target.value }))}
-                        className="w-full px-4 py-3 rounded-xl bg-pop border border-border text-xs font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-cyan-500/60 transition-all"
+                        className="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-800 text-xs font-mono text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-amber-400/60 transition-all"
                         placeholder="Your username handle..."
                       />
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="block text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-wider">
+                      <label className="block text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider">
                         Target Dream Job Role
                       </label>
                       <input
@@ -270,21 +270,21 @@ const SettingsPage: React.FC = () => {
                         value={prefs.dreamJob}
                         onChange={(e) => setPrefs(prev => ({ ...prev, dreamJob: e.target.value }))}
                         placeholder="e.g. Senior Full-Stack AI Engineer..."
-                        className="w-full px-4 py-3 rounded-xl bg-pop border border-border text-xs font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-cyan-500/60 transition-all"
+                        className="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-800 text-xs font-mono text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-amber-400/60 transition-all"
                       />
-                      <p className="text-[10px] font-mono text-muted-foreground">
+                      <p className="text-[10px] font-mono text-zinc-500">
                         The AI engine continuously indexes real-time hiring trends matching this specific position.
                       </p>
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="block text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-wider">
+                      <label className="block text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider">
                         Workspace Timezone
                       </label>
                       <select
                         value={prefs.accountTimezone}
                         onChange={(e) => setPrefs(prev => ({ ...prev, accountTimezone: e.target.value }))}
-                        className="w-full px-4 py-3 rounded-xl bg-pop border border-border text-xs font-mono text-foreground outline-none cursor-pointer"
+                        className="w-full px-3.5 py-2.5 bg-zinc-950 border border-zinc-800 text-xs font-mono text-zinc-100 outline-none cursor-pointer focus:border-amber-400/60"
                       >
                         <option value="UTC">UTC (Coordinated Universal Time)</option>
                         <option value="America/New_York">Eastern Time (US / New York)</option>
@@ -302,26 +302,26 @@ const SettingsPage: React.FC = () => {
             {/* ── 2. Visual Theme & Display Mode ── */}
             {(activeTab === 'all' || activeTab === 'theme') && (
               <ScrollReveal>
-                <div className="p-6 sm:p-7 rounded-3xl bg-card border border-border backdrop-blur-xl shadow-xl space-y-6">
-                  <div className="flex items-center gap-3 pb-4 border-b border-border">
-                    <div className="w-10 h-10 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-500 dark:text-cyan-400 text-base">
+                <div className="p-6 sm:p-7 border border-zinc-800 bg-zinc-900/90 space-y-6">
+                  <div className="flex items-center gap-3 pb-4 border-b border-zinc-800">
+                    <div className="w-8 h-8 border border-amber-400/20 bg-amber-400/10 text-amber-400 flex items-center justify-center text-xs">
                       <i className="fa-solid fa-palette" />
                     </div>
                     <div>
-                      <h2 className="text-base sm:text-lg font-display font-black text-foreground">
+                      <h2 className="text-sm font-mono font-bold text-zinc-100 uppercase tracking-wider">
                         Visual Theme & Display Mode
                       </h2>
-                      <p className="text-[11px] font-mono text-muted-foreground">
-                        Switch seamlessly between dark obsidian cyber theme and clean light workspace.
+                      <p className="text-[11px] font-mono text-zinc-400">
+                        Calibrate terminal presentation contrast and interface scheme.
                       </p>
                     </div>
                   </div>
 
                   <div className="space-y-4">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl bg-pop border border-border gap-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-zinc-950 border border-zinc-800 gap-4">
                       <div>
-                        <p className="text-xs font-mono font-bold text-foreground">Active Interface Theme</p>
-                        <p className="text-[10px] font-mono text-muted-foreground">Instant global mode transition</p>
+                        <p className="text-xs font-mono font-bold text-zinc-100 uppercase">Active Interface Theme</p>
+                        <p className="text-[10px] font-mono text-zinc-500">Current workspace display mode</p>
                       </div>
                       <ThemeToggle variant="pill" />
                     </div>
@@ -330,39 +330,39 @@ const SettingsPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={(e) => setTheme('dark', e)}
-                        className={`p-4 rounded-2xl border text-left transition-all relative overflow-hidden ${
+                        className={`p-4 border text-left transition-all ${
                           effectiveTheme === 'dark'
-                            ? 'border-cyan-500 bg-slate-950 text-white shadow-[0_0_20px_rgba(0,217,255,0.2)]'
-                            : 'border-border bg-slate-900/40 text-slate-400 hover:border-slate-700'
+                            ? 'border-amber-400 bg-amber-400/5 text-zinc-100'
+                            : 'border-zinc-800 bg-zinc-950 text-zinc-400 hover:border-zinc-700'
                         }`}
                       >
                         <div className="flex items-center justify-between mb-2">
-                          <i className="fa-solid fa-moon text-base text-cyan-400" />
+                          <i className="fa-solid fa-moon text-sm text-amber-400" />
                           {effectiveTheme === 'dark' && (
-                            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                            <span className="w-1.5 h-1.5 bg-amber-400" />
                           )}
                         </div>
-                        <div className="text-xs font-mono font-bold">Dark Obsidian</div>
-                        <div className="text-[10px] font-mono text-slate-400">Cyber-industrial high-contrast</div>
+                        <div className="text-xs font-mono font-bold uppercase tracking-wider">Dark Sentinel</div>
+                        <div className="text-[10px] font-mono text-zinc-500">High-contrast tactical zinc</div>
                       </button>
 
                       <button
                         type="button"
                         onClick={(e) => setTheme('light', e)}
-                        className={`p-4 rounded-2xl border text-left transition-all relative overflow-hidden ${
+                        className={`p-4 border text-left transition-all ${
                           effectiveTheme === 'light'
-                            ? 'border-blue-500 bg-white text-slate-900 shadow-[0_0_20px_rgba(59,130,246,0.2)]'
-                            : 'border-border bg-slate-100/50 text-slate-600 hover:border-slate-300'
+                            ? 'border-amber-400 bg-amber-400/5 text-zinc-100'
+                            : 'border-zinc-800 bg-zinc-950 text-zinc-400 hover:border-zinc-700'
                         }`}
                       >
                         <div className="flex items-center justify-between mb-2">
-                          <i className="fa-solid fa-sun text-base text-amber-500" />
+                          <i className="fa-solid fa-sun text-sm text-zinc-400" />
                           {effectiveTheme === 'light' && (
-                            <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                            <span className="w-1.5 h-1.5 bg-amber-400" />
                           )}
                         </div>
-                        <div className="text-xs font-mono font-bold">Clean Light</div>
-                        <div className="text-[10px] font-mono text-slate-500">Crisp daytime readability</div>
+                        <div className="text-xs font-mono font-bold uppercase tracking-wider">Clean Day</div>
+                        <div className="text-[10px] font-mono text-zinc-500">High ambient contrast</div>
                       </button>
                     </div>
                   </div>
@@ -373,36 +373,36 @@ const SettingsPage: React.FC = () => {
             {/* ── 3. AI Copilot Personality Tuning ── */}
             {(activeTab === 'all' || activeTab === 'ai') && (
               <ScrollReveal>
-                <div className="p-6 sm:p-7 rounded-3xl bg-card border border-border backdrop-blur-xl shadow-xl space-y-6">
-                  <div className="flex items-center gap-3 pb-4 border-b border-border">
-                    <div className="w-10 h-10 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-500 dark:text-violet-400 text-base">
+                <div className="p-6 sm:p-7 border border-zinc-800 bg-zinc-900/90 space-y-6">
+                  <div className="flex items-center gap-3 pb-4 border-b border-zinc-800">
+                    <div className="w-8 h-8 border border-amber-400/20 bg-amber-400/10 text-amber-400 flex items-center justify-center text-xs">
                       <i className="fa-solid fa-brain" />
                     </div>
                     <div>
-                      <h2 className="text-base sm:text-lg font-display font-black text-foreground">
-                        AI Copilot Personality Tuning
+                      <h2 className="text-sm font-mono font-bold text-zinc-100 uppercase tracking-wider">
+                        AI Copilot Heuristics Tuning
                       </h2>
-                      <p className="text-[11px] font-mono text-muted-foreground">
-                        Adjust mentorship tone, feedback depth, and prompt style.
+                      <p className="text-[11px] font-mono text-zinc-400">
+                        Adjust mentorship tone, feedback depth, and evaluation strictness.
                       </p>
                     </div>
                   </div>
 
                   <div className="space-y-5">
                     <div className="space-y-2">
-                      <label className="block text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-wider">
+                      <label className="block text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider">
                         Copilot Mentorship Tone
                       </label>
-                      <div className="grid grid-cols-3 gap-2.5">
+                      <div className="grid grid-cols-3 gap-2">
                         {(['neutral', 'friendly', 'direct'] as const).map((tone) => (
                           <button
                             key={tone}
                             type="button"
                             onClick={() => setPrefs(prev => ({ ...prev, aiTone: tone }))}
-                            className={`py-2.5 px-3 rounded-xl border text-xs font-mono font-bold uppercase tracking-wider transition-all ${
+                            className={`py-2 px-3 border text-xs font-mono font-bold uppercase tracking-wider transition-all ${
                               prefs.aiTone === tone
-                                ? 'border-violet-500/60 bg-violet-500/20 text-violet-600 dark:text-violet-200 shadow-[0_0_15px_rgba(168,85,247,0.25)]'
-                                : 'border-border bg-pop text-muted-foreground hover:text-foreground'
+                                ? 'border-amber-400/60 bg-amber-400/10 text-amber-400'
+                                : 'border-zinc-800 bg-zinc-950 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'
                             }`}
                           >
                             {tone}
@@ -412,19 +412,19 @@ const SettingsPage: React.FC = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="block text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-wider">
-                        Response & Analysis Depth
+                      <label className="block text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider">
+                        Analysis & Synthesis Depth
                       </label>
-                      <div className="grid grid-cols-3 gap-2.5">
+                      <div className="grid grid-cols-3 gap-2">
                         {(['concise', 'balanced', 'detailed'] as const).map((lvl) => (
                           <button
                             key={lvl}
                             type="button"
                             onClick={() => setPrefs(p => ({ ...p, aiDetail: lvl }))}
-                            className={`py-2.5 px-3 rounded-xl border text-xs font-mono font-bold uppercase tracking-wider transition-all ${
+                            className={`py-2 px-3 border text-xs font-mono font-bold uppercase tracking-wider transition-all ${
                               prefs.aiDetail === lvl
-                                ? 'border-indigo-500/60 bg-indigo-500/20 text-indigo-600 dark:text-indigo-200 shadow-[0_0_15px_rgba(99,102,241,0.25)]'
-                                : 'border-border bg-pop text-muted-foreground hover:text-foreground'
+                                ? 'border-amber-400/60 bg-amber-400/10 text-amber-400'
+                                : 'border-zinc-800 bg-zinc-950 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'
                             }`}
                           >
                             {lvl}
@@ -443,73 +443,79 @@ const SettingsPage: React.FC = () => {
             {/* ── 4. Signals & Smart Alerts Intelligence ── */}
             {(activeTab === 'all' || activeTab === 'alerts') && (
               <ScrollReveal>
-                <div className="p-6 sm:p-7 rounded-3xl bg-card border border-border backdrop-blur-xl shadow-xl space-y-6">
-                  <div className="flex items-center gap-3 pb-4 border-b border-border">
-                    <div className="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 dark:text-amber-400 text-base">
+                <div className="p-6 sm:p-7 border border-zinc-800 bg-zinc-900/90 space-y-6">
+                  <div className="flex items-center gap-3 pb-4 border-b border-zinc-800">
+                    <div className="w-8 h-8 border border-amber-400/20 bg-amber-400/10 text-amber-400 flex items-center justify-center text-xs">
                       <i className="fa-solid fa-satellite-dish" />
                     </div>
                     <div>
-                      <h2 className="text-base sm:text-lg font-display font-black text-foreground">
+                      <h2 className="text-sm font-mono font-bold text-zinc-100 uppercase tracking-wider">
                         Signals & Predictive Alerts Engine
                       </h2>
-                      <p className="text-[11px] font-mono text-muted-foreground">
+                      <p className="text-[11px] font-mono text-zinc-400">
                         Configure predictive hiring spike detection and drift warnings.
                       </p>
                     </div>
                   </div>
 
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between p-3.5 rounded-2xl bg-pop border border-border">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-3.5 bg-zinc-950 border border-zinc-800">
                       <div>
-                        <p className="text-xs font-mono font-bold text-foreground">Autonomous Smart Signals</p>
-                        <p className="text-[10px] font-mono text-muted-foreground">Evaluate hiring surges & skill drift</p>
+                        <p className="text-xs font-mono font-bold text-zinc-200 uppercase">Autonomous Smart Signals</p>
+                        <p className="text-[10px] font-mono text-zinc-500">Evaluate hiring surges & skill drift</p>
                       </div>
                       <button
                         type="button"
                         onClick={() => toggle('enableSmartAlerts')}
-                        className={`w-10 h-5 rounded-full relative p-0.5 flex items-center transition-all ${
-                          prefs.enableSmartAlerts ? 'bg-cyan-500 justify-end' : 'bg-slate-700 justify-start'
+                        className={`px-3 py-1 text-[10px] font-mono font-bold uppercase border transition-all ${
+                          prefs.enableSmartAlerts
+                            ? 'border-amber-400 bg-amber-400 text-zinc-950'
+                            : 'border-zinc-800 bg-zinc-900 text-zinc-500'
                         }`}
                       >
-                        <div className="w-4 h-4 bg-white rounded-full shadow-sm" />
+                        {prefs.enableSmartAlerts ? 'ACTIVE' : 'OFF'}
                       </button>
                     </div>
 
-                    <div className="flex items-center justify-between p-3.5 rounded-2xl bg-pop border border-border">
+                    <div className="flex items-center justify-between p-3.5 bg-zinc-950 border border-zinc-800">
                       <div>
-                        <p className="text-xs font-mono font-bold text-foreground">Predictive Risk Analysis</p>
-                        <p className="text-[10px] font-mono text-muted-foreground">Warn before competency gaps widen</p>
+                        <p className="text-xs font-mono font-bold text-zinc-200 uppercase">Predictive Risk Analysis</p>
+                        <p className="text-[10px] font-mono text-zinc-500">Warn before competency gaps widen</p>
                       </div>
                       <button
                         type="button"
                         onClick={() => toggle('enablePredictive')}
-                        className={`w-10 h-5 rounded-full relative p-0.5 flex items-center transition-all ${
-                          prefs.enablePredictive ? 'bg-indigo-500 justify-end' : 'bg-slate-700 justify-start'
+                        className={`px-3 py-1 text-[10px] font-mono font-bold uppercase border transition-all ${
+                          prefs.enablePredictive
+                            ? 'border-amber-400 bg-amber-400 text-zinc-950'
+                            : 'border-zinc-800 bg-zinc-900 text-zinc-500'
                         }`}
                       >
-                        <div className="w-4 h-4 bg-white rounded-full shadow-sm" />
+                        {prefs.enablePredictive ? 'ACTIVE' : 'OFF'}
                       </button>
                     </div>
 
-                    <div className="flex items-center justify-between p-3.5 rounded-2xl bg-pop border border-border">
+                    <div className="flex items-center justify-between p-3.5 bg-zinc-950 border border-zinc-800">
                       <div>
-                        <p className="text-xs font-mono font-bold text-foreground">Behavioral Consistency Tracking</p>
-                        <p className="text-[10px] font-mono text-muted-foreground">Momentum drop & stagnation alerts</p>
+                        <p className="text-xs font-mono font-bold text-zinc-200 uppercase">Behavioral Consistency</p>
+                        <p className="text-[10px] font-mono text-zinc-500">Momentum drop & stagnation alerts</p>
                       </div>
                       <button
                         type="button"
                         onClick={() => toggle('enableBehavioral')}
-                        className={`w-10 h-5 rounded-full relative p-0.5 flex items-center transition-all ${
-                          prefs.enableBehavioral ? 'bg-indigo-500 justify-end' : 'bg-slate-700 justify-start'
+                        className={`px-3 py-1 text-[10px] font-mono font-bold uppercase border transition-all ${
+                          prefs.enableBehavioral
+                            ? 'border-amber-400 bg-amber-400 text-zinc-950'
+                            : 'border-zinc-800 bg-zinc-900 text-zinc-500'
                         }`}
                       >
-                        <div className="w-4 h-4 bg-white rounded-full shadow-sm" />
+                        {prefs.enableBehavioral ? 'ACTIVE' : 'OFF'}
                       </button>
                     </div>
 
                     {/* Alert Sensitivity */}
                     <div className="space-y-2 pt-2">
-                      <label className="block text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-wider">
+                      <label className="block text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider">
                         Signal Engine Sensitivity
                       </label>
                       <div className="grid grid-cols-3 gap-2">
@@ -518,10 +524,10 @@ const SettingsPage: React.FC = () => {
                             key={s}
                             type="button"
                             onClick={() => setPrefs(p => ({ ...p, alertSensitivity: s }))}
-                            className={`py-2 rounded-xl border text-[10px] font-mono font-bold uppercase tracking-wider transition-all ${
+                            className={`py-2 border text-[10px] font-mono font-bold uppercase tracking-wider transition-all ${
                               prefs.alertSensitivity === s
-                                ? 'bg-amber-500/20 border-amber-500/50 text-amber-600 dark:text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.2)]'
-                                : 'bg-pop border-border text-muted-foreground hover:text-foreground'
+                                ? 'bg-amber-400/10 border-amber-400 text-amber-400'
+                                : 'bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'
                             }`}
                           >
                             {s}
@@ -537,59 +543,63 @@ const SettingsPage: React.FC = () => {
             {/* ── 5. Security & Privacy Matrix ── */}
             {(activeTab === 'all' || activeTab === 'security') && (
               <ScrollReveal>
-                <div className="p-6 sm:p-7 rounded-3xl bg-card border border-border backdrop-blur-xl shadow-xl space-y-6">
-                  <div className="flex items-center gap-3 pb-4 border-b border-border">
-                    <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 dark:text-emerald-400 text-base">
+                <div className="p-6 sm:p-7 border border-zinc-800 bg-zinc-900/90 space-y-6">
+                  <div className="flex items-center gap-3 pb-4 border-b border-zinc-800">
+                    <div className="w-8 h-8 border border-amber-400/20 bg-amber-400/10 text-amber-400 flex items-center justify-center text-xs">
                       <i className="fa-solid fa-shield-halved" />
                     </div>
                     <div>
-                      <h2 className="text-base sm:text-lg font-display font-black text-foreground">
+                      <h2 className="text-sm font-mono font-bold text-zinc-100 uppercase tracking-wider">
                         Security & Data Privacy
                       </h2>
-                      <p className="text-[11px] font-mono text-muted-foreground">
+                      <p className="text-[11px] font-mono text-zinc-400">
                         Identity protection, two-factor auth, and data privacy controls.
                       </p>
                     </div>
                   </div>
 
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between p-3.5 rounded-2xl bg-pop border border-border">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-3.5 bg-zinc-950 border border-zinc-800">
                       <div>
-                        <p className="text-xs font-mono font-bold text-foreground">Two-Factor Authentication (2FA)</p>
-                        <p className="text-[10px] font-mono text-muted-foreground">Enforce second-factor security check</p>
+                        <p className="text-xs font-mono font-bold text-zinc-200 uppercase">Two-Factor Authentication (2FA)</p>
+                        <p className="text-[10px] font-mono text-zinc-500">Enforce second-factor credential checks</p>
                       </div>
                       <button
                         type="button"
                         onClick={handleTwoFactorToggle}
-                        className={`w-10 h-5 rounded-full relative p-0.5 flex items-center transition-all ${
-                          prefs.twoFactor ? 'bg-cyan-500 justify-end' : 'bg-slate-700 justify-start'
+                        className={`px-3 py-1 text-[10px] font-mono font-bold uppercase border transition-all ${
+                          prefs.twoFactor
+                            ? 'border-amber-400 bg-amber-400 text-zinc-950'
+                            : 'border-zinc-800 bg-zinc-900 text-zinc-500'
                         }`}
                       >
-                        <div className="w-4 h-4 bg-white rounded-full shadow-sm" />
+                        {prefs.twoFactor ? 'ENABLED' : 'DISABLED'}
                       </button>
                     </div>
 
-                    <div className="flex items-center justify-between p-3.5 rounded-2xl bg-pop border border-border">
+                    <div className="flex items-center justify-between p-3.5 bg-zinc-950 border border-zinc-800">
                       <div>
-                        <p className="text-xs font-mono font-bold text-foreground">Recruiter Discovery</p>
-                        <p className="text-[10px] font-mono text-muted-foreground">Allow verified partner recruiters to find twin</p>
+                        <p className="text-xs font-mono font-bold text-zinc-200 uppercase">Recruiter Discovery</p>
+                        <p className="text-[10px] font-mono text-zinc-500">Allow verified partner recruiters to find twin</p>
                       </div>
                       <button
                         type="button"
                         onClick={handleVisibilityToggle}
-                        className={`w-10 h-5 rounded-full relative p-0.5 flex items-center transition-all ${
-                          prefs.profileVisibility ? 'bg-emerald-500 justify-end' : 'bg-slate-700 justify-start'
+                        className={`px-3 py-1 text-[10px] font-mono font-bold uppercase border transition-all ${
+                          prefs.profileVisibility
+                            ? 'border-amber-400 bg-amber-400 text-zinc-950'
+                            : 'border-zinc-800 bg-zinc-900 text-zinc-500'
                         }`}
                       >
-                        <div className="w-4 h-4 bg-white rounded-full shadow-sm" />
+                        {prefs.profileVisibility ? 'PUBLIC' : 'PRIVATE'}
                       </button>
                     </div>
 
-                    <div className="pt-2 flex flex-col sm:flex-row gap-3">
+                    <div className="pt-3 flex flex-col sm:flex-row gap-3">
                       <Link href="/profile" className="flex-1">
                         <button
                           type="button"
-                          className="w-full py-2.5 rounded-xl bg-pop border border-border hover:border-slate-400 dark:hover:border-slate-700 text-xs font-mono font-bold text-foreground uppercase tracking-wider transition-all"
+                          className="w-full py-2.5 bg-zinc-950 border border-zinc-800 hover:border-zinc-600 text-xs font-mono font-bold text-zinc-300 uppercase tracking-wider transition-all"
                         >
                           View Identity Profile
                         </button>
@@ -597,7 +607,7 @@ const SettingsPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={handleSave}
-                        className="flex-1 py-2.5 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-600 dark:text-cyan-300 hover:bg-cyan-500/25 text-xs font-mono font-bold uppercase tracking-wider transition-all"
+                        className="flex-1 py-2.5 bg-amber-400/10 border border-amber-400/40 text-amber-400 hover:bg-amber-400/20 text-xs font-mono font-bold uppercase tracking-wider transition-all"
                       >
                         Save All Preferences
                       </button>

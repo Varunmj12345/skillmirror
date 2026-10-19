@@ -35,36 +35,39 @@ const SmartNotifications: React.FC = () => {
     if (notifications.length === 0) return null;
 
     return (
-        <div className="fixed bottom-8 right-8 z-[100] space-y-4 max-w-sm pointer-events-none">
+        <div className="fixed bottom-8 right-8 z-[100] space-y-3 max-w-sm pointer-events-none">
             {notifications.map((n) => (
                 <div
                     key={n.id}
-                    className="pointer-events-auto animate-in slide-in-from-right-8 fade-in duration-500"
+                    className="pointer-events-auto animate-in slide-in-from-right-8 fade-in duration-300"
                 >
-                    <div className="p-4 rounded-2xl border border-border bg-card shadow-2xl backdrop-blur-xl flex items-start gap-4 group">
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${n.type === 'critical' ? 'bg-rose-50 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-500/30' : 'bg-blue-50 dark:bg-sky-500/20 text-blue-600 dark:text-sky-400 border border-blue-200 dark:border-sky-500/30'
-                            }`}>
-                            <i className={`fa-solid ${n.type === 'critical' ? 'fa-triangle-exclamation' : 'fa-chart-line'}`}></i>
+                    <div className="p-4 rounded-xl border border-zinc-800 bg-zinc-950/95 shadow-2xl backdrop-blur-xl flex items-start gap-3.5 group">
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border ${
+                            n.type === 'critical'
+                                ? 'bg-rose-500/10 text-rose-400 border-rose-500/20'
+                                : 'bg-amber-400/10 text-amber-400 border-amber-400/20'
+                        }`}>
+                            <i className={`fa-solid ${n.type === 'critical' ? 'fa-triangle-exclamation' : 'fa-chart-line'} text-xs`}></i>
                         </div>
                         <div className="flex-1">
                             <div className="flex justify-between items-center mb-1">
-                                <span className="text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-widest">{n.message}</span>
+                                <span className="text-[10px] font-mono font-bold text-white uppercase tracking-wider">{n.message}</span>
                                 <button
                                     onClick={() => setNotifications(prev => prev.filter(item => item.id !== n.id))}
-                                    className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                                    className="text-zinc-500 hover:text-zinc-300 transition-colors"
                                 >
                                     <i className="fa-solid fa-xmark text-[10px]"></i>
                                 </button>
                             </div>
-                            <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
+                            <p className="text-xs text-zinc-400 leading-relaxed font-mono">
                                 {n.insight}
                             </p>
-                            <div className="mt-3 flex items-center gap-2">
-                                <span className="text-[9px] text-blue-600 dark:text-indigo-400 font-black uppercase tracking-widest cursor-pointer hover:text-blue-700 dark:hover:text-indigo-300 transition-colors">
+                            <div className="mt-2.5 flex items-center gap-2 font-mono text-[9px]">
+                                <span className="text-amber-400 font-bold uppercase tracking-wider cursor-pointer hover:underline">
                                     View Strategy
                                 </span>
-                                <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700"></span>
-                                <span className="text-[9px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest">
+                                <span className="w-1 h-1 rounded-sm bg-zinc-700"></span>
+                                <span className="text-zinc-500 uppercase tracking-wider">
                                     AI Insight
                                 </span>
                             </div>

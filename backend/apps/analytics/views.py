@@ -329,3 +329,116 @@ class PredictCompletionView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
         return Response({"predicted_date": (timezone.now() + timedelta(days=45)).strftime('%Y-%m-%d'), "confidence": 82})
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+#  AI BOT PERFORMANCE ANALYTICS ENGINE API ENDPOINTS
+# ═════════════════════════════════════════════════════════════════════════════
+
+class BotPerformanceOverviewView(APIView):
+    """
+    Returns comprehensive analytics, metrics, model performance,
+    task distribution, and health scores for the AI Bot Performance Engine.
+    """
+    permission_classes = []
+
+    def get(self, request):
+        from .bot_analytics import BotPerformanceAnalyticsEngine
+        from apps.ai.llm_client import get_active_provider_and_key, DEFAULT_GROQ_PRIMARY_MODEL, DEFAULT_GROQ_FAST_MODEL
+
+        try:
+            days = int(request.query_params.get('days', 7))
+        except (ValueError, TypeError):
+            days = 7
+
+        interaction_type = request.query_params.get('type')
+
+        summary = BotPerformanceAnalyticsEngine.get_performance_summary(days=days, interaction_type=interaction_type)
+        model_breakdown = BotPerformanceAnalyticsEngine.get_model_breakdown(days=days)
+        interaction_breakdown = BotPerformanceAnalyticsEngine.get_interaction_type_breakdown(days=days)
+        timeline = BotPerformanceAnalyticsEngine.get_timeline_trends(days=days)
+
+        provider, key = get_active_provider_and_key()
+
+        return Response({
+            "summary": summary,
+            "models": model_breakdown,
+            "task_distribution": interaction_breakdown,
+            "timeline": timeline,
+            "engine_status": {
+                "active_provider": provider,
+                "primary_model": DEFAULT_GROQ_PRIMARY_MODEL,
+                "fast_model": DEFAULT_GROQ_FAST_MODEL,
+                "api_key_configured": bool(key),
+                "key_preview": f"{key[:8]}...{key[-4:]}" if key and len(key) > 12 else "Not configured",
+                "timestamp": timezone.now().isoformat()
+            }
+        })
+
+
+class BotPerformanceLogsView(APIView):
+    """
+    Returns paginated/filtered telemetry logs for interaction audits.
+    """
+    permission_classes = []
+
+    def get(self, request):
+        from .bot_analytics import BotPerformanceAnalyticsEngine
+
+        try:
+            limit = int(request.query_params.get('limit', 50))
+        except (ValueError, TypeError):
+            limit = 50
+
+        type_filter = request.query_params.get('type')
+        status_filter = request.query_params.get('status')
+
+        logs = BotPerformanceAnalyticsEngine.get_recent_logs(
+            limit=limit,
+            interaction_type=type_filter,
+            status=status_filter
+        )
+        return Response({"count": len(logs), "logs": logs})
+
+
+class BotFeedbackView(APIView):
+    """
+    Records end-user feedback and satisfaction ratings for bot responses.
+    """
+    permission_classes = []
+
+    def post(self, request):
+        from .models import BotPerformanceLog
+
+        log_id = request.data.get('log_id')
+        rating = request.data.get('rating') # 1 (up) or -1 (down)
+        feedback = request.data.get('feedback', '')
+
+        if not log_id:
+            return Response({"error": "log_id is required"}, status=400)
+
+        try:
+            log = BotPerformanceLog.objects.get(id=log_id)
+            if rating is not None:
+                log.user_rating = int(rating)
+            if feedback:
+                log.user_feedback = feedback
+            log.save(update_fields=['user_rating', 'user_feedback'])
+            return Response({"status": "recorded", "id": str(log.id)})
+        except BotPerformanceLog.DoesNotExist:
+            return Response({"error": "Telemetry log not found"}, status=404)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
+
+
+class BotDiagnosticView(APIView):
+    """
+    Triggers an instant real-time diagnostic probe to test provider latency,
+    token generation speed, and model availability.
+    """
+    permission_classes = []
+
+    def post(self, request):
+        from .bot_analytics import BotPerformanceAnalyticsEngine
+        result = BotPerformanceAnalyticsEngine.run_live_diagnostic()
+        return Response(result)

@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import Layout from '../../components/Layout';
 import withAuth from '../../components/withAuth';
 import { interviewService } from '../../services/interviewService';
+import { CyberPageShell, PageStatChip } from '../../components/CyberPageShell';
 
 const MockInterviewHistory: React.FC = () => {
     const router = useRouter();
@@ -26,82 +27,106 @@ const MockInterviewHistory: React.FC = () => {
         }
     };
 
+    const avgScore = history.length > 0
+        ? Math.round(history.reduce((acc, curr) => acc + (curr.total_score || curr.score || 0), 0) / history.length)
+        : 0;
+
     return (
         <Layout>
             <Head>
-                <title>Interview History • SkillMirror</title>
-                <link rel="stylesheet" href="/styles/mock-interview.css" />
+                <title>Interview Archive • SkillMirror OS</title>
             </Head>
 
-            <div className="interview-container">
-                <div className="mb-10 flex justify-between items-center">
-                    <div>
-                        <h1 className="text-3xl font-extrabold text-white">Interview <span className="text-indigo-500">History</span></h1>
-                        <p className="text-slate-500 mt-1">Review your past performance and growth.</p>
+            <CyberPageShell
+                moduleCode="INT-HIST"
+                section="AI CAREER ENGINE"
+                badge="ARCHIVE LOGS: ACTIVE"
+                title="INTERVIEW ARCHIVE"
+                subtitle="Historical telemetry, performance logs, and past simulation evaluations."
+                stats={
+                    <div className="flex flex-wrap gap-2.5 pt-1">
+                        <PageStatChip label="Total Sessions" value={history.length} color="slate" icon="fa-folder-closed" />
+                        <PageStatChip label="Mean Score" value={avgScore ? `${avgScore}%` : '—'} color="emerald" icon="fa-chart-line" />
+                    </div>
+                }
+            />
+
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 pb-12 font-mono space-y-6">
+                <div className="flex justify-between items-center pb-2">
+                    <div className="flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-sm bg-amber-400"></span>
+                        <h2 className="text-xs font-bold text-zinc-100 uppercase tracking-wider">Historical Logs</h2>
                     </div>
                     <button
                         onClick={() => router.push('/mock-interview')}
-                        className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-500 transition-all shadow-lg shadow-indigo-600/20"
+                        className="px-4 py-2 bg-amber-400 hover:bg-amber-300 text-zinc-950 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-sm flex items-center gap-2"
                     >
-                        New Interview
+                        <i className="fa-solid fa-plus text-[10px]"></i>
+                        <span>New Simulation</span>
                     </button>
                 </div>
 
                 {loading ? (
                     <div className="flex items-center justify-center py-20">
-                        <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                        <div className="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
                     </div>
                 ) : history.length === 0 ? (
-                    <div className="py-24 text-center p-8 rounded-3xl bg-card border-dashed border-2 border-border">
-                        <div className="w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-900 flex items-center justify-center mx-auto mb-6 text-slate-400 dark:text-slate-700 text-3xl">
+                    <div className="py-16 text-center p-8 rounded-2xl bg-zinc-900/90 border border-zinc-800 space-y-3">
+                        <div className="w-12 h-12 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center mx-auto text-zinc-500 text-xl">
                             <i className="fa-solid fa-microphone-slash"></i>
                         </div>
-                        <h3 className="text-slate-900 dark:text-white font-bold text-xl mb-2">No interviews yet</h3>
-                        <p className="text-slate-500 mb-8 max-w-xs mx-auto text-sm">Start your first AI mock interview to begin tracking your readiness.</p>
+                        <h3 className="text-zinc-200 font-bold text-sm uppercase">No Simulated Sessions Found</h3>
+                        <p className="text-zinc-500 text-xs max-w-xs mx-auto">
+                            Launch your initial AI mock interview to generate competency benchmarks.
+                        </p>
                     </div>
                 ) : (
-                    <div className="space-y-4">
+                    <div className="space-y-2.5">
                         {history.map((item) => (
                             <div
                                 key={item.id}
-                                className="p-6 rounded-3xl bg-card border border-border shadow-light-card dark:shadow-none hover:border-blue-300 dark:hover:border-indigo-500/30 transition-all cursor-pointer group flex flex-col md:flex-row md:items-center justify-between gap-6"
+                                className="p-4 sm:p-5 rounded-xl bg-zinc-900/90 border border-zinc-800 hover:border-zinc-700 transition-all cursor-pointer group flex flex-col md:flex-row md:items-center justify-between gap-4"
                                 onClick={() => router.push(`/mock-interview/result?id=${item.id}`)}
                             >
-                                <div className="flex gap-4 items-center">
-                                    <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-slate-900 border border-blue-200 dark:border-slate-800 flex flex-col items-center justify-center group-hover:border-blue-400 dark:group-hover:border-indigo-500/40 transition-colors shadow-sm">
-                                        <span className="text-xs font-bold text-blue-600 dark:text-indigo-400 capitalize">{item.experience_level}</span>
+                                <div className="flex items-center gap-4 min-w-0">
+                                    <div className="w-11 h-11 rounded-lg bg-zinc-950 border border-zinc-800 flex flex-col items-center justify-center shrink-0">
+                                        <span className="text-[10px] font-bold text-amber-400 uppercase">{item.experience_level || 'Mid'}</span>
                                     </div>
-                                    <div>
-                                        <h4 className="text-slate-900 dark:text-white font-bold text-lg group-hover:text-blue-600 dark:group-hover:text-indigo-400 transition-colors">{item.role}</h4>
-                                        <div className="flex items-center gap-3 mt-1">
-                                            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                                    <div className="min-w-0">
+                                        <h4 className="text-zinc-100 font-bold text-sm group-hover:text-amber-400 transition-colors truncate">
+                                            {item.role || item.job_role || 'General Engineering'}
+                                        </h4>
+                                        <div className="flex items-center gap-3 mt-1 text-[10px] text-zinc-500">
+                                            <span>
                                                 <i className="fa-solid fa-calendar mr-1"></i> {new Date(item.created_at).toLocaleDateString()}
                                             </span>
-                                            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
-                                                <i className="fa-solid fa-layer-group mr-1"></i> {item.interview_type}
+                                            <span>
+                                                <i className="fa-solid fa-layer-group mr-1"></i> {item.interview_type || 'Mixed'}
                                             </span>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-8">
-                                    <div className="text-center">
-                                        <div className={`text-2xl font-black ${item.total_score >= 70 ? 'text-emerald-600 dark:text-emerald-500' : item.total_score >= 40 ? 'text-amber-600 dark:text-amber-500' : 'text-rose-600 dark:text-rose-500'}`}>
-                                            {Math.round(item.total_score)}%
+                                <div className="flex items-center justify-between md:justify-end gap-6 shrink-0">
+                                    <div className="text-left md:text-right">
+                                        <div className={`text-xl font-bold tabular-nums ${
+                                            (item.total_score || item.score || 0) >= 70 
+                                                ? 'text-emerald-400' 
+                                                : (item.total_score || item.score || 0) >= 40 
+                                                ? 'text-amber-400' 
+                                                : 'text-rose-400'
+                                        }`}>
+                                            {Math.round(item.total_score || item.score || 0)}%
                                         </div>
-                                        <div className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Score</div>
+                                        <div className="text-[9px] text-zinc-500 uppercase tracking-wider">Score</div>
                                     </div>
-                                    <i className="fa-solid fa-chevron-right text-slate-400 dark:text-slate-700 group-hover:text-blue-600 dark:group-hover:text-indigo-500 transition-colors"></i>
+                                    <i className="fa-solid fa-chevron-right text-zinc-600 group-hover:text-zinc-300 transition-colors text-xs"></i>
                                 </div>
                             </div>
                         ))}
                     </div>
                 )}
             </div>
-
-            <style jsx global>{`
-                @import url('/styles/mock-interview.css');
-            `}</style>
         </Layout>
     );
 };

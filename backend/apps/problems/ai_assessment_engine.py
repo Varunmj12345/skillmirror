@@ -108,7 +108,8 @@ OUTPUT IN STRICT JSON FORMAT ONLY:
                 ],
                 max_tokens=2200,
                 temperature=0.15,
-                response_format={"type": "json_object"}
+                response_format={"type": "json_object"},
+                interaction_type="code_evaluation"
             )
             raw = completion.content.strip()
             if raw.startswith("```"):
@@ -178,7 +179,8 @@ OUTPUT IN STRICT JSON FORMAT ONLY:
                 ],
                 max_tokens=2200,
                 temperature=0.3,
-                response_format={"type": "json_object"}
+                response_format={"type": "json_object"},
+                interaction_type="gap_challenge"
             )
             raw = completion.content.strip()
             if raw.startswith("```"):
@@ -233,7 +235,8 @@ Return JSON:
                 ],
                 max_tokens=600,
                 temperature=0.3,
-                response_format={"type": "json_object"}
+                response_format={"type": "json_object"},
+                interaction_type="progressive_hint"
             )
             raw = completion.content.strip()
             if raw.startswith("```"):

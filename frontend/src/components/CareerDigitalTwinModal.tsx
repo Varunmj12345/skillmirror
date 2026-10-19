@@ -94,73 +94,64 @@ const CareerDigitalTwinModal: React.FC<CareerDigitalTwinModalProps> = ({ isOpen,
 
                 {/* Modal */}
                 <motion.div
-                    initial={{ scale: 0.96, opacity: 0, y: 24 }}
+                    initial={{ scale: 0.96, opacity: 0, y: 16 }}
                     animate={{ scale: 1, opacity: 1, y: 0 }}
-                    exit={{ scale: 0.96, opacity: 0, y: 24 }}
+                    exit={{ scale: 0.96, opacity: 0, y: 16 }}
                     transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                    className="relative w-full max-w-4xl max-h-[92vh] bg-[#080d18] border border-cyan-500/20 rounded-[2rem] shadow-[0_0_80px_-20px_rgba(6,182,212,0.3)] overflow-hidden flex flex-col"
+                    className="relative w-full max-w-4xl max-h-[92vh] bg-zinc-950 border border-zinc-800 shadow-2xl overflow-hidden flex flex-col"
                 >
-                    {/* Scan line animation */}
-                    <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-[2rem]">
-                        <div className="absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent animate-[scan_4s_linear_infinite]" style={{ top: '30%' }} />
-                    </div>
-
                     {/* Header */}
-                    <div className="relative px-8 py-5 border-b border-cyan-500/10 flex justify-between items-center bg-cyan-500/[0.03]">
-                        <div className="flex items-center gap-4">
-                            <div className="w-11 h-11 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
-                                <i className="fa-solid fa-dna text-cyan-400 text-lg" />
+                    <div className="relative px-6 py-4 border-b border-zinc-800 flex justify-between items-center bg-zinc-900/60">
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 border border-zinc-800 bg-zinc-950 flex items-center justify-center text-amber-500">
+                                <i className="fa-solid fa-dna text-xs" />
                             </div>
                             <div>
-                                <h2 className="text-base font-black text-white tracking-tight uppercase">Career Digital Twin Engine</h2>
+                                <h2 className="text-sm font-normal text-white tracking-tight">Career Digital Twin Engine</h2>
                                 <div className="flex items-center gap-2 mt-0.5">
-                                    <span className={`w-1.5 h-1.5 rounded-full ${loading ? 'bg-cyan-400 animate-pulse' : 'bg-emerald-400'}`} />
-                                    <span className={`text-[9px] font-black uppercase tracking-[0.2em] ${loading ? 'text-cyan-400' : 'text-emerald-400'}`}>
-                                        {loading ? 'SIMULATION RUNNING' : 'TWIN SYNC COMPLETE'}
+                                    <span className={`w-1.5 h-1.5 ${loading ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`} />
+                                    <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">
+                                        {loading ? 'SIMULATION IN PROGRESS' : 'TWIN TELEMETRY READY'}
                                     </span>
                                 </div>
                             </div>
                         </div>
                         <button
                             onClick={onClose}
-                            className="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center text-slate-500 hover:text-white hover:bg-white/10 transition-all"
+                            aria-label="Close modal"
+                            title="Close"
+                            className="w-8 h-8 border border-zinc-800 bg-zinc-950 flex items-center justify-center text-zinc-400 hover:text-white hover:border-zinc-700 transition-colors"
                         >
-                            <i className="fa-solid fa-xmark" />
+                            <i className="fa-solid fa-xmark text-xs" />
                         </button>
                     </div>
 
                     {/* Content */}
                     <div className="flex-1 overflow-y-auto custom-scrollbar">
                         {loading ? (
-                            <div className="h-full flex flex-col items-center justify-center py-20 space-y-10">
-                                {/* Twin animation */}
-                                <div className="relative w-28 h-28">
-                                    <div className="absolute inset-0 rounded-full border border-cyan-500/20 animate-ping" />
-                                    <div className="absolute inset-2 rounded-full border border-cyan-400/30 animate-spin" style={{ animationDuration: '3s' }} />
-                                    <div className="absolute inset-4 rounded-full border border-cyan-300/20 animate-spin" style={{ animationDuration: '1.5s', animationDirection: 'reverse' }} />
-                                    <div className="absolute inset-0 flex items-center justify-center">
-                                        <i className="fa-solid fa-dna text-cyan-400 text-2xl animate-pulse" />
-                                    </div>
+                            <div className="h-full flex flex-col items-center justify-center py-20 space-y-8">
+                                <div className="w-16 h-16 border border-zinc-800 bg-zinc-900 flex items-center justify-center text-amber-500">
+                                    <i className="fa-solid fa-dna text-xl animate-pulse" />
                                 </div>
 
                                 <div className="text-center space-y-2 max-w-sm">
-                                    <p className="text-white font-semibold tracking-wide">{status}</p>
-                                    <p className="text-slate-600 text-[10px] font-mono uppercase tracking-widest">
-                                        TWIN_NODE_{statusIdx + 1}/{BOOT_SEQUENCE.length}_INITIALIZING
+                                    <p className="text-white font-mono text-xs">{status}</p>
+                                    <p className="text-zinc-500 text-[10px] font-mono uppercase tracking-widest">
+                                        SIMULATION STEP {statusIdx + 1} OF {BOOT_SEQUENCE.length}
                                     </p>
                                     {/* Boot steps */}
-                                    <div className="mt-6 space-y-1 text-left">
+                                    <div className="mt-6 space-y-1 text-left border border-zinc-800 bg-zinc-900/40 p-4">
                                         {BOOT_SEQUENCE.slice(0, statusIdx + 1).map((s, i) => (
-                                            <div key={i} className="flex items-center gap-2 text-[10px]">
-                                                <i className={`fa-solid fa-check text-[8px] ${i < statusIdx ? 'text-emerald-400' : 'text-cyan-400 animate-pulse'}`} />
-                                                <span className={i < statusIdx ? 'text-slate-500' : 'text-slate-300'}>{s}</span>
+                                            <div key={i} className="flex items-center gap-2 text-[10px] font-mono">
+                                                <i className={`fa-solid fa-check text-[8px] ${i < statusIdx ? 'text-emerald-400' : 'text-amber-500 animate-pulse'}`} />
+                                                <span className={i < statusIdx ? 'text-zinc-500' : 'text-zinc-300'}>{s}</span>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
                             </div>
                         ) : (
-                            <div className="p-8">
+                            <div className="p-6 md:p-8">
                                 <CareerDigitalTwin 
                                     metrics={metrics} 
                                     onResimulate={runSimulation}
@@ -174,6 +165,7 @@ const CareerDigitalTwinModal: React.FC<CareerDigitalTwinModalProps> = ({ isOpen,
                     </div>
                 </motion.div>
             </div>
+
 
             <style jsx global>{`
                 .twin-report h2 {

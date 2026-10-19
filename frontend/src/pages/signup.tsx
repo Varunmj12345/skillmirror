@@ -3,128 +3,11 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { motion, AnimatePresence } from 'framer-motion';
-import Layout from '../components/Layout';
+import { Shield, AlertCircle } from 'lucide-react';
 import useAuth from '../hooks/useAuth';
 import { registerUser } from '../services/auth';
-import { TVNoise } from '../components/ui/tv-noise';
-import { Bullet } from '../components/ui/bullet';
+import { Button } from '../components/ui/button';
 
-/* ── Decorative cyber background ────────────────────────── */
-const CyberBackground: React.FC = () => (
-  <>
-    <div
-      className="absolute inset-0 pointer-events-none opacity-[0.06]"
-      style={{
-        backgroundImage: `linear-gradient(rgba(0,217,255,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(0,217,255,0.4) 1px, transparent 1px)`,
-        backgroundSize: '48px 48px',
-      }}
-    />
-    <div className="absolute top-0 right-1/2 translate-x-1/2 w-[700px] h-[350px] bg-indigo-600/8 blur-[160px] rounded-full pointer-events-none" />
-    <div className="absolute bottom-0 left-0 w-[400px] h-[280px] bg-cyan-500/8 blur-[130px] rounded-full pointer-events-none" />
-  </>
-);
-
-/* ── Alert banner ────────────────────────────────────────── */
-type AlertVariant = 'error' | 'success' | 'warning';
-const Alert: React.FC<{ variant: AlertVariant; message: string }> = ({ variant, message }) => {
-  const styles = {
-    error:   { wrap: 'bg-red-500/10 border-red-500/25 text-red-400',      icon: 'fa-circle-xmark' },
-    success: { wrap: 'bg-emerald-500/10 border-emerald-500/25 text-emerald-400', icon: 'fa-circle-check' },
-    warning: { wrap: 'bg-amber-500/10 border-amber-500/25 text-amber-400',  icon: 'fa-triangle-exclamation' },
-  }[variant];
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: -6, height: 0 }}
-      animate={{ opacity: 1, y: 0, height: 'auto' }}
-      exit={{ opacity: 0, y: -4, height: 0 }}
-      className={`flex items-center gap-3 p-3.5 border rounded-xl text-xs font-mono font-semibold ${styles.wrap}`}
-    >
-      <i className={`fa-solid ${styles.icon} text-sm flex-shrink-0`} />
-      <span>{message}</span>
-    </motion.div>
-  );
-};
-
-/* ── Role card ───────────────────────────────────────────── */
-const roleOptions = [
-  {
-    id: 'student',
-    title: 'Student Developer',
-    desc: 'Discover real-world problems, build MVP projects & prove verified skills.',
-    icon: 'fa-user-graduate',
-    bulletVariant: 'cyan',
-    accentClass: 'border-cyan-500/50 shadow-[0_0_20px_rgba(0,217,255,0.12)]',
-  },
-  {
-    id: 'problem_owner',
-    title: 'Problem Owner',
-    desc: 'Submit genuine challenges from your company, hospital, NGO or startup.',
-    icon: 'fa-building',
-    bulletVariant: 'default',
-    accentClass: 'border-blue-500/50 shadow-[0_0_20px_rgba(59,130,246,0.12)]',
-  },
-  {
-    id: 'evaluator',
-    title: 'Technical Evaluator',
-    desc: 'Review code repos, verify coverage & guide project iterations.',
-    icon: 'fa-clipboard-check',
-    bulletVariant: 'success',
-    accentClass: 'border-emerald-500/50 shadow-[0_0_20px_rgba(16,185,129,0.12)]',
-  },
-] as const;
-
-/* ── Input field ─────────────────────────────────────────── */
-interface InputFieldProps {
-  label: string;
-  id: string;
-  type?: string;
-  value: string;
-  onChange: (v: string) => void;
-  placeholder?: string;
-  icon: string;
-  error?: boolean;
-  addon?: React.ReactNode;
-  required?: boolean;
-}
-const InputField: React.FC<InputFieldProps> = ({
-  label, id, type = 'text', value, onChange, placeholder, icon, error, addon, required,
-}) => (
-  <div className="space-y-1.5">
-    <label htmlFor={id} className="block text-[11px] font-mono font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">
-      {label}
-    </label>
-    <div className="relative">
-      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-        <i className={`fa-solid ${icon} text-xs text-slate-400 dark:text-slate-500`} />
-      </div>
-      <input
-        id={id}
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        required={required}
-        className={`w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-card border rounded-xl text-sm font-mono text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 dark:focus:border-cyan-400 focus:ring-1 focus:ring-blue-500 dark:focus:ring-cyan-400 transition-all ${
-          error ? 'border-red-500/60' : 'border-slate-200 dark:border-white/[0.08]'
-        } ${addon ? 'pr-20' : ''}`}
-      />
-      {addon && (
-        <div className="absolute inset-y-0 right-0 flex items-center">
-          {addon}
-        </div>
-      )}
-    </div>
-  </div>
-);
-
-/* ── Spinner ─────────────────────────────────────────────── */
-const Spinner = () => (
-  <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-);
-
-/* ═══════════════════════════════════════════════════════════
-   SIGNUP PAGE COMPONENT
-   ═══════════════════════════════════════════════════════════ */
 const Signup: React.FC = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -149,7 +32,7 @@ const Signup: React.FC = () => {
       router.push('/login?fromSignup=1');
     } catch (err: any) {
       const data = err?.response?.data ?? err;
-      let msg = err?.message || 'Signup failed. Check your connection and try again.';
+      let msg = err?.message || 'Registration failed. Please check your network and try again.';
       if (data) {
         if (typeof data === 'string') msg = data;
         else if (Array.isArray(data.email)) msg = data.email[0];
@@ -165,146 +48,189 @@ const Signup: React.FC = () => {
   };
 
   return (
-    <Layout>
+    <>
       <Head>
-        <title>Deploy Profile • SkillMirror OS</title>
-        <meta name="description" content="Create your SkillMirror AI career intelligence account." />
+        <title>Deploy Profile • SkillMirror Core</title>
+        <meta name="description" content="Initialize your SkillMirror AI career defense identity." />
       </Head>
 
-      <div className="min-h-screen bg-background relative overflow-hidden flex items-start justify-center py-12 px-4 sm:px-6">
-        <CyberBackground />
-        <TVNoise opacity={0.025} intensity={0.14} speed={50} />
+      <div className="relative min-h-screen bg-zinc-950 text-white flex flex-col justify-between selection:bg-amber-500 selection:text-black overflow-hidden">
+        {/* Background Hero Image with Dark Vignette */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30 pointer-events-none"
+          style={{
+            backgroundImage: "url('/images/hero-bg.jpg')",
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/90 via-zinc-950/70 to-zinc-950 pointer-events-none" />
 
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="relative z-10 w-full max-w-md"
-        >
-          {/* Top brand bar */}
-          <div className="flex items-center justify-between mb-8">
+        {/* Skydda Vertical Bounding Lines */}
+        <div className="pointer-events-none fixed inset-0 z-50">
+          <div className="mx-auto h-full max-w-7xl">
+            <div className="relative h-full">
+              <div className="absolute left-0 top-0 h-full w-px bg-zinc-700/30" />
+              <div className="absolute right-0 top-0 h-full w-px bg-zinc-700/30" />
+            </div>
+          </div>
+        </div>
+
+        {/* Navigation Bar */}
+        <header className="relative z-10 w-full px-6 py-6 border-b border-zinc-800/80 bg-zinc-950/60 backdrop-blur-md">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
             <Link href="/">
-              <a className="flex items-center gap-2.5 group">
-                <div className="w-8 h-8 rounded-lg bg-blue-600 dark:bg-primary flex items-center justify-center font-display font-black text-white text-xs shadow-md group-hover:scale-105 transition-transform">
-                  SM
+              <a className="flex items-center gap-3 text-white group cursor-pointer">
+                <div className="w-8 h-8 border border-amber-500/40 bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-black transition-colors">
+                  <Shield className="h-4 w-4" />
                 </div>
-                <span className="font-display font-black text-slate-900 dark:text-white text-sm tracking-widest uppercase">
-                  SkillMirror <span className="text-blue-600 dark:text-cyan-400">OS</span>
+                <span className="font-medium text-base text-white">
+                  SkillMirror <span className="text-amber-500 text-xs font-mono">CORE</span>
                 </span>
               </a>
             </Link>
-            <div className="flex items-center gap-2 text-[10px] font-mono text-slate-500">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span>REGISTRATION NODE: OPEN</span>
-            </div>
+
+            <Link href="/login">
+              <a className="text-xs font-mono uppercase tracking-wider text-zinc-400 hover:text-white transition-colors">
+                Already have access? Sign In →
+              </a>
+            </Link>
           </div>
+        </header>
 
-          {/* Card */}
-          <div className="relative rounded-2xl bg-card dark:bg-pop border border-border shadow-light-card dark:shadow-2xl overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/50 dark:via-indigo-500/50 to-transparent" />
-
-            <div className="p-7 sm:p-8">
-              <div className="mb-6">
-                <h1 className="text-2xl font-display font-black text-slate-900 dark:text-white tracking-tight mb-1">
-                  Create Your Account
-                </h1>
-                <p className="text-[11px] font-mono text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  Deploy your autonomous AI career telemetry & assessment engine
-                </p>
+        {/* Form Container */}
+        <main className="relative z-10 flex-1 flex items-center justify-center px-6 py-16">
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="w-full max-w-lg"
+          >
+            <div className="border border-zinc-700/80 bg-zinc-900/90 backdrop-blur-xl p-8 md:p-10 shadow-2xl relative">
+              {/* Status Header */}
+              <div className="flex items-center gap-2.5 px-3 py-1 border border-zinc-700 w-fit mb-6 bg-zinc-950/60">
+                <div className="w-2 h-2 bg-amber-500 animate-pulse" />
+                <span className="text-xs font-mono uppercase tracking-wider text-zinc-400">
+                  Node Initialization
+                </span>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <AnimatePresence>
-                  {error && <Alert variant="error" message={error} />}
-                </AnimatePresence>
+              <h1 className="text-3xl font-normal tracking-tight text-white mb-2">
+                Deploy Your Sentinel Profile
+              </h1>
+              <p className="text-sm text-zinc-400 mb-8 font-mono">
+                Initialize your autonomous vector profile and begin continuous career defense.
+              </p>
 
-                <InputField
-                  label="Username"
-                  id="signup-username"
-                  value={username}
-                  onChange={setUsername}
-                  placeholder="yourhandle"
-                  icon="fa-at"
-                  error={!!error}
-                  required
-                />
-                <InputField
-                  label="Email Address"
-                  id="signup-email"
-                  type="email"
-                  value={email}
-                  onChange={setEmail}
-                  placeholder="name@company.com"
-                  icon="fa-envelope"
-                  error={!!error}
-                  required
-                />
-                <InputField
-                  label="Target Career Goal"
-                  id="signup-dream-job"
-                  value={dreamJob}
-                  onChange={setDreamJob}
-                  placeholder="e.g. Senior Backend Engineer"
-                  icon="fa-bullseye"
-                  error={!!error}
-                />
-                <InputField
-                  label="Password"
-                  id="signup-password"
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={setPassword}
-                  placeholder="••••••••"
-                  icon="fa-lock"
-                  error={!!error}
-                  required
-                  addon={
+              {/* Error Alert */}
+              <AnimatePresence>
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="mb-6 p-3 border border-red-500/40 bg-red-500/10 text-red-300 text-xs font-mono flex items-center gap-2"
+                  >
+                    <AlertCircle className="w-4 h-4 shrink-0" />
+                    <span>{error}</span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-2">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-zinc-400">
+                    Full Name / Handle
+                  </label>
+                  <input
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Alex Rivera"
+                    required
+                    className="w-full bg-zinc-950 border border-zinc-800 text-white placeholder-zinc-500 px-4 py-3 text-sm font-mono focus:border-white focus:outline-none transition-colors"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-zinc-400">
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="alex@domain.com"
+                    required
+                    className="w-full bg-zinc-950 border border-zinc-800 text-white placeholder-zinc-500 px-4 py-3 text-sm font-mono focus:border-white focus:outline-none transition-colors"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-zinc-400">
+                    Target Engineering Role
+                  </label>
+                  <input
+                    type="text"
+                    value={dreamJob}
+                    onChange={(e) => setDreamJob(e.target.value)}
+                    placeholder="Staff Distributed Systems Architect"
+                    required
+                    className="w-full bg-zinc-950 border border-zinc-800 text-white placeholder-zinc-500 px-4 py-3 text-sm font-mono focus:border-white focus:outline-none transition-colors"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-mono uppercase tracking-wider text-zinc-400">
+                      Master Password
+                    </label>
                     <button
                       type="button"
-                      onClick={() => setShowPassword((p) => !p)}
-                      className="px-4 h-full text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 hover:text-blue-600 dark:hover:text-cyan-400 transition-colors"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="text-[11px] font-mono text-zinc-500 hover:text-white transition-colors"
                     >
                       {showPassword ? 'Hide' : 'Show'}
                     </button>
-                  }
-                />
-
-                <div className="pt-2">
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="sm-btn-primary w-full py-4 text-xs font-mono font-bold uppercase tracking-wider"
-                  >
-                    {loading ? (
-                      <span className="flex items-center justify-center gap-2"><Spinner /> Deploying Profile...</span>
-                    ) : (
-                      <span className="flex items-center justify-center gap-2"><i className="fa-solid fa-rocket text-xs" /> DEPLOY PROFILE</span>
-                    )}
-                  </button>
+                  </div>
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••••••"
+                    required
+                    minLength={8}
+                    className="w-full bg-zinc-950 border border-zinc-800 text-white placeholder-zinc-500 px-4 py-3 text-sm font-mono focus:border-white focus:outline-none transition-colors"
+                  />
                 </div>
 
-                <p className="text-center text-xs font-mono text-slate-500 pt-2">
-                  Already have an account?{' '}
-                  <Link href="/login">
-                    <a className="text-blue-600 dark:text-cyan-400 hover:underline font-bold transition-colors">
-                      Sign in →
-                    </a>
-                  </Link>
-                </p>
-
-                <p className="text-center text-[10px] font-mono text-slate-400 dark:text-slate-600 pt-1">
-                  By registering you agree to our Terms of Service & Privacy Policy.
-                </p>
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  variant="white"
+                  size="lg"
+                  className="w-full text-xs uppercase tracking-widest font-semibold mt-4"
+                >
+                  {loading ? 'Initializing Node...' : 'Deploy Profile Now'}
+                </Button>
               </form>
-            </div>
-          </div>
 
-          <p className="text-center text-[10px] font-mono text-slate-500 dark:text-slate-600 mt-4">
-            SkillMirror OS • Encrypted Registration Node v3.0
-          </p>
-        </motion.div>
+              <div className="mt-8 pt-6 border-t border-zinc-800 text-center">
+                <span className="text-xs font-mono text-zinc-500">
+                  Already registered?{' '}
+                  <Link href="/login">
+                    <a className="text-white hover:underline font-medium">Access terminal</a>
+                  </Link>
+                </span>
+              </div>
+            </div>
+          </motion.div>
+        </main>
+
+        {/* Minimalist Bottom Bar */}
+        <footer className="relative z-10 w-full px-6 py-6 border-t border-zinc-800/80 text-center text-xs font-mono text-zinc-500">
+          Zero-Knowledge Credentials • Encrypted Career Vector Architecture
+        </footer>
       </div>
-    </Layout>
+    </>
   );
 };
 
