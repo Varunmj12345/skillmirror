@@ -170,7 +170,7 @@ export function Hero({ user }: HeroProps) {
 
         {/* Word-by-Word Blur Reveal Headline */}
         <h1 className="text-balance text-5xl font-normal tracking-tight text-white md:text-6xl lg:text-7xl max-w-4xl">
-          {"AI Career Defense That Sees Through the Dark".split(" ").map((word, i) => (
+          {"Fix Your Resume Before Recruiters Reject It".split(" ").map((word, i) => (
             <motion.span
               key={i}
               initial={{ filter: "blur(10px)", opacity: 0 }}
@@ -185,7 +185,7 @@ export function Hero({ user }: HeroProps) {
 
         {/* Subtitle */}
         <p className="mt-6 max-w-2xl text-balance text-zinc-300 text-base leading-relaxed md:text-lg">
-          Our autonomous career intelligence sentinel uncovers hidden skill deficits, simulates ruthless technical interviews, and fortifies your market readiness before submitting your next application.
+          Upload your resume. Get your ATS score, your skill gaps, and a personalized plan to close them, all before you hit apply.
         </p>
 
         {/* Dual Stark CTAs */}
@@ -195,7 +195,7 @@ export function Hero({ user }: HeroProps) {
               size="lg"
               className="w-full sm:w-auto bg-white text-zinc-950 hover:bg-zinc-200 px-8 font-medium text-sm"
             >
-              <span>Deploy Career Sentinel</span>
+              <span>{user ? 'Open Dashboard' : 'Scan My Resume Free'}</span>
               <ArrowRight className="w-4 h-4 ml-1" />
             </Button>
           </Link>

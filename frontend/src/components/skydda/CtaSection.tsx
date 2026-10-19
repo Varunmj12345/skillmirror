@@ -53,7 +53,7 @@ export function CtaSection({ user }: CtaSectionProps) {
           <div className="mt-8 flex flex-col sm:flex-row items-center gap-4">
             <Link href={user ? '/dashboard' : '/signup'}>
               <Button size="lg" className="w-full sm:w-auto bg-white text-zinc-950 hover:bg-zinc-200 px-8 flex items-center gap-2">
-                <span>{user ? 'Open Dashboard' : 'Deploy Career Sentinel Free'}</span>
+                <span>{user ? 'Open Dashboard' : 'Scan My Resume Free'}</span>
                 <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
