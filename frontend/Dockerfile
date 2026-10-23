@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:18-alpine
 
 # Set the working directory
 WORKDIR /app
@@ -6,14 +6,16 @@ WORKDIR /app
 # Copy package.json and package-lock.json
 COPY package.json package-lock.json ./
 
-# Install dependencies
-RUN npm install
+# Install dependencies deterministically
+RUN npm ci
 
 # Copy the rest of the application code
-COPY . .
+COPY --chown=node:node . .
 
 # Build the Next.js application
 RUN npm run build
+
+USER node
 
 # Expose the port the app runs on
 EXPOSE 3000

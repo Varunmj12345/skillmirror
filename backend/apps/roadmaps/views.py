@@ -76,20 +76,28 @@ class RoadmapViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         try:
-            roadmap = Roadmap.objects.get(pk=pk)
+            roadmap = Roadmap.objects.prefetch_related('steps').get(pk=pk)
             if not (request.user.is_staff or Roadmap.objects.filter(pk=pk, user_roadmaps__user=request.user).exists()):
                 return Response({'detail': 'Forbidden: You do not own this roadmap.'}, status=403)
             serializer = RoadmapSerializer(roadmap)
             from apps.analytics.services import IntelligenceService
-            
+
             data = serializer.data
             steps = data.get('steps', [])
             completed_count = 0
-            
+
+            step_map = {s.id: s for s in roadmap.steps.all()}
+            tracker_map = {
+                t.roadmap_step_id: t
+                for t in ProgressTracker.objects.filter(user=request.user, roadmap_step__roadmap=roadmap)
+            }
+
             for step in steps:
-                step_obj = RoadmapStep.objects.get(id=step['id'])
-                tracker, _ = ProgressTracker.objects.get_or_create(user=request.user, roadmap_step=step_obj)
-                
+                step_obj = step_map.get(step['id']) or RoadmapStep.objects.get(id=step['id'])
+                tracker = tracker_map.get(step_obj.id)
+                if tracker is None:
+                    tracker, _ = ProgressTracker.objects.get_or_create(user=request.user, roadmap_step=step_obj)
+
                 # Intelligence Layers
                 step['completed'] = tracker.completed
                 step['mastery_score'] = IntelligenceService.calculate_mastery_score(request.user, step_obj)
@@ -97,9 +105,10 @@ class RoadmapViewSet(viewsets.ViewSet):
                 step['time_optimization'] = IntelligenceService.get_time_optimization(request.user, step_obj)
                 step['difficulty'] = step_obj.difficulty
                 step['skill_demand'] = step_obj.skill_demand
-                
-                if tracker.completed: completed_count += 1
-            
+
+                if tracker.completed:
+                    completed_count += 1
+
             data['outcome_projection'] = IntelligenceService.get_career_outcome_projection(request.user, roadmap)
             data['completion_percentage'] = int((completed_count / len(steps) * 100)) if steps else 0
             data['total_duration_weeks'] = sum(s.get('duration_weeks', 0) for s in steps)
@@ -108,9 +117,19 @@ class RoadmapViewSet(viewsets.ViewSet):
             return Response({"detail": "Not found."}, status=404)
 
     def list(self, request):
-        roadmaps = Roadmap.objects.filter(user_roadmaps__user=request.user).order_by('-created_at')
+        roadmaps = Roadmap.objects.filter(user_roadmaps__user=request.user).prefetch_related('steps').order_by('-created_at')
         serializer = RoadmapSerializer(roadmaps, many=True)
         return Response(serializer.data)
+
+    def destroy(self, request, pk=None):
+        try:
+            roadmap = Roadmap.objects.get(pk=pk)
+            if not (request.user.is_staff or Roadmap.objects.filter(pk=pk, user_roadmaps__user=request.user).exists()):
+                return Response({'detail': 'Forbidden: You do not own this roadmap.'}, status=403)
+            roadmap.delete()
+            return Response(status=204)
+        except Roadmap.DoesNotExist:
+            return Response({'detail': 'Not found.'}, status=404)
 
 class AIRecommendationView(APIView):
     permission_classes = [IsAuthenticated]
@@ -121,6 +140,8 @@ class AIRecommendationView(APIView):
         
         try:
             roadmap = Roadmap.objects.get(pk=roadmap_id)
+            if not (request.user.is_staff or Roadmap.objects.filter(pk=roadmap_id, user_roadmaps__user=request.user).exists()):
+                return Response({"detail": "Forbidden: You do not own this roadmap."}, status=403)
             steps = RoadmapStep.objects.filter(roadmap=roadmap)
             completed_steps = ProgressTracker.objects.filter(user=request.user, roadmap_step__roadmap=roadmap, completed=True)
             
@@ -281,7 +302,9 @@ class ProgressTrackerView(APIView):
         step_id = request.data.get('step_id')
         completed = request.data.get('completed', True)
         try:
-            step = RoadmapStep.objects.get(pk=step_id)
+            step = RoadmapStep.objects.select_related('roadmap').get(pk=step_id)
+            if not (request.user.is_staff or Roadmap.objects.filter(pk=step.roadmap_id, user_roadmaps__user=request.user).exists()):
+                return Response({"detail": "Forbidden: You do not own this roadmap step."}, status=403)
             tracker, _ = ProgressTracker.objects.get_or_create(user=request.user, roadmap_step=step)
             tracker.completed = completed
             tracker.completed_at = timezone.now() if completed else None
@@ -369,7 +392,7 @@ class SaveVideoView(APIView):
         p.save()
         return Response({"is_saved": p.is_saved})
     def get(self, request):
-        saved = UserVideoProgress.objects.filter(user=request.user, is_saved=True)
+        saved = UserVideoProgress.objects.filter(user=request.user, is_saved=True).select_related('video')
         return Response([{"video_id": p.video.video_id, "title": p.video.title, "thumbnail_url": p.video.thumbnail_url, "is_completed": p.is_completed} for p in saved])
 
 class VideoProgressView(APIView):
@@ -396,7 +419,12 @@ class MiniMockView(APIView):
 
     def get(self, request):
         step_id = request.query_params.get('step_id')
-        step = RoadmapStep.objects.get(id=step_id)
+        try:
+            step = RoadmapStep.objects.select_related('roadmap').get(id=step_id)
+        except (RoadmapStep.DoesNotExist, ValueError, TypeError):
+            return Response({"detail": "Step not found."}, status=404)
+        if not (request.user.is_staff or Roadmap.objects.filter(pk=step.roadmap_id, user_roadmaps__user=request.user).exists()):
+            return Response({"detail": "Forbidden: You do not own this roadmap step."}, status=403)
         
         api_key = os.environ.get("GROQ_API_KEY")
         client = Groq(api_key=api_key)

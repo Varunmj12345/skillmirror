@@ -150,7 +150,7 @@ from apps.ai.llm_client import chat_completion, get_active_provider_and_key
 
 class CareerChatView(APIView):
     """AI Career Assistant - returns real AI career advice using Groq (openai/gpt-oss-120b)."""
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
         msg = request.data.get('message', '')

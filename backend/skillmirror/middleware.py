@@ -21,14 +21,13 @@ class EnterpriseSecurityMiddleware:
     def __call__(self, request):
         # Start timer for Prometheus latency metrics
         start_time = time.time()
-        
-        # Identity Check
-        user_id = "anonymous"
-        if hasattr(request, 'user') and request.user.is_authenticated:
-            user_id = request.user.id
-        
+
         response = self.get_response(request)
-        
+
+        # Identity Check (resolved after view/DRF JWT authentication executes)
+        user = getattr(request, 'user', None)
+        user_id = user.id if user and getattr(user, 'is_authenticated', False) else "anonymous"
+
         # Measure duration
         duration = time.time() - start_time
         

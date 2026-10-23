@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 
 roadmap_create = views.RoadmapViewSet.as_view({'post': 'create'})
-roadmap_detail = views.RoadmapViewSet.as_view({'get': 'retrieve'})
+roadmap_detail = views.RoadmapViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'})
 roadmap_list = views.RoadmapViewSet.as_view({'get': 'list'})
 roadmap_goals = views.RoadmapGoalsView.as_view({'get': 'list'})
 

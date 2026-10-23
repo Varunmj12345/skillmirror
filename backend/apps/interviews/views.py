@@ -49,7 +49,10 @@ class StartMockInterviewView(APIView):
         experience = request.data.get('experience_level', 'Entry')
         interview_type = request.data.get('interview_type', 'Mixed')
         difficulty = request.data.get('difficulty', 'Moderate')
-        count = int(request.data.get('question_count', 5))
+        try:
+            count = max(1, min(int(request.data.get('question_count', 5)), 20))
+        except (ValueError, TypeError):
+            count = 5
         jd = request.data.get('job_description', '')
         mode = request.data.get('interview_mode', 'standard')
         instant = request.data.get('instant_feedback', False)
@@ -432,8 +435,8 @@ class ProcessAudioAnalysisView(APIView):
             question.save()
             
             return Response(metrics)
-        except Exception as e:
-            return Response({'error': str(e)}, status=500)
+        except Exception:
+            return Response({'error': 'Failed to analyze audio metrics.'}, status=500)
 
 class CreateLiveSessionView(APIView):
     permission_classes = [permissions.IsAuthenticated]

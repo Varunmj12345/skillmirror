@@ -31,11 +31,21 @@ const AIInsightPanel = () => {
       reportElement.style.padding = '40px';
       reportElement.style.boxSizing = 'border-box';
 
-      const currentDate = new Date().toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      });
+      const escapeHtml = (unsafe: string) =>
+        String(unsafe)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+
+      const currentDate = escapeHtml(
+        new Date().toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })
+      );
 
       reportElement.innerHTML = `
         <div style="border-bottom: 3px solid #3b82f6; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end;">
@@ -148,7 +158,7 @@ const AIInsightPanel = () => {
 
         <div style="border-top: 1px solid #e2e8f0; padding-top: 15px; display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: #94a3b8;">
           <div>SkillMirror Intelligence OS • Neural Engine v2.4 • Confidential</div>
-          <div>Report Hash: SM-RPT-${Math.floor(100000 + Math.random() * 900000)}</div>
+          <div>Report Hash: SM-RPT-${typeof window !== 'undefined' && window.crypto?.getRandomValues ? (100000 + (window.crypto.getRandomValues(new Uint32Array(1))[0] % 900000)) : 548291}</div>
         </div>
       `;
 
