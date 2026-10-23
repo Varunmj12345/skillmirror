@@ -14,13 +14,17 @@ const NotificationBell: React.FC<NotificationBellProps> = ({ placement = 'sideba
   const router = useRouter();
 
   const loadAlerts = async () => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('access_token');
+      if (!token) return;
+    }
     try {
       const res: any = await alertService.getAlerts();
       const alertList = Array.isArray(res) ? res : (res?.data || []);
       setAlerts(alertList);
       setUnreadCount(alertList.filter((a: SmartAlert) => !a.is_read).length);
     } catch (err) {
-      console.error('Failed to load alerts', err);
+      // Silent catch to prevent unauthenticated polling noise
     }
   };
 

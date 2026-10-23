@@ -3,7 +3,7 @@ from .views import (
     RegisterView, ForgotPasswordView, LoginView, AdminLoginView,
     CareerDashboardView, SkillManagementView, ProfileView,
     Verify2FAView, ResetPasswordView,
-    ExportDataView, DeleteAccountView, AuthorizedEnginesView
+    ExportDataView, DeleteAccountView, AuthorizedEnginesView, DemoSubscriptionView
 )
 from rest_framework_simplejwt.views import TokenRefreshView
 
@@ -12,6 +12,7 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='token_obtain_pair'),
     path('admin-login/', AdminLoginView.as_view(), name='admin-login'),
     path('authorized-engines/', AuthorizedEnginesView.as_view(), name='authorized-engines'),
+    path('subscription/', DemoSubscriptionView.as_view(), name='user-subscription'),
     path('dashboard/', CareerDashboardView.as_view(), name='career-dashboard'),
     path('skills/', SkillManagementView.as_view(), name='skill-management'),
     path('skills/<int:pk>/', SkillManagementView.as_view(), name='skill-delete'),

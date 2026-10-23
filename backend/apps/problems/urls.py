@@ -6,8 +6,9 @@ from apps.problems.views import (
     ProjectEvaluatorDashboardView, ProjectOwnerDashboardView, ProjectStatusCenterView,
     ProjectListView, ProjectDetailView, ProjectTaskUpdateView, ProjectCompleteView,
     AdminProblemDashboardView, OpportunityListView,
-    AIEvaluateSubmissionView, AIGenerateGapChallengeView,
-    AIGetProgressiveHintView, AIPracticeSubmissionsListView
+    AIEvaluateSubmissionView, AIGenerateGapChallengeView, AIGenerateSkillLabView,
+    AIGetProgressiveHintView, AIPracticeSubmissionsListView,
+    FreelancerSyncChallengesView, ExternalProjectsListView, ExternalProjectImportView
 )
 
 urlpatterns = [
@@ -21,9 +22,16 @@ urlpatterns = [
     path('<int:pk>/build/', ProjectBuildView.as_view(), name='project_build'),
     path('<int:pk>/confirm-req/<str:req_id>/', ConfirmRequirementView.as_view(), name='confirm_req'),
     
+    # ── Freelancer Scraped Challenges & External Projects ──
+    path('sync-freelancer/', FreelancerSyncChallengesView.as_view(), name='sync_freelancer'),
+    path('freelancer-challenges/', FreelancerSyncChallengesView.as_view(), name='freelancer_challenges'),
+    path('external-projects/', ExternalProjectsListView.as_view(), name='external_projects'),
+    path('external-projects/import/', ExternalProjectImportView.as_view(), name='external_project_import'),
+
     # ── AI Assessment & Practice Endpoints ──
     path('practice/<int:pk>/evaluate/', AIEvaluateSubmissionView.as_view(), name='ai_evaluate_submission'),
     path('practice/generate-gap-challenge/', AIGenerateGapChallengeView.as_view(), name='ai_generate_gap_challenge'),
+    path('practice/generate-skill-lab/', AIGenerateSkillLabView.as_view(), name='ai_generate_skill_lab'),
     path('practice/<int:pk>/hint/', AIGetProgressiveHintView.as_view(), name='ai_get_hint'),
     path('practice/submissions/', AIPracticeSubmissionsListView.as_view(), name='ai_submissions_list'),
     

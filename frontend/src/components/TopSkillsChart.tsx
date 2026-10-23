@@ -15,16 +15,39 @@ const Tooltip = RechartsTooltip as any;
 const ResponsiveContainer = RechartsResponsiveContainer as any;
 const Cell = RechartsCell as any;
 
-const TopSkillsChart: React.FC = () => {
-    const skillData = [
-        { name: 'React.js', demand: 85, status: 'rising' },
-        { name: 'TypeScript', demand: 78, status: 'rising' },
-        { name: 'Node.js', demand: 72, status: 'stable' },
-        { name: 'AWS', demand: 65, status: 'rising' },
-        { name: 'GraphQL', demand: 58, status: 'rising' },
-        { name: 'Docker', demand: 55, status: 'stable' },
-        { name: 'Python', demand: 45, status: 'declining' },
-    ];
+interface TopSkillsChartProps {
+    skills?: { name: string; count: number }[];
+}
+
+function classifyStatus(count: number, max: number): 'rising' | 'stable' | 'declining' {
+    const ratio = count / max;
+    if (ratio >= 0.75) return 'rising';
+    if (ratio >= 0.5) return 'stable';
+    return 'declining';
+}
+
+const FALLBACK_SKILLS = [
+    { name: 'React.js', demand: 85, status: 'rising' as const },
+    { name: 'TypeScript', demand: 78, status: 'rising' as const },
+    { name: 'Node.js', demand: 72, status: 'stable' as const },
+    { name: 'AWS', demand: 65, status: 'rising' as const },
+    { name: 'GraphQL', demand: 58, status: 'rising' as const },
+    { name: 'Docker', demand: 55, status: 'stable' as const },
+    { name: 'Python', demand: 45, status: 'declining' as const },
+];
+
+const TopSkillsChart: React.FC<TopSkillsChartProps> = ({ skills }) => {
+    const skillData = React.useMemo(() => {
+        if (skills && skills.length > 0) {
+            const max = Math.max(...skills.map(s => s.count));
+            return skills.slice(0, 8).map(s => ({
+                name: s.name,
+                demand: s.count,
+                status: classifyStatus(s.count, max),
+            }));
+        }
+        return FALLBACK_SKILLS;
+    }, [skills]);
 
     const CustomTooltip = ({ active, payload, label }: any) => {
         if (active && payload && payload.length) {

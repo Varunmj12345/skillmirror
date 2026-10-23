@@ -87,10 +87,10 @@ const SmartJobMatch: React.FC<SmartJobMatchProps> = ({ matchData }) => {
                 <div>
                     <div className="flex items-center gap-2 mb-1">
                         <span className="w-1.5 h-1.5 rounded-sm bg-amber-400"></span>
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">VECTOR ALIGNMENT</span>
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">ROLE COMPATIBILITY</span>
                     </div>
                     <h3 className="text-sm font-bold text-zinc-100">Smart Role Match</h3>
-                    <p className="text-[11px] text-zinc-500 mt-0.5">Profile vector vs live market requirements</p>
+                    <p className="text-[11px] text-zinc-500 mt-0.5">Profile skills vs live market requirements</p>
                 </div>
                 <span className="px-2.5 py-1 rounded-md bg-zinc-950 border border-zinc-800 text-amber-400 text-[10px] font-bold">
                     AI MATCH
@@ -184,39 +184,6 @@ const SmartJobMatch: React.FC<SmartJobMatchProps> = ({ matchData }) => {
                     </div>
                 </div>
             </div>
-
-            {/* Recommended Jobs Preview */}
-            {matchData.recommended_jobs && matchData.recommended_jobs.length > 0 && (
-                <div className="p-5 border-t border-zinc-800 bg-zinc-950/40">
-                    <div className="flex items-center gap-2 mb-3">
-                        <span className="w-1.5 h-1.5 rounded-sm bg-amber-400"></span>
-                        <h4 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
-                            RECOMMENDED OPENINGS
-                        </h4>
-                    </div>
-                    <div className="grid grid-cols-1 gap-2">
-                        {matchData.recommended_jobs.map((job, idx) => (
-                            <div key={idx} className="flex justify-between items-center bg-zinc-950 p-3.5 rounded-xl border border-zinc-800 hover:border-zinc-700 transition-all">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-200 font-bold text-xs">
-                                        {job.company.charAt(0)}
-                                    </div>
-                                    <div>
-                                        <h5 className="text-xs font-bold text-zinc-100">{job.title}</h5>
-                                        <p className="text-[10px] text-zinc-500">{job.company} • {job.location}</p>
-                                    </div>
-                                </div>
-                                <button
-                                    onClick={() => handleApply(job)}
-                                    className="px-3 py-1.5 rounded-lg bg-white hover:bg-zinc-200 text-zinc-950 text-xs font-bold uppercase transition-all cursor-pointer"
-                                >
-                                    Apply
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

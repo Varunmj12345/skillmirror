@@ -11,7 +11,7 @@ import {
 import { useTheme } from '../../context/ThemeContext';
 
 interface SkillRadarProps {
-  skills: { name: string; demand: number; match: number }[];
+  skills: { name: string; demand: number; match: number }[]; onOpenSimulation?: () => void;
 }
 
 const CustomTooltip = ({ active, payload }: any) => {
@@ -37,7 +37,7 @@ const CustomTooltip = ({ active, payload }: any) => {
   return null;
 };
 
-const SkillRadar: React.FC<SkillRadarProps> = ({ skills }) => {
+const SkillRadar: React.FC<SkillRadarProps> = ({ skills, onOpenSimulation }) => {
   return (
     <div className="p-6 border border-zinc-800 bg-zinc-900/90 relative min-h-[380px]">
       <div className="flex justify-between items-center mb-6 pb-3 border-b border-zinc-800/80">
@@ -98,10 +98,10 @@ const SkillRadar: React.FC<SkillRadarProps> = ({ skills }) => {
       </div>
 
       <div className="mt-4 pt-3 border-t border-zinc-800">
-        <div className="p-3 border border-zinc-800 bg-zinc-950 flex items-center gap-2.5">
+        <div className="p-3 border border-zinc-800 bg-zinc-950 flex items-center justify-between gap-2.5">
           <i className="fa-solid fa-circle-nodes text-xs text-amber-500 shrink-0" />
           <p className="text-xs font-mono text-zinc-400 leading-relaxed">
-            Wedge analysis shows a <span className="text-white font-medium">14% delta</span> in core architecture alignment.
+            Wedge analysis shows a <span className="text-white font-medium">14% delta</span> in core architecture alignment. {onOpenSimulation && <button onClick={onOpenSimulation} className="ml-2 px-2 py-0.5 border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 text-[10px] font-mono uppercase tracking-wider transition-colors">Career Path Simulation →</button>}
           </p>
         </div>
       </div>

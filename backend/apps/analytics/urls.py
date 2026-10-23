@@ -1,6 +1,7 @@
-from django.urls import path, include
+﻿from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
+from .bot_export import BotTelemetryExportView, BotTelemetrySeedView
 
 router = DefaultRouter()
 router.register(r'trends', views.MarketTrendViewSet, basename='market-trend')
@@ -16,11 +17,14 @@ urlpatterns = [
     path('predict-completion/', views.PredictCompletionView.as_view(), name='predict-completion'),
     path('ai-career-insight/', views.CareerInsightView.as_view(), name='ai-career-insight'),
     
-    # ── AI Bot Performance & Analytical Engine ──────────────────────────────
+    # â”€â”€ AI Bot Performance & Analytical Engine â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     path('bot-performance/', views.BotPerformanceOverviewView.as_view(), name='bot-performance-overview'),
     path('bot-performance/logs/', views.BotPerformanceLogsView.as_view(), name='bot-performance-logs'),
     path('bot-performance/feedback/', views.BotFeedbackView.as_view(), name='bot-performance-feedback'),
     path('bot-performance/diagnostic/', views.BotDiagnosticView.as_view(), name='bot-performance-diagnostic'),
+    path('bot-performance/export/', BotTelemetryExportView.as_view(), name='bot-performance-export'),
+    path('bot-performance/seed/', BotTelemetrySeedView.as_view(), name='bot-performance-seed'),
     
     path('', include(router.urls)),
 ]
+

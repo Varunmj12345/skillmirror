@@ -23,6 +23,16 @@ module.exports = {
         destination: '/problems',
         permanent: false,
       },
+      {
+        source: '/problems/matches',
+        destination: '/problems?tab=gaps',
+        permanent: true,
+      },
+      {
+        source: '/projects/status-center',
+        destination: '/problems/history',
+        permanent: true,
+      },
     ];
   },
 };

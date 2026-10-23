@@ -216,3 +216,19 @@ class GeneratedResume(models.Model):
 
     def __str__(self):
         return f"v{self.version_number} - {self.user.email} ({self.created_at.date()})"
+
+class ResumeProfile(models.Model):
+    user = models.OneToOneField('users.User', on_delete=models.CASCADE, related_name='resume_profile')
+    personal_details = models.JSONField(default=dict, blank=True)
+    summary = models.TextField(blank=True)
+    skills = models.JSONField(default=list, blank=True)
+    experience = models.JSONField(default=list, blank=True)
+    education = models.JSONField(default=list, blank=True)
+    projects = models.JSONField(default=list, blank=True)
+    certifications = models.JSONField(default=list, blank=True)
+    achievements = models.JSONField(default=list, blank=True)
+    template_config = models.JSONField(default=dict, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"ResumeProfile - {self.user.email}"

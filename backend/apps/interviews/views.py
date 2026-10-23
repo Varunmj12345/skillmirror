@@ -45,6 +45,18 @@ class StartMockInterviewView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
+        from apps.users.models import UserProfile
+        profile, _ = UserProfile.objects.get_or_create(user=request.user)
+        if not profile.consume_credit(1):
+            return Response({
+                'error': 'You have used all your free credits. Upgrade to Plus or Pro (Demo Mode) to start a new AI Mock Interview.',
+                'detail': 'You have used all your free credits. Upgrade to Plus or Pro (Demo Mode) to start a new AI Mock Interview.',
+                'code': 'CREDITS_EXHAUSTED',
+                'upgrade_required': True,
+                'credits_remaining': profile.credits_remaining,
+                'subscription_plan': profile.subscription_plan,
+            }, status=402)
+
         role = request.data.get('role', 'Software Developer')
         experience = request.data.get('experience_level', 'Entry')
         interview_type = request.data.get('interview_type', 'Mixed')

@@ -319,3 +319,207 @@ Return JSON:
                 { "level": 3, "title": "Algorithmic Outline", "hint": "Check `Date.now() > item.expiresAt` before returning stored cache items." }
             ]
         }
+
+    @staticmethod
+    def scrape_course_inspiration(topic: str = "Python") -> dict:
+        """
+        Scrapes live course / guided-project inspiration from Coursera & Dev.to for a given skill topic.
+        Falls back to curated curriculum metadata if offline.
+        """
+        import urllib.parse
+        import requests
+        from lxml import html
+
+        clean_topic = (topic or "Full-Stack Development").strip()
+        encoded = urllib.parse.quote_plus(clean_topic)
+        coursera_url = f"https://www.coursera.org/search?query={encoded}"
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/122.0.0.0 Safari/537.36",
+            "Accept-Language": "en-US,en;q=0.9",
+        }
+
+        scraped_titles = []
+        scraped_skills = []
+        source_url = coursera_url
+
+        try:
+            resp = requests.get(coursera_url, headers=headers, timeout=6)
+            if resp.status_code == 200 and resp.content:
+                tree = html.fromstring(resp.content)
+                headings = tree.xpath('//h3/text() | //h2[contains(@class, "cds-CommonCard-title")]/text() | //a[contains(@data-click-key, "search.search.click.search_card")]//h3/text()')
+                for h in headings:
+                    t = h.strip()
+                    if 8 <= len(t) <= 110 and t not in scraped_titles:
+                        scraped_titles.append(t)
+                        if len(scraped_titles) >= 5:
+                            break
+                skill_nodes = tree.xpath('//p[contains(text(), "Skills you\'ll gain")]/text()')
+                for s in skill_nodes[:3]:
+                    parts = s.split(":", 1)[-1].split(",")
+                    scraped_skills.extend([p.strip() for p in parts if p.strip()])
+        except Exception as e:
+            logger.debug(f"Coursera scrape fallback for '{clean_topic}': {e}")
+
+        if not scraped_titles:
+            try:
+                tag = "".join(ch for ch in clean_topic.lower().split()[0] if ch.isalnum()) or "programming"
+                dev_resp = requests.get(f"https://dev.to/api/articles?tag={tag}&per_page=4", headers=headers, timeout=5)
+                if dev_resp.status_code == 200:
+                    for art in dev_resp.json()[:4]:
+                        if art.get("title"):
+                            scraped_titles.append(art["title"])
+                        scraped_skills.extend(art.get("tag_list") or [])
+            except Exception:
+                pass
+
+        return {
+            "topic": clean_topic,
+            "source_url": source_url,
+            "inspired_by_courses": scraped_titles[:4] or [
+                f"{clean_topic} Guided Project: Hands-On Practice Lab",
+                f"Applied {clean_topic} for Production Engineering",
+            ],
+            "extracted_skills": list(dict.fromkeys(scraped_skills))[:6] or [clean_topic, "Problem Solving", "Clean Code"],
+        }
+
+    def generate_skill_lab(self, topic: str = "Python Data Processing", category: str = "Backend Architecture", difficulty: str = "beginner") -> dict:
+        """
+        Synthesizes a bite-sized (~15-20 min) Coursera-style Guided Skill Lab assignment
+        using live web-scraped course inspiration + LLM synthesis.
+        """
+        inspiration = self.scrape_course_inspiration(topic)
+        courses_str = "; ".join(inspiration["inspired_by_courses"])
+
+        system_prompt = f"""You are a Coursera Guided Project & Interactive Lab Author.
+Design a short, bite-sized (~15-20 minute) hands-on coding assignment for skill building.
+
+LAB CONTEXT:
+- Focus Topic / Skill: {topic}
+- Category: {category}
+- Difficulty Level: {difficulty}
+- Web-Scraped Course Inspiration: {courses_str}
+- Extracted Industry Skills: {json.dumps(inspiration['extracted_skills'])}
+
+Unlike large capstone projects, this must be a focused, self-contained Coursera-style Guided Lab with 3-4 clear step-by-step tasks that a learner can complete in a single file inside the browser editor.
+
+OUTPUT IN STRICT JSON FORMAT ONLY:
+{{
+  "title": "<string e.g. 'Guided Lab: Build a Rate-Limited Token Bucket in Python'>",
+  "category": "{category}",
+  "domain": "Guided Skill Lab",
+  "complexity": "{difficulty}",
+  "estimated_time_minutes": 20,
+  "xp_reward": 100,
+  "target_skills": {json.dumps(inspiration['extracted_skills'][:4])},
+  "inspired_by": "{courses_str[:140]}",
+  "source_url": "{inspiration['source_url']}",
+  "learning_objectives": [
+    "<learning objective 1>",
+    "<learning objective 2>"
+  ],
+  "scenario": "<string concise 2-sentence practical context explaining what the learner will build and why it matters>",
+  "problem_statement": "<string clear instructions for the bite-sized assignment>",
+  "requirements": [
+    "Task 1: <specific step 1 to implement>",
+    "Task 2: <specific step 2 to implement>",
+    "Task 3: <specific step 3 / edge-case check to implement>"
+  ],
+  "constraints": [
+    "Self-contained single-file implementation (~15-20 mins)",
+    "All unit test assertions must pass cleanly"
+  ],
+  "starter_code": "<string runnable starter code template with clear # Task 1 / // Task 1 TODO comments and a self-check test block>",
+  "hints": [
+    {{ "level": 1, "title": "Task 1 Concept", "hint": "<string guidance for Task 1>" }},
+    {{ "level": 2, "title": "Task 2 Pattern", "hint": "<string guidance for Task 2>" }},
+    {{ "level": 3, "title": "Reference Solution Outline", "hint": "<string key logic outline>" }}
+  ]
+}}
+"""
+        if not self.api_key:
+            return self._fallback_skill_lab(topic, category, difficulty, inspiration)
+
+        try:
+            completion = chat_completion(
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": "Generate the Coursera-style Guided Skill Lab in strict JSON."}
+                ],
+                max_tokens=1800,
+                temperature=0.35,
+                response_format={"type": "json_object"},
+                interaction_type="skill_lab_generation"
+            )
+            raw = completion.content.strip()
+            if raw.startswith("```"):
+                raw = raw.split("```")[1]
+                if raw.startswith("json"):
+                    raw = raw[4:]
+            data = json.loads(raw)
+            data.setdefault("source_url", inspiration["source_url"])
+            data.setdefault("inspired_by", courses_str[:140])
+            return data
+        except Exception as e:
+            logger.error(f"Skill Lab Generation Error: {e}")
+            return self._fallback_skill_lab(topic, category, difficulty, inspiration)
+
+    def _fallback_skill_lab(self, topic: str, category: str, difficulty: str, inspiration: dict) -> dict:
+        clean_topic = (topic or "REST API Pagination").strip()
+        inspired_by = "; ".join(inspiration.get("inspired_by_courses", [])[:2]) or f"Coursera Guided Project: {clean_topic}"
+        return {
+            "title": f"Guided Lab: Hands-On {clean_topic} Mini-Assignment",
+            "category": category or "Backend Architecture",
+            "domain": "Coursera-Style Guided Lab",
+            "complexity": difficulty or "beginner",
+            "estimated_time_minutes": 20,
+            "xp_reward": 100,
+            "target_skills": inspiration.get("extracted_skills", [clean_topic, "Clean Code", "Unit Testing"])[:4],
+            "inspired_by": inspired_by,
+            "source_url": inspiration.get("source_url", "https://www.coursera.org"),
+            "learning_objectives": [
+                f"Understand core data structures and validation patterns for {clean_topic}",
+                "Implement deterministic input transformation and boundary handling",
+            ],
+            "scenario": f"Inspired by '{inspired_by}', this bite-sized 20-minute lab walks you through building a clean, testable utility module for {clean_topic}.",
+            "problem_statement": f"Complete the 3 guided tasks in the starter template to parse, validate, and summarize records for {clean_topic}.",
+            "requirements": [
+                f"Task 1: Validate incoming input records and filter out malformed entries for {clean_topic}.",
+                "Task 2: Compute summary metrics (count, average score, and top-ranked item).",
+                "Task 3: Return a normalized result dictionary and verify edge cases (empty list, negative values)."
+            ],
+            "constraints": [
+                "Estimated completion time: 15-20 minutes",
+                "Single-Pass O(N) time complexity with zero external dependencies"
+            ],
+            "starter_code": (
+                f"// Guided Skill Lab: {clean_topic}\n"
+                f"// Inspired by: {inspired_by}\n\n"
+                "function runGuidedLab(records = []) {\n"
+                "  // Task 1: Filter valid records (must have non-empty 'id' and numeric 'score' >= 0)\n"
+                "  const valid = records.filter(r => r && r.id && typeof r.score === 'number' && r.score >= 0);\n"
+                "  if (valid.length === 0) {\n"
+                "    return { count: 0, averageScore: 0, topId: null };\n"
+                "  }\n\n"
+                "  // Task 2: Compute total score and track the highest-scoring record\n"
+                "  // TODO: Replace placeholder logic below if needed for tie-breaking\n"
+                "  let total = 0;\n"
+                "  let topRecord = valid[0];\n"
+                "  for (const item of valid) {\n"
+                "    total += item.score;\n"
+                "    if (item.score > topRecord.score) topRecord = item;\n"
+                "  }\n\n"
+                "  // Task 3: Return rounded averageScore (2 decimals) and summary\n"
+                "  return {\n"
+                "    count: valid.length,\n"
+                "    averageScore: Number((total / valid.length).toFixed(2)),\n"
+                "    topId: topRecord.id\n"
+                "  };\n"
+                "}\n\n"
+                "module.exports = { runGuidedLab };"
+            ),
+            "hints": [
+                { "level": 1, "title": "Task 1: Input Guard", "hint": "Use Array.prototype.filter() and check `typeof r.score === 'number' && !Number.isNaN(r.score)`." },
+                { "level": 2, "title": "Task 2: Single-Pass Aggregation", "hint": "Accumulate the sum and track the max record in a single `for...of` loop for O(N) efficiency." },
+                { "level": 3, "title": "Task 3: Precision Formatting", "hint": "Wrap `(total / valid.length).toFixed(2)` in `Number(...)` so the output remains a number." }
+            ]
+        }

@@ -58,14 +58,14 @@ const AIAssessmentScorecardsPage: React.FC = () => {
   return (
     <Layout>
       <Head>
-        <title>AI Assessment Scorecards & History • SkillMirror Core</title>
+        <title>Code Assessment History • SkillMirror Core</title>
         <meta name="description" content="Review your AI assessment scorecards, multi-dimensional code evaluations, and verified skill achievements." />
       </Head>
 
       <CyberPageShell
         moduleCode="MOD-08"
         section="AI PRACTICE & ASSESSMENTS"
-        title="AI ASSESSMENT SCORECARDS & HISTORY"
+        title="CODE ASSESSMENT HISTORY"
         subtitle="Review your historical multi-dimensional AI evaluations, line-by-line feedback, and verified XP gains."
         badge="ASSESSMENT TELEMETRY"
         badgeVariant="outline-amber"
@@ -76,13 +76,13 @@ const AIAssessmentScorecardsPage: React.FC = () => {
             <Link href="/problems">
               <button className="px-4 py-2 bg-amber-400 hover:bg-amber-300 text-black font-mono font-bold text-xs uppercase tracking-wider transition-colors flex items-center gap-2 shadow-sm">
                 <i className="fa-solid fa-code text-xs" />
-                <span>Practice Arena</span>
+                <span>Practice Problems</span>
               </button>
             </Link>
-            <Link href="/problems/matches">
+            <Link href="/problems?tab=gaps">
               <button className="px-3.5 py-2 bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 text-xs font-mono font-semibold uppercase tracking-wider transition-colors flex items-center gap-2">
                 <i className="fa-solid fa-bullseye text-xs text-amber-400" />
-                <span>Gap Lab</span>
+                <span>My Gap Challenges</span>
               </button>
             </Link>
           </div>

@@ -3,6 +3,7 @@ Django==4.2
 djangorestframework==3.14.0
 django-cors-headers==3.14.0
 djangorestframework-simplejwt==5.2.2
+setuptools<70
 django-environ==0.8.1
 dj-database-url>=1.0.0
 python-dotenv>=1.0.0
@@ -16,12 +17,12 @@ gunicorn==21.2.0
 
 # ── AI / ML (ULTRA-LIGHTWEIGHT — removed scikit-learn/scipy) ──────────────────
 numpy>=1.26.0
-groq
+groq==1.7.0
 
 # ── File Parsing ─────────────────────────────────────────────────────────────
-python-docx
-pypdf
-Pillow
+python-docx==1.2.0
+pypdf==6.21.1
+Pillow==13.0.0
 
 # ── HTTP ──────────────────────────────────────────────────────────────────────
-requests
+requests==2.34.2

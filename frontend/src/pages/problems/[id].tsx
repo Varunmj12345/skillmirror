@@ -38,7 +38,9 @@ const AIAssessmentWorkspacePage: React.FC = () => {
       // Starter code default template
       if (!codeSnippet) {
         setCodeSnippet(
-          `// Challenge: ${probData.title}\n// Domain: ${probData.category || 'Backend Architecture'}\n\nfunction solveChallenge(inputData) {\n  // 1. Validate input\n  if (!inputData) return null;\n\n  // 2. Implement your core logic\n  const result = {\n    processed: true,\n    timestamp: Date.now()\n  };\n\n  // 3. Return verified outcome\n  return result;\n}\n\nmodule.exports = { solveChallenge };`
+          (probData.source_type === 'COURSERA_LAB' || probData.source_type === 'AI_GENERATED_PRACTICE') && probData.current_method
+            ? probData.current_method
+            : `// Challenge: ${probData.title}\n// Domain: ${probData.category || 'Backend Architecture'}\n\nfunction solveChallenge(inputData) {\n  // 1. Validate input\n  if (!inputData) return null;\n\n  // 2. Implement your core logic\n  const result = {\n    processed: true,\n    timestamp: Date.now()\n  };\n\n  // 3. Return verified outcome\n  return result;\n}\n\nmodule.exports = { solveChallenge };`
         );
       }
     } catch (err) {
@@ -429,9 +431,9 @@ const AIAssessmentWorkspacePage: React.FC = () => {
 
                   {/* Footer actions */}
                   <div className="pt-4 border-t border-zinc-800 flex items-center justify-between">
-                    <Link href="/projects/status-center">
+                    <Link href="/problems/history">
                       <button className="text-xs font-mono font-bold text-amber-400 hover:underline">
-                        View in Scorecards & History →
+                        View in Assessment History →
                       </button>
                     </Link>
                     <Link href="/problems">

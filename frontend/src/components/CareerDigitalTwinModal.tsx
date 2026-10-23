@@ -10,12 +10,12 @@ interface CareerDigitalTwinModalProps {
 }
 
 const BOOT_SEQUENCE = [
-    'Initializing Digital Twin Engine...',
+    'Initializing Career Simulation...',
     'Loading Neural Career Graph...',
     'Mapping Skill Topology...',
     'Simulating Market Trajectories...',
     'Computing Decay Vectors...',
-    'Synthesizing Twin Intelligence...',
+    'Synthesizing Career Insights...',
     'Finalizing Simulation Output...',
 ];
 
@@ -107,11 +107,11 @@ const CareerDigitalTwinModal: React.FC<CareerDigitalTwinModalProps> = ({ isOpen,
                                 <i className="fa-solid fa-dna text-xs" />
                             </div>
                             <div>
-                                <h2 className="text-sm font-normal text-white tracking-tight">Career Digital Twin Engine</h2>
+                                <h2 className="text-sm font-normal text-white tracking-tight">Career Path Simulation</h2>
                                 <div className="flex items-center gap-2 mt-0.5">
                                     <span className={`w-1.5 h-1.5 ${loading ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`} />
                                     <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">
-                                        {loading ? 'SIMULATION IN PROGRESS' : 'TWIN TELEMETRY READY'}
+                                        {loading ? 'SIMULATION IN PROGRESS' : 'SIMULATION READY'}
                                     </span>
                                 </div>
                             </div>

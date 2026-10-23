@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -11,6 +11,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const CATEGORIES = [
   { id: 'all', label: 'All Domains' },
+  { id: 'skill_labs', label: '🎓 Guided Skill Labs' },
+  { id: 'gaps', label: '🎯 My Gap Challenges' },
+  { id: 'freelancer', label: '⚡ Freelancer Live Challenges' },
   { id: 'Backend Architecture', label: 'Backend & Systems' },
   { id: 'Frontend Engineering', label: 'Frontend & UI' },
   { id: 'Fullstack MVP', label: 'Full-Stack Apps' },
@@ -18,6 +21,13 @@ const CATEGORIES = [
   { id: 'Cloud & DevOps', label: 'Cloud & DevOps' },
   { id: 'High-Throughput / Caching', label: 'Distributed Systems' },
 ];
+
+// Category tabs that filter by problem source instead of domain category.
+const SOURCE_TABS: Record<string, string> = {
+  skill_labs: 'COURSERA_LAB',
+  gaps: 'AI_GENERATED_PRACTICE',
+  freelancer: 'FREELANCER_SCRAPED',
+};
 
 const COMPLEXITY_LEVELS = [
   { id: 'all', label: 'All Levels' },
@@ -35,15 +45,20 @@ const AIPracticeArenaPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedComplexity, setSelectedComplexity] = useState('all');
   const [generatingGap, setGeneratingGap] = useState(false);
+  const [generatingLab, setGeneratingLab] = useState(false);
+  const [labTopic, setLabTopic] = useState('');
+  const [syncingFreelancer, setSyncingFreelancer] = useState(false);
   const [generatedSuccess, setGeneratedSuccess] = useState<string | null>(null);
 
   const loadChallenges = async () => {
     try {
       setLoading(true);
       const params: any = {
-        category: selectedCategory,
         complexity: selectedComplexity,
-        search: search.trim()
+        search: search.trim(),
+        ...(SOURCE_TABS[selectedCategory]
+          ? { source_type: SOURCE_TABS[selectedCategory] }
+          : (selectedCategory !== 'all' ? { category: selectedCategory } : {}))
       };
 
       const res: any = await problemService.getProblems(params);
@@ -56,13 +71,36 @@ const AIPracticeArenaPage: React.FC = () => {
     }
   };
 
+  // Honour the /problems?tab=gaps deep link once, before the first fetch, so we don't race two requests.
+  const deepLinkApplied = useRef(false);
   useEffect(() => {
+    if (!router.isReady) return;
+    if (!deepLinkApplied.current) {
+      deepLinkApplied.current = true;
+      if (router.query.tab === 'gaps' && selectedCategory !== 'gaps') {
+        setSelectedCategory('gaps');
+        return;
+      }
+    }
     loadChallenges();
-  }, [selectedCategory, selectedComplexity]);
+  }, [router.isReady, selectedCategory, selectedComplexity]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     loadChallenges();
+  };
+
+  const handleSyncFreelancer = async () => {
+    try {
+      setSyncingFreelancer(true);
+      await problemService.syncFreelancerChallenges();
+      setSelectedCategory('freelancer');
+      await loadChallenges();
+    } catch (err) {
+      console.error('Failed to sync Freelancer challenges:', err);
+    } finally {
+      setSyncingFreelancer(false);
+    }
   };
 
   const handleGenerateGapChallenge = async () => {
@@ -71,7 +109,7 @@ const AIPracticeArenaPage: React.FC = () => {
       setGeneratedSuccess(null);
       const res: any = await problemService.generateGapChallenge({
         gap_skills: ['Distributed Caching', 'Kafka Architecture', 'Performance Optimization'],
-        difficulty: 'intermediate'
+        difficulty: selectedComplexity === 'all' ? 'intermediate' : selectedComplexity
       });
       const data = res?.data || res;
       if (data?.id) {
@@ -83,6 +121,29 @@ const AIPracticeArenaPage: React.FC = () => {
       console.error('Failed to generate gap challenge:', err);
     } finally {
       setGeneratingGap(false);
+    }
+  };
+
+  const handleGenerateSkillLab = async (customTopic?: string) => {
+    try {
+      setGeneratingLab(true);
+      setGeneratedSuccess(null);
+      const topicToUse = (customTopic ?? labTopic).trim() || search.trim() || 'REST API Rate Limiting';
+      const res: any = await problemService.generateSkillLab({
+        topic: topicToUse,
+        category: selectedCategory,
+        difficulty: selectedComplexity === 'all' ? 'beginner' : selectedComplexity,
+      });
+      const data = res?.data || res;
+      setSelectedCategory('skill_labs');
+      await loadChallenges();
+      if (data?.title) {
+        setGeneratedSuccess(`Guided Skill Lab Ready: ${data.title}`);
+      }
+    } catch (err) {
+      console.error('Failed to generate Guided Skill Lab:', err);
+    } finally {
+      setGeneratingLab(false);
     }
   };
 
@@ -110,14 +171,14 @@ const AIPracticeArenaPage: React.FC = () => {
   return (
     <Layout>
       <Head>
-        <title>AI Practice Challenge Arena • SkillMirror Core</title>
+        <title>Practice Problems • SkillMirror Core</title>
         <meta name="description" content="Solve interactive industry-grade challenges and take autonomous AI assessments." />
       </Head>
 
       <CyberPageShell
         moduleCode="MOD-07"
         section="AI PRACTICE & ASSESSMENTS"
-        title="AI PRACTICE CHALLENGE ARENA"
+        title="PRACTICE PROBLEMS"
         subtitle="Solve real-world scenario challenges, submit your code or repositories, and receive instant autonomous multi-dimensional AI grading."
         badge="AUTONOMOUS AI GRADER"
         badgeVariant="outline-amber"
@@ -125,6 +186,24 @@ const AIPracticeArenaPage: React.FC = () => {
         glowColor="amber"
         actions={
           <div className="flex flex-wrap items-center gap-2.5">
+            <button
+              onClick={() => handleGenerateSkillLab()}
+              disabled={generatingLab}
+              className="px-3.5 py-2.5 bg-zinc-900 border border-cyan-400/50 hover:bg-cyan-400 hover:text-black text-cyan-400 font-mono font-bold text-xs uppercase tracking-wider transition-colors flex items-center gap-2 shadow-sm disabled:opacity-50"
+            >
+              <i className={`fa-solid ${generatingLab ? 'fa-spinner fa-spin' : 'fa-graduation-cap'} text-xs`} />
+              <span>{generatingLab ? 'Scraping & Building Lab...' : 'Guided Skill Lab'}</span>
+            </button>
+
+            <button
+              onClick={handleSyncFreelancer}
+              disabled={syncingFreelancer}
+              className="px-3.5 py-2.5 bg-zinc-900 border border-amber-400/50 hover:bg-amber-400 hover:text-black text-amber-400 font-mono font-bold text-xs uppercase tracking-wider transition-colors flex items-center gap-2 shadow-sm disabled:opacity-50"
+            >
+              <i className={`fa-solid ${syncingFreelancer ? 'fa-spinner fa-spin' : 'fa-bolt'} text-xs`} />
+              <span>{syncingFreelancer ? 'Scraping Freelancer...' : 'Sync Freelancer'}</span>
+            </button>
+
             <button
               onClick={handleGenerateGapChallenge}
               disabled={generatingGap}
@@ -134,17 +213,10 @@ const AIPracticeArenaPage: React.FC = () => {
               <span>{generatingGap ? 'Synthesizing...' : 'Generate Gap Challenge'}</span>
             </button>
 
-            <Link href="/problems/matches">
-              <button className="px-3.5 py-2.5 bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 text-xs font-mono font-semibold uppercase tracking-wider transition-colors flex items-center gap-2">
-                <i className="fa-solid fa-bullseye text-xs text-amber-400" />
-                <span>Gap Challenge Lab</span>
-              </button>
-            </Link>
-
-            <Link href="/projects/status-center">
+            <Link href="/problems/history">
               <button className="px-3.5 py-2.5 bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 text-xs font-mono font-semibold uppercase tracking-wider transition-colors flex items-center gap-2">
                 <i className="fa-solid fa-chart-line text-xs text-emerald-400" />
-                <span>Scorecards & History</span>
+                <span>Assessment History</span>
               </button>
             </Link>
           </div>
@@ -241,6 +313,65 @@ const AIPracticeArenaPage: React.FC = () => {
               </button>
             ))}
           </div>
+
+          {/* Coursera-Style Guided Skill Lab Synthesizer Bar */}
+          {selectedCategory === 'skill_labs' && (
+            <div className="p-4 bg-zinc-900/95 border border-cyan-500/30 space-y-3">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                <div>
+                  <div className="text-[10px] font-mono font-bold text-cyan-400 uppercase tracking-widest flex items-center gap-1.5">
+                    <i className="fa-solid fa-graduation-cap text-[10px]" />
+                    <span>COURSERA-STYLE GUIDED SKILL LABS • WEB-SCRAPED CURRICULUM INSPIRATION</span>
+                  </div>
+                  <p className="text-xs font-sans text-zinc-400 mt-0.5">
+                    Bite-sized (~15–20 min) hands-on mini-assignments with step-by-step tasks and starter code. Enter any skill topic to scrape live course syllabi and synthesize a custom practice lab.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <input
+                    type="text"
+                    value={labTopic}
+                    onChange={(e) => setLabTopic(e.target.value)}
+                    placeholder="e.g. React Hooks, SQL Joins, JWT Auth..."
+                    className="px-3 py-2 bg-zinc-950 border border-zinc-800 text-xs font-mono text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-cyan-400 w-56 sm:w-64"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleGenerateSkillLab()}
+                    disabled={generatingLab}
+                    className="px-4 py-2 bg-cyan-400 hover:bg-cyan-300 text-black font-mono font-bold text-xs uppercase tracking-wider transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                  >
+                    <i className={`fa-solid ${generatingLab ? 'fa-spinner fa-spin' : 'fa-wand-magic-sparkles'} text-xs`} />
+                    <span>{generatingLab ? 'Synthesizing...' : 'Generate Lab'}</span>
+                  </button>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 flex-wrap pt-1">
+                <span className="text-[10px] font-mono text-zinc-500 uppercase mr-1">Quick Topics:</span>
+                {['Sliding Window Rate Limiter', 'React Debounce Hook', 'SQL Aggregation & Joins', 'JWT Token Validator', 'Python Data Cleaning', 'RAG Cosine Similarity'].map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    disabled={generatingLab}
+                    onClick={() => {
+                      setLabTopic(t);
+                      handleGenerateSkillLab(t);
+                    }}
+                    className="px-2 py-0.5 bg-zinc-950 border border-zinc-800 hover:border-cyan-400/50 text-[10px] font-mono text-zinc-300 hover:text-cyan-400 transition-colors"
+                  >
+                    + {t}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {generatedSuccess && (
+            <div className="p-3 bg-emerald-950/40 border border-emerald-500/40 text-emerald-300 text-xs font-mono flex items-center justify-between">
+              <span>✓ {generatedSuccess}</span>
+              <button onClick={() => setGeneratedSuccess(null)} className="text-zinc-400 hover:text-white text-[10px] uppercase">Dismiss</button>
+            </div>
+          )}
         </div>
 
         {/* Challenge Cards Grid */}
@@ -256,13 +387,24 @@ const AIPracticeArenaPage: React.FC = () => {
               <i className="fa-solid fa-code text-lg" />
             </div>
             <h3 className="text-sm font-mono font-bold text-white mb-1">No Practice Challenges Found</h3>
-            <p className="text-xs text-zinc-400 mb-4">Try adjusting your filters or generate an on-demand gap challenge.</p>
-            <button
-              onClick={handleGenerateGapChallenge}
-              className="px-4 py-2 bg-amber-400 text-black hover:bg-amber-300 font-mono font-bold text-xs uppercase tracking-wider transition-colors"
-            >
-              Synthesize New Challenge
-            </button>
+            <p className="text-xs text-zinc-400 mb-4">Try adjusting your filters, generate a Guided Skill Lab, or sync challenges from Freelancer.com.</p>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <button
+                onClick={() => handleGenerateSkillLab()}
+                disabled={generatingLab}
+                className="px-3.5 py-2 bg-zinc-950 border border-cyan-400/50 hover:bg-cyan-400 hover:text-black text-cyan-400 font-mono font-bold text-xs uppercase tracking-wider transition-colors flex items-center gap-2"
+              >
+                <i className={`fa-solid ${generatingLab ? 'fa-spinner fa-spin' : 'fa-graduation-cap'} text-xs`} />
+                <span>{generatingLab ? 'Synthesizing...' : 'Generate Guided Skill Lab'}</span>
+              </button>
+              <button
+                onClick={handleSyncFreelancer}
+                disabled={syncingFreelancer}
+                className="px-4 py-2 bg-amber-400 text-black hover:bg-amber-300 font-mono font-bold text-xs uppercase tracking-wider transition-colors"
+              >
+                {syncingFreelancer ? 'Scraping...' : 'Sync Freelancer Challenges'}
+              </button>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -279,13 +421,34 @@ const AIPracticeArenaPage: React.FC = () => {
                   <div>
                     {/* Header Badges */}
                     <div className="flex items-center justify-between gap-2 mb-3">
-                      <span className={`px-2 py-0.5 text-[10px] font-mono font-bold uppercase border ${getDifficultyBadge(prob.complexity)}`}>
-                        [ {prob.complexity || 'Intermediate'} ]
-                      </span>
-                      <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-950/40 border border-emerald-800/60 px-2 py-0.5 flex items-center gap-1">
-                        <span className="w-1 h-1 bg-emerald-400" />
-                        +150 XP
-                      </span>
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className={`px-2 py-0.5 text-[10px] font-mono font-bold uppercase border ${getDifficultyBadge(prob.complexity)}`}>
+                          [ {prob.complexity || 'Intermediate'} ]
+                        </span>
+                        {prob.source_type === 'FREELANCER_SCRAPED' && (
+                          <span className="px-2 py-0.5 text-[9px] font-mono font-bold uppercase bg-amber-950/50 text-amber-400 border border-amber-800/80 flex items-center gap-1">
+                            <i className="fa-solid fa-bolt text-[8px]" />
+                            <span>FREELANCER</span>
+                          </span>
+                        )}
+                        {prob.source_type === 'COURSERA_LAB' && (
+                          <span className="px-2 py-0.5 text-[9px] font-mono font-bold uppercase bg-cyan-950/50 text-cyan-400 border border-cyan-800/80 flex items-center gap-1">
+                            <i className="fa-solid fa-graduation-cap text-[8px]" />
+                            <span>GUIDED LAB</span>
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        {prob.budget && (
+                          <span className="text-[10px] font-mono font-bold text-amber-400 bg-zinc-950 px-1.5 py-0.5 border border-zinc-800">
+                            ${prob.budget}
+                          </span>
+                        )}
+                        <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-950/40 border border-emerald-800/60 px-2 py-0.5 flex items-center gap-1">
+                          <span className="w-1 h-1 bg-emerald-400" />
+                          +150 XP
+                        </span>
+                      </div>
                     </div>
 
                     <h3 className="text-base font-mono font-bold text-white tracking-tight group-hover:text-amber-400 transition-colors line-clamp-1 mb-2">
@@ -318,12 +481,12 @@ const AIPracticeArenaPage: React.FC = () => {
                   <div className="pt-4 border-t border-zinc-800/80 flex items-center justify-between">
                     <span className="text-[10px] font-mono text-zinc-500 flex items-center gap-1.5">
                       <i className="fa-regular fa-clock text-[9px]" />
-                      <span>~45 mins</span>
+                      <span>{prob.source_type === 'COURSERA_LAB' ? '~15-20 mins' : '~45 mins'}</span>
                     </span>
 
                     <Link href={`/problems/${prob.id}`}>
                       <button className="px-3 py-1.5 bg-zinc-950 border border-zinc-800 text-zinc-300 group-hover:border-amber-400/60 group-hover:text-amber-400 text-xs font-mono font-semibold uppercase tracking-wider transition-colors flex items-center gap-1.5">
-                        <span>Launch Assessment</span>
+                        <span>{prob.source_type === 'COURSERA_LAB' ? 'Start Guided Lab' : 'Launch Assessment'}</span>
                         <i className="fa-solid fa-arrow-right text-[10px]" />
                       </button>
                     </Link>

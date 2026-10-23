@@ -71,9 +71,9 @@ const LandingFooter = () => {
               <span>ENGINES</span>
             </h4>
             <ul className="space-y-2.5 text-[11px]">
-              <li><Link href="/dashboard"><a className="text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-300 transition-colors">Command Center</a></Link></li>
+              <li><Link href="/dashboard"><a className="text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-300 transition-colors">Dashboard</a></Link></li>
               <li><Link href="/roadmap"><a className="text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-300 transition-colors">Career Roadmap</a></Link></li>
-              <li><Link href="/skill-gap"><a className="text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-300 transition-colors">Skill Gap Radar</a></Link></li>
+              <li><Link href="/skill-gap"><a className="text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-300 transition-colors">Skill Gap Analyzer</a></Link></li>
               <li><Link href="/resume"><a className="text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-300 transition-colors">Resume Optimizer</a></Link></li>
             </ul>
           </div>
@@ -85,9 +85,9 @@ const LandingFooter = () => {
             </h4>
             <ul className="space-y-2.5 text-[11px]">
               <li><Link href="/mock-interview"><a className="text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-300 transition-colors">Mock Interview</a></Link></li>
-              <li><Link href="/job-intelligence"><a className="text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-300 transition-colors">Job Market Radar</a></Link></li>
-              <li><Link href="/smart-alerts"><a className="text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-300 transition-colors">Smart Alert Dispatch</a></Link></li>
-              <li><Link href="/profile"><a className="text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-300 transition-colors">Career Digital Twin</a></Link></li>
+              <li><Link href="/job-intelligence"><a className="text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-300 transition-colors">Job Market Intel</a></Link></li>
+              <li><Link href="/smart-alerts"><a className="text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-300 transition-colors">Career Alerts</a></Link></li>
+              <li><Link href="/profile"><a className="text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-300 transition-colors">Profile & Portfolio</a></Link></li>
             </ul>
           </div>
 

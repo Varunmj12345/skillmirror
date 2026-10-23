@@ -61,9 +61,40 @@ class JobDataViewSet(viewsets.ModelViewSet):
         market_intel = AgentReachJobService.get_or_refresh_market_data(role, force_refresh=force_refresh)
         return Response(market_intel)
 
+    @action(detail=False, methods=['get'])
+    def suggested_openings(self, request):
+        """
+        Aggregates live current job openings from:
+        - Official company career portals (Stripe, Figma, Vercel, Cloudflare, GitLab...)
+        - Live web scraped Freelancer.com gigs & challenges
+        - Global tech boards (RemoteOK, Remotive, Arbeitnow)
+        """
+        role = request.query_params.get('role')
+        source_filter = request.query_params.get('source', 'all')
+        if not role and request.user.is_authenticated:
+            profile = getattr(request.user, 'profile', None)
+            role = getattr(profile, 'dream_job', None) or 'Software Engineer'
+        role = role or 'Software Engineer'
+        match_data = AgentReachJobService.get_role_match_and_recommendations(request.user, role, source_filter=source_filter)
+        return Response(match_data)
+
     @action(detail=False, methods=['post'])
     def match_post(self, request):
         """Calculate real match score and return verified live job vacancies (POST)."""
         role = request.data.get('role') or request.query_params.get('role') or 'Software Engineer'
-        match_data = AgentReachJobService.get_role_match_and_recommendations(request.user, role)
+        source_filter = request.data.get('source') or request.query_params.get('source', 'all')
+        match_data = AgentReachJobService.get_role_match_and_recommendations(request.user, role, source_filter=source_filter)
         return Response(match_data)
+
+    @action(detail=False, methods=['get'])
+    def scout_agent_status(self, request):
+        """Returns real-time status and telemetry of the Official Career Scout Agent."""
+        from .services.career_scout_agent import OfficialCareerScoutAgent
+        return Response(OfficialCareerScoutAgent.get_agent_status())
+
+    @action(detail=False, methods=['post'])
+    def run_scout_sweep(self, request):
+        """Triggers an immediate sweep of official company career portals and tech boards."""
+        from .services.career_scout_agent import OfficialCareerScoutAgent
+        results = OfficialCareerScoutAgent.run_full_scout_sweep()
+        return Response(results)

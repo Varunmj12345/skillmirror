@@ -23,9 +23,43 @@ const Signup: React.FC = () => {
     if (user) router.replace('/dashboard');
   }, [user, router]);
 
+  const validateGmailAddress = (rawEmail: string): string | null => {
+    const clean = (rawEmail || '').trim().toLowerCase();
+    if (!clean || !clean.includes('@')) {
+      return 'Please enter a valid Google Gmail address (e.g. yourname@gmail.com).';
+    }
+    const parts = clean.split('@');
+    const local = parts[0];
+    const domain = parts[1];
+    if (domain !== 'gmail.com' && domain !== 'googlemail.com') {
+      return 'Registration requires an official Google Gmail account (@gmail.com).';
+    }
+    if (local.length < 6 || local.length > 30) {
+      return 'Gmail username must be between 6 and 30 characters before @gmail.com.';
+    }
+    if (!/^[a-z0-9]+(\.[a-z0-9]+)*$/.test(local)) {
+      return 'Enter a valid Gmail ID (only letters, numbers, and single periods allowed).';
+    }
+    const normalized = local.replace(/\./g, '');
+    const blocked = new Set([
+      'testuser', 'testing', 'example', 'sampleuser', 'adminuser',
+      'user123', 'user1234', 'demoaccount', 'fakeemail', 'qwerty',
+      '123456', '1234567', '12345678', '123456789', 'abcdef', 'abcdefgh',
+    ]);
+    if (blocked.has(normalized) || new Set(normalized.split('')).size <= 2) {
+      return 'Please use your real personal Gmail ID to sign up.';
+    }
+    return null;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    const gmailError = validateGmailAddress(email);
+    if (gmailError) {
+      setError(gmailError);
+      return;
+    }
     setLoading(true);
     try {
       await registerUser({ username, email, password, role: 'student', dream_job: dreamJob });
@@ -151,17 +185,25 @@ const Signup: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="block text-xs font-mono uppercase tracking-wider text-zinc-400">
-                    Email Address
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-mono uppercase tracking-wider text-zinc-400">
+                      Google Gmail Address
+                    </label>
+                    <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5">
+                      @gmail.com REQUIRED • 10 FREE CREDITS
+                    </span>
+                  </div>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="alex@domain.com"
+                    placeholder="alex.rivera@gmail.com"
                     required
                     className="w-full bg-zinc-950 border border-zinc-800 text-white placeholder-zinc-500 px-4 py-3 text-sm font-mono focus:border-white focus:outline-none transition-colors"
                   />
+                  <p className="text-[11px] font-mono text-zinc-500">
+                    Sign up with your personal Gmail ID. New accounts receive 10 free credits (upgradeable to Plus/Pro in Demo Mode).
+                  </p>
                 </div>
 
                 <div className="space-y-2">

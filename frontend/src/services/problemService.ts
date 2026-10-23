@@ -116,8 +116,29 @@ export const problemService = {
     return apiClient.post('/api/problems/practice/generate-gap-challenge/', data || {});
   },
 
+  generateSkillLab: async (data?: {
+    topic?: string;
+    category?: string;
+    difficulty?: string;
+  }) => {
+    return apiClient.post('/api/problems/practice/generate-skill-lab/', data || {});
+  },
+
   getProgressiveHint: async (problemId: number | string, level: number = 1) => {
     return apiClient.post(`/api/problems/practice/${problemId}/hint/`, { level });
+  },
+
+  // ── Freelancer Scraped Challenges & External Projects ──
+  syncFreelancerChallenges: async () => {
+    return apiClient.post('/api/problems/sync-freelancer/');
+  },
+
+  getExternalProjects: async (params?: { search?: string; limit?: number }) => {
+    return apiClient.get('/api/problems/external-projects/', { params });
+  },
+
+  importExternalProject: async (data: any) => {
+    return apiClient.post('/api/problems/external-projects/import/', data);
   },
 
   getAIPracticeSubmissions: async () => {

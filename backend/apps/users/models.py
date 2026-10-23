@@ -80,6 +80,35 @@ class UserProfile(models.Model):
     two_factor_code = models.CharField(max_length=6, blank=True, null=True)
     two_factor_code_expires = models.DateTimeField(blank=True, null=True)
 
+    # Subscription & Credits (Demo / Testing Mode enabled)
+    PLAN_CHOICES = [
+        ('free', 'Starter Free'),
+        ('plus', 'SkillMirror Plus'),
+        ('pro', 'SkillMirror Pro'),
+    ]
+    PLAN_CREDIT_LIMITS = {
+        'free': 10,
+        'plus': 100,
+        'pro': 9999,
+    }
+    subscription_plan = models.CharField(max_length=20, choices=PLAN_CHOICES, default='free')
+    credits_remaining = models.IntegerField(default=10)
+    credits_limit = models.IntegerField(default=10)
+
+    def consume_credit(self, cost: int = 1) -> bool:
+        """
+        Atomically deducts `cost` credits from the user's balance.
+        Platform admins and 'pro' tier users have unlimited access.
+        Returns True if allowed, False if credits are exhausted.
+        """
+        if self.user.is_staff or self.role == 'admin' or self.subscription_plan == 'pro':
+            return True
+        if self.credits_remaining < cost:
+            return False
+        self.credits_remaining = max(0, self.credits_remaining - cost)
+        self.save(update_fields=['credits_remaining'])
+        return True
+
     def calculate_level(self):
         """
         Single Authoritative Level Formula (BUG 3B):

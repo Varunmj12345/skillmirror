@@ -123,3 +123,41 @@ export const runBotLiveDiagnostic = async (): Promise<DiagnosticResult> => {
   const res = await apiClient.post('/analytics/bot-performance/diagnostic/');
   return res as unknown as DiagnosticResult;
 };
+
+export const seedBotTelemetry = async (days: number = 14, count: number = 80, force: boolean = false): Promise<{ status: string; created?: number; total?: number; message?: string }> => {
+  const res = await apiClient.post('/analytics/bot-performance/seed/', { days, count, force });
+  return res as any;
+};
+
+export const downloadBotReport = async (format: 'csv' | 'json', days: number, type?: string, status?: string) => {
+  const params: Record<string, any> = { format, days };
+  if (type) params.type = type;
+  if (status) params.status = status;
+
+  try {
+    const res = await apiClient.get('/analytics/bot-performance/export/', {
+      params,
+      responseType: 'blob',
+    });
+    const mimeType = format === 'json' ? 'application/json' : 'text/csv;charset=utf-8;';
+    const blob = new Blob([res as any], { type: mimeType });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    const dateStr = new Date().toISOString().slice(0, 10);
+    link.setAttribute('download', `skillmirror_bot_telemetry_${dateStr}.${format}`);
+    document.body.appendChild(link);
+    link.click();
+    if (link.parentNode) {
+      link.parentNode.removeChild(link);
+    }
+    window.URL.revokeObjectURL(url);
+  } catch (err) {
+    console.warn('Direct blob export error, falling back to window.open:', err);
+    const q = new URLSearchParams({ format, days: String(days) });
+    if (type) q.set('type', type);
+    if (status) q.set('status', status);
+    const base = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    window.open(`${base}/analytics/bot-performance/export/?${q.toString()}`, '_blank');
+  }
+};

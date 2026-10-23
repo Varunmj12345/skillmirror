@@ -116,7 +116,7 @@ function ProfileDashboard() {
       fetchDashboardData();
       addToast({
         type: 'success',
-        title: 'Career Identity Updated',
+        title: 'Profile Updated',
         message: 'Your profile changes have been synchronized.'
       });
     } catch (err) {
@@ -206,16 +206,16 @@ function ProfileDashboard() {
   return (
     <Layout>
       <Head>
-        <title>Career Identity & Profile • SkillMirror OS</title>
+        <title>Profile & Portfolio • SkillMirror OS</title>
         <meta name="description" content="Digital Career Twin, Job Readiness Index, Verified Skills, and Performance Analytics." />
       </Head>
 
       <CyberPageShell
         moduleCode="SYS-00"
-        section="IDENTITY & CAREER TWIN ENGINE"
-        title="CAREER IDENTITY DASHBOARD"
-        subtitle="Manage your digital twin persona, verified technical competencies, readiness score, and live career trajectory."
-        badge="DIGITAL TWIN SYNCHRONIZED"
+        section="ACCOUNT & PROFILE"
+        title="PROFILE & PORTFOLIO"
+        subtitle="Manage your career profile, verified technical competencies, readiness score, and live career trajectory."
+        badge="PROFILE SYNCHRONIZED"
         badgeVariant="outline-amber"
         bulletVariant="amber"
         glowColor="amber"
@@ -749,7 +749,7 @@ function ProfileDashboard() {
         )}
       </div>
 
-      {/* ── Edit Career Identity Modal ── */}
+      {/* ── Edit Profile Modal ── */}
       {showEditProfile && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/80 backdrop-blur-sm">
           <motion.div
@@ -761,7 +761,7 @@ function ProfileDashboard() {
             <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
               <div className="flex items-center gap-2.5">
                 <i className="fa-solid fa-user-pen text-amber-400 text-sm" />
-                <h2 className="text-sm font-mono font-bold text-zinc-100 uppercase tracking-wider">Edit Career Identity</h2>
+                <h2 className="text-sm font-mono font-bold text-zinc-100 uppercase tracking-wider">Edit Profile</h2>
               </div>
               <button
                 onClick={() => setShowEditProfile(false)}

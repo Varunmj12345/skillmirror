@@ -157,6 +157,18 @@ class CareerChatView(APIView):
         if not msg:
             return Response({'reply': "I'm listening! Ask me anything about your career."})
 
+        from apps.users.models import UserProfile
+        profile, _ = UserProfile.objects.get_or_create(user=request.user)
+        if not profile.consume_credit(1):
+            return Response({
+                'error': 'You have used all your free AI credits. Upgrade to Plus or Pro (Demo Mode) to continue.',
+                'detail': 'You have used all your free AI credits. Upgrade to Plus or Pro (Demo Mode) to continue.',
+                'code': 'CREDITS_EXHAUSTED',
+                'upgrade_required': True,
+                'credits_remaining': profile.credits_remaining,
+                'subscription_plan': profile.subscription_plan,
+            }, status=402)
+
         provider, api_key = get_active_provider_and_key()
         if not provider or not api_key:
             return self._mock_response(msg, request.user)
@@ -174,7 +186,16 @@ class CareerChatView(APIView):
 
             completion = chat_completion(
                 messages=[
-                    {"role": "system", "content": f"You are SkillMirror AI, an elite career intelligence advisor. {user_context} Provide concise, actionable, and mathematically grounded career guidance. Guide users strategically on roadmaps, skill gaps, resume refinement, and interview prep."},
+                    {
+                        "role": "system",
+                        "content": (
+                            f"You are SkillMirror AI, an elite career intelligence advisor. {user_context} "
+                            "Provide clear, scannable, and actionable career guidance. "
+                            "Formatting rules for the compact chat panel: "
+                            "1) Use short section headings (### Heading) and concise bullet points (- **Key Term**: explanation). "
+                            "2) Avoid wide multi-column Markdown pipe tables; use bullet lists with bold labels instead so responses read cleanly on any screen width."
+                        ),
+                    },
                     {"role": "user", "content": msg}
                 ],
                 max_tokens=600,

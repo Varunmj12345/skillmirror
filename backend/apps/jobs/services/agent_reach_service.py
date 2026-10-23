@@ -1,4 +1,4 @@
-import os
+﻿import os
 import json
 import logging
 import requests
@@ -261,6 +261,26 @@ class AgentReachJobService:
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
         }
 
+        # 0. Fetch live scraped project openings from Freelancer.com
+        try:
+            from .freelancer_scraper import FreelancerScraper
+            fl_jobs = FreelancerScraper.scrape_jobs(query=role, limit=8)
+            for item in fl_jobs:
+                jobs_found.append({
+                    'title': item.get('title'),
+                    'company': f"Freelancer Client ({item.get('bids', 'Open')})",
+                    'location': item.get('location', 'Remote Worldwide'),
+                    'url': item.get('url'),
+                    'description': item.get('description', '')[:250],
+                    'remote': True,
+                    'tags': item.get('skills', []),
+                    'salary': item.get('budget_numeric'),
+                    'budget_str': item.get('budget'),
+                    'source': 'Freelancer.com (Live Scrape)'
+                })
+        except Exception as e:
+            logger.warning(f"Freelancer scraping skipped in AgentReach: {e}")
+
         # 1. Fetch from Arbeitnow Public Job API
         try:
             url = f"https://www.arbeitnow.com/api/job-board-api?search={requests.utils.quote(role)}"
@@ -390,7 +410,7 @@ class AgentReachJobService:
                 "top_companies": existing.top_companies,
                 "location_heatmap": existing.location_heatmap,
                 "top_required_skills": existing.top_required_skills,
-                "growth_rate": 14.5,
+                "growth_rate": float(existing.growth_rate) if existing.growth_rate is not None else 14.5,
                 "last_updated": existing.last_updated.isoformat()
             }
 
@@ -410,6 +430,7 @@ class AgentReachJobService:
         job_data.top_companies = market_intel.get('top_companies', ["TCS", "Infosys", "Google", "Amazon", "Swiggy", "Razorpay"])
         job_data.location_heatmap = market_intel.get('location_heatmap', {"Bengaluru": 1800, "Hyderabad": 950, "Pune": 600, "Remote": 450})
         job_data.top_required_skills = market_intel.get('top_required_skills', [])
+        job_data.growth_rate = market_intel.get('growth_rate', 14.5)
         job_data.save()
 
         # 4. Sync Market Trends (Historical 6-Month Trajectory)
@@ -491,16 +512,21 @@ class AgentReachJobService:
             )
 
     @classmethod
-    def get_role_match_and_recommendations(cls, user, role: str) -> dict:
+    def get_role_match_and_recommendations(cls, user, role: str, source_filter: str = 'all') -> dict:
         """
-        Computes accurate match percentage and returns authentic live job openings.
+        Computes accurate match percentage and aggregates live job openings from:
+        1. Official company career portals (Stripe, Figma, Vercel, Cloudflare, GitLab, etc.) via Scout Agent
+        2. Live scraped Freelancer.com gigs & challenges
+        3. Global tech boards (RemoteOK, Remotive, Arbeitnow)
         """
         market_intel = cls.get_or_refresh_market_data(role)
         top_skills = [s['name'] for s in market_intel.get('top_required_skills', [])]
         
         # User skills
         from apps.skills.models import UserSkill
-        user_skills_list = list(UserSkill.objects.filter(user=user).values_list('skill__name', flat=True))
+        user_skills_list = []
+        if user and getattr(user, 'is_authenticated', False):
+            user_skills_list = list(UserSkill.objects.filter(user=user).values_list('skill__name', flat=True))
         user_skills_lower = {s.lower() for s in user_skills_list}
 
         matched = []
@@ -517,27 +543,165 @@ class AgentReachJobService:
 
         total_req = len(top_skills) or 6
         match_score = round((len(matched) / total_req) * 100, 1) if total_req > 0 else 75.0
-        # Floor match score to realistic 45-95 range
         match_score = max(45.0, min(95.0, match_score))
 
-        # Fetch authentic recommended jobs
-        role_profile = DEFAULT_MARKET_PROFILES.get(role, DEFAULT_MARKET_PROFILES["Data Scientist"])
-        sample_jobs = role_profile.get("sample_jobs", [])
+        all_openings = []
 
-        recommended_jobs = []
-        for sj in sample_jobs[:4]:
-            recommended_jobs.append({
-                "title": sj.get("title"),
-                "company": sj.get("company"),
-                "location": sj.get("location"),
-                "url": sj.get("url") or f"https://www.linkedin.com/jobs/search/?keywords={requests.utils.quote(role)}",
-                "salary": sj.get("salary")
+        # 1. Fetch scouted openings from database (Official Portals & Tech Boards)
+        from apps.jobs.models import ScoutedJobOpening
+        from apps.jobs.services.career_scout_agent import OfficialCareerScoutAgent
+        from django.db.models import Q
+
+        # Check if table is empty; trigger initial sweep if needed
+        if ScoutedJobOpening.objects.filter(is_active=True).count() == 0:
+            try:
+                OfficialCareerScoutAgent.sweep_official_portals(limit_per_portal=4)
+                OfficialCareerScoutAgent.sweep_multi_source_boards()
+            except Exception as e:
+                logger.warning(f"Initial career scout sweep skipped: {e}")
+
+        # Filter scouted openings relevant to role
+        role_terms = [t.lower() for t in role.replace('/', ' ').replace('-', ' ').split() if len(t) > 2]
+        q_filter = Q()
+        for term in role_terms:
+            q_filter |= Q(title__icontains=term) | Q(department__icontains=term) | Q(skills__icontains=term)
+
+        # Balanced selection: Official Portals + Multi-Source Boards
+        official_qs = ScoutedJobOpening.objects.filter(is_active=True, is_official=True)
+        official_rel = list(official_qs.filter(q_filter)[:8])
+        if len(official_rel) < 6:
+            more_off = list(official_qs.exclude(id__in=[j.id for j in official_rel])[:(6 - len(official_rel))])
+            official_rel.extend(more_off)
+
+        board_qs = ScoutedJobOpening.objects.filter(is_active=True, is_official=False)
+        board_rel = list(board_qs.filter(q_filter)[:8])
+        if len(board_rel) < 6:
+            more_brd = list(board_qs.exclude(id__in=[j.id for j in board_rel])[:(6 - len(board_rel))])
+            board_rel.extend(more_brd)
+
+        relevant_scouted = official_rel + board_rel
+
+        for job in relevant_scouted:
+            job_skills = job.skills or []
+            job_matched = [s for s in job_skills if s.lower() in user_skills_lower or any(u in s.lower() for u in user_skills_lower)]
+            job_missing = [s for s in job_skills if s not in job_matched]
+
+            match_pct = round((len(job_matched) / max(1, len(job_skills))) * 100) if job_skills else 82
+            match_pct = max(55, min(98, match_pct))
+
+            all_openings.append({
+                "id": job.external_id,
+                "title": job.title,
+                "company": job.company,
+                "location": job.location,
+                "url": job.url,
+                "official_portal_url": job.official_portal_url or job.url,
+                "salary": job.salary or "Market Standard",
+                "matched_skills": job_matched,
+                "missing_skills": job_missing,
+                "skills": job_skills,
+                "match_score": match_pct,
+                "bids": "Direct ATS Opening" if job.is_official else "Verified Live Listing",
+                "source": job.source_name,
+                "source_type": job.source_type,
+                "is_official": job.is_official,
+                "is_scraped": True
             })
+
+        # 2. Fetch live scraped project openings from Freelancer.com
+        try:
+            from .freelancer_scraper import FreelancerScraper
+            scraped_fl = FreelancerScraper.scrape_jobs(query=role, limit=6)
+            for fl_job in scraped_fl:
+                job_skills = fl_job.get('skills', [])
+                job_matched = [s for s in job_skills if s.lower() in user_skills_lower or any(u in s.lower() for u in user_skills_lower)]
+                job_missing = [s for s in job_skills if s not in job_matched]
+
+                match_pct = round((len(job_matched) / max(1, len(job_skills))) * 100) if job_skills else 80
+                match_pct = max(50, min(98, match_pct))
+
+                all_openings.append({
+                    "id": f"fl_{abs(hash(fl_job.get('url', ''))) % 10000000}",
+                    "title": fl_job.get("title"),
+                    "company": f"Freelancer Client ({fl_job.get('days_left', 'Active')})",
+                    "location": fl_job.get("location", "Remote Worldwide"),
+                    "url": fl_job.get("url"),
+                    "official_portal_url": fl_job.get("url"),
+                    "salary": fl_job.get("budget"),
+                    "matched_skills": job_matched,
+                    "missing_skills": job_missing,
+                    "skills": job_skills,
+                    "match_score": match_pct,
+                    "bids": fl_job.get("bids", "0 bids"),
+                    "source": "Freelancer.com (Live Scraped)",
+                    "source_type": "FREELANCER",
+                    "is_official": False,
+                    "is_scraped": True
+                })
+        except Exception as e:
+            logger.warning(f"Freelancer scraping in recommendations error: {e}")
+
+        # Compute breakdown before filtering
+        sources_breakdown = {
+            "all": len(all_openings),
+            "official": sum(1 for j in all_openings if j.get('is_official')),
+            "freelancer": sum(1 for j in all_openings if j.get('source_type') == 'FREELANCER'),
+            "remoteok": sum(1 for j in all_openings if j.get('source_type') == 'REMOTEOK'),
+            "remotive": sum(1 for j in all_openings if j.get('source_type') == 'REMOTIVE'),
+            "arbeitnow": sum(1 for j in all_openings if j.get('source_type') == 'ARBEITNOW'),
+        }
+
+        # Apply source filter
+        s_filter = (source_filter or 'all').lower()
+        if s_filter == 'official':
+            filtered_jobs = [j for j in all_openings if j.get('is_official')]
+        elif s_filter == 'freelancer':
+            filtered_jobs = [j for j in all_openings if j.get('source_type') == 'FREELANCER']
+        elif s_filter == 'remoteok':
+            filtered_jobs = [j for j in all_openings if j.get('source_type') == 'REMOTEOK']
+        elif s_filter == 'remotive':
+            filtered_jobs = [j for j in all_openings if j.get('source_type') == 'REMOTIVE']
+        elif s_filter == 'arbeitnow':
+            filtered_jobs = [j for j in all_openings if j.get('source_type') == 'ARBEITNOW']
+        else:
+            # 'all': prioritize high match and official presence
+            filtered_jobs = all_openings
+
+        filtered_jobs.sort(key=lambda j: (j.get('is_official', False), j.get('match_score', 0)), reverse=True)
+
+        # Fallback to curated industry profiles if list is very low
+        if len(filtered_jobs) < 4 and s_filter == 'all':
+            role_profile = DEFAULT_MARKET_PROFILES.get(role, DEFAULT_MARKET_PROFILES["Data Scientist"])
+            for sj in role_profile.get("sample_jobs", [])[:(4 - len(filtered_jobs))]:
+                filtered_jobs.append({
+                    "id": f"sample_{abs(hash(sj.get('title', ''))) % 1000000}",
+                    "title": sj.get("title"),
+                    "company": sj.get("company"),
+                    "location": sj.get("location"),
+                    "url": sj.get("url") or f"https://www.linkedin.com/jobs/search/?keywords={requests.utils.quote(role)}",
+                    "official_portal_url": sj.get("url"),
+                    "salary": sj.get("salary"),
+                    "match_score": 75,
+                    "matched_skills": top_skills[:2],
+                    "missing_skills": top_skills[2:4],
+                    "skills": top_skills[:4],
+                    "bids": "Industry Portal",
+                    "source": "Industry Partner (Direct)",
+                    "source_type": "OFFICIAL",
+                    "is_official": True,
+                    "is_scraped": False
+                })
+
+        agent_status = OfficialCareerScoutAgent.get_agent_status()
 
         return {
             "match_score": match_score,
             "matched_skills": matched,
             "missing_skills": missing,
             "suggested_skills": missing[:3] if missing else ["System Design", "Cloud Optimization"],
-            "recommended_jobs": recommended_jobs
+            "recommended_jobs": filtered_jobs,
+            "sources_breakdown": sources_breakdown,
+            "agent_status": agent_status
         }
+
+

@@ -34,6 +34,17 @@ def get_active_provider_and_key() -> tuple[Optional[str], Optional[str]]:
     Auto-detects provider and API key from environment variables or secure defaults.
     Supports Groq, xAI (Grok), and OpenAI.
     """
+    # Reload .env dynamically if GROQ_API_KEY was added while server is running
+    if not os.environ.get("GROQ_API_KEY"):
+        try:
+            from pathlib import Path
+            from dotenv import load_dotenv
+            base_dir = Path(__file__).resolve().parent.parent.parent
+            load_dotenv(base_dir / '.env', override=True)
+            load_dotenv(base_dir.parent / '.env', override=True)
+        except Exception:
+            pass
+
     # 1. Check GROQ key
     groq_key = os.environ.get("GROQ_API_KEY") or DEFAULT_GROQ_API_KEY
     if groq_key:

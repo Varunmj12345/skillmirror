@@ -226,7 +226,7 @@ const SmartAlertsPage: React.FC = () => {
     return (
         <Layout>
             <Head>
-                <title>Smart Career Signals & Alerts • SkillMirror OS</title>
+                <title>Career Alerts • SkillMirror OS</title>
                 <meta name="description" content="AI-Powered career intelligence telemetry, market spikes, and skill drift alerts." />
             </Head>
 
@@ -234,7 +234,7 @@ const SmartAlertsPage: React.FC = () => {
                 moduleCode="ALT-01"
                 section="AI CAREER ENGINE"
                 badge="TELEMETRY SCANNER: ACTIVE"
-                title="SMART CAREER ALERTS"
+                title="CAREER ALERTS"
                 subtitle="Autonomous signal ingestion tracking market demand surges, competency drift, and career acceleration vectors."
                 actions={
                     <div className="flex items-center gap-2">

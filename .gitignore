@@ -39,6 +39,15 @@ tsc_errors.txt
 *.aab
 
 # Environment and Secrets
+.env
 .env*
 *.env
+backend/.env
+frontend/.env*
+
+# Markdown Documentation & Audit Files
+*.md
+
+# TypeScript Build Info
+*.tsbuildinfo
 

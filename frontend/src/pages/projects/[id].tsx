@@ -173,8 +173,8 @@ const ProjectDetailPage: React.FC = () => {
       <div className="max-w-6xl mx-auto space-y-8 px-4 sm:px-6 py-6 text-zinc-200">
         {/* Navigation Breadcrumb */}
         <div className="flex items-center gap-2 text-xs font-mono text-zinc-400 border-b border-zinc-800 pb-4">
-          <Link href="/projects/status-center" className="hover:text-amber-400 transition-colors">
-            STATUS CENTER
+          <Link href="/projects" className="hover:text-amber-400 transition-colors">
+            PROJECTS
           </Link>
           <span className="text-zinc-600">/</span>
           <span className="text-white font-bold truncate">{project.title}</span>

@@ -18,7 +18,10 @@ import {
   ThumbsUp,
   ThumbsDown,
   Sparkles,
-  Search
+  Search,
+  Download,
+  Database,
+  FileSpreadsheet
 } from 'lucide-react';
 import { 
   ResponsiveContainer, 
@@ -41,7 +44,9 @@ import {
   submitBotFeedback,
   BotOverviewResponse, 
   TelemetryLog,
-  DiagnosticResult 
+  DiagnosticResult,
+  seedBotTelemetry,
+  downloadBotReport
 } from '../services/botAnalytics';
 
 const TASK_COLORS: Record<string, string> = {
@@ -71,7 +76,11 @@ const BotAnalyticsPage: React.FC = () => {
   const [probing, setProbing] = useState<boolean>(false);
   const [diagnosticResult, setDiagnosticResult] = useState<DiagnosticResult | null>(null);
 
-  // Selected log for detailed inspect modal
+  // Seeding state
+  const [seeding, setSeeding] = useState<boolean>(false);
+  const [seedMsg, setSeedMsg] = useState<string>('');
+
+    // Selected log for detailed inspect modal
   const [selectedLog, setSelectedLog] = useState<TelemetryLog | null>(null);
 
   const loadData = useCallback(async (showSpinner: boolean = true) => {
@@ -124,6 +133,24 @@ const BotAnalyticsPage: React.FC = () => {
     }
   };
 
+  const handleSeed = async () => {
+    setSeeding(true);
+    setSeedMsg('');
+    try {
+      const res = await seedBotTelemetry(14, 80);
+      if (res.status === 'skipped') {
+        setSeedMsg(res.message || 'Already seeded.');
+      } else {
+        setSeedMsg('Seeded ' + res.created + ' records. Refreshing...');
+        setTimeout(() => loadData(true), 800);
+      }
+    } catch (e: any) {
+      setSeedMsg('Seed failed: ' + (e?.message || 'unknown error'));
+    } finally {
+      setSeeding(false);
+    }
+  };
+
   const handleFeedback = async (logId: string, rating: number) => {
     try {
       await submitBotFeedback(logId, rating);
@@ -156,7 +183,7 @@ const BotAnalyticsPage: React.FC = () => {
   return (
     <Layout>
       <Head>
-        <title>Bot Performance & Analytical Engine | SkillMirror</title>
+        <title>AI Diagnostics | SkillMirror</title>
         <meta 
           name="description" 
           content="Real-time bot performance, inference telemetry, token throughput, and model health diagnostics powered by Groq." 
@@ -166,7 +193,7 @@ const BotAnalyticsPage: React.FC = () => {
       <SentinelPageShell
         moduleCode="ENG-09"
         section="AI CAREER ENGINES"
-        title="NEURAL BOT PERFORMANCE & ANALYTICAL ENGINE"
+        title="AI DIAGNOSTICS"
         subtitle="Real-time inference telemetry, token throughput, model health verification, and query auditing powered by Groq."
         badge={engineStatus?.api_key_configured ? "GROQ 120B // ONLINE" : "KEY REQUIRED"}
         badgeVariant={engineStatus?.api_key_configured ? "amber" : "red"}
@@ -195,6 +222,40 @@ const BotAnalyticsPage: React.FC = () => {
               <Zap className={`w-3.5 h-3.5 ${probing ? 'animate-bounce' : ''}`} />
               <span>{probing ? 'PROBING GROQ...' : 'RUN LIVE PROBE'}</span>
             </button>
+
+            {/* Seed demo data (shown only when no real data) */}
+            {(!data?.summary?.total_requests || data.summary.total_requests === 0) && (
+              <button
+                onClick={handleSeed}
+                disabled={seeding}
+                className="px-3.5 py-1.5 text-xs font-mono font-bold uppercase tracking-wider bg-zinc-800 hover:bg-zinc-700 text-emerald-400 border border-emerald-500/30 flex items-center gap-2 transition-all disabled:opacity-50 cursor-pointer"
+                title="Seed realistic sample telemetry data to populate the dashboard"
+              >
+                <Database className="w-3.5 h-3.5" />
+                <span>{seeding ? 'SEEDING...' : 'SEED DATA'}</span>
+              </button>
+            )}
+
+            {/* Download report */}
+            <div className="flex items-center gap-1 bg-zinc-900 border border-zinc-800 p-0.5">
+              <button
+                onClick={() => downloadBotReport('csv', days, typeFilter || undefined, statusFilter || undefined)}
+                className="px-2.5 py-1 text-[11px] font-mono text-zinc-400 hover:text-emerald-400 flex items-center gap-1 transition-all"
+                title="Download telemetry report as CSV"
+              >
+                <Download className="w-3 h-3" />
+                <span>CSV</span>
+              </button>
+              <div className="w-px h-4 bg-zinc-800" />
+              <button
+                onClick={() => downloadBotReport('json', days, typeFilter || undefined, statusFilter || undefined)}
+                className="px-2.5 py-1 text-[11px] font-mono text-zinc-400 hover:text-blue-400 flex items-center gap-1 transition-all"
+                title="Download telemetry report as JSON"
+              >
+                <Download className="w-3 h-3" />
+                <span>JSON</span>
+              </button>
+            </div>
 
             {/* Time range selector */}
             <div className="flex bg-zinc-900 border border-zinc-800 p-0.5">
@@ -266,9 +327,9 @@ const BotAnalyticsPage: React.FC = () => {
             })}
           </div>
 
-          {/* ═════════════════════════════════════════════════════════════════ */}
+          {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
           {/* TAB 1: OVERVIEW METRICS & TELEMETRY CHARTS                        */}
-          {/* ═════════════════════════════════════════════════════════════════ */}
+          {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
           {activeTab === 'overview' && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -291,7 +352,7 @@ const BotAnalyticsPage: React.FC = () => {
                     <span className="text-emerald-400 font-bold">
                       {summary?.successful_requests ?? 0} ok
                     </span>
-                    <span>•</span>
+                    <span>â€¢</span>
                     <span className="text-rose-400">
                       {summary?.failed_requests ?? 0} failed
                     </span>
@@ -310,7 +371,7 @@ const BotAnalyticsPage: React.FC = () => {
                   </div>
                   <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
                     <span className="text-zinc-300">P95: {summary?.p95_latency_ms ?? 0} ms</span>
-                    <span>•</span>
+                    <span>â€¢</span>
                     <span className="text-zinc-500">Min: {summary?.min_latency_ms ?? 0} ms</span>
                   </div>
                   <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-400/5 blur-xl pointer-events-none" />
@@ -327,7 +388,7 @@ const BotAnalyticsPage: React.FC = () => {
                   </div>
                   <div className="flex items-center gap-2 text-xs font-mono">
                     <span className="text-emerald-400 font-bold">{summary?.success_rate ?? 100}% success</span>
-                    <span>•</span>
+                    <span>â€¢</span>
                     <span className="text-zinc-400">{summary?.satisfaction_rate ?? 98}% satisfaction</span>
                   </div>
                   <div className="absolute top-0 right-0 w-16 h-16 bg-blue-400/5 blur-xl pointer-events-none" />
@@ -344,7 +405,7 @@ const BotAnalyticsPage: React.FC = () => {
                   </div>
                   <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
                     <span>Prompt: {summary?.prompt_tokens?.toLocaleString() ?? 0}</span>
-                    <span>•</span>
+                    <span>â€¢</span>
                     <span>Comp: {summary?.completion_tokens?.toLocaleString() ?? 0}</span>
                   </div>
                   <div className="absolute top-0 right-0 w-16 h-16 bg-purple-400/5 blur-xl pointer-events-none" />
@@ -453,7 +514,7 @@ const BotAnalyticsPage: React.FC = () => {
 
                   <div className="pt-4 border-t border-zinc-800/80 mt-4 text-[10px] font-mono text-zinc-500 flex justify-between">
                     <span>Cluster: US-Central-1</span>
-                    <span className="text-emerald-400">● Nominal Status</span>
+                    <span className="text-emerald-400">â— Nominal Status</span>
                   </div>
                 </div>
               </div>
@@ -517,9 +578,9 @@ const BotAnalyticsPage: React.FC = () => {
             </motion.div>
           )}
 
-          {/* ═════════════════════════════════════════════════════════════════ */}
+          {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
           {/* TAB 2: TELEMETRY AUDIT LOGS                                       */}
-          {/* ═════════════════════════════════════════════════════════════════ */}
+          {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
           {activeTab === 'logs' && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -567,6 +628,26 @@ const BotAnalyticsPage: React.FC = () => {
                     <option value="error">Error</option>
                     <option value="fallback">Fallback</option>
                   </select>
+
+                  {/* Download filtered logs */}
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => downloadBotReport('csv', days, typeFilter || undefined, statusFilter || undefined)}
+                      className="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-emerald-500/40 text-zinc-300 hover:text-emerald-400 text-xs font-mono flex items-center gap-1.5 transition-all"
+                      title="Download filtered logs as CSV"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>EXPORT CSV</span>
+                    </button>
+                    <button
+                      onClick={() => downloadBotReport('json', days, typeFilter || undefined, statusFilter || undefined)}
+                      className="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-blue-500/40 text-zinc-300 hover:text-blue-400 text-xs font-mono flex items-center gap-1.5 transition-all"
+                      title="Download filtered logs as JSON"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>EXPORT JSON</span>
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -672,9 +753,9 @@ const BotAnalyticsPage: React.FC = () => {
             </motion.div>
           )}
 
-          {/* ═════════════════════════════════════════════════════════════════ */}
+          {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
           {/* TAB 3: LIVE PROBE CONSOLE                                         */}
-          {/* ═════════════════════════════════════════════════════════════════ */}
+          {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
           {activeTab === 'diagnostic' && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -776,9 +857,9 @@ const BotAnalyticsPage: React.FC = () => {
             </motion.div>
           )}
 
-          {/* ═════════════════════════════════════════════════════════════════ */}
+          {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
           {/* LOG DETAIL INSPECT MODAL                                          */}
-          {/* ═════════════════════════════════════════════════════════════════ */}
+          {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
           <AnimatePresence>
             {selectedLog && (
               <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
@@ -794,7 +875,7 @@ const BotAnalyticsPage: React.FC = () => {
                         TELEMETRY RECORD INSPECTOR // {selectedLog.id.slice(0, 8)}
                       </h4>
                       <p className="text-[10px] font-mono text-zinc-500">
-                        {selectedLog.timestamp} • {selectedLog.interaction_type}
+                        {selectedLog.timestamp} â€¢ {selectedLog.interaction_type}
                       </p>
                     </div>
                     <button
@@ -869,3 +950,8 @@ const BotAnalyticsPage: React.FC = () => {
 };
 
 export default BotAnalyticsPage;
+
+
+
+
+

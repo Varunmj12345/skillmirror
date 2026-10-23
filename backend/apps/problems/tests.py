@@ -173,3 +173,55 @@ class SecurityAndPerfAuditTests(TestCase):
             res = self.client.get('/api/problems/')
             self.assertEqual(res.status_code, 200)
             self.assertEqual(len(res.data), 8)
+
+    def test_gmail_signup_validation_and_demo_subscription_credits(self):
+        # 1. Non-Gmail address must be rejected
+        r_non_gmail = self.client.post('/api/users/register/', {
+            'username': 'Alex Rivera',
+            'email': 'alex@outlook.com',
+            'password': 'StrongPassword!2026',
+        }, format='json')
+        self.assertEqual(r_non_gmail.status_code, 400)
+
+        # 2. Dummy Gmail handle must be rejected
+        r_dummy_gmail = self.client.post('/api/users/register/', {
+            'username': 'Test User',
+            'email': 'testuser@gmail.com',
+            'password': 'StrongPassword!2026',
+        }, format='json')
+        self.assertEqual(r_dummy_gmail.status_code, 400)
+
+        # 3. Valid personal Gmail succeeds and starts with 10 free credits
+        r_valid_gmail = self.client.post('/api/users/register/', {
+            'username': 'Alex Rivera',
+            'email': 'alex.rivera99@gmail.com',
+            'password': 'StrongPassword!2026',
+        }, format='json')
+        self.assertEqual(r_valid_gmail.status_code, 201)
+
+        new_user = User.objects.get(email='alex.rivera99@gmail.com')
+        self.assertEqual(new_user.profile.subscription_plan, 'free')
+        self.assertEqual(new_user.profile.credits_remaining, 10)
+        self.assertEqual(new_user.profile.credits_limit, 10)
+
+        # 4. Exhaust credits and verify 402 Payment Required is returned
+        new_user.profile.credits_remaining = 0
+        new_user.profile.save(update_fields=['credits_remaining'])
+
+        self.client.force_authenticate(user=new_user)
+        r_exhausted = self.client.post('/api/ai/chat/', {'message': 'Help me with my career'}, format='json')
+        self.assertEqual(r_exhausted.status_code, 402)
+        self.assertTrue(r_exhausted.data.get('upgrade_required'))
+
+        # 5. Demo upgrade to Plus (100 credits) restores access immediately
+        r_upgrade_plus = self.client.post('/api/users/subscription/', {'plan': 'plus'}, format='json')
+        self.assertEqual(r_upgrade_plus.status_code, 200)
+        self.assertEqual(r_upgrade_plus.data['subscription_plan'], 'plus')
+        self.assertEqual(r_upgrade_plus.data['credits_remaining'], 100)
+
+        # 6. Demo upgrade to Pro grants unlimited credits
+        r_upgrade_pro = self.client.post('/api/users/subscription/', {'plan': 'pro'}, format='json')
+        self.assertEqual(r_upgrade_pro.status_code, 200)
+        self.assertEqual(r_upgrade_pro.data['subscription_plan'], 'pro')
+        self.assertTrue(r_upgrade_pro.data['is_unlimited'])
+

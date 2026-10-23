@@ -23,10 +23,10 @@ export const WORKSPACE_CONFIG: Record<
   }
 > = {
   diagnostic: {
-    title: 'Diagnostic & Market Radar',
+    title: 'Skill Diagnostics',
     code: 'HUB-01',
     tabs: [
-      { id: 'skill-gap', label: 'Skill Gap Radar', href: '/skill-gap', icon: 'fa-brain', code: 'AUDIT', badge: 'RADAR' },
+      { id: 'skill-gap', label: 'Skill Gap Analyzer', href: '/skill-gap', icon: 'fa-brain', code: 'AUDIT', badge: 'RADAR' },
       { id: 'resume', label: 'Resume Optimizer', href: '/resume', icon: 'fa-file-shield', code: 'ATS', badge: 'SCAN' },
       { id: 'job-intelligence', label: 'Job Market Intel', href: '/job-intelligence', icon: 'fa-magnifying-glass-chart', code: 'MARKET', badge: 'LIVE' },
     ],
@@ -36,17 +36,16 @@ export const WORKSPACE_CONFIG: Record<
     code: 'HUB-02',
     tabs: [
       { id: 'roadmap', label: 'Milestones & Path', href: '/roadmap', icon: 'fa-compass', code: 'PATH', badge: 'SEQUENCE' },
-      { id: 'smart-alerts', label: 'Action Alerts & Goals', href: '/smart-alerts', icon: 'fa-bolt-lightning', code: 'SIGNALS', badge: 'NUDGES' },
+      { id: 'smart-alerts', label: 'Career Alerts', href: '/smart-alerts', icon: 'fa-bolt-lightning', code: 'ALERTS' },
     ],
   },
   practice: {
     title: 'Practice & Assessment Studio',
     code: 'HUB-03',
     tabs: [
-      { id: 'problems', label: 'Coding Arena', href: '/problems', icon: 'fa-code', code: 'ARENA' },
-      { id: 'matches', label: 'Gap Challenge Lab', href: '/problems/matches', icon: 'fa-bullseye', code: 'GAPS', badge: 'AI-TAILORED' },
+      { id: 'problems', label: 'Practice Problems', href: '/problems', icon: 'fa-code', code: 'PRACTICE' },
       { id: 'mock-interview', label: 'AI Mock Interview', href: '/mock-interview', icon: 'fa-headset', code: 'INTERVIEW', badge: 'VOICE' },
-      { id: 'status-center', label: 'Scorecards & History', href: '/projects/status-center', icon: 'fa-chart-line', code: 'SCORE' },
+      { id: 'history', label: 'Assessment History', href: '/problems/history', icon: 'fa-chart-line', code: 'SCORE' },
     ],
   },
 };

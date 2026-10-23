@@ -239,7 +239,7 @@ const SettingsPage: React.FC = () => {
                     </div>
                     <div>
                       <h2 className="text-sm font-mono font-bold text-zinc-100 uppercase tracking-wider">
-                        Career Identity & Target Role
+                        Profile & Target Role
                       </h2>
                       <p className="text-[11px] font-mono text-zinc-400">
                         Configures target benchmark models and job match parameters.

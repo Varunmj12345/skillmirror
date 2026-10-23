@@ -295,7 +295,7 @@ const CareerDigitalTwin: React.FC<CareerDigitalTwinProps> = ({ metrics, onResimu
       <motion.div variants={item} className="p-8 rounded-[2rem] bg-gradient-to-br from-indigo-500/10 via-cyan-500/5 to-transparent border border-white/5">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
            <div className="space-y-2">
-              <h5 className="text-xs font-black uppercase tracking-widest text-cyan-400">Actionable Twin Intelligence</h5>
+              <h5 className="text-xs font-black uppercase tracking-widest text-cyan-400">Actionable Career Insights</h5>
               <div className="flex flex-wrap gap-2 pt-2">
                 {(metrics.trending_skills || '').split(',').filter(Boolean).map((s, i) => (
                    <span key={i} className="px-3 py-1.5 bg-white/5 rounded-xl border border-white/5 text-[10px] font-bold text-slate-400 hover:text-white transition-all cursor-default uppercase">

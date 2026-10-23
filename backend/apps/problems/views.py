@@ -27,8 +27,9 @@ class ProblemListView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        qs = Problem.objects.all()
-        
+        base_qs = Problem.objects.select_related('organization', 'validation').prefetch_related('evidences', 'requirements')
+        qs = base_qs
+
         category = request.query_params.get('category')
         industry = request.query_params.get('industry')
         complexity = request.query_params.get('complexity')
@@ -44,6 +45,14 @@ class ProblemListView(APIView):
         if complexity and complexity != 'all':
             qs = qs.filter(complexity__iexact=complexity)
         if source_type and source_type != 'all':
+            if source_type == 'FREELANCER_SCRAPED' and not qs.filter(source_type='FREELANCER_SCRAPED').exists():
+                from apps.problems.services import FreelancerChallengeService
+                FreelancerChallengeService.sync_freelancer_challenges(limit=10)
+                qs = base_qs
+            elif source_type == 'COURSERA_LAB' and not qs.filter(source_type='COURSERA_LAB').exists():
+                from apps.problems.services import SkillLabService
+                SkillLabService.seed_skill_labs()
+                qs = base_qs
             qs = qs.filter(source_type=source_type)
         if is_real_world is not None and is_real_world != 'all':
             bool_val = is_real_world.lower() == 'true'
@@ -92,7 +101,7 @@ class ProblemSubmitView(APIView):
             industry=data.get('industry', 'Technology'),
             location=data.get('location', ''),
             current_method=data.get('current_method', ''),
-            people_affected=int(data.get('people_affected', 10)),
+            people_affected=_safe_int(data.get('people_affected', 10), default=10, min_val=1, max_val=10000000),
             frequency=data.get('frequency', 'daily'),
             estimated_impact=data.get('estimated_impact', 'medium'),
             required_solution=data.get('required_solution', ''),
@@ -136,14 +145,31 @@ class ProblemDetailView(APIView):
         return Response(data)
 
 
+def _safe_int(value, default: int, min_val: int = 1, max_val: int = 1000) -> int:
+    try:
+        return max(min_val, min(int(value), max_val))
+    except (ValueError, TypeError):
+        return default
+
+
+def _can_manage_problem(user, problem) -> bool:
+    if not user or not user.is_authenticated:
+        return False
+    role = getattr(getattr(user, 'profile', None), 'role', 'student')
+    return bool(user.is_staff or role == 'admin' or problem.submitted_by_id == user.id)
+
+
 class ConfirmRequirementView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk, req_id):
         try:
-            req = ProjectRequirement.objects.get(problem_id=pk, requirement_id=req_id)
+            req = ProjectRequirement.objects.select_related('problem').get(problem_id=pk, requirement_id=req_id)
         except ProjectRequirement.DoesNotExist:
             return Response({'error': 'Requirement not found.'}, status=404)
+
+        if not _can_manage_problem(request.user, req.problem):
+            return Response({'detail': 'Forbidden: Only the problem owner or admin can modify requirements.'}, status=403)
 
         action = request.data.get('action') # 'confirm' or 'reject'
         if action == 'confirm':
@@ -156,7 +182,7 @@ class ConfirmRequirementView(APIView):
 
 
 class CheckLiveUrlView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         url = request.data.get('url', '')
@@ -369,6 +395,9 @@ class ProblemAnalyzeView(APIView):
         except Problem.DoesNotExist:
             return Response({'error': 'Problem not found.'}, status=404)
 
+        if not _can_manage_problem(request.user, problem):
+            return Response({'detail': 'Forbidden: Only the problem owner or admin can analyze problems.'}, status=403)
+
         nlp_res = ProblemNLPService().process_raw_problem(problem)
         return Response({'message': 'Analysis complete', 'nlp': nlp_res, 'problem': ProblemSerializer(problem).data})
 
@@ -382,6 +411,9 @@ class ProblemValidateView(APIView):
         except Problem.DoesNotExist:
             return Response({'error': 'Problem not found.'}, status=404)
 
+        if not _can_manage_problem(request.user, problem):
+            return Response({'detail': 'Forbidden: Only the problem owner or admin can validate problems.'}, status=403)
+
         val = ProblemValidationService().validate_problem(problem)
         return Response(ProblemValidationSerializer(val).data)
 
@@ -394,6 +426,9 @@ class ProblemDuplicatesView(APIView):
             problem = Problem.objects.get(pk=pk)
         except Problem.DoesNotExist:
             return Response({'error': 'Problem not found.'}, status=404)
+
+        if not _can_manage_problem(request.user, problem):
+            return Response({'detail': 'Forbidden: Only the problem owner or admin can check duplicates.'}, status=403)
 
         duplicates = DuplicateDetectionService().check_duplicates(problem)
         return Response({'source_problem_id': pk, 'duplicates': duplicates})
@@ -433,7 +468,17 @@ class ProjectListView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        projects = Project.objects.filter(user=request.user)
+        projects = (
+            Project.objects.filter(user=request.user)
+            .select_related('problem', 'user')
+            .prefetch_related(
+                'tasks',
+                'submissions__evaluation',
+                'submissions__student',
+                'problem__requirements',
+                'owner_reviews__owner',
+            )
+        )
         return Response(ProjectSerializer(projects, many=True).data)
 
 
@@ -673,6 +718,15 @@ class AIGenerateGapChallengeView(APIView):
     def post(self, request):
         user = request.user
         profile, _ = UserProfile.objects.get_or_create(user=user)
+        if not profile.consume_credit(1):
+            return Response({
+                'error': 'You have used all your free credits. Upgrade to Plus or Pro (Demo Mode) to generate more AI challenges.',
+                'detail': 'You have used all your free credits. Upgrade to Plus or Pro (Demo Mode) to generate more AI challenges.',
+                'code': 'CREDITS_EXHAUSTED',
+                'upgrade_required': True,
+                'credits_remaining': profile.credits_remaining,
+                'subscription_plan': profile.subscription_plan,
+            }, status=402)
         target_role = profile.dream_job or "Senior Full-Stack Engineer"
         
         user_skills = list(user.skills.values_list('name', flat=True))
@@ -697,6 +751,7 @@ class AIGenerateGapChallengeView(APIView):
             description=f"{challenge_spec.get('scenario', '')}\n\n**Problem Statement:**\n{challenge_spec.get('problem_statement', '')}",
             original_description=challenge_spec.get('problem_statement', ''),
             source_type='AI_GENERATED_PRACTICE',
+            current_method=challenge_spec.get('starter_code', ''),
             is_real_world=True,
             problem_owner_name="AI Challenge Engine",
             organization=org,
@@ -734,6 +789,34 @@ class AIGenerateGapChallengeView(APIView):
         return Response(serialized, status=201)
 
 
+class AIGenerateSkillLabView(APIView):
+    """
+    POST /api/problems/practice/generate-skill-lab/
+    Scrapes live course inspiration (Coursera / Dev.to) for a topic and synthesizes
+    a bite-sized (~15-20 min) Coursera-style Guided Skill Lab assignment.
+    """
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        from apps.problems.services import SkillLabService
+        SkillLabService.seed_skill_labs()
+        topic = request.data.get('topic', '')
+        category = request.data.get('category', 'Backend Architecture')
+        if category in ('all', 'skill_labs', 'gaps', 'freelancer', ''):
+            category = 'Backend Architecture'
+        difficulty = request.data.get('difficulty', 'beginner')
+        if difficulty == 'all':
+            difficulty = 'beginner'
+
+        problem = SkillLabService.generate_live_skill_lab(
+            topic=topic,
+            category=category,
+            difficulty=difficulty,
+            user=request.user,
+        )
+        return Response(ProblemSerializer(problem).data, status=201)
+
+
 class AIGetProgressiveHintView(APIView):
     """
     POST /api/problems/practice/<pk>/hint/
@@ -747,7 +830,7 @@ class AIGetProgressiveHintView(APIView):
         except Problem.DoesNotExist:
             return Response({'error': 'Challenge not found.'}, status=404)
 
-        hint_level = int(request.data.get('level', 1))
+        hint_level = _safe_int(request.data.get('level', 1), default=1, min_val=1, max_val=3)
         challenge_data = {
             'title': problem.title,
             'description': problem.description,
@@ -785,4 +868,119 @@ class AIPracticeSubmissionsListView(APIView):
                 'dimension_scores': eval_record.quality_breakdown if eval_record else {}
             })
         return Response(results)
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# FREELANCER.COM SCRAPED CHALLENGES & EXTERNAL PROJECTS
+# ═══════════════════════════════════════════════════════════════════════
+
+class FreelancerSyncChallengesView(APIView):
+    """
+    POST /api/problems/sync-freelancer/
+    Scrapes live jobs from https://www.freelancer.com/jobs/?utm_source=chatgpt.com
+    and transforms them into structured Problem challenge records.
+    """
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        limit = _safe_int(request.data.get('limit', 15), default=15, min_val=1, max_val=50)
+        from apps.problems.services import FreelancerChallengeService
+        problems = FreelancerChallengeService.sync_freelancer_challenges(limit=limit)
+        return Response({
+            'message': f'Successfully synchronized {len(problems)} challenges from Freelancer.com',
+            'count': len(problems),
+            'problems': ProblemSerializer(problems, many=True).data
+        })
+
+    def get(self, request):
+        problems = Problem.objects.filter(source_type='FREELANCER_SCRAPED')
+        if not problems.exists():
+            from apps.problems.services import FreelancerChallengeService
+            problems = FreelancerChallengeService.sync_freelancer_challenges(limit=12)
+        else:
+            problems = problems.all()
+        return Response({
+            'source': 'https://www.freelancer.com/jobs/?utm_source=chatgpt.com',
+            'count': len(problems),
+            'problems': ProblemSerializer(problems, many=True).data
+        })
+
+
+class ExternalProjectsListView(APIView):
+    """
+    GET /api/problems/external-projects/
+    Live web scrapes external freelance projects from https://www.freelancer.com/jobs/?utm_source=chatgpt.com
+    """
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        query = request.query_params.get('search', '')
+        limit = _safe_int(request.query_params.get('limit', 25), default=25, min_val=1, max_val=50)
+        from apps.jobs.services.freelancer_scraper import FreelancerScraper
+        projects = FreelancerScraper.scrape_jobs(query=query, limit=limit)
+        return Response({
+            'source': 'https://www.freelancer.com/jobs/?utm_source=chatgpt.com',
+            'count': len(projects),
+            'projects': projects
+        })
+
+
+class ExternalProjectImportView(APIView):
+    """
+    POST /api/problems/external-projects/import/
+    Imports an external Freelancer project into the user's active Project workspaces.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        data = request.data
+        title = data.get('title')
+        description = data.get('description', '')
+        url = data.get('url', '')
+        budget = data.get('budget_numeric')
+        skills = data.get('skills', [])
+        category = data.get('category', 'Fullstack MVP')
+        complexity = data.get('complexity', 'intermediate')
+
+        if not title:
+            return Response({'error': 'Project title is required'}, status=400)
+
+        org, _ = ProblemOrganization.objects.get_or_create(
+            name="Freelancer.com Client Network",
+            defaults={'org_type': 'company', 'website': 'https://www.freelancer.com', 'is_verified': True}
+        )
+
+        problem, _ = Problem.objects.get_or_create(
+            title=title,
+            defaults={
+                'description': description,
+                'original_description': f"Source: Freelancer.com\nRequisition URL: {url}\nBudget: {data.get('budget', '')}\n\n{description}",
+                'source_type': 'FREELANCER_SCRAPED',
+                'is_real_world': True,
+                'problem_owner_name': 'Freelancer Client',
+                'organization': org,
+                'organization_name': 'Freelancer.com',
+                'industry': category,
+                'category': category,
+                'budget': budget,
+                'required_skills_list': skills,
+                'complexity': complexity,
+                'status': 'validated',
+                'attachments': [url] if url else []
+            }
+        )
+
+        existing_project = Project.objects.filter(problem=problem, user=request.user).first()
+        if existing_project:
+            return Response({
+                'message': 'Project workspace already exists for this challenge.',
+                'project_id': existing_project.id
+            })
+
+        project = ProjectIntelligenceEngine().create_project_from_problem(request.user, problem)
+        return Response({
+            'message': 'External freelance project imported into your workspace.',
+            'project_id': project.id,
+            'title': project.title
+        }, status=201)
 

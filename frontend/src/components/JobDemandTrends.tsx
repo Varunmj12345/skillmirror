@@ -46,6 +46,13 @@ const CyberTooltip = ({ active, payload, label, isSalary = false }: any) => {
     return null;
 };
 
+/** Compute % change from first to last point. Returns e.g. "+15.2%" or "-3.1%" */
+function growthLabel(values: number[]): string {
+    if (values.length < 2 || values[0] === 0) return 'N/A';
+    const pct = ((values[values.length - 1] - values[0]) / values[0]) * 100;
+    return (pct >= 0 ? '+' : '') + pct.toFixed(1) + '%';
+}
+
 const JobDemandTrends: React.FC<JobDemandTrendsProps> = ({ trends }) => {
     if (!trends || trends.length === 0) return <div className="p-4 text-center font-mono text-xs text-zinc-500">Synchronizing market trend telemetry...</div>;
 
@@ -96,6 +103,9 @@ const JobDemandTrends: React.FC<JobDemandTrendsProps> = ({ trends }) => {
         });
     }, [trends]);
 
+    const demandGrowth = growthLabel(processedTrends.map(t => t.demand_score));
+    const salaryGrowth = growthLabel(processedTrends.map(t => t.avg_salary));
+
     const gridColor = '#27272a';
     const axisLineColor = '#27272a';
     const tickColor = '#71717a';
@@ -115,7 +125,7 @@ const JobDemandTrends: React.FC<JobDemandTrendsProps> = ({ trends }) => {
                         <h3 className="text-sm font-bold text-zinc-100">Job Demand Trajectory</h3>
                     </div>
                     <span className="px-2.5 py-0.5 rounded-md bg-zinc-950 border border-amber-500/30 text-amber-400 text-[10px] font-bold">
-                        +15% Growth
+                        {demandGrowth} Growth
                     </span>
                 </div>
                 <div className="h-64">
@@ -164,7 +174,7 @@ const JobDemandTrends: React.FC<JobDemandTrendsProps> = ({ trends }) => {
                         <h3 className="text-sm font-bold text-zinc-100">Salary Band Dynamics</h3>
                     </div>
                     <span className="px-2.5 py-0.5 rounded-md bg-zinc-950 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold">
-                        +8% YoY
+                        {salaryGrowth} YoY
                     </span>
                 </div>
                 <div className="h-64">

@@ -7,6 +7,8 @@ import JobDemandTrends from '../components/JobDemandTrends';
 import SmartJobMatch from '../components/SmartJobMatch';
 import TopSkillsChart from '../components/TopSkillsChart';
 import LocationDemand from '../components/LocationDemand';
+import RecommendedOpeningsBlock from '../components/RecommendedOpeningsBlock';
+
 import { jobService } from '../services/jobService';
 import { analyticsService } from '../services/analyticsService';
 import { aiService } from '../services/aiService';
@@ -75,13 +77,13 @@ const JobIntelligencePage: React.FC = () => {
 
     return (
         <Layout>
-            <Head><title>Job Intelligence Engine • SkillMirror OS</title></Head>
+            <Head><title>Job Intelligence Engine â€¢ SkillMirror OS</title></Head>
             <CyberPageShell
                 moduleCode="JOB-01"
                 section="AI CAREER ENGINE"
-                badge="AGENT-REACH: ACTIVE"
+                badge="LIVE MARKET FEED: CONNECTED"
                 title="LIVE JOB INTELLIGENCE"
-                subtitle="Real-time market insights, hiring velocity, AI demand forecasts & smart role matching powered by Agent-Reach."
+                subtitle="Real-time market insights, hiring velocity, AI demand forecasts & smart role matching."
                 actions={
                     <div className="flex flex-wrap items-center gap-2">
                         <select
@@ -122,7 +124,7 @@ const JobIntelligencePage: React.FC = () => {
                             icon="fa-database" 
                             color="emerald" 
                         />
-                        <PageStatChip label="Crawler Feed" value="Agent-Reach Active" icon="fa-circle" color="amber" />
+                        <PageStatChip label="Live Market Feed" value="Connected" icon="fa-circle" color="amber" />
                     </div>
                 }
             />
@@ -150,6 +152,15 @@ const JobIntelligencePage: React.FC = () => {
                     </div>
                 ) : (
                     <ScrollReveal className="space-y-6">
+                        {/* RECOMMENDED CURRENT OPENINGS (WEB-SCRAPED) */}
+                        <RecommendedOpeningsBlock
+                            jobs={(matchData as any)?.recommended_jobs || []}
+                            sourcesBreakdown={(matchData as any)?.sources_breakdown}
+                            agentStatus={(matchData as any)?.agent_status}
+                            role={selectedRole}
+                            loading={loading || isRefreshing}
+                            onRefresh={() => fetchData(selectedRole, true)}
+                        />
                         <MarketOverview data={marketData} />
 
                         {/* Charts Section */}
@@ -158,7 +169,7 @@ const JobIntelligencePage: React.FC = () => {
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                             {/* Skills & Location */}
                             <div className="lg:col-span-2 space-y-6">
-                                <TopSkillsChart />
+                                <TopSkillsChart skills={marketData?.top_required_skills} />
                                 <LocationDemand />
                             </div>
 
@@ -225,3 +236,4 @@ const JobIntelligencePage: React.FC = () => {
 };
 
 export default withAuth(JobIntelligencePage);
+

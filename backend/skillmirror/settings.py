@@ -15,19 +15,27 @@ from pathlib import Path
 from dotenv import load_dotenv
 import dj_database_url
 
-load_dotenv()
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load environment variables: check backend/.env first, then root .env
+load_dotenv(BASE_DIR / '.env')
+load_dotenv(BASE_DIR.parent / '.env')
+load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('JWT_SECRET', os.getenv('DJANGO_SECRET_KEY', 'your-default-secret-key'))
+from django.core.exceptions import ImproperlyConfigured
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
+
+# SECURITY WARNING: keep the secret key used in production secret!
+_env_secret = os.getenv('JWT_SECRET') or os.getenv('DJANGO_SECRET_KEY')
+if not DEBUG and (not _env_secret or _env_secret == 'your-default-secret-key'):
+    raise ImproperlyConfigured('A strong DJANGO_SECRET_KEY or JWT_SECRET must be set when DJANGO_DEBUG=False.')
+SECRET_KEY = _env_secret if (_env_secret and _env_secret != 'your-default-secret-key') else 'dev-only-secret-key-not-for-production-use-9f8e7d6c5b4a'
 
 # Groq Intelligence Engine Configuration
 GROQ_API_KEY = os.getenv('GROQ_API_KEY', '')
@@ -35,15 +43,16 @@ DEFAULT_GROQ_MODEL = os.getenv('DEFAULT_GROQ_MODEL', 'openai/gpt-oss-120b')
 FAST_GROQ_MODEL = os.getenv('FAST_GROQ_MODEL', 'openai/gpt-oss-20b')
 
 ALLOWED_HOSTS = [
-    "127.0.0.1", 
-    "localhost", 
-    "0.0.0.0", 
+    "127.0.0.1",
+    "localhost",
+    "testserver",
     "skillmirror.onrender.com",
-    "skillmirror-api.onrender.com", 
-    "skillmirror-api-judc.onrender.com", 
-    "skillmirror-puce.vercel.app", 
-    "*"
+    "skillmirror-api.onrender.com",
+    "skillmirror-api-judc.onrender.com",
+    "skillmirror-puce.vercel.app",
 ]
+if DEBUG:
+    ALLOWED_HOSTS.extend(["0.0.0.0", "*"])
 
 # Application definition
 INSTALLED_APPS = [
@@ -74,7 +83,6 @@ INSTALLED_APPS += [
 AUTH_USER_MODEL = 'users.User'
 
 MIDDLEWARE = [
-    'skillmirror.middleware.EnterpriseSecurityMiddleware', # Audit & Latency Tracking
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -82,12 +90,13 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'skillmirror.middleware.EnterpriseSecurityMiddleware', # Audit & Latency Tracking (runs after auth)
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 # ─── Production Audit Logging Configuration ──────────────────────────────────
-_log_handlers = ['audit_file'] if DEBUG else []
+_audit_handlers = ['audit_file'] if DEBUG else ['console']
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -95,8 +104,16 @@ LOGGING = {
         'json': {
             'format': '%(message)s',
         },
+        'simple': {
+            'format': '[%(levelname)s] %(name)s: %(message)s',
+        },
     },
     'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
         'audit_file': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
@@ -108,20 +125,39 @@ LOGGING = {
     },
     'loggers': {
         'audit': {
-            'handlers': _log_handlers,  # Only write to file locally; Render captures stdout
+            'handlers': _audit_handlers,
             'level': 'INFO',
-            'propagate': True,
+            'propagate': False,
+        },
+        'django': {
+            'handlers': ['console'],
+            'level': 'WARNING',
+            'propagate': False,
         },
     },
 }
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = DEBUG
 CORS_ALLOWED_ORIGINS = [
     "https://skillmirror-7uzro8erv-varunmj12345s-projects.vercel.app",
     "https://skillmirror-puce.vercel.app",
     "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
 CORS_ALLOW_CREDENTIALS = True
+
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024  # 5 MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024  # 5 MB
+
+if not DEBUG:
+    SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', 'False') == 'True'
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
 # CSRF Trusted Origins (Required for Django 4.0+)
 CSRF_TRUSTED_ORIGINS = [
@@ -231,6 +267,17 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+    'DEFAULT_THROTTLE_CLASSES': (
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+        'rest_framework.throttling.ScopedRateThrottle',
+    ),
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '120/minute',
+        'user': '300/minute',
+        'auth': '10/minute',
+        'two_factor': '5/minute',
+    },
 }
 
 from datetime import timedelta
@@ -238,7 +285,9 @@ from datetime import timedelta
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
     'AUTH_HEADER_TYPES': ('Bearer',),
+    'SIGNING_KEY': SECRET_KEY,
 }
 
 # =============================================================================

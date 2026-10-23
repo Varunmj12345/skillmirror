@@ -59,9 +59,33 @@ class RegisterSerializer(serializers.Serializer):
     country = serializers.CharField(required=False, allow_blank=True)
 
     def validate_email(self, value):
-        if User.objects.filter(email=value).exists():
-            raise serializers.ValidationError('A user with this email already exists.')
-        return value
+        import re
+        email = (value or '').strip().lower()
+        if not email or '@' not in email:
+            raise serializers.ValidationError('Please enter a valid Gmail address (e.g. yourname@gmail.com).')
+
+        local_part, domain = email.rsplit('@', 1)
+        if domain not in ('gmail.com', 'googlemail.com'):
+            raise serializers.ValidationError('Registration requires a valid Google Gmail account (@gmail.com).')
+
+        # Enforce Google Gmail username rules: 6-30 chars, alphanumeric + single dots, no leading/trailing dots
+        if len(local_part) < 6 or len(local_part) > 30:
+            raise serializers.ValidationError('Gmail username must be between 6 and 30 characters before @gmail.com.')
+        if not re.match(r'^[a-z0-9]+(\.[a-z0-9]+)*$', local_part):
+            raise serializers.ValidationError('Enter a real Gmail ID (only letters, numbers, and non-consecutive periods allowed).')
+
+        normalized_handle = local_part.replace('.', '')
+        blocked_handles = {
+            'testuser', 'testing', 'example', 'sampleuser', 'adminuser',
+            'user123', 'user1234', 'demoaccount', 'fakeemail', 'qwerty',
+            '123456', '1234567', '12345678', '123456789', 'abcdef', 'abcdefgh',
+        }
+        if normalized_handle in blocked_handles or len(set(normalized_handle)) <= 2:
+            raise serializers.ValidationError('Please use your real personal Gmail ID to sign up.')
+
+        if User.objects.filter(email__iexact=email).exists():
+            raise serializers.ValidationError('A user with this Gmail address already exists.')
+        return email
 
     def create(self, validated_data):
         user = User(username=validated_data['username'], email=validated_data['email'])
@@ -78,10 +102,16 @@ class RegisterSerializer(serializers.Serializer):
                 'experience_level': validated_data.get('experience_level', ''),
                 'dream_job': validated_data.get('dream_job', ''),
                 'country': validated_data.get('country', ''),
+                'subscription_plan': 'free',
+                'credits_remaining': 10,
+                'credits_limit': 10,
             }
         )
         if not created:
             profile.role = role
+            profile.subscription_plan = 'free'
+            profile.credits_remaining = 10
+            profile.credits_limit = 10
             profile.save()
         return user
 

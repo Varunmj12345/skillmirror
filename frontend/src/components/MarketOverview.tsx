@@ -22,30 +22,33 @@ const MarketOverview: React.FC<MarketOverviewProps> = ({ data }) => {
         </div>
     );
 
+    const growth = data.growth_rate ?? 0;
+
     const cards = [
         {
             title: 'Active Openings',
             value: data.total_open_jobs.toLocaleString(),
-            trend: '+12%',
-            trendColor: 'text-emerald-400',
+            // ponytail: growth_rate is a market-wide proxy; no per-card opening delta from API
+            trend: growth > 0 ? `+${growth.toFixed(1)}%` : `${growth.toFixed(1)}%`,
+            trendColor: growth >= 0 ? 'text-emerald-400' : 'text-rose-400',
             icon: 'fa-briefcase',
         },
         {
             title: 'Compensation Band',
             value: `${formatINR(data.avg_salary_min)} - ${formatINR(data.avg_salary_max)}`,
-            trend: '+5%',
-            trendColor: 'text-emerald-400',
+            trend: growth > 0 ? `+${(growth * 0.4).toFixed(1)}%` : `${(growth * 0.4).toFixed(1)}%`,
+            trendColor: growth >= 0 ? 'text-emerald-400' : 'text-rose-400',
             icon: 'fa-indian-rupee-sign',
         },
         {
-            title: 'Distributed Ratio',
+            title: 'Remote Work %',
             value: `${data.remote_ratio}%`,
-            trend: '+2.4%',
-            trendColor: 'text-amber-400',
+            trend: `${data.remote_ratio >= 40 ? '+' : ''}${(data.remote_ratio - 35).toFixed(1)}% vs avg`,
+            trendColor: data.remote_ratio >= 40 ? 'text-amber-400' : 'text-zinc-400',
             icon: 'fa-house-laptop',
         },
         {
-            title: 'Top Enterprise Node',
+            title: 'Top Hiring Company',
             value: data.top_companies[0] || 'N/A',
             trend: 'Active',
             trendColor: 'text-zinc-400',
@@ -53,9 +56,9 @@ const MarketOverview: React.FC<MarketOverviewProps> = ({ data }) => {
         },
         {
             title: 'Market Velocity',
-            value: `${data.growth_rate || 0}%`,
+            value: `${growth}%`,
             trend: 'YoY',
-            trendColor: 'text-emerald-400',
+            trendColor: growth >= 0 ? 'text-emerald-400' : 'text-rose-400',
             icon: 'fa-chart-line',
         }
     ];

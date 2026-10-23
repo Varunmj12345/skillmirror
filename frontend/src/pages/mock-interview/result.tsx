@@ -327,7 +327,7 @@ const MockInterviewResult: React.FC = () => {
                                 onClick={() => router.push('/dashboard')}
                                 className="w-full py-2.5 px-4 bg-zinc-950 border border-zinc-800 hover:border-zinc-700 text-zinc-300 rounded-xl font-bold text-xs uppercase tracking-wider transition-all cursor-pointer text-center"
                             >
-                                Return to Command Center
+                                Return to Dashboard
                             </button>
                         </div>
                     </div>

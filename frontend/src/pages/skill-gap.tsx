@@ -215,11 +215,11 @@ const SkillGapPage: React.FC = () => {
 
     return (
         <Layout>
-            <Head><title>Skill Gap Radar • SkillMirror OS</title></Head>
+            <Head><title>Skill Gap Analyzer • SkillMirror OS</title></Head>
             <SmartNotifications />
             <CyberPageShell
                 moduleCode="GAP-01"
-                title="SKILL GAP RADAR"
+                title="SKILL GAP ANALYZER"
                 subtitle="Deep neural graph evaluation benchmarking competencies against live market role requirements."
                 badge="NEURAL AUDIT"
                 badgeVariant="amber"

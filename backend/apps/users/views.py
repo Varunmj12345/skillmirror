@@ -14,11 +14,14 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 import random
+import secrets
 from datetime import timedelta
 from django.utils import timezone
+from django.core.cache import cache
 
 class LoginView(APIView):
     permission_classes = [AllowAny]
+    throttle_scope = 'auth'
     def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
@@ -29,10 +32,11 @@ class LoginView(APIView):
         # Check 2FA
         profile, _ = UserProfile.objects.get_or_create(user=user)
         if profile.two_factor_enabled:
-            code = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+            code = ''.join(secrets.choice('0123456789') for _ in range(6))
             profile.two_factor_code = code
             profile.two_factor_code_expires = timezone.now() + timedelta(minutes=10)
             profile.save()
+            cache.delete(f"2fa_attempts:{user.id}")
             
             # Send Email
             send_mail(
@@ -49,7 +53,14 @@ class LoginView(APIView):
         return Response({
             'access': str(refresh.access_token),
             'refresh': str(refresh),
-            'user': {'email': user.email, 'username': user.username or user.email, 'role': profile.role},
+            'user': {
+                'email': user.email,
+                'username': user.username or user.email,
+                'role': profile.role,
+                'subscription_plan': profile.subscription_plan,
+                'credits_remaining': profile.credits_remaining,
+                'credits_limit': profile.credits_limit,
+            },
         })
 
 
@@ -93,18 +104,36 @@ class AdminLoginView(APIView):
 
 class Verify2FAView(APIView):
     permission_classes = [AllowAny]
+    throttle_scope = 'two_factor'
+    MAX_OTP_ATTEMPTS = 5
+
     def post(self, request):
         email = request.data.get('email')
-        code = request.data.get('code')
+        code = str(request.data.get('code') or '').strip()
         user = User.objects.filter(email=email).first()
         if not user:
-             return Response({'detail': 'User not found.'}, status=404)
-        
+            return Response({'detail': 'Invalid or expired code.'}, status=400)
+
         profile = user.profile
-        if profile.two_factor_code == code and profile.two_factor_code_expires > timezone.now():
-            profile.two_factor_code = None # Consume code
-            profile.save()
-            
+        attempt_key = f"2fa_attempts:{user.id}"
+        attempts = cache.get(attempt_key, 0)
+        if attempts >= self.MAX_OTP_ATTEMPTS:
+            if profile.two_factor_code:
+                profile.two_factor_code = None
+                profile.save(update_fields=['two_factor_code'])
+            return Response({'detail': 'Too many failed 2FA attempts. Please log in again to request a new code.'}, status=429)
+
+        stored_code = str(profile.two_factor_code or '')
+        if (
+            stored_code
+            and profile.two_factor_code_expires
+            and profile.two_factor_code_expires > timezone.now()
+            and secrets.compare_digest(stored_code, code)
+        ):
+            profile.two_factor_code = None  # Consume code
+            profile.save(update_fields=['two_factor_code'])
+            cache.delete(attempt_key)
+
             from rest_framework_simplejwt.tokens import RefreshToken
             refresh = RefreshToken.for_user(user)
             return Response({
@@ -112,6 +141,12 @@ class Verify2FAView(APIView):
                 'refresh': str(refresh),
                 'user': {'email': user.email, 'username': user.username or user.email},
             })
+
+        attempts += 1
+        cache.set(attempt_key, attempts, timeout=600)
+        if attempts >= self.MAX_OTP_ATTEMPTS and profile.two_factor_code:
+            profile.two_factor_code = None
+            profile.save(update_fields=['two_factor_code'])
         return Response({'detail': 'Invalid or expired code.'}, status=400)
 
 class RegisterView(APIView):
@@ -173,6 +208,9 @@ class CareerDashboardView(APIView):
                 "current_streak": profile.current_streak,
                 "two_factor_enabled": profile.two_factor_enabled,
                 "profile_visibility": profile.profile_visibility,
+                "subscription_plan": profile.subscription_plan,
+                "credits_remaining": profile.credits_remaining,
+                "credits_limit": profile.credits_limit,
             },
             "skills": UserSkillSerializer(UserSkill.objects.filter(user=user), many=True).data,
             "activities": ActivityLogSerializer(ActivityLog.objects.filter(user=user).order_by('-timestamp')[:10], many=True).data,
@@ -241,6 +279,9 @@ class ProfileView(APIView):
             'has_resume': bool(profile.resume),
             'two_factor_enabled': profile.two_factor_enabled,
             'profile_visibility': profile.profile_visibility,
+            'subscription_plan': profile.subscription_plan,
+            'credits_remaining': profile.credits_remaining,
+            'credits_limit': profile.credits_limit,
         })
 
     def put(self, request):
@@ -275,17 +316,62 @@ class ProfileView(APIView):
             profile.two_factor_enabled = request.data.get('two_factor_enabled')
         if 'profile_visibility' in request.data:
             profile.profile_visibility = request.data.get('profile_visibility')
+        if isinstance(request.data.get('skills'), list):
+            skill_names = [str(s).strip() for s in request.data['skills'] if str(s).strip()]
+            for s_name in skill_names:
+                UserSkill.objects.get_or_create(user=u, name=s_name, defaults={'level': 3, 'category': 'Core'})
+            try:
+                from apps.skills.models import ResumeData
+                rd, _ = ResumeData.objects.get_or_create(user=u)
+                merged = list(dict.fromkeys((rd.extracted_skills or []) + skill_names))
+                rd.extracted_skills = merged
+                rd.save(update_fields=['extracted_skills'])
+            except Exception:
+                pass
+        profile.calculate_completeness()
         profile.save()
         return Response({'detail': 'Profile updated'})
 
-class ResumeUploadView(APIView):
-    permission_classes = [IsAuthenticated]
     def post(self, request):
         resume_file = request.FILES.get('resume')
-        if not resume_file: return Response({'detail': 'No file.'}, status=400)
+        if not resume_file:
+            return Response({'detail': 'No file.'}, status=400)
+
+        from apps.skills.analysis import validate_uploaded_document
+        is_valid, err_msg, _ = validate_uploaded_document(resume_file, allowed_exts=('pdf', 'docx', 'txt'), max_mb=5)
+        if not is_valid:
+            return Response({'detail': err_msg, 'error': err_msg}, status=400)
+
         profile, _ = UserProfile.objects.get_or_create(user=request.user)
         profile.resume = resume_file
         profile.save()
+
+        # Synchronize with ResumeData & skills intelligence
+        try:
+            from apps.skills.analysis import extract_text_from_file, extract_skills_from_text, extract_resume_details
+            from apps.skills.models import ResumeData, ResumeHistory
+            if hasattr(resume_file, 'seek'):
+                resume_file.seek(0)
+            text = extract_text_from_file(resume_file)
+            if text:
+                parsed = extract_resume_details(text)
+                skills = parsed.get('skills', []) or extract_skills_from_text(text)
+                ResumeData.objects.update_or_create(
+                    user=request.user,
+                    defaults={'extracted_skills': skills, 'resume_file': resume_file}
+                )
+                ats_score = parsed.get('metrics', {}).get('ats_score', 75.0)
+                ResumeHistory.objects.create(
+                    user=request.user,
+                    file_name=getattr(resume_file, 'name', 'Profile Resume'),
+                    resume_file=resume_file,
+                    ats_score=ats_score,
+                    job_match_score=min(95, 60 + len(skills) * 2),
+                    extracted_data=parsed
+                )
+        except Exception:
+            pass
+
         ActivityLog.objects.create(user=request.user, action_type='resume', description="Uploaded new resume", impact_score=10)
         return Response({'detail': 'Resume uploaded.'})
 
@@ -433,8 +519,17 @@ class ResetPasswordView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Set new password
+        # Set new password after running Django's AUTH_PASSWORD_VALIDATORS
         user = reset_record.user
+        from django.contrib.auth.password_validation import validate_password
+        from django.core.exceptions import ValidationError as DjangoValidationError
+        try:
+            validate_password(new_password, user=user)
+        except DjangoValidationError as exc:
+            return Response(
+                {"status": "error", "message": " ".join(exc.messages)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         user.set_password(new_password)
         user.save()
 
@@ -569,4 +664,107 @@ class AuthorizedEnginesView(APIView):
             'domain': domain,
             'default_dashboard': default_dashboard,
             'nav_sections': nav_sections
+        })
+
+
+class DemoSubscriptionView(APIView):
+    """
+    GET / POST /api/users/subscription/
+    Manages user credit balances and Demo / Testing subscription plans (Free, Plus, Pro).
+    """
+    permission_classes = [IsAuthenticated]
+
+    PLANS_CATALOG = [
+        {
+            'id': 'free',
+            'name': 'Starter Free',
+            'price_display': '₹0 / month',
+            'credits_limit': 10,
+            'badge': 'DEFAULT',
+            'features': [
+                '10 AI Career & Practice Credits',
+                'Resume Upload & ATS Score',
+                'Standard Practice Challenges',
+            ],
+        },
+        {
+            'id': 'plus',
+            'name': 'SkillMirror Plus (Demo)',
+            'price_display': '₹499 / month (Demo)',
+            'credits_limit': 100,
+            'badge': 'POPULAR',
+            'features': [
+                '100 AI Credits / month',
+                'Guided Coursera-Style Skill Labs',
+                'AI Mock Interviews & Gap Roadmaps',
+                'Instant Demo Activation (No Card Required)',
+            ],
+        },
+        {
+            'id': 'pro',
+            'name': 'SkillMirror Pro (Demo)',
+            'price_display': '₹999 / month (Demo)',
+            'credits_limit': 9999,
+            'badge': 'UNLIMITED',
+            'features': [
+                'Unlimited AI Credits (9,999)',
+                'Full Autonomous AI Auto-Grader & Voice Interviews',
+                'Priority Career Digital Twin & Market Scout',
+                'Instant Demo Activation (No Card Required)',
+            ],
+        },
+    ]
+
+    def get(self, request):
+        profile, _ = UserProfile.objects.get_or_create(user=request.user)
+        return Response({
+            'subscription_plan': profile.subscription_plan,
+            'credits_remaining': profile.credits_remaining,
+            'credits_limit': profile.credits_limit,
+            'is_unlimited': profile.subscription_plan == 'pro' or request.user.is_staff or profile.role == 'admin',
+            'demo_mode': True,
+            'plans': self.PLANS_CATALOG,
+        })
+
+    def post(self, request):
+        profile, _ = UserProfile.objects.get_or_create(user=request.user)
+        plan = (request.data.get('plan') or '').strip().lower()
+        action = (request.data.get('action') or 'upgrade').strip().lower()
+
+        if action == 'refill':
+            limit = UserProfile.PLAN_CREDIT_LIMITS.get(profile.subscription_plan, 10)
+            profile.credits_limit = limit
+            profile.credits_remaining = limit
+            profile.save(update_fields=['credits_limit', 'credits_remaining'])
+            return Response({
+                'message': f'Demo credits refilled to {limit} for {profile.subscription_plan.upper()} plan.',
+                'subscription_plan': profile.subscription_plan,
+                'credits_remaining': profile.credits_remaining,
+                'credits_limit': profile.credits_limit,
+                'demo_mode': True,
+            })
+
+        if plan not in UserProfile.PLAN_CREDIT_LIMITS:
+            return Response({'error': 'Invalid subscription plan. Choose free, plus, or pro.'}, status=400)
+
+        new_limit = UserProfile.PLAN_CREDIT_LIMITS[plan]
+        profile.subscription_plan = plan
+        profile.credits_limit = new_limit
+        profile.credits_remaining = new_limit
+        profile.save(update_fields=['subscription_plan', 'credits_limit', 'credits_remaining'])
+
+        ActivityLog.objects.create(
+            user=request.user,
+            action_type='login',
+            description=f'Switched to {plan.upper()} Subscription (Demo Testing Mode)',
+            impact_score=10,
+        )
+
+        return Response({
+            'message': f'Successfully activated {plan.upper()} plan in Demo Testing Mode!',
+            'subscription_plan': profile.subscription_plan,
+            'credits_remaining': profile.credits_remaining,
+            'credits_limit': profile.credits_limit,
+            'is_unlimited': profile.subscription_plan == 'pro',
+            'demo_mode': True,
         })

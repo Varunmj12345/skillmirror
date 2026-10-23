@@ -50,19 +50,19 @@ const TREE_DATA: {
   rootFile: {
     id: 'dashboard',
     name: 'dashboard',
-    label: 'Command Center',
+    label: 'Dashboard',
     href: '/dashboard',
   },
   folders: [
     {
       id: 'diagnostic',
       name: 'diagnostic',
-      label: 'Diagnostic & Intel',
+      label: 'Skill Diagnostics',
       files: [
         {
           id: 'skill-gap',
           name: 'skill-gap',
-          label: 'Skill Gap Radar',
+          label: 'Skill Gap Analyzer',
           href: '/skill-gap',
         },
         {
@@ -90,12 +90,6 @@ const TREE_DATA: {
           label: 'Milestones & Path',
           href: '/roadmap',
         },
-        {
-          id: 'smart-alerts',
-          name: 'smart-alerts',
-          label: 'Signals & Nudges',
-          href: '/smart-alerts',
-        },
       ],
     },
     {
@@ -106,14 +100,8 @@ const TREE_DATA: {
         {
           id: 'problems',
           name: 'problems',
-          label: 'Coding Arena',
+          label: 'Practice Problems',
           href: '/problems',
-        },
-        {
-          id: 'gap-lab',
-          name: 'gap-challenges',
-          label: 'Gap Challenge Lab',
-          href: '/problems/matches',
         },
         {
           id: 'mock-interview',
@@ -123,22 +111,22 @@ const TREE_DATA: {
           subRoutes: ['/mock-interview/session', '/mock-interview/result', '/mock-interview/live'],
         },
         {
-          id: 'scorecards',
-          name: 'scorecards',
-          label: 'Scorecards & History',
-          href: '/projects/status-center',
+          id: 'projects',
+          name: 'projects',
+          label: 'Projects & Gigs',
+          href: '/projects',
         },
       ],
     },
     {
       id: 'system',
       name: 'system',
-      label: 'Identity & Telemetry',
+      label: 'Account & Profile',
       files: [
         {
           id: 'profile',
           name: 'profile',
-          label: 'Career Identity',
+          label: 'Profile & Portfolio',
           href: '/profile',
         },
         {
@@ -146,12 +134,6 @@ const TREE_DATA: {
           name: 'settings',
           label: 'Account Settings',
           href: '/settings',
-        },
-        {
-          id: 'bot-telemetry',
-          name: 'bot-telemetry',
-          label: 'Bot Telemetry',
-          href: '/bot-analytics',
         },
       ],
     },
@@ -195,6 +177,45 @@ const Header: React.FC<HeaderProps> = ({ collapsed: propCollapsed, setCollapsed:
   // Admin dynamic folder injection
   const [isAdmin, setIsAdmin] = useState(false);
 
+  // Subscription & Credits state (Demo Mode)
+  const [subscriptionPlan, setSubscriptionPlan] = useState<'free' | 'plus' | 'pro'>('free');
+  const [creditsRemaining, setCreditsRemaining] = useState<number>(10);
+  const [creditsLimit, setCreditsLimit] = useState<number>(10);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [upgradingPlan, setUpgradingPlan] = useState<string | null>(null);
+  const [upgradeMessage, setUpgradeMessage] = useState<string | null>(null);
+
+  const loadSubscriptionStatus = async () => {
+    try {
+      const res: any = await apiClient.get('/users/subscription/');
+      const data = res?.data || res;
+      if (data?.subscription_plan) {
+        setSubscriptionPlan(data.subscription_plan);
+        setCreditsRemaining(data.credits_remaining ?? 10);
+        setCreditsLimit(data.credits_limit ?? 10);
+      }
+    } catch {
+      // fallback to default free tier display
+    }
+  };
+
+  const handleDemoPlanSwitch = async (planId: 'free' | 'plus' | 'pro', action: 'upgrade' | 'refill' = 'upgrade') => {
+    setUpgradingPlan(action === 'refill' ? 'refill' : planId);
+    setUpgradeMessage(null);
+    try {
+      const res: any = await apiClient.post('/users/subscription/', { plan: planId, action });
+      const data = res?.data || res;
+      setSubscriptionPlan(data.subscription_plan || planId);
+      setCreditsRemaining(data.credits_remaining ?? 10);
+      setCreditsLimit(data.credits_limit ?? 10);
+      setUpgradeMessage(data.message || `Activated ${planId.toUpperCase()} (Demo Mode)`);
+    } catch {
+      setUpgradeMessage('Failed to update demo subscription.');
+    } finally {
+      setUpgradingPlan(null);
+    }
+  };
+
   const loadAuthorizedEngines = async () => {
     try {
       const res: any = await apiClient.get('/users/authorized-engines/');
@@ -213,8 +234,11 @@ const Header: React.FC<HeaderProps> = ({ collapsed: propCollapsed, setCollapsed:
 
   useEffect(() => {
     setMounted(true);
-    if (user) loadAuthorizedEngines();
-  }, [user]);
+    if (user) {
+      loadAuthorizedEngines();
+      loadSubscriptionStatus();
+    }
+  }, [user, currentPath]);
 
   // Auto-expand folder when navigating into one of its files
   useEffect(() => {
@@ -267,6 +291,12 @@ const Header: React.FC<HeaderProps> = ({ collapsed: propCollapsed, setCollapsed:
           name: 'admin-center',
           label: 'Admin Control',
           href: '/admin/problems',
+        },
+        {
+          id: 'ai-diagnostics',
+          name: 'ai-diagnostics',
+          label: 'AI Diagnostics',
+          href: '/bot-analytics',
         },
       ];
     }
@@ -526,11 +556,43 @@ const Header: React.FC<HeaderProps> = ({ collapsed: propCollapsed, setCollapsed:
                     <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 truncate">
                       {activeRole}
                     </span>
+                    <span
+                      className={`px-1.5 py-0.2 text-[9px] font-mono font-bold uppercase border ${
+                        subscriptionPlan === 'pro'
+                          ? 'bg-amber-500/20 text-amber-400 border-amber-500/50'
+                          : subscriptionPlan === 'plus'
+                          ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50'
+                          : 'bg-zinc-800 text-zinc-300 border-zinc-700'
+                      }`}
+                    >
+                      {subscriptionPlan.toUpperCase()}
+                    </span>
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
                   <NotificationBell placement="sidebar" />
                 </div>
+              </div>
+
+              {/* Credits Meter & Demo Upgrade Trigger */}
+              <div className="mb-2 p-2 bg-zinc-950/90 border border-zinc-800 flex items-center justify-between gap-2">
+                <div className="min-w-0">
+                  <div className="text-[9px] font-mono uppercase tracking-wider text-zinc-500">
+                    AI CREDITS ({subscriptionPlan.toUpperCase()})
+                  </div>
+                  <div className="text-[11px] font-mono font-bold text-amber-400 truncate">
+                    {subscriptionPlan === 'pro'
+                      ? '⚡ UNLIMITED (PRO)'
+                      : `⚡ ${creditsRemaining} / ${creditsLimit} LEFT`}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowUpgradeModal(true)}
+                  className="px-2 py-1 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-mono font-bold text-[9px] uppercase tracking-wider transition-colors shrink-0"
+                >
+                  {subscriptionPlan === 'free' ? 'UPGRADE' : 'PLANS'}
+                </button>
               </div>
 
               <div className="grid grid-cols-2 gap-1.5">
@@ -560,6 +622,133 @@ const Header: React.FC<HeaderProps> = ({ collapsed: propCollapsed, setCollapsed:
           </div>
         ) : null}
       </div>
+
+      {/* ── Demo Subscription & Credit Upgrade Modal ── */}
+      {showUpgradeModal && (
+        <div className="fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full max-w-2xl bg-zinc-950 border border-zinc-700 p-6 shadow-2xl text-white font-mono">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-4 mb-5">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 text-[10px] bg-amber-500/20 text-amber-400 border border-amber-500/40 font-bold uppercase">
+                    DEMO / TESTING SUBSCRIPTION MODE
+                  </span>
+                  <span className="text-xs text-zinc-400">
+                    Active Plan: <strong className="text-white uppercase">{subscriptionPlan}</strong>
+                  </span>
+                </div>
+                <h2 className="text-lg font-bold text-white mt-1">
+                  Upgrade Your AI Credits & Subscription Tier
+                </h2>
+                <p className="text-xs text-zinc-400 mt-0.5">
+                  New accounts start with 10 free credits. Switch between Free, Plus, or Pro instantly for testing (no payment card required).
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowUpgradeModal(false)}
+                className="px-2.5 py-1 border border-zinc-700 text-zinc-400 hover:text-white text-xs"
+              >
+                ✕ ESC
+              </button>
+            </div>
+
+            {upgradeMessage && (
+              <div className="mb-4 p-3 bg-emerald-500/10 border border-emerald-500/40 text-emerald-300 text-xs flex items-center justify-between">
+                <span>✓ {upgradeMessage}</span>
+                <span className="font-bold">
+                  {subscriptionPlan === 'pro' ? 'UNLIMITED CREDITS' : `${creditsRemaining} / ${creditsLimit} Credits`}
+                </span>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+              {/* Starter Free */}
+              <div className={`border p-4 flex flex-col justify-between ${subscriptionPlan === 'free' ? 'border-amber-500 bg-zinc-900/80' : 'border-zinc-800 bg-zinc-900/40'}`}>
+                <div>
+                  <div className="text-[10px] uppercase text-zinc-400">Starter Tier</div>
+                  <div className="text-base font-bold text-white mt-0.5">Free</div>
+                  <div className="text-sm text-amber-400 font-bold mt-1">₹0 / mo</div>
+                  <div className="mt-3 text-xs text-zinc-300 space-y-1.5">
+                    <div>• 10 AI Credits limit</div>
+                    <div>• Resume Upload & ATS Score</div>
+                    <div>• Standard Practice Problems</div>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  disabled={upgradingPlan !== null || subscriptionPlan === 'free'}
+                  onClick={() => handleDemoPlanSwitch('free')}
+                  className="mt-4 w-full py-2 border border-zinc-700 bg-zinc-900 hover:bg-zinc-800 disabled:opacity-50 text-xs font-bold uppercase"
+                >
+                  {subscriptionPlan === 'free' ? 'CURRENT PLAN' : 'SWITCH TO FREE'}
+                </button>
+              </div>
+
+              {/* Plus Plan */}
+              <div className={`border p-4 flex flex-col justify-between ${subscriptionPlan === 'plus' ? 'border-cyan-400 bg-cyan-950/20' : 'border-zinc-800 bg-zinc-900/40'}`}>
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] uppercase text-cyan-400 font-bold">Most Popular</span>
+                    <span className="text-[9px] px-1.5 py-0.5 bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">DEMO</span>
+                  </div>
+                  <div className="text-base font-bold text-white mt-0.5">SkillMirror Plus</div>
+                  <div className="text-sm text-cyan-300 font-bold mt-1">₹499 / mo (Demo)</div>
+                  <div className="mt-3 text-xs text-zinc-300 space-y-1.5">
+                    <div>• <strong>100 AI Credits</strong> / month</div>
+                    <div>• Coursera-Style Guided Labs</div>
+                    <div>• AI Mock Interviews & Roadmaps</div>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  disabled={upgradingPlan !== null || subscriptionPlan === 'plus'}
+                  onClick={() => handleDemoPlanSwitch('plus')}
+                  className="mt-4 w-full py-2 bg-cyan-500 hover:bg-cyan-400 text-zinc-950 disabled:opacity-50 text-xs font-bold uppercase"
+                >
+                  {subscriptionPlan === 'plus' ? 'ACTIVE (PLUS)' : 'ACTIVATE PLUS (DEMO)'}
+                </button>
+              </div>
+
+              {/* Pro Plan */}
+              <div className={`border p-4 flex flex-col justify-between ${subscriptionPlan === 'pro' ? 'border-amber-400 bg-amber-950/20' : 'border-zinc-800 bg-zinc-900/40'}`}>
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] uppercase text-amber-400 font-bold">Power Engineer</span>
+                    <span className="text-[9px] px-1.5 py-0.5 bg-amber-500/20 text-amber-300 border border-amber-500/40">DEMO</span>
+                  </div>
+                  <div className="text-base font-bold text-white mt-0.5">SkillMirror Pro</div>
+                  <div className="text-sm text-amber-400 font-bold mt-1">₹999 / mo (Demo)</div>
+                  <div className="mt-3 text-xs text-zinc-300 space-y-1.5">
+                    <div>• <strong>Unlimited AI Credits</strong></div>
+                    <div>• Autonomous AI Auto-Grader</div>
+                    <div>• Career Digital Twin & Scout</div>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  disabled={upgradingPlan !== null || subscriptionPlan === 'pro'}
+                  onClick={() => handleDemoPlanSwitch('pro')}
+                  className="mt-4 w-full py-2 bg-amber-500 hover:bg-amber-400 text-zinc-950 disabled:opacity-50 text-xs font-bold uppercase"
+                >
+                  {subscriptionPlan === 'pro' ? 'ACTIVE (PRO)' : 'ACTIVATE PRO (DEMO)'}
+                </button>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between pt-3 border-t border-zinc-800 text-xs text-zinc-400">
+              <span>Testing helper: Need to reset your current tier&apos;s credit counter?</span>
+              <button
+                type="button"
+                onClick={() => handleDemoPlanSwitch(subscriptionPlan, 'refill')}
+                className="px-3 py-1.5 border border-zinc-700 hover:border-amber-500 text-zinc-200 hover:text-amber-400 text-xs uppercase font-bold"
+              >
+                ↻ Refill Demo Credits ({creditsRemaining}/{creditsLimit})
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </aside>
   );
 };

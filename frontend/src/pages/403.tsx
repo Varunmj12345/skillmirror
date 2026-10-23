@@ -31,7 +31,7 @@ const ForbiddenPage: React.FC = () => {
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link href="/dashboard" className="w-full sm:w-auto">
               <button className="w-full py-3 px-6 bg-amber-400 hover:bg-amber-300 text-black text-xs font-mono font-bold uppercase tracking-wider transition-colors">
-                Return to Command Center
+                Return to Dashboard
               </button>
             </Link>
             <Link href="/admin/login" className="w-full sm:w-auto">

@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from apps.users.permissions import IsPlatformAdmin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from django.utils import timezone
@@ -308,7 +309,8 @@ class ActionPlanView(APIView):
             plan_data = json.loads(raw)
             LearningPlan.objects.create(user=request.user, title=f"Action Plan for {role}", weekly_breakdown=plan_data.get('weekly_breakdown', []), daily_commitment=plan_data.get('daily_commitment', 2), projects=plan_data.get('projects', []), certifications=plan_data.get('certifications', []))
             return Response(plan_data)
-        except Exception as e: return Response({"detail": str(e)}, status=500)
+        except Exception:
+            return Response({"detail": "Failed to generate learning plan. Please try again."}, status=500)
 
 class CareerInsightView(APIView):
     permission_classes = [IsAuthenticated]
@@ -340,11 +342,17 @@ class BotPerformanceOverviewView(APIView):
     Returns comprehensive analytics, metrics, model performance,
     task distribution, and health scores for the AI Bot Performance Engine.
     """
-    permission_classes = []
+    permission_classes = [IsPlatformAdmin]
 
     def get(self, request):
         from .bot_analytics import BotPerformanceAnalyticsEngine
+        from .bot_export import seed_initial_telemetry_if_empty
         from apps.ai.llm_client import get_active_provider_and_key, DEFAULT_GROQ_PRIMARY_MODEL, DEFAULT_GROQ_FAST_MODEL
+
+        try:
+            seed_initial_telemetry_if_empty()
+        except Exception:
+            pass
 
         try:
             days = int(request.query_params.get('days', 7))
@@ -370,7 +378,7 @@ class BotPerformanceOverviewView(APIView):
                 "primary_model": DEFAULT_GROQ_PRIMARY_MODEL,
                 "fast_model": DEFAULT_GROQ_FAST_MODEL,
                 "api_key_configured": bool(key),
-                "key_preview": f"{key[:8]}...{key[-4:]}" if key and len(key) > 12 else "Not configured",
+                "key_preview": f"****{key[-4:]}" if key and len(key) > 4 else "Not configured",
                 "timestamp": timezone.now().isoformat()
             }
         })
@@ -380,7 +388,7 @@ class BotPerformanceLogsView(APIView):
     """
     Returns paginated/filtered telemetry logs for interaction audits.
     """
-    permission_classes = []
+    permission_classes = [IsPlatformAdmin]
 
     def get(self, request):
         from .bot_analytics import BotPerformanceAnalyticsEngine
@@ -405,7 +413,7 @@ class BotFeedbackView(APIView):
     """
     Records end-user feedback and satisfaction ratings for bot responses.
     """
-    permission_classes = []
+    permission_classes = [IsPlatformAdmin]
 
     def post(self, request):
         from .models import BotPerformanceLog
@@ -427,8 +435,8 @@ class BotFeedbackView(APIView):
             return Response({"status": "recorded", "id": str(log.id)})
         except BotPerformanceLog.DoesNotExist:
             return Response({"error": "Telemetry log not found"}, status=404)
-        except Exception as e:
-            return Response({"error": str(e)}, status=500)
+        except Exception:
+            return Response({"error": "Failed to record feedback."}, status=500)
 
 
 class BotDiagnosticView(APIView):
@@ -436,9 +444,9 @@ class BotDiagnosticView(APIView):
     Triggers an instant real-time diagnostic probe to test provider latency,
     token generation speed, and model availability.
     """
-    permission_classes = []
+    permission_classes = [IsPlatformAdmin]
 
     def post(self, request):
         from .bot_analytics import BotPerformanceAnalyticsEngine
         result = BotPerformanceAnalyticsEngine.run_live_diagnostic()
-        return Response(result)
+        return Response(result)

@@ -2,6 +2,7 @@ import re
 import json
 import random
 import requests
+from django.db.models import Q
 from django.utils import timezone
 from apps.ai.embeddings import EmbeddingGenerator
 from apps.skills.models import Skill, UserSkill, ResumeData
@@ -432,8 +433,39 @@ class LiveUrlVerificationService:
     """
     Verifies Live / Published Project URLs for student submissions.
     """
+    @staticmethod
+    def _is_safe_public_url(url: str) -> bool:
+        import ipaddress
+        import socket
+        from urllib.parse import urlparse
+
+        try:
+            parsed = urlparse(url.strip())
+            if parsed.scheme not in ('http', 'https') or not parsed.hostname:
+                return False
+            hostname = parsed.hostname.lower()
+            if hostname in ('localhost', 'metadata.google.internal'):
+                return False
+            addr_info = socket.getaddrinfo(hostname, parsed.port or (443 if parsed.scheme == 'https' else 80), proto=socket.IPPROTO_TCP)
+            if not addr_info:
+                return False
+            for family, _, _, _, sockaddr in addr_info:
+                ip = ipaddress.ip_address(sockaddr[0])
+                if (
+                    ip.is_private
+                    or ip.is_loopback
+                    or ip.is_link_local
+                    or ip.is_multicast
+                    or ip.is_reserved
+                    or ip.is_unspecified
+                ):
+                    return False
+            return True
+        except Exception:
+            return False
+
     def check_live_url(self, url: str) -> dict:
-        if not url or not url.startswith(('http://', 'https://')):
+        if not url or not isinstance(url, str) or not url.startswith(('http://', 'https://')):
             return {
                 "status": "unreachable",
                 "is_valid": False,
@@ -441,10 +473,19 @@ class LiveUrlVerificationService:
                 "notes": "Invalid URL format. URL must start with http:// or https://"
             }
 
+        if not self._is_safe_public_url(url):
+            return {
+                "status": "unreachable",
+                "is_valid": False,
+                "http_code": None,
+                "notes": "Disallowed or unresolvable target host. Private, loopback, and internal network addresses are blocked."
+            }
+
         try:
-            resp = requests.head(url, timeout=5, allow_redirects=True)
+            resp = requests.head(url, timeout=5, allow_redirects=False)
             if resp.status_code >= 400:
-                resp = requests.get(url, timeout=5, allow_redirects=True)
+                resp = requests.get(url, timeout=5, allow_redirects=False, stream=True)
+                resp.close()
 
             is_ok = 200 <= resp.status_code < 400
             return {
@@ -453,12 +494,12 @@ class LiveUrlVerificationService:
                 "http_code": resp.status_code,
                 "notes": f"HTTP status code: {resp.status_code}. Site accessible." if is_ok else f"HTTP status code {resp.status_code} indicating deployment issue."
             }
-        except requests.exceptions.RequestException as err:
+        except requests.exceptions.RequestException:
             return {
                 "status": "deployment_issue",
                 "is_valid": False,
                 "http_code": None,
-                "notes": f"Reachable check failed: {str(err)}"
+                "notes": "Reachable check failed: target host timed out or refused connection."
             }
 
 
@@ -672,3 +713,379 @@ class OpportunityEngine:
             )
             created_opps.append(opp)
         return created_opps
+
+
+class FreelancerChallengeService:
+    """
+    Syncs live Freelancer.com projects into real-world skill development challenges.
+    """
+    @classmethod
+    def sync_freelancer_challenges(cls, limit: int = 15) -> list:
+        from apps.jobs.services.freelancer_scraper import FreelancerScraper
+        scraped_projects = FreelancerScraper.scrape_jobs(limit=limit)
+
+        org, _ = ProblemOrganization.objects.get_or_create(
+            name="Freelancer.com Client Network",
+            defaults={
+                'org_type': 'company',
+                'website': 'https://www.freelancer.com',
+                'location': 'Global / Remote',
+                'is_verified': True
+            }
+        )
+
+        synced_problems = []
+        for p in scraped_projects:
+            url = p.get('url', '')
+            title = p.get('title', 'Freelance Project')
+
+            # Check existing by title or url
+            existing = Problem.objects.filter(
+                Q(title=title) | Q(original_description__icontains=url)
+            ).first()
+
+            if existing:
+                synced_problems.append(existing)
+                continue
+
+            problem = Problem.objects.create(
+                title=title,
+                description=p.get('description', ''),
+                original_description=f"Source: Freelancer.com\nRequisition URL: {url}\nBudget: {p.get('budget')}\nBids: {p.get('bids')}\n\n{p.get('description')}",
+                source_type='FREELANCER_SCRAPED',
+                is_real_world=True,
+                problem_owner_name=f"Freelancer Client ({p.get('days_left', 'Active')})",
+                organization=org,
+                organization_name="Freelancer.com",
+                industry=p.get('category', 'Technology'),
+                category=p.get('category', 'General Tech'),
+                location="Remote Worldwide",
+                budget=p.get('budget_numeric'),
+                required_skills_list=p.get('skills', []),
+                complexity=p.get('complexity', 'intermediate'),
+                estimated_effort_weeks=2 if p.get('complexity') == 'beginner' else (4 if p.get('complexity') == 'intermediate' else 6),
+                market_relevance_score=94,
+                required_solution=f"Design, build and deliver a verified production solution addressing: {p.get('description')[:250]}",
+                constraints=["Adhere to clean architecture", "Include automated unit tests", "Provide runnable GitHub repo and live deployment"],
+                attachments=[url],
+                status='validated'
+            )
+
+            # Generate structured requirements
+            ProjectRequirement.objects.update_or_create(
+                problem=problem,
+                requirement_id="REQ-001",
+                defaults={
+                    "title": "Core Functional Deliverable",
+                    "description": p.get('description', '')[:300] or f"Implement requirements for {title}.",
+                    "req_type": "functional",
+                    "priority": "CRITICAL",
+                    "source": "OWNER_DEFINED",
+                    "status": "confirmed",
+                    "acceptance_criteria": "Core workflow executes with valid input/output and persists state.",
+                    "verification_method": "functional_test"
+                }
+            )
+
+            skills_str = ", ".join(p.get('skills', ['General Tech']))
+            ProjectRequirement.objects.update_or_create(
+                problem=problem,
+                requirement_id="REQ-002",
+                defaults={
+                    "title": f"Technology Stack ({skills_str[:50]})",
+                    "description": f"Solution must leverage the requested client stack: {skills_str}.",
+                    "req_type": "technical",
+                    "priority": "HIGH",
+                    "source": "OWNER_DEFINED",
+                    "status": "confirmed",
+                    "acceptance_criteria": f"Codebase implements clean architecture with {skills_str}.",
+                    "verification_method": "code_review"
+                }
+            )
+
+            ProjectRequirement.objects.update_or_create(
+                problem=problem,
+                requirement_id="REQ-003",
+                defaults={
+                    "title": "Live Deployment & Verifiable Repository",
+                    "description": "Provide a public repository with full documentation and a live reachable URL.",
+                    "req_type": "non_functional",
+                    "priority": "CRITICAL",
+                    "source": "AI_INFERRED",
+                    "status": "confirmed",
+                    "acceptance_criteria": "Live URL returns HTTP 200 and repository contains build instructions.",
+                    "verification_method": "live_url_check"
+                }
+            )
+
+            ProblemEvidence.objects.update_or_create(
+                problem=problem,
+                title="Freelancer.com Live Project Verification",
+                defaults={
+                    "source_type": "organization_verified",
+                    "evidence_type": "market_data",
+                    "description": f"Verified live freelance requisition on Freelancer.com. Client Budget: {p.get('budget')}. Bids: {p.get('bids')}.",
+                    "proof_url": url,
+                    "verification_status": "verified"
+                }
+            )
+
+            ProblemValidationService().validate_problem(problem)
+            problem.status = 'validated'
+            problem.save()
+            synced_problems.append(problem)
+
+        return synced_problems
+
+
+class SkillLabService:
+    """
+    Creates and seeds bite-sized (~15-20 min) Coursera-style Guided Skill Labs
+    using live web-scraped curriculum inspiration and AI synthesis.
+    """
+    CURATED_LABS = [
+        {
+            "title": "Guided Lab: Sliding-Window API Rate Limiter",
+            "category": "Backend Architecture",
+            "complexity": "beginner",
+            "skills": ["Python", "REST APIs", "Rate Limiting", "Data Structures"],
+            "inspired_by": "Coursera Guided Project: Building Scalable Microservices & API Gateways",
+            "source_url": "https://www.coursera.org/search?query=api+rate+limiting",
+            "description": (
+                "**Inspired By:** Coursera Guided Project — Building Scalable Microservices & API Gateways\n\n"
+                "**Learning Objectives:**\n"
+                "• Track per-client request timestamps in a sliding time window\n"
+                "• Reject excess traffic with deterministic retry-after metadata\n\n"
+                "**Assignment Overview (~15 mins):**\n"
+                "Implement a lightweight in-memory sliding-window rate limiter function that allows at most `limit` requests per `windowMs` for each client IP."
+            ),
+            "requirements": [
+                "Task 1: Prune timestamps older than (now - windowMs) for the requesting client key.",
+                "Task 2: If active requests < limit, record the current timestamp and return { allowed: true, remaining }.",
+                "Task 3: If limit is reached, return { allowed: false, remaining: 0, retryAfterMs }."
+            ],
+            "starter_code": (
+                "// Guided Skill Lab: Sliding-Window API Rate Limiter (~15 mins)\n"
+                "const buckets = new Map();\n\n"
+                "function checkRateLimit(clientId, nowMs, limit = 5, windowMs = 60000) {\n"
+                "  // Task 1: Retrieve client history and filter timestamps within (nowMs - windowMs)\n"
+                "  const history = (buckets.get(clientId) || []).filter(ts => nowMs - ts < windowMs);\n\n"
+                "  // Task 2: Check if request is allowed and update bucket\n"
+                "  if (history.length < limit) {\n"
+                "    history.push(nowMs);\n"
+                "    buckets.set(clientId, history);\n"
+                "    return { allowed: true, remaining: limit - history.length, retryAfterMs: 0 };\n"
+                "  }\n\n"
+                "  // Task 3: Compute retryAfterMs from the oldest active timestamp\n"
+                "  buckets.set(clientId, history);\n"
+                "  return { allowed: false, remaining: 0, retryAfterMs: windowMs - (nowMs - history[0]) };\n"
+                "}\n\n"
+                "module.exports = { checkRateLimit };"
+            ),
+        },
+        {
+            "title": "Guided Lab: Debounced Search & Filter Hook",
+            "category": "Frontend Engineering",
+            "complexity": "beginner",
+            "skills": ["JavaScript", "React Patterns", "Debouncing", "UI Performance"],
+            "inspired_by": "Coursera Guided Project: Advanced React Component Patterns",
+            "source_url": "https://www.coursera.org/search?query=react+hooks+guided+project",
+            "description": (
+                "**Inspired By:** Coursera Guided Project — Advanced React Component Patterns\n\n"
+                "**Learning Objectives:**\n"
+                "• Prevent redundant API calls during rapid user keystrokes\n"
+                "• Implement case-insensitive multi-field search filtering\n\n"
+                "**Assignment Overview (~15 mins):**\n"
+                "Build a debounce utility and a pure search matcher that filters a catalog of items by title and tags."
+            ),
+            "requirements": [
+                "Task 1: Implement debounce(fn, delayMs) that cancels pending timers on rapid calls.",
+                "Task 2: Normalize search query (trim + lowercase) and match against item title or tags.",
+                "Task 3: Return all items when query is empty and handle null/undefined fields safely."
+            ],
+            "starter_code": (
+                "// Guided Skill Lab: Debounced Search & Filter Hook (~15 mins)\n"
+                "function debounce(fn, delayMs = 250) {\n"
+                "  let timer = null;\n"
+                "  // Task 1: Clear existing timer and schedule fn(...args)\n"
+                "  return function (...args) {\n"
+                "    if (timer) clearTimeout(timer);\n"
+                "    timer = setTimeout(() => fn.apply(this, args), delayMs);\n"
+                "  };\n"
+                "}\n\n"
+                "function filterCatalog(items = [], rawQuery = '') {\n"
+                "  // Task 2 & 3: Normalize query and filter items by title or tags\n"
+                "  const q = String(rawQuery || '').trim().toLowerCase();\n"
+                "  if (!q) return items;\n"
+                "  return items.filter(item => {\n"
+                "    const inTitle = (item.title || '').toLowerCase().includes(q);\n"
+                "    const inTags = (item.tags || []).some(t => String(t).toLowerCase().includes(q));\n"
+                "    return inTitle || inTags;\n"
+                "  });\n"
+                "}\n\n"
+                "module.exports = { debounce, filterCatalog };"
+            ),
+        },
+        {
+            "title": "Guided Lab: Text Embedding Cosine Similarity Scorer",
+            "category": "AI & Data Science",
+            "complexity": "intermediate",
+            "skills": ["Python", "Vector Search", "RAG Pipelines", "Linear Algebra"],
+            "inspired_by": "Coursera Guided Project: Retrieval-Augmented Generation (RAG) & Vector Search",
+            "source_url": "https://www.coursera.org/search?query=vector+embeddings+rag",
+            "description": (
+                "**Inspired By:** Coursera Guided Project — Retrieval-Augmented Generation (RAG) & Vector Search\n\n"
+                "**Learning Objectives:**\n"
+                "• Compute cosine similarity between dense embedding vectors\n"
+                "• Rank candidate documents by semantic relevance with zero-norm guards\n\n"
+                "**Assignment Overview (~20 mins):**\n"
+                "Implement a pure vector similarity scorer that ranks top-K chunks for an AI RAG pipeline."
+            ),
+            "requirements": [
+                "Task 1: Compute dot product and L2 norms for two equal-length numeric vectors.",
+                "Task 2: Guard against zero-magnitude vectors to prevent division-by-zero NaN errors.",
+                "Task 3: Rank candidate documents descending by similarity score and return top K."
+            ],
+            "starter_code": (
+                "// Guided Skill Lab: Text Embedding Cosine Similarity Scorer (~20 mins)\n"
+                "function cosineSimilarity(vecA = [], vecB = []) {\n"
+                "  if (!vecA.length || vecA.length !== vecB.length) return 0;\n"
+                "  // Task 1 & 2: Compute dot product and magnitudes with zero-norm guard\n"
+                "  let dot = 0, normA = 0, normB = 0;\n"
+                "  for (let i = 0; i < vecA.length; i++) {\n"
+                "    dot += vecA[i] * vecB[i];\n"
+                "    normA += vecA[i] * vecA[i];\n"
+                "    normB += vecB[i] * vecB[i];\n"
+                "  }\n"
+                "  const denom = Math.sqrt(normA) * Math.sqrt(normB);\n"
+                "  return denom === 0 ? 0 : Number((dot / denom).toFixed(4));\n"
+                "}\n\n"
+                "function rankTopChunks(queryVec, docs = [], k = 3) {\n"
+                "  // Task 3: Score each doc and return top K sorted descending\n"
+                "  return docs\n"
+                "    .map(d => ({ id: d.id, text: d.text, score: cosineSimilarity(queryVec, d.embedding) }))\n"
+                "    .sort((a, b) => b.score - a.score)\n"
+                "    .slice(0, k);\n"
+                "}\n\n"
+                "module.exports = { cosineSimilarity, rankTopChunks };"
+            ),
+        },
+        {
+            "title": "Guided Lab: Exponential Backoff & Circuit Breaker",
+            "category": "Cloud & DevOps",
+            "complexity": "intermediate",
+            "skills": ["Resilience", "Cloud Native", "Fault Tolerance", "Async Retry"],
+            "inspired_by": "Coursera Guided Project: Building Resilient Cloud Microservices",
+            "source_url": "https://www.coursera.org/search?query=cloud+microservices+resilience",
+            "description": (
+                "**Inspired By:** Coursera Guided Project — Building Resilient Cloud Microservices\n\n"
+                "**Learning Objectives:**\n"
+                "• Compute exponential backoff delays with bounded jitter\n"
+                "• Trip a circuit breaker after consecutive downstream failures\n\n"
+                "**Assignment Overview (~20 mins):**\n"
+                "Implement a retry helper with exponential backoff and circuit-breaker state transitions (CLOSED -> OPEN)."
+            ),
+            "requirements": [
+                "Task 1: Calculate backoff delay = min(maxDelayMs, baseDelayMs * 2^attempt).",
+                "Task 2: Retry failed async operations up to maxRetries times before throwing.",
+                "Task 3: Track consecutive failures and short-circuit when threshold is exceeded."
+            ],
+            "starter_code": (
+                "// Guided Skill Lab: Exponential Backoff & Circuit Breaker (~20 mins)\n"
+                "function computeBackoffMs(attempt, baseDelayMs = 100, maxDelayMs = 3200) {\n"
+                "  // Task 1: Exponential delay capped at maxDelayMs\n"
+                "  return Math.min(maxDelayMs, baseDelayMs * Math.pow(2, attempt));\n"
+                "}\n\n"
+                "async function executeWithRetry(operation, maxRetries = 3) {\n"
+                "  // Task 2 & 3: Retry operation up to maxRetries and record attempts\n"
+                "  let lastError;\n"
+                "  for (let attempt = 0; attempt <= maxRetries; attempt++) {\n"
+                "    try {\n"
+                "      const data = await operation(attempt);\n"
+                "      return { ok: true, attempts: attempt + 1, data };\n"
+                "    } catch (err) {\n"
+                "      lastError = err;\n"
+                "    }\n"
+                "  }\n"
+                "  throw lastError;\n"
+                "}\n\n"
+                "module.exports = { computeBackoffMs, executeWithRetry };"
+            ),
+        },
+    ]
+
+    @classmethod
+    def _persist_lab(cls, spec: dict, user=None) -> Problem:
+        org, _ = ProblemOrganization.objects.get_or_create(
+            name="Coursera-Style Skill Lab",
+            defaults={
+                "org_type": "college",
+                "website": spec.get("source_url", "https://www.coursera.org"),
+                "location": "Interactive Guided Lab",
+                "is_verified": True,
+            },
+        )
+        title = spec.get("title", "Guided Skill Lab")
+        existing = Problem.objects.filter(title=title, source_type="COURSERA_LAB").first()
+        if existing:
+            return existing
+
+        objectives = spec.get("learning_objectives") or []
+        obj_block = "\n".join(f"• {o}" for o in objectives)
+        inspired_by = spec.get("inspired_by", "Coursera Guided Curriculum")
+        desc = spec.get("description") or (
+            f"**Inspired By:** {inspired_by}\n\n"
+            + (f"**Learning Objectives:**\n{obj_block}\n\n" if obj_block else "")
+            + f"**Scenario:**\n{spec.get('scenario', '')}\n\n"
+            + f"**Guided Assignment (~15-20 mins):**\n{spec.get('problem_statement', '')}"
+        )
+
+        problem = Problem.objects.create(
+            title=title,
+            description=desc,
+            original_description=f"Web-Scraped Inspiration: {inspired_by}\nSource: {spec.get('source_url', 'https://www.coursera.org')}",
+            current_method=spec.get("starter_code", ""),
+            source_type="COURSERA_LAB",
+            is_real_world=False,
+            problem_owner_name="AI Guided Lab Instructor",
+            organization=org,
+            organization_name="Guided Skill Lab",
+            industry=spec.get("domain", "Guided Skill Lab"),
+            category=spec.get("category", "Backend Architecture"),
+            complexity=spec.get("complexity", "beginner"),
+            estimated_effort_weeks=1,
+            market_relevance_score=92,
+            required_solution=json.dumps(spec.get("requirements", [])),
+            constraints=spec.get("constraints", ["Estimated time: 15-20 mins", "Complete all guided tasks"]),
+            required_skills_list=spec.get("target_skills") or spec.get("skills") or ["Problem Solving"],
+            attachments=[spec.get("source_url", "https://www.coursera.org")],
+            status="validated",
+            submitted_by=user if (user and getattr(user, "is_authenticated", False)) else None,
+        )
+
+        for idx, req_text in enumerate(spec.get("requirements", []), 1):
+            ProjectRequirement.objects.update_or_create(
+                problem=problem,
+                requirement_id=f"TASK-{idx:02d}",
+                defaults={
+                    "title": f"Guided Step {idx}",
+                    "description": req_text,
+                    "acceptance_criteria": req_text,
+                    "req_type": "functional",
+                    "priority": "HIGH",
+                    "source": "AI_INFERRED",
+                    "status": "confirmed",
+                },
+            )
+        return problem
+
+    @classmethod
+    def seed_skill_labs(cls) -> list:
+        return [cls._persist_lab(item) for item in cls.CURATED_LABS]
+
+    @classmethod
+    def generate_live_skill_lab(cls, topic: str = "", category: str = "Backend Architecture", difficulty: str = "beginner", user=None) -> Problem:
+        from apps.problems.ai_assessment_engine import AIAssessmentEngine
+        clean_topic = (topic or "").strip() or category or "Python Data Structures"
+        spec = AIAssessmentEngine().generate_skill_lab(topic=clean_topic, category=category, difficulty=difficulty)
+        return cls._persist_lab(spec, user=user)

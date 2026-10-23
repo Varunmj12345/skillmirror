@@ -87,12 +87,6 @@ const AICareerWidget: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-3">
-                <Link href="/bot-analytics">
-                  <a className="text-[10px] font-mono font-bold text-amber-400 hover:text-amber-300 uppercase tracking-wider transition-colors flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 bg-amber-400 animate-pulse" />
-                    [INTEL]
-                  </a>
-                </Link>
                 <Link href="/roadmap">
                   <a className="text-[10px] font-mono font-bold text-zinc-400 hover:text-amber-400 uppercase tracking-wider transition-colors">
                     [ROADMAP]
